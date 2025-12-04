@@ -1,0 +1,57 @@
+{
+  "staff1": {
+    "name": "Emma Johnson",
+    "email": "emma@salon1.com",
+    "phone": "+447700900401",
+    "specialties": ["Hair", "Styling"],
+    "bio": "Senior stylist with 10 years experience",
+    "image": "https://via.placeholder.com/200x200?text=Emma",
+    "workingHours": {
+      "monday": { "start": "09:00", "end": "17:00", "enabled": true },
+      "tuesday": { "start": "09:00", "end": "17:00", "enabled": true },
+      "wednesday": { "start": "09:00", "end": "17:00", "enabled": true },
+      "thursday": { "start": "09:00", "end": "17:00", "enabled": true },
+      "friday": { "start": "09:00", "end": "18:00", "enabled": true },
+      "saturday": { "start": "10:00", "end": "16:00", "enabled": true },
+      "sunday": { "enabled": false }
+    },
+    "breaks": [{ "start": "13:00", "end": "14:00" }]
+  },
+  "staff2": {
+    "name": "Sarah Williams",
+    "email": "sarah@salon1.com",
+    "phone": "+447700900402",
+    "specialties": ["Facial", "Skincare"],
+    "bio": "Licensed esthetician specializing in facials",
+    "image": "https://via.placeholder.com/200x200?text=Sarah",
+    "workingHours": {
+      "monday": { "start": "10:00", "end": "18:00", "enabled": true },
+      "tuesday": { "start": "10:00", "end": "18:00", "enabled": true },
+      "wednesday": { "start": "10:00", "end": "18:00", "enabled": true },
+      "thursday": { "start": "10:00", "end": "18:00", "enabled": true },
+      "friday": { "start": "10:00", "end": "18:00", "enabled": true },
+      "saturday": { "enabled": false },
+      "sunday": { "enabled": false }
+    },
+    "breaks": [{ "start": "14:00", "end": "14:30" }]
+  },
+  "staff3": {
+    "name": "Michael Brown",
+    "email": "michael@salon2.com",
+    "phone": "+447700900403",
+    "specialties": ["Massage", "Therapy"],
+    "bio": "Certified massage therapist",
+    "image": "https://via.placeholder.com/200x200?text=Michael",
+    "workingHours": {
+      "monday": { "start": "11:00", "end": "19:00", "enabled": true },
+      "tuesday": { "start": "11:00", "end": "19:00", "enabled": true },
+      "wednesday": { "start": "11:00", "end": "19:00", "enabled": true },
+      "thursday": { "start": "11:00", "end": "19:00", "enabled": true },
+      "friday": { "start": "11:00", "end": "19:00", "enabled": true },
+      "saturday": { "start": "10:00", "end": "18:00", "enabled": true },
+      "sunday": { "start": "10:00", "end": "16:00", "enabled": true }
+    },
+    "breaks": [],
+    "active": true
+  }
+}

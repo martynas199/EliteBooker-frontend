@@ -1,0 +1,61 @@
+{
+  "tenant1": {
+    "name": "Luxury Beauty Salon",
+    "slug": "salon1",
+    "domain": "salon1.example.com",
+    "email": "contact@salon1.com",
+    "phone": "+447700900100",
+    "address": {
+      "street": "123 High Street",
+      "city": "London",
+      "postcode": "SW1A 1AA",
+      "country": "UK"
+    },
+    "branding": {
+      "primaryColor": "#8B5CF6",
+      "secondaryColor": "#EC4899",
+      "logo": "https://via.placeholder.com/200x80?text=Salon1"
+    },
+    "settings": {
+      "bookingEnabled": true,
+      "acceptsDeposits": true,
+      "depositAmount": 1000,
+      "currency": "GBP",
+      "timezone": "Europe/London"
+    },
+    "status": "active"
+  },
+  "tenant2": {
+    "name": "Modern Spa Studio",
+    "slug": "salon2",
+    "domain": "salon2.example.com",
+    "email": "contact@salon2.com",
+    "phone": "+447700900200",
+    "address": {
+      "street": "456 Oxford Street",
+      "city": "Manchester",
+      "postcode": "M1 1AA",
+      "country": "UK"
+    },
+    "branding": {
+      "primaryColor": "#06B6D4",
+      "secondaryColor": "#10B981",
+      "logo": "https://via.placeholder.com/200x80?text=Salon2"
+    },
+    "settings": {
+      "bookingEnabled": true,
+      "acceptsDeposits": false,
+      "currency": "GBP",
+      "timezone": "Europe/London"
+    },
+    "status": "active"
+  },
+  "tenant3": {
+    "name": "Disabled Salon",
+    "slug": "disabled-salon",
+    "domain": "disabled.example.com",
+    "email": "contact@disabled.com",
+    "phone": "+447700900300",
+    "status": "inactive"
+  }
+}

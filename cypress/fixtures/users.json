@@ -1,0 +1,34 @@
+{
+  "superadmin": {
+    "email": "superadmin@platform.com",
+    "password": "SuperAdmin123!",
+    "name": "Platform Admin",
+    "role": "super-admin"
+  },
+  "tenantAdmin1": {
+    "email": "admin@salon1.com",
+    "password": "TenantAdmin123!",
+    "name": "Salon 1 Admin",
+    "role": "salon-admin",
+    "tenantSlug": "salon1"
+  },
+  "tenantAdmin2": {
+    "email": "admin@salon2.com",
+    "password": "TenantAdmin123!",
+    "name": "Salon 2 Admin",
+    "role": "salon-admin",
+    "tenantSlug": "salon2"
+  },
+  "regularUser": {
+    "email": "user@example.com",
+    "password": "User123!",
+    "name": "Test User",
+    "phone": "+447700900000",
+    "role": "customer"
+  },
+  "guestUser": {
+    "name": "Guest User",
+    "email": "guest@example.com",
+    "phone": "+447700900001"
+  }
+}

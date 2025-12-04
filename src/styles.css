@@ -1,0 +1,509 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Typography Base Styles */
+@layer base {
+  /* Body text: Poppins with optimized readability */
+  body {
+    font-family: "Poppins", system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Mobile viewport height fixes for browser chrome overlap */
+  html {
+    /* Use dvh (dynamic viewport height) for better mobile browser chrome handling */
+    height: 100dvh;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  body {
+    /* Ensure body respects safe areas on mobile devices */
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    overflow-x: hidden;
+    max-width: 100vw;
+    position: relative;
+  }
+
+  /* Root element should also respect dynamic viewport */
+  #root {
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Ensure all direct children respect viewport width */
+  * {
+    max-width: 100%;
+  }
+
+  /* Headings: Playfair Display with elegant spacing */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    color: theme("colors.gray.900");
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: 0.015em;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  /* Mobile-optimized heading sizes */
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2rem;
+      letter-spacing: 0.01em;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+    }
+
+    h3 {
+      font-size: 1.375rem;
+    }
+
+    h4 {
+      font-size: 1.125rem;
+    }
+  }
+
+  /* Paragraphs: Optimized for readability */
+  p {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+    margin-bottom: 1rem;
+  }
+
+  /* Buttons and form elements: Poppins medium weight */
+  button,
+  input,
+  select,
+  textarea {
+    font-family: "Poppins", sans-serif;
+    letter-spacing: 0.01em;
+  }
+
+  button {
+    font-weight: 500;
+  }
+
+  /* Accessibility: Focus-visible styles for keyboard navigation */
+  *:focus-visible {
+    outline: 2px solid theme("colors.brand.500");
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Remove default focus outline for mouse users */
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Prevent iOS Safari from zooming on focus when font-size < 16px */
+  input[type="datetime-local"],
+  input[type="time"],
+  input[type="date"] {
+    font-size: 16px;
+  }
+
+  /* iOS Safari: Force inputs to respect container width */
+  @supports (-webkit-touch-callout: none) {
+    input[type="datetime-local"],
+    input[type="time"],
+    input[type="date"] {
+      appearance: none;
+      -webkit-appearance: none;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+  }
+}
+
+/* React Big Calendar mobile optimizations */
+@layer components {
+  /* Reduce calendar height on mobile devices */
+  @media (max-width: 768px) {
+    .rbc-calendar {
+      min-height: auto !important;
+    }
+
+    /* Reduce day cell height in month view */
+    .rbc-month-view .rbc-month-row {
+      min-height: 60px !important;
+      max-height: 80px !important;
+    }
+
+    .rbc-month-view .rbc-day-bg {
+      min-height: 60px !important;
+    }
+
+    /* Adjust date cell in month view */
+    .rbc-date-cell {
+      padding: 4px !important;
+      font-size: 0.875rem !important;
+    }
+
+    /* Make event text smaller on mobile */
+    .rbc-event {
+      font-size: 0.7rem !important;
+      padding: 2px 4px !important;
+    }
+
+    .rbc-event-content {
+      font-size: 0.7rem !important;
+    }
+
+    /* Reduce header height */
+    .rbc-header {
+      padding: 6px 4px !important;
+      font-size: 0.75rem !important;
+      min-height: 30px !important;
+    }
+
+    /* Adjust toolbar for mobile */
+    .rbc-toolbar {
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+      margin-bottom: 12px !important;
+    }
+
+    .rbc-toolbar button {
+      font-size: 0.875rem !important;
+      padding: 6px 12px !important;
+    }
+  }
+
+  /* Extra small devices */
+  @media (max-width: 480px) {
+    .rbc-month-view .rbc-month-row {
+      min-height: 50px !important;
+      max-height: 70px !important;
+    }
+
+    .rbc-month-view .rbc-day-bg {
+      min-height: 50px !important;
+    }
+
+    .rbc-event {
+      font-size: 0.65rem !important;
+      padding: 1px 3px !important;
+    }
+
+    .rbc-date-cell {
+      padding: 2px !important;
+      font-size: 0.75rem !important;
+    }
+
+    .rbc-header {
+      padding: 4px 2px !important;
+      font-size: 0.7rem !important;
+      min-height: 25px !important;
+    }
+  }
+}
+
+/* Typography Utilities */
+@layer utilities {
+  /* Display headings for hero sections */
+  .heading-display {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 0.015em;
+    color: theme("colors.gray.900");
+  }
+
+  /* Elegant subheadings */
+  .heading-elegant {
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: theme("colors.gray.800");
+  }
+
+  /* Script headings for decorative sections */
+  .heading-script {
+    font-family: "Dancing Script", cursive;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: theme("colors.brand.900");
+  }
+
+  /* Body text optimized for luxury brand */
+  .text-luxury {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+    color: theme("colors.gray.700");
+  }
+
+  /* Button text styling */
+  .text-button {
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+  }
+
+  /* Tagline/subtitle styling */
+  .text-tagline {
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    color: theme("colors.gray.600");
+  }
+
+  /* Additional utility for preventing overflow in modals and cards */
+  .prevent-overflow {
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  /* Safe area padding for mobile devices (notches, browser chrome) */
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+  }
+
+  .safe-area-pb {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Extra mobile bottom spacing to account for browser chrome */
+  @media (max-width: 768px) {
+    .mobile-safe-bottom {
+      padding-bottom: max(5rem, env(safe-area-inset-bottom, 5rem));
+    }
+  }
+
+  /* Fade-in animation for expandable content */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  /* Slide in animations for hero sections */
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInBottom {
+    from {
+      opacity: 0;
+      transform: translateY(100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-slideInLeft {
+    animation: slideInLeft 0.8s ease-out;
+  }
+
+  .animate-slideInBottom {
+    animation: slideInBottom 0.8s ease-out;
+    animation-delay: 0.2s;
+    animation-fill-mode: backwards;
+  }
+
+  .animate-slideInRight {
+    animation: slideInRight 0.8s ease-out;
+    animation-delay: 0.4s;
+    animation-fill-mode: backwards;
+  }
+
+  /* Staggered fade-in animation for product cards */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .animate-fadeInUp {
+    animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation-fill-mode: backwards;
+  }
+
+  /* Smooth scale animation for cards */
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-scaleIn {
+    animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Pulse animation for notifications */
+  @keyframes pulse-slow {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Staggered delays for grid items */
+  .stagger-1 {
+    animation-delay: 0.15s;
+  }
+  .stagger-2 {
+    animation-delay: 0.25s;
+  }
+  .stagger-3 {
+    animation-delay: 0.35s;
+  }
+  .stagger-4 {
+    animation-delay: 0.45s;
+  }
+  .stagger-5 {
+    animation-delay: 0.55s;
+  }
+  .stagger-6 {
+    animation-delay: 0.65s;
+  }
+  .stagger-7 {
+    animation-delay: 0.75s;
+  }
+  .stagger-8 {
+    animation-delay: 0.85s;
+  }
+  .stagger-9 {
+    animation-delay: 0.95s;
+  }
+  .stagger-10 {
+    animation-delay: 1.05s;
+  }
+  .stagger-11 {
+    animation-delay: 1.15s;
+  }
+  .stagger-12 {
+    animation-delay: 1.25s;
+  }
+
+  /* Custom scrollbar styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 0px; /* Hide horizontal scrollbar */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #c7a27c;
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #b8915f;
+  }
+
+  /* Firefox scrollbar */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #c7a27c #f1f1f1;
+    overflow-x: hidden;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}

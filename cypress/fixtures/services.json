@@ -1,0 +1,88 @@
+{
+  "haircut": {
+    "name": "Haircut & Style",
+    "description": "Professional haircut with styling",
+    "duration": 60,
+    "price": 5000,
+    "category": "Hair",
+    "image": "https://via.placeholder.com/400x300?text=Haircut",
+    "variants": [
+      {
+        "name": "Standard Haircut",
+        "price": 5000,
+        "duration": 60
+      },
+      {
+        "name": "Premium Haircut with Wash",
+        "price": 7500,
+        "duration": 90
+      }
+    ]
+  },
+  "facial": {
+    "name": "Luxury Facial Treatment",
+    "description": "Deep cleansing and rejuvenating facial",
+    "duration": 90,
+    "price": 8500,
+    "category": "Facial",
+    "image": "https://via.placeholder.com/400x300?text=Facial",
+    "variants": [
+      {
+        "name": "Express Facial",
+        "price": 6000,
+        "duration": 45
+      },
+      {
+        "name": "Deluxe Facial",
+        "price": 8500,
+        "duration": 90
+      }
+    ]
+  },
+  "massage": {
+    "name": "Relaxing Massage",
+    "description": "Full body relaxation massage",
+    "duration": 60,
+    "price": 7000,
+    "category": "Massage",
+    "image": "https://via.placeholder.com/400x300?text=Massage",
+    "variants": [
+      {
+        "name": "30min Express Massage",
+        "price": 4000,
+        "duration": 30
+      },
+      {
+        "name": "60min Full Massage",
+        "price": 7000,
+        "duration": 60
+      },
+      {
+        "name": "90min Deep Tissue",
+        "price": 10000,
+        "duration": 90
+      }
+    ]
+  },
+  "manicure": {
+    "name": "Manicure",
+    "description": "Professional nail care and polish",
+    "duration": 45,
+    "price": 3500,
+    "category": "Nails",
+    "image": "https://via.placeholder.com/400x300?text=Manicure",
+    "variants": [
+      {
+        "name": "Classic Manicure",
+        "price": 3500,
+        "duration": 45
+      },
+      {
+        "name": "Gel Manicure",
+        "price": 5000,
+        "duration": 60
+      }
+    ],
+    "active": true
+  }
+}

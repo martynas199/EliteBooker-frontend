@@ -1,0 +1,44 @@
+# robots.txt for Noble Elegance Beauty Salon
+# https://www.nobleelegance.co.uk
+
+User-agent: *
+Allow: /
+Allow: /products
+Allow: /beauticians
+Allow: /about
+Allow: /salon
+Allow: /faq
+
+# Block admin pages from search engines
+Disallow: /admin/
+Disallow: /admin/*
+
+# Block checkout and payment pages (contains sensitive info)
+Disallow: /checkout
+Disallow: /product-checkout
+Disallow: /confirmation
+
+# Block auth pages
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /profile/*
+
+# Block utility pages
+Disallow: /success
+Disallow: /cancel
+Disallow: /shop/success
+Disallow: /shop/cancel
+Disallow: /token-debug
+
+# Block order success pages (contain customer info)
+Disallow: /order-success/*
+
+# Block API endpoints if exposed
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://www.nobleelegance.co.uk/sitemap.xml
+
+# Crawl delay (optional - helps prevent server overload)
+Crawl-delay: 1
