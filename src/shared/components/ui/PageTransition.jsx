@@ -11,7 +11,7 @@ export default function PageTransition({ children, className = "" }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
-      className={`overflow-x-hidden ${className}`}
+      className={className}
     >
       {children}
     </motion.div>

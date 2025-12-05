@@ -290,7 +290,7 @@ export default function BeauticianSelectionPage() {
         />
       </div>
 
-      <PageTransition className="min-h-screen py-8 overflow-x-hidden relative z-0">
+      <PageTransition className="min-h-screen py-8 relative z-0">
         {/* SEO Meta Tags */}
         <SEOHead
           title="Book Appointment Wisbech | Expert Beauticians - Noble Elegance"
@@ -299,7 +299,7 @@ export default function BeauticianSelectionPage() {
           schema={breadcrumbSchema}
         />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {!selectedBeautician ? (
             // Step 1: Select a Beautician
             <>
@@ -308,7 +308,7 @@ export default function BeauticianSelectionPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="relative mb-12 sm:mb-16 text-center"
+                className="relative mb-16 sm:mb-20 text-center"
               >
                 <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-4 sm:mb-6 tracking-tight px-4">
                   Choose Your Specialist
@@ -336,9 +336,9 @@ export default function BeauticianSelectionPage() {
                 </motion.div>
               </motion.div>
 
-              <StaggerContainer className="grid gap-6 sm:gap-10 sm:grid-cols-2 lg:grid-cols-3 pt-8 pb-4">
+              <StaggerContainer className="grid gap-6 sm:gap-10 sm:grid-cols-2 lg:grid-cols-3 pt-12 pb-8">
                 {beauticians.map((beautician) => (
-                  <StaggerItem key={beautician._id}>
+                  <StaggerItem key={beautician._id} className="mt-4">
                     <motion.div
                       whileHover={{ y: -8, scale: 1.02 }}
                       className="group cursor-pointer overflow-hidden p-0 h-[400px] sm:h-[480px] rounded-2xl border-2 border-white/10 hover:border-white/20 transition-all duration-300 shadow-2xl hover:shadow-white/5"
@@ -628,11 +628,11 @@ export default function BeauticianSelectionPage() {
                   </div>
                 </motion.div>
               ) : (
-                <StaggerContainer className="grid gap-4 sm:gap-6 sm:grid-cols-2 overflow-x-hidden w-full">
+                <StaggerContainer className="grid gap-4 sm:gap-6 sm:grid-cols-2 w-full">
                   {services.map((service) => (
                     <StaggerItem
                       key={service._id}
-                      className="w-full overflow-x-hidden"
+                      className="w-full"
                     >
                       <ServiceCard
                         service={service}

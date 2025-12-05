@@ -370,7 +370,7 @@ function CustomerLayout() {
       </header>
       <main
         className={
-          isLandingPage ? "" : "max-w-6xl mx-auto px-4 py-8 overflow-x-hidden"
+          isLandingPage ? "" : "max-w-6xl mx-auto px-4 py-8"
         }
       >
         <Routes>
