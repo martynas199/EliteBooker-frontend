@@ -1,4 +1,4 @@
-# robots.txt for Noble Elegance Beauty Salon
+# robots.txt for Elite Booker
 # https://www.nobleelegance.co.uk
 
 User-agent: *

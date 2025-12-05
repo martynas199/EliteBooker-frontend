@@ -4,7 +4,7 @@
  */
 
 const baseUrl = "https://www.nobleelegance.co.uk";
-const businessName = "Noble Elegance Beauty Salon";
+const businessName = "Elite Booker";
 
 /**
  * Generate LocalBusiness & BeautySalon Schema
@@ -15,7 +15,7 @@ export function generateLocalBusinessSchema() {
     "@type": ["BeautySalon", "MedicalClinic", "LocalBusiness"],
     name: businessName,
     description:
-      "Noble Elegance is a premier aesthetic clinic and beauty salon in Wisbech, Cambridgeshire, offering expert cosmetic treatments and professional beauty services. We specialize in lip fillers, anti-wrinkle injections, dermal fillers, skin boosters, and permanent makeup for lips and brows. Our services include laser tattoo removal, laser teeth whitening, professional facial treatments, brow lamination, hair extensions, cutting, coloring, styling, and full body waxing. Located at 12 Blackfriars Rd, PE13 1AT, we serve clients from Wisbech, March, King's Lynn, Peterborough, Downham Market, and surrounding Cambridgeshire areas. Open 7 days a week, 9am-5pm. Expert aestheticians committed to enhancing your natural beauty with premium treatments.",
+      "Elite Booker - Professional beauty salon booking system. Connect with premium aesthetic clinics and beauty salons offering expert cosmetic treatments and professional beauty services including lip fillers, anti-wrinkle injections, dermal fillers, permanent makeup, facial treatments, hair services, and beauty treatments.",
     image: `${baseUrl}/src/assets/logo.svg`,
     "@id": baseUrl,
     url: baseUrl,

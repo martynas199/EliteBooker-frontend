@@ -1,7 +1,7 @@
 {
-  "name": "Noble Elegance - Aesthetic Clinic & Beauty Salon",
-  "short_name": "Noble Elegance",
-  "description": "Premier aesthetic clinic in Wisbech offering lip fillers, anti-wrinkle injections, dermal fillers, permanent makeup & laser treatments",
+  "name": "Elite Booker - Booking and selling",
+  "short_name": "Elite Booker",
+  "description": "Professional booking system for service providers - appointments, bookings, and product sales made easy",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

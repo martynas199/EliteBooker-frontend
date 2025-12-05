@@ -298,10 +298,10 @@ export default function Settings() {
     <div className="max-w-4xl">
       <div className="mb-6">
         <h1 className="text-2xl font-serif font-bold text-gray-900 tracking-wide mb-2">
-          Salon Settings
+          Business Settings
         </h1>
         <p className="text-gray-600 font-light leading-relaxed">
-          Manage your salon's public information, description, and hero image.
+          Manage your business information, description, and hero image.
         </p>
       </div>
 
@@ -325,20 +325,20 @@ export default function Settings() {
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span>Salon Information</span>
+              <span>Business Information</span>
             </h2>
 
             <div className="space-y-4">
               {/* Salon Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Salon Name
+                  Business Name
                 </label>
                 <input
                   type="text"
                   value={formData.salonName}
                   onChange={(e) => handleChange("salonName", e.target.value)}
-                  placeholder="e.g., Noble Elegance Beauty Salon"
+                  placeholder="e.g., Your Business Name"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                 />
               </div>
@@ -423,10 +423,10 @@ export default function Settings() {
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span>Salon Working Hours</span>
+              <span>Business Working Hours</span>
             </h2>
             <p className="text-sm text-gray-600 mb-4">
-              Set the default opening hours for your salon. These hours are
+              Set the default operating hours for your business. These hours are
               displayed to customers on the website.
             </p>
 
@@ -502,8 +502,8 @@ export default function Settings() {
 
             <div className="space-y-4">
               <p className="text-sm text-gray-600">
-                Upload a banner image for your salon. This appears at the top of
-                the booking page. Recommended size: 1200x400px
+                Upload a banner image for your business. This appears at the top
+                of the booking page. Recommended size: 1200x400px
               </p>
 
               {/* Image Preview */}
@@ -609,7 +609,7 @@ export default function Settings() {
         <div className="space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded p-3">
             <p className="text-sm text-blue-800">
-              <strong>Salon Hours:</strong> These hours are displayed to
+              <strong>Business Hours:</strong> These hours are displayed to
               customers on your website.
             </p>
           </div>

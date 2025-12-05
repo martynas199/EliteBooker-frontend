@@ -23,7 +23,7 @@ export default function SEOHead({
   noindex = false,
   schema,
 }) {
-  const siteName = "Noble Elegance Beauty Salon";
+  const siteName = "Elite Booker";
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
   const baseUrl = "https://www.nobleelegance.co.uk";
   const canonicalUrl = canonical || window.location.href;
@@ -31,7 +31,7 @@ export default function SEOHead({
   // Default keywords that appear on every page - based on actual services offered
   const defaultKeywords = [
     "beauty salon Wisbech",
-    "Noble Elegance Wisbech",
+    "Elite Booker",
     "permanent makeup Wisbech",
     "lip fillers Cambridgeshire",
     "anti wrinkle injections Wisbech",

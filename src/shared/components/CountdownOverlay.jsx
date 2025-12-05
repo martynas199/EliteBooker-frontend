@@ -115,7 +115,7 @@ export default function CountdownOverlay() {
           >
             <img
               src={logo}
-              alt="Noble Elegance"
+              alt="Elite Booker"
               className="w-32 h-32 md:w-40 md:h-40 opacity-90 drop-shadow-2xl"
             />
           </motion.div>
