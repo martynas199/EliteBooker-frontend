@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { useImageUpload } from "../hooks/useImageUpload";
+import { useImageUpload } from "../shared/hooks/useImageUpload";
 import FormField from "../components/forms/FormField";
 import ConfirmDeleteModal from "../components/forms/ConfirmDeleteModal";
 import Button from "../components/ui/Button";
