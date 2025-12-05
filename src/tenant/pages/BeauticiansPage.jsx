@@ -630,10 +630,7 @@ export default function BeauticianSelectionPage() {
               ) : (
                 <StaggerContainer className="grid gap-4 sm:gap-6 sm:grid-cols-2 w-full">
                   {services.map((service) => (
-                    <StaggerItem
-                      key={service._id}
-                      className="w-full"
-                    >
+                    <StaggerItem key={service._id} className="w-full">
                       <ServiceCard
                         service={service}
                         onClick={() => handleServiceSelect(service)}

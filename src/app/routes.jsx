@@ -368,11 +368,7 @@ function CustomerLayout() {
           )}
         </div>
       </header>
-      <main
-        className={
-          isLandingPage ? "" : "max-w-6xl mx-auto px-4 py-8"
-        }
-      >
+      <main className={isLandingPage ? "" : "max-w-6xl mx-auto px-4 py-8"}>
         <Routes>
           <Route index element={<SalonLandingLuxury />} />
           <Route path="services" element={<ServicesPage />} />
