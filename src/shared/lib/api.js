@@ -12,6 +12,10 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
+// Debug: Log API URL at initialization
+console.log('[API Client] Initializing with API_URL:', API_URL);
+console.log('[API Client] Environment:', import.meta.env.MODE);
+
 // Create axios instance
 const api = axios.create({
   baseURL: API_URL,

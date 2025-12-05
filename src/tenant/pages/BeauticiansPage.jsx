@@ -119,7 +119,9 @@ export default function BeauticianSelectionPage() {
     const params = new URLSearchParams({ selected: beautician._id });
     if (serviceParam) params.set("service", serviceParam);
     if (variantParam) params.set("variant", variantParam);
-    navigate(`/salon/${tenant?.slug}/beauticians?${params.toString()}`, { replace: true });
+    navigate(`/salon/${tenant?.slug}/beauticians?${params.toString()}`, {
+      replace: true,
+    });
 
     try {
       // Fetch services offered by this beautician
