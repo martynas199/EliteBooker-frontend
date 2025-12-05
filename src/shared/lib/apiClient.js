@@ -1,9 +1,12 @@
 ﻿import axios from "axios";
 
-// Use relative URL to leverage Vite proxy for same-origin cookie support
-// The proxy in vite.config.js forwards /api/* to http://localhost:4000/api/*
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
+// Use environment variable for API URL
+// In development: uses localhost with Vite proxy
+// In production: uses VITE_API_URL (e.g., https://elitebooker-backend.onrender.com)
 export const api = axios.create({
-  baseURL: "/api",
+  baseURL: `${API_URL}/api`,
   timeout: 15000,
   withCredentials: true, // Send cookies with requests
 });

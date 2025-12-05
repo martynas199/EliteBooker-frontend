@@ -39,6 +39,9 @@ function resolveTenantFromURL() {
   // Check for custom domain (not localhost or known platform domains)
   const platformDomains = [
     "localhost",
+    "elitebooker.co.uk",
+    "www.elitebooker.co.uk",
+    "vercel.app", // All Vercel preview/production deployments
     "nobleelegance.co.uk",
     "permanentbyjuste.co.uk",
   ];
@@ -50,7 +53,7 @@ function resolveTenantFromURL() {
     };
   }
 
-  // Default/platform site
+  // Default/platform site (www.elitebooker.co.uk = platform marketing site)
   return {
     type: "platform",
     slug: null,
