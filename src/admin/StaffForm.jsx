@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useImageUpload } from "../shared/hooks/useImageUpload";
-import FormField from "../components/forms/FormField";
-import ConfirmDeleteModal from "../components/forms/ConfirmDeleteModal";
-import Button from "../components/ui/Button";
+import FormField from "../shared/components/forms/FormField";
+import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
+import Button from "../shared/components/ui/Button";
 
 /**
  * StaffForm - Create or Edit a beautician/staff member
