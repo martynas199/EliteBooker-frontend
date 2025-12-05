@@ -336,11 +336,11 @@ export default function BeauticianSelectionPage() {
                 </motion.div>
               </motion.div>
 
-              <StaggerContainer className="grid gap-4 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <StaggerContainer className="grid gap-6 sm:gap-10 sm:grid-cols-2 lg:grid-cols-3 py-4">
                 {beauticians.map((beautician) => (
                   <StaggerItem key={beautician._id}>
                     <motion.div
-                      whileHover={{ y: -8 }}
+                      whileHover={{ y: -8, scale: 1.02 }}
                       className="group cursor-pointer overflow-hidden p-0 h-[400px] sm:h-[480px] rounded-2xl border-2 border-white/10 hover:border-white/20 transition-all duration-300 shadow-2xl hover:shadow-white/5"
                       onClick={() => handleBeauticianSelect(beautician)}
                     >
