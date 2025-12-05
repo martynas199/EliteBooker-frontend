@@ -32,6 +32,9 @@ const authSlice = createSlice({
       state.admin = action.payload;
       state.isAuthenticated = true;
     },
+    updateAdmin: (state, action) => {
+      state.admin = action.payload;
+    },
     setAuth: (state, action) => {
       state.admin = action.payload.admin;
       state.user = action.payload.user;
@@ -41,7 +44,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, logout, clearAuth, setAdmin, setAuth } =
+export const { setCredentials, logout, clearAuth, setAdmin, updateAdmin, setAuth } =
   authSlice.actions;
 
 // Selectors
