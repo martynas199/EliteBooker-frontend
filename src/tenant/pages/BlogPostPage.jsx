@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../../shared/lib/apiClient";
+import { useTenant } from "../../shared/contexts/TenantContext";
 import PageTransition from "../../shared/components/ui/PageTransition";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import {
@@ -12,6 +13,7 @@ import BackBar from "../../shared/components/ui/BackBar";
 export default function BlogPostPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { tenant } = useTenant();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [relatedPosts, setRelatedPosts] = useState([]);
@@ -284,7 +286,7 @@ export default function BlogPostPage() {
             discover the treatments mentioned in this article.
           </p>
           <button
-            onClick={() => navigate("/beauticians")}
+            onClick={() => navigate(`/salon/${tenant?.slug}/beauticians`)}
             className="px-8 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
           >
             Book Now

@@ -56,7 +56,7 @@ export default function AdminLogin() {
             </div>
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-[#3B82F6] via-[#2563EB] to-[#06B6D4] bg-clip-text text-transparent mb-2">
-            BookFlow
+            Elite Booker
           </h1>
           <p className="text-gray-600">Business Dashboard</p>
         </div>

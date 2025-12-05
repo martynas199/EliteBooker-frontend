@@ -548,7 +548,7 @@ export default function AdminLayout() {
             <span className="text-lg font-bold text-white">B</span>
           </div>
           <div>
-            <div className="font-bold text-lg">BookFlow</div>
+            <div className="font-bold text-lg">Elite Booker</div>
             <div className="text-xs text-blue-100">
               {t("adminPortal", language)}
             </div>
@@ -735,7 +735,7 @@ export default function AdminLayout() {
                 </div>
                 <div>
                   <h1 className="font-black text-xl tracking-tight drop-shadow-md">
-                    BookFlow
+                    Elite Booker
                   </h1>
                   <p className="text-xs text-blue-50 font-semibold tracking-wide">
                     {t("adminPortal", language)}

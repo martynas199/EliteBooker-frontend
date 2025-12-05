@@ -24,7 +24,7 @@ export default function Footer() {
                   B
                 </div>
                 <span className="text-2xl font-black bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-                  BookFlow
+                  Elite Booker
                 </span>
               </div>
             </Link>
@@ -164,8 +164,8 @@ export default function Footer() {
             <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400">
               <p>
                 &copy; {currentYear}{" "}
-                <span className="text-white font-semibold">BookFlow</span>. All
-                rights reserved.
+                <span className="text-white font-semibold">Elite Booker</span>.
+                All rights reserved.
               </p>
               <div className="flex gap-6">
                 <Link

@@ -422,12 +422,12 @@ export default function SalonLandingLuxury() {
         service: service._id,
         variant: service.variantName,
       });
-      navigate(`beauticians?${params.toString()}`);
+      navigate(`/salon/${tenant?.slug}/beauticians?${params.toString()}`);
     }
   };
 
   const handleSpecialistClick = (specialist) => {
-    navigate(`beauticians?selected=${specialist._id}`);
+    navigate(`/salon/${tenant?.slug}/beauticians?selected=${specialist._id}`);
   };
 
   // Data

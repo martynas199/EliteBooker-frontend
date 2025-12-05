@@ -64,7 +64,7 @@ export default function ServicesPage() {
         bufferAfterMin: service.bufferAfterMin,
       })
     );
-    navigate("beauticians");
+    navigate(`/salon/${tenant?.slug}/beauticians`);
   };
 
   // Get service price display

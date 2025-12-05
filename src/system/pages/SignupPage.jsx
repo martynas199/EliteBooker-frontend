@@ -149,34 +149,42 @@ export default function TenantSignup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-8">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
+      {/* Animated background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(100,100,120,0.15),rgba(0,0,0,0))]" />
+
+      {/* Gradient orbs */}
+      <div className="absolute top-0 -left-4 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob" />
+      <div className="absolute top-0 -right-4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000" />
+      <div className="absolute -bottom-8 left-20 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000" />
+
+      <div className="relative bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl max-w-2xl w-full p-6 sm:p-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Create Your Salon Account
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Create Your Business Account
           </h1>
-          <p className="text-gray-600">
-            Join our platform and start managing your beauty business online
+          <p className="text-gray-300">
+            Join our platform and start managing your business online
           </p>
           <div className="mt-4 flex items-center justify-center space-x-2">
             <div
               className={`h-2 w-16 rounded ${
-                step >= 1 ? "bg-blue-600" : "bg-gray-300"
+                step >= 1 ? "bg-brand-400" : "bg-white/20"
               }`}
             />
             <div
               className={`h-2 w-16 rounded ${
-                step >= 2 ? "bg-blue-600" : "bg-gray-300"
+                step >= 2 ? "bg-brand-400" : "bg-white/20"
               }`}
             />
           </div>
-          <p className="text-sm text-gray-500 mt-2">Step {step} of 2</p>
+          <p className="text-sm text-gray-300 mt-2">Step {step} of 2</p>
         </div>
 
         {/* Error message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+          <div className="bg-red-500/10 backdrop-blur-sm border border-red-400/30 text-red-200 px-4 py-3 rounded-xl mb-6">
             {error}
           </div>
         )}
@@ -185,12 +193,12 @@ export default function TenantSignup() {
           {/* Step 1: Business Information */}
           {step === 1 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <h2 className="text-xl font-semibold text-white mb-4">
                 Business Information
               </h2>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
                   Business Name *
                 </label>
                 <input
@@ -202,14 +210,14 @@ export default function TenantSignup() {
                   placeholder="e.g., Luxury Beauty Salon"
                   required
                 />
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-300 mt-1">
                   This will be displayed to your customers
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
                     Business Email *
                   </label>
                   <input
@@ -224,7 +232,7 @@ export default function TenantSignup() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
                     Phone Number
                   </label>
                   <input
@@ -239,7 +247,7 @@ export default function TenantSignup() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
                   Street Address
                 </label>
                 <input
@@ -254,7 +262,7 @@ export default function TenantSignup() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
                     City
                   </label>
                   <input
@@ -268,7 +276,7 @@ export default function TenantSignup() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
                     Postal Code
                   </label>
                   <input
@@ -282,7 +290,7 @@ export default function TenantSignup() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
                     Country
                   </label>
                   <select
@@ -311,12 +319,12 @@ export default function TenantSignup() {
           {/* Step 2: Admin Account */}
           {step === 2 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <h2 className="text-xl font-semibold text-white mb-4">
                 Create Admin Account
               </h2>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
                   Your Name *
                 </label>
                 <input
@@ -331,7 +339,7 @@ export default function TenantSignup() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
                   Email Address *
                 </label>
                 <input
@@ -343,13 +351,13 @@ export default function TenantSignup() {
                   placeholder="john@yoursalon.com"
                   required
                 />
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-300 mt-1">
                   You'll use this to log in
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
                   Password *
                 </label>
                 <input
@@ -365,7 +373,7 @@ export default function TenantSignup() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
                   Confirm Password *
                 </label>
                 <input
@@ -412,9 +420,12 @@ export default function TenantSignup() {
         </form>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-sm text-gray-600">
+        <div className="mt-8 text-center text-sm text-gray-300">
           Already have an account?{" "}
-          <a href="/admin/login" className="text-blue-600 hover:underline">
+          <a
+            href="/admin/login"
+            className="text-brand-400 hover:text-brand-300 underline transition-colors"
+          >
             Log in
           </a>
         </div>
