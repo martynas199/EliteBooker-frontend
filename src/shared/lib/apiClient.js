@@ -87,8 +87,18 @@ api.interceptors.response.use(
       return Promise.reject(networkError);
     }
 
-    // Handle 401 Unauthorized - Try to refresh token
+    // Handle 401 Unauthorized - Try to refresh token (ONLY for admin routes)
     if (error.response.status === 401 && !originalRequest._retry) {
+      const currentPath = window.location.pathname;
+      const isAdminRoute = currentPath.startsWith("/admin");
+
+      // Only attempt token refresh for admin routes
+      if (!isAdminRoute) {
+        // For customer/tenant routes, just reject the error
+        // Customer auth is handled by AuthContext with localStorage tokens
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
         // If already refreshing, queue this request
         return new Promise((resolve, reject) => {
@@ -118,8 +128,7 @@ api.interceptors.response.use(
         processQueue(refreshError, null);
         isRefreshing = false;
 
-        // Refresh failed, redirect to login
-        const currentPath = window.location.pathname;
+        // Refresh failed, redirect to admin login
         if (!currentPath.includes("/admin/login")) {
           window.location.href = "/admin/login";
         }
