@@ -11,19 +11,26 @@ export const api = axios.create({
   withCredentials: true, // Send cookies with requests
 });
 
-// Request interceptor: Add tenant slug to requests
-// Note: accessToken cookie is automatically sent by browser with withCredentials: true
+// Request interceptor: Add tenant slug and admin auth token to requests
 api.interceptors.request.use(
   (config) => {
+    const pathname = window.location.pathname;
+
+    // Add Authorization header for admin routes (cross-domain compatibility)
+    if (pathname.startsWith("/admin") && !config.headers["Authorization"]) {
+      const adminToken = localStorage.getItem("adminAccessToken");
+      if (adminToken) {
+        config.headers["Authorization"] = `Bearer ${adminToken}`;
+        console.log("[API Client] Added admin Authorization header");
+      }
+    }
+
     // Add tenant slug header by parsing the current URL
     // This ensures all API calls are scoped to the correct tenant
     if (!config.headers["x-tenant-slug"]) {
-      const pathname = window.location.pathname;
-
       // Check if it's an admin route
       if (pathname.startsWith("/admin")) {
         // For admin routes, the backend will extract tenantId from the JWT token
-        // The accessToken cookie contains the admin's tenantId
         // No need to send x-tenant-slug or x-tenant-id header - backend handles it via optionalAuth middleware
         console.log(
           "[API Client] Admin route detected, tenantId will be extracted from JWT token"

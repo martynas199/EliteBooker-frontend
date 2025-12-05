@@ -60,10 +60,18 @@ export const useAdminLogin = () => {
         throw new Error(response.data.message || "Login failed");
       }
 
-      // Backend returns: { success: true, admin }
-      // Tokens are set as HttpOnly cookies automatically
+      // Backend now returns: { success: true, admin, accessToken, refreshToken }
+      // Store tokens in localStorage for cross-domain compatibility
+      if (response.data.accessToken) {
+        localStorage.setItem("adminAccessToken", response.data.accessToken);
+      }
+      if (response.data.refreshToken) {
+        localStorage.setItem("adminRefreshToken", response.data.refreshToken);
+      }
+
       return {
         admin: response.data.admin,
+        accessToken: response.data.accessToken,
       };
     },
 
@@ -100,6 +108,10 @@ export const useAdminLogout = () => {
     },
 
     onSuccess: () => {
+      // Clear localStorage tokens
+      localStorage.removeItem("adminAccessToken");
+      localStorage.removeItem("adminRefreshToken");
+
       // Clear all admin-related cache
       queryClient.clear();
 
@@ -112,7 +124,9 @@ export const useAdminLogout = () => {
     },
 
     onError: (error) => {
-      // Even if logout fails on server, clear local cache
+      // Even if logout fails on server, clear local cache and tokens
+      localStorage.removeItem("adminAccessToken");
+      localStorage.removeItem("adminRefreshToken");
       queryClient.clear();
       console.warn("⚠️ Logout API failed, but cleared local cache:", error);
     },
