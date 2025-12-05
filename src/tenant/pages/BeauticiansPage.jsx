@@ -308,12 +308,12 @@ export default function BeauticianSelectionPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="relative mb-16 text-center"
+                className="relative mb-12 sm:mb-16 text-center"
               >
-                <h1 className="text-6xl md:text-7xl font-black text-white mb-6 tracking-tight">
+                <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-4 sm:mb-6 tracking-tight px-4">
                   Choose Your Specialist
                 </h1>
-                <p className="text-2xl text-white/70 max-w-2xl mx-auto leading-relaxed font-light">
+                <p className="text-lg sm:text-2xl text-white/70 max-w-2xl mx-auto leading-relaxed font-light px-4">
                   Select your preferred beauty professional to begin your
                   journey
                 </p>
@@ -323,25 +323,25 @@ export default function BeauticianSelectionPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 }}
-                  className="flex justify-center gap-8 mt-12"
+                  className="flex justify-center gap-4 sm:gap-8 mt-8 sm:mt-12 px-4"
                 >
-                  <div className="text-center px-8 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
-                    <div className="text-4xl font-black text-white mb-1">
+                  <div className="text-center px-6 sm:px-8 py-3 sm:py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
+                    <div className="text-3xl sm:text-4xl font-black text-white mb-1">
                       {beauticians.length}
                     </div>
-                    <div className="text-sm text-white/60 font-semibold uppercase tracking-wider">
+                    <div className="text-xs sm:text-sm text-white/60 font-semibold uppercase tracking-wider">
                       Specialists
                     </div>
                   </div>
                 </motion.div>
               </motion.div>
 
-              <StaggerContainer className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <StaggerContainer className="grid gap-4 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {beauticians.map((beautician) => (
                   <StaggerItem key={beautician._id}>
                     <motion.div
                       whileHover={{ y: -8 }}
-                      className="group cursor-pointer overflow-hidden p-0 h-[480px] rounded-2xl border-2 border-white/10 hover:border-white/20 transition-all duration-300 shadow-2xl hover:shadow-white/5"
+                      className="group cursor-pointer overflow-hidden p-0 h-[400px] sm:h-[480px] rounded-2xl border-2 border-white/10 hover:border-white/20 transition-all duration-300 shadow-2xl hover:shadow-white/5"
                       onClick={() => handleBeauticianSelect(beautician)}
                     >
                       {/* Full Card Image with Name Overlay */}
@@ -380,11 +380,11 @@ export default function BeauticianSelectionPage() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent group-hover:from-purple-900/90 transition-colors duration-300"></div>
 
                         {/* Content */}
-                        <div className="absolute inset-0 flex flex-col justify-end p-6">
+                        <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-6">
                           {/* Specialties badges at top */}
                           {beautician.specialties &&
                             beautician.specialties.length > 0 && (
-                              <div className="flex-1 flex flex-wrap gap-2 content-start mb-4">
+                              <div className="flex-1 flex flex-wrap gap-1.5 sm:gap-2 content-start mb-3 sm:mb-4">
                                 {beautician.specialties
                                   .slice(0, 3)
                                   .map((specialty, idx) => (
@@ -405,12 +405,12 @@ export default function BeauticianSelectionPage() {
 
                           {/* Name and CTA */}
                           <div>
-                            <h3 className="text-3xl font-black text-white mb-3 group-hover:text-green-400 transition-colors">
+                            <h3 className="text-2xl sm:text-3xl font-black text-white mb-2 sm:mb-3 group-hover:text-green-400 transition-colors">
                               {beautician.name}
                             </h3>
 
                             {beautician.bio && (
-                              <p className="text-white/90 text-sm mb-4 line-clamp-2 leading-relaxed">
+                              <p className="text-white/90 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 leading-relaxed">
                                 {beautician.bio}
                               </p>
                             )}
@@ -449,7 +449,7 @@ export default function BeauticianSelectionPage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 onClick={handleBack}
-                className="flex items-center gap-2 text-white/70 hover:text-white mb-8 transition-colors font-semibold group"
+                className="flex items-center gap-2 text-white/70 hover:text-white mb-6 sm:mb-8 transition-colors font-semibold group text-sm sm:text-base"
               >
                 <svg
                   className="w-5 h-5 group-hover:-translate-x-1 transition-transform"
@@ -471,11 +471,11 @@ export default function BeauticianSelectionPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-10 overflow-hidden bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl"
+                className="mb-8 sm:mb-10 overflow-hidden bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl"
               >
-                <div className="flex items-start gap-6 p-8">
+                <div className="flex items-start gap-4 sm:gap-6 p-4 sm:p-8">
                   {/* Selected Beautician Image */}
-                  <div className="flex-shrink-0 w-32 h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 shadow-2xl ring-4 ring-white/10">
+                  <div className="flex-shrink-0 w-20 h-20 sm:w-32 sm:h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 shadow-2xl ring-2 sm:ring-4 ring-white/10">
                     {selectedBeautician.image?.url ? (
                       <img
                         src={selectedBeautician.image.url}
@@ -502,12 +502,12 @@ export default function BeauticianSelectionPage() {
                   </div>
 
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <h1 className="text-4xl font-black text-white">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                      <h1 className="text-2xl sm:text-4xl font-black text-white">
                         {selectedBeautician.name}
                       </h1>
                       <svg
-                        className="w-7 h-7 text-green-400"
+                        className="w-5 h-5 sm:w-7 sm:h-7 text-green-400 flex-shrink-0"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -522,12 +522,12 @@ export default function BeauticianSelectionPage() {
                     {/* Specialties */}
                     {selectedBeautician.specialties &&
                       selectedBeautician.specialties.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
                           {selectedBeautician.specialties.map(
                             (specialty, idx) => (
                               <span
                                 key={idx}
-                                className="px-3 py-1.5 bg-white/10 text-white/90 text-xs font-bold rounded-full border border-white/20"
+                                className="px-2 sm:px-3 py-1 sm:py-1.5 bg-white/10 text-white/90 text-xs font-bold rounded-full border border-white/20"
                               >
                                 {specialty}
                               </span>
@@ -539,7 +539,7 @@ export default function BeauticianSelectionPage() {
                     {selectedBeautician.bio && (
                       <div>
                         <p
-                          className={`text-white/80 leading-relaxed text-base ${
+                          className={`text-white/80 leading-relaxed text-sm sm:text-base ${
                             isBioExpanded ? "" : "line-clamp-2"
                           }`}
                         >
@@ -581,12 +581,12 @@ export default function BeauticianSelectionPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="mb-10"
+                className="mb-8 sm:mb-10"
               >
-                <h2 className="text-4xl font-black text-white mb-3">
+                <h2 className="text-3xl sm:text-4xl font-black text-white mb-2 sm:mb-3">
                   Available Services
                 </h2>
-                <p className="text-white/60 text-lg">
+                <p className="text-white/60 text-base sm:text-lg">
                   Select the service you'd like to book
                 </p>
               </motion.div>
@@ -599,13 +599,13 @@ export default function BeauticianSelectionPage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-20"
+                  className="text-center py-12 sm:py-20 px-4"
                 >
-                  <div className="max-w-md mx-auto bg-white/5 backdrop-blur-md rounded-2xl p-12 border border-white/10">
+                  <div className="max-w-md mx-auto bg-white/5 backdrop-blur-md rounded-2xl p-8 sm:p-12 border border-white/10">
                     <motion.svg
                       animate={{ rotate: [0, 5, -5, 0] }}
                       transition={{ duration: 2, repeat: Infinity }}
-                      className="w-20 h-20 mx-auto mb-6 text-white/40"
+                      className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 text-white/40"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -617,10 +617,10 @@ export default function BeauticianSelectionPage() {
                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                       />
                     </motion.svg>
-                    <h3 className="text-2xl font-black text-white mb-3">
+                    <h3 className="text-xl sm:text-2xl font-black text-white mb-2 sm:mb-3">
                       Coming Soon!
                     </h3>
-                    <p className="text-white/70 leading-relaxed">
+                    <p className="text-sm sm:text-base text-white/70 leading-relaxed">
                       This beautician is preparing their service menu. In the
                       meantime, feel free to explore our other talented
                       professionals!
@@ -628,7 +628,7 @@ export default function BeauticianSelectionPage() {
                   </div>
                 </motion.div>
               ) : (
-                <StaggerContainer className="grid gap-6 sm:grid-cols-2 overflow-x-hidden w-full">
+                <StaggerContainer className="grid gap-4 sm:gap-6 sm:grid-cols-2 overflow-x-hidden w-full">
                   {services.map((service) => (
                     <StaggerItem
                       key={service._id}
