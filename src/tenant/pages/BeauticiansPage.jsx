@@ -336,7 +336,7 @@ export default function BeauticianSelectionPage() {
                 </motion.div>
               </motion.div>
 
-              <StaggerContainer className="grid gap-6 sm:gap-10 sm:grid-cols-2 lg:grid-cols-3 py-4">
+              <StaggerContainer className="grid gap-6 sm:gap-10 sm:grid-cols-2 lg:grid-cols-3 pt-8 pb-4">
                 {beauticians.map((beautician) => (
                   <StaggerItem key={beautician._id}>
                     <motion.div
