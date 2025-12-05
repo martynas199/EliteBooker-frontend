@@ -30,7 +30,6 @@ import AboutUsPage from "../tenant/pages/AboutUsPage";
 import BlogPage from "../tenant/pages/BlogPage";
 import BlogPostPage from "../tenant/pages/BlogPostPage";
 import TokenDebugPage from "../tenant/pages/TokenDebugPage";
-import SalonLanding from "../tenant/pages/SalonLanding";
 import SalonLandingLuxury from "../tenant/pages/SalonLandingLuxury";
 import { useAuth } from "../shared/contexts/AuthContext";
 import { useTenant } from "../shared/contexts/TenantContext";
