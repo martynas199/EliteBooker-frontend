@@ -230,7 +230,7 @@ export default function Sidebar({ tenant }) {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 pb-20 lg:pb-4 border-t border-gray-200">
         <Link
           to="/admin/profile"
           className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-all duration-150"
