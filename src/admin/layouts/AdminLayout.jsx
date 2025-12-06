@@ -456,16 +456,32 @@ export default function AdminLayout() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [salonName, setSalonName] = useState("Beauty Salon");
 
-  // Prevent body scroll when mobile menu is open
+  // Prevent body scroll when mobile menu is open (including touch events)
   useEffect(() => {
     if (mobileMenuOpen) {
+      // Prevent scrolling on body
       document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.height = "100%";
+      
+      // Prevent touch move events
+      const preventScroll = (e) => {
+        // Allow scrolling within the sidebar
+        if (e.target.closest('aside')) return;
+        e.preventDefault();
+      };
+      
+      document.addEventListener('touchmove', preventScroll, { passive: false });
+      
+      return () => {
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.width = "";
+        document.body.style.height = "";
+        document.removeEventListener('touchmove', preventScroll);
+      };
     }
-    return () => {
-      document.body.style.overflow = "";
-    };
   }, [mobileMenuOpen]);
 
   // Memoize role check for performance
@@ -727,9 +743,14 @@ export default function AdminLayout() {
           <>
             <div
               className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              style={{ touchAction: 'none' }}
               onClick={() => setMobileMenuOpen(false)}
+              onTouchMove={(e) => e.preventDefault()}
             />
-            <div className="fixed lg:hidden top-0 left-0 h-screen z-50 overflow-y-auto transform transition-transform duration-300 ease-in-out translate-x-0">
+            <div 
+              className="fixed lg:hidden top-0 left-0 h-screen w-64 z-50 overflow-y-auto overscroll-contain transform transition-transform duration-300 ease-in-out translate-x-0"
+              style={{ touchAction: 'pan-y' }}
+            >
               <Sidebar tenant={{ name: admin?.name || "Elite Booker" }} />
             </div>
           </>
