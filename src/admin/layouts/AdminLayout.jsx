@@ -748,8 +748,11 @@ export default function AdminLayout() {
               onTouchMove={(e) => e.preventDefault()}
             />
             <div 
-              className="fixed lg:hidden top-0 left-0 h-screen w-64 z-50 overflow-y-auto overscroll-contain transform transition-transform duration-300 ease-in-out translate-x-0"
-              style={{ touchAction: 'pan-y' }}
+              className="fixed lg:hidden top-0 left-0 h-screen w-64 z-50 overflow-hidden transform transition-transform duration-300 ease-in-out translate-x-0"
+              style={{ 
+                touchAction: 'pan-y',
+                WebkitOverflowScrolling: 'touch'
+              }}
             >
               <Sidebar tenant={{ name: admin?.name || "Elite Booker" }} />
             </div>

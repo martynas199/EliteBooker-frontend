@@ -188,7 +188,7 @@ export default function Sidebar({ tenant }) {
   return (
     <aside className="w-64 min-h-screen bg-slate-50 border-r border-gray-200 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center gap-3">
           {tenant?.branding?.logo?.url ? (
             <img
@@ -213,7 +213,13 @@ export default function Sidebar({ tenant }) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 overflow-y-auto">
+      <nav 
+        className="flex-1 p-4 overflow-y-auto"
+        style={{ 
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain'
+        }}
+      >
         <div className="space-y-6">
           {navigationConfig.map((section, idx) => (
             <div key={idx}>
@@ -230,7 +236,7 @@ export default function Sidebar({ tenant }) {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 pb-20 lg:pb-4 border-t border-gray-200">
+      <div className="p-4 pb-32 lg:pb-4 border-t border-gray-200 flex-shrink-0 bg-slate-50">
         <Link
           to="/admin/profile"
           className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-all duration-150"
