@@ -709,204 +709,27 @@ export default function AdminLayout() {
       )}
 
       <div className="lg:flex">
-        {/* New Modern Sidebar */}
+        {/* Desktop Sidebar */}
         <div className="hidden lg:block">
           <Sidebar tenant={{ name: admin?.name || "Elite Booker" }} />
         </div>
 
-        {/* Mobile Sidebar */}
-        <aside
+        {/* Mobile Sidebar - Same component with overlay */}
+        {mobileMenuOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+        <div
           className={`
-            fixed lg:hidden top-0 left-0 h-screen bg-slate-50 shadow-2xl border-r border-gray-200 z-40
+            fixed lg:hidden top-0 left-0 h-screen z-50
             transform transition-transform duration-300 ease-in-out
             ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
-            w-72
           `}
         >
-          <div className="flex flex-col h-full">
-            {/* Sidebar Header */}
-            <div className="hidden lg:block p-6 bg-gradient-to-br from-[#3B82F6] via-[#2563EB] to-[#1D4ED8] text-white border-b border-blue-400/20">
-              <div className="flex items-center gap-3.5">
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-white/30 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-300"></div>
-                  <div className="relative w-12 h-12 rounded-2xl bg-white/25 backdrop-blur-md flex items-center justify-center shadow-xl border border-white/30 group-hover:scale-105 transition-transform duration-300">
-                    <span className="text-2xl font-black text-white drop-shadow-lg">
-                      B
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <h1 className="font-black text-xl tracking-tight drop-shadow-md">
-                    Elite Booker
-                  </h1>
-                  <p className="text-xs text-blue-50 font-semibold tracking-wide">
-                    {t("adminPortal", language)}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 p-3 space-y-1 overflow-y-auto pb-20 lg:pb-3">
-              {filteredItems.map((it, idx) => {
-                // Render divider
-                if (it.divider) {
-                  return (
-                    <div key={`divider-${idx}`} className="pt-5 pb-3 px-4">
-                      <div className="flex items-center gap-2.5">
-                        <div className="h-0.5 flex-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent rounded-full" />
-                        <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">
-                          {it.dividerKey
-                            ? t(it.dividerKey, language)
-                            : it.divider}
-                        </div>
-                        <div className="h-0.5 flex-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent rounded-full" />
-                      </div>
-                    </div>
-                  );
-                }
-
-                const isActive = !it.external && pathname === it.to;
-                return (
-                  <Link
-                    key={it.to}
-                    to={it.to}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`
-                      relative flex items-center gap-3.5 rounded-xl px-4 py-3 text-sm font-medium
-                      transition-all duration-200 group overflow-hidden
-                      ${
-                        isActive
-                          ? "bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/25"
-                          : it.external
-                          ? "bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 hover:from-gray-200 hover:to-gray-100 border border-gray-200 hover:border-gray-300 hover:shadow-md"
-                          : "text-gray-700 hover:bg-gray-50 hover:text-brand-700 hover:shadow-sm"
-                      }
-                    `}
-                  >
-                    {/* Active background shimmer */}
-                    {isActive && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                    )}
-
-                    {/* Icon */}
-                    <div
-                      className={`
-                      relative z-10 flex-shrink-0 transition-all duration-200
-                      ${
-                        isActive
-                          ? "scale-110"
-                          : "group-hover:scale-110 group-hover:-rotate-3"
-                      }
-                    `}
-                    >
-                      <Icon
-                        name={it.iconName}
-                        className={`w-5 h-5 ${
-                          isActive ? "drop-shadow-md" : ""
-                        }`}
-                      />
-                    </div>
-
-                    {/* Label */}
-                    <span className="relative z-10 flex-1 text-sm font-medium">
-                      {it.labelKey ? t(it.labelKey, language) : it.label}
-                    </span>
-
-                    {/* Active indicator */}
-                    {isActive && (
-                      <div className="relative z-10 flex-shrink-0">
-                        <div className="w-1.5 h-1.5 rounded-full bg-white shadow-lg animate-pulse" />
-                      </div>
-                    )}
-
-                    {/* Hover indicator */}
-                    {!isActive && (
-                      <div className="relative z-10 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                        <svg
-                          className="w-4 h-4 text-brand-500"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </Link>
-                );
-              })}
-            </nav>
-
-            {/* Sidebar Footer - Only visible on desktop */}
-            <div className="hidden lg:block p-4 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50">
-              <div className="flex items-center gap-3 px-3 py-2.5 mb-3 bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all duration-200 group cursor-pointer">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-brand-500/20 rounded-full blur-md group-hover:blur-lg transition-all"></div>
-                  <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-sm shadow-lg ring-2 ring-brand-100 group-hover:ring-brand-200 transition-all">
-                    {getInitials(admin?.name)}
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-bold text-gray-900 truncate">
-                    {admin?.name || "Admin User"}
-                  </div>
-                  <div className="text-[10px] text-gray-500 capitalize font-semibold tracking-wide">
-                    {isSuperAdmin
-                      ? t("superAdmin", language)
-                      : t("beautician", language)}
-                  </div>
-                </div>
-              </div>
-
-              {/* Language Selector */}
-              <button
-                onClick={toggleLanguage}
-                className="w-full mb-2 flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all duration-200 border border-brand-200 hover:border-brand-300 hover:shadow-md group"
-              >
-                <svg
-                  className="w-4 h-4 group-hover:rotate-12 transition-transform duration-200"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
-                  />
-                </svg>
-                {language === "EN" ? "English" : "Lietuviu"}
-              </button>
-
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-all duration-200 border border-red-200 hover:border-red-300 hover:shadow-md group"
-              >
-                <svg
-                  className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
-                {t("logout", language)}
-              </button>
-            </div>
-          </div>
-        </aside>
+          <Sidebar tenant={{ name: admin?.name || "Elite Booker" }} />
+        </div>
 
         {/* Main Content */}
         <section className="p-4 lg:p-10 pb-20 lg:pb-10 min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-50/50 via-blue-50/10 to-purple-50/10 relative">
