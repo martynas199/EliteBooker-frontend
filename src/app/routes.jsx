@@ -84,6 +84,7 @@ const BlogPosts = lazy(() => import("../admin/pages/BlogPosts"));
 const TenantSettings = lazy(() => import("../admin/pages/TenantSettings"));
 const BrandingSettings = lazy(() => import("../admin/pages/BrandingSettings"));
 const Tenants = lazy(() => import("../admin/pages/Tenants"));
+const PlatformFeatures = lazy(() => import("../admin/pages/PlatformFeatures"));
 
 function CustomerLayout() {
   const dispatch = useDispatch();
@@ -654,6 +655,14 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
                 <Profile />
+              </Suspense>
+            }
+          />
+          <Route
+            path="features"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <PlatformFeatures />
               </Suspense>
             }
           />

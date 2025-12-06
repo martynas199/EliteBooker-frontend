@@ -7,6 +7,7 @@ import { api } from "../../shared/lib/apiClient";
 import toast from "react-hot-toast";
 import { useLanguage } from "../../shared/contexts/LanguageContext";
 import { t } from "../../locales/adminTranslations";
+import Sidebar from "../components/Sidebar";
 
 // Icon components for cleaner, more professional look
 const Icon = ({ name, className = "w-5 h-5" }) => {
@@ -707,18 +708,19 @@ export default function AdminLayout() {
         />
       )}
 
-      <div className="lg:grid lg:grid-cols-[260px_1fr]">
-        {/* Sidebar */}
+      <div className="lg:flex">
+        {/* New Modern Sidebar */}
+        <div className="hidden lg:block">
+          <Sidebar tenant={{ name: admin?.name || "Elite Booker" }} />
+        </div>
+
+        {/* Mobile Sidebar */}
         <aside
           className={`
-            fixed lg:sticky top-0 left-0 h-screen bg-white shadow-2xl lg:shadow-none border-r border-gray-200 z-40
+            fixed lg:hidden top-0 left-0 h-screen bg-slate-50 shadow-2xl border-r border-gray-200 z-40
             transform transition-transform duration-300 ease-in-out
-            ${
-              mobileMenuOpen
-                ? "translate-x-0"
-                : "-translate-x-full lg:translate-x-0"
-            }
-            w-72 lg:w-auto
+            ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
+            w-72
           `}
         >
           <div className="flex flex-col h-full">
