@@ -738,7 +738,7 @@ export default function Appointments() {
                 onChange={(e) => setDateFilter(e.target.value)}
               >
                 <option value="all">
-                  {t("allTime", language) || "All Time"}
+                  All Time
                 </option>
                 <option value="day">{t("today", language) || "Today"}</option>
                 <option value="week">
