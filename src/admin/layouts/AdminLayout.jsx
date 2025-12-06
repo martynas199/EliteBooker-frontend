@@ -553,7 +553,11 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div
+      className={`min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 ${
+        mobileMenuOpen ? "overflow-hidden h-screen" : ""
+      }`}
+    >
       {/* Mobile Header */}
       <header className="lg:hidden bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-white shadow-lg px-4 py-4 flex items-center justify-between sticky top-0 z-20">
         <div className="flex items-center gap-3">
@@ -712,36 +716,24 @@ export default function AdminLayout() {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
-
-      <div className="lg:flex" style={mobileMenuOpen ? { overflow: 'hidden', height: '100vh' } : {}}>
+      <div className="lg:flex">
         {/* Desktop Sidebar */}
         <div className="hidden lg:block">
           <Sidebar tenant={{ name: admin?.name || "Elite Booker" }} />
         </div>
 
-        {/* Mobile Sidebar - Same component with overlay */}
+        {/* Mobile Sidebar with Overlay */}
         {mobileMenuOpen && (
-          <div
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-            onClick={() => setMobileMenuOpen(false)}
-          />
+          <>
+            <div
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <div className="fixed lg:hidden top-0 left-0 h-screen z-50 overflow-y-auto transform transition-transform duration-300 ease-in-out translate-x-0">
+              <Sidebar tenant={{ name: admin?.name || "Elite Booker" }} />
+            </div>
+          </>
         )}
-        <div
-          className={`
-            fixed lg:hidden top-0 left-0 h-screen z-50 overflow-y-auto
-            transform transition-transform duration-300 ease-in-out
-            ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
-          `}
-        >
-          <Sidebar tenant={{ name: admin?.name || "Elite Booker" }} />
-        </div>
 
         {/* Main Content */}
         <section className="p-4 lg:p-10 pb-20 lg:pb-10 min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-50/50 via-blue-50/10 to-purple-50/10 relative">
