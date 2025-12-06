@@ -456,6 +456,18 @@ export default function AdminLayout() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [salonName, setSalonName] = useState("Beauty Salon");
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
   // Memoize role check for performance
   const isSuperAdmin = useMemo(
     () => admin?.role === "super_admin",
@@ -708,7 +720,7 @@ export default function AdminLayout() {
         />
       )}
 
-      <div className="lg:flex">
+      <div className="lg:flex" style={mobileMenuOpen ? { overflow: 'hidden', height: '100vh' } : {}}>
         {/* Desktop Sidebar */}
         <div className="hidden lg:block">
           <Sidebar tenant={{ name: admin?.name || "Elite Booker" }} />
@@ -723,7 +735,7 @@ export default function AdminLayout() {
         )}
         <div
           className={`
-            fixed lg:hidden top-0 left-0 h-screen z-50
+            fixed lg:hidden top-0 left-0 h-screen z-50 overflow-y-auto
             transform transition-transform duration-300 ease-in-out
             ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
           `}

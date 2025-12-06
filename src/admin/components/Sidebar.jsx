@@ -186,7 +186,7 @@ const SidebarItem = ({ item, isNested = false }) => {
 
 export default function Sidebar({ tenant }) {
   return (
-    <aside className="w-64 min-h-screen bg-slate-50 border-r border-gray-200 flex flex-col">
+    <aside className="w-64 min-h-screen bg-slate-50 border-r border-gray-200 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center gap-3">
