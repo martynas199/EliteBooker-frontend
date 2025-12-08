@@ -2028,10 +2028,11 @@ function CreateModal({
     setAppointment((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Filter services based on selected beautician
-    const selectedBeautician = specialists.find(
-      (b) => b._id === appointment.specialistId
-    );  const availableServices = services.filter((service) => {
+  // Filter services based on selected specialist
+  const selectedSpecialist = specialists.find(
+    (b) => b._id === appointment.specialistId
+  );
+  const availableServices = services.filter((service) => {
     if (!appointment.specialistId) return true; // Show all if no specialist selected
 
     // Check if beautician is assigned to this service

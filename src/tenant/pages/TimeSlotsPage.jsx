@@ -164,7 +164,7 @@ export default function TimeSlots() {
 
           const convertedHours = [];
           for (const [dayKey, schedule] of Object.entries(
-            beauticianData.legacyWorkingHours
+            specialistData.legacyWorkingHours
           )) {
             if (schedule && schedule.start && schedule.end) {
               convertedHours.push({
@@ -175,10 +175,10 @@ export default function TimeSlots() {
             }
           }
 
-          beauticianData.workingHours = convertedHours;
+          specialistData.workingHours = convertedHours;
         }
 
-        setBeautician(beauticianData);
+        setSpecialist(specialistData);
       })
       .catch((err) => {
         // Ignore cancellation errors
