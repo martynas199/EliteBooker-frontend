@@ -33,7 +33,7 @@ export default function Profile() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Working hours state
-  const [beautician, setBeautician] = useState(null);
+  const [specialist, setSpecialist] = useState(null);
   const [workingHours, setWorkingHours] = useState([]);
   const [savingWorkingHours, setSavingWorkingHours] = useState(false);
 
@@ -46,21 +46,21 @@ export default function Profile() {
       setName(admin.name || "");
       setEmail(admin.email || "");
 
-      // Fetch beautician data if admin has beauticianId
+      // Fetch specialist data if admin has beauticianId (legacy field name)
       if (admin.beauticianId) {
-        fetchBeauticianData();
+        fetchSpecialistData();
       }
     }
   }, [admin]);
 
-  const fetchBeauticianData = async () => {
+  const fetchSpecialistData = async () => {
     try {
       const response = await api.get(`/beauticians/${admin.beauticianId}`);
-      setBeautician(response.data);
+      setSpecialist(response.data);
       setWorkingHours(response.data.workingHours || []);
       setInSalonPayment(response.data.inSalonPayment || false);
     } catch (err) {
-      console.error("Failed to fetch beautician data:", err);
+      console.error("Failed to fetch specialist data:", err);
     }
   };
 
@@ -158,9 +158,9 @@ export default function Profile() {
       toast.dismiss(loadingToast);
       toast.success("Working hours updated successfully");
 
-      // Refresh beautician data
+      // Refresh specialist data
       if (admin.beauticianId) {
-        await fetchBeauticianData();
+        await fetchSpecialistData();
       }
     } catch (err) {
       toast.error(
@@ -183,9 +183,9 @@ export default function Profile() {
       toast.dismiss(loadingToast);
       toast.success("Payment settings updated successfully");
 
-      // Refresh beautician data
+      // Refresh specialist data
       if (admin.beauticianId) {
-        await fetchBeauticianData();
+        await fetchSpecialistData();
       }
     } catch (err) {
       toast.error(
@@ -653,8 +653,8 @@ export default function Profile() {
         </div>
       </Card>
 
-      {/* Working Hours - Only for beauticians */}
-      {beautician && (
+      {/* Working Hours - Only for specialists */}
+      {specialist && (
         <Card>
           <div className="p-6">
             <div className="flex items-center gap-2 mb-6">
@@ -703,8 +703,8 @@ export default function Profile() {
         </Card>
       )}
 
-      {/* Payment Settings - Only for beauticians */}
-      {beautician && (
+      {/* Payment Settings - Only for specialists */}
+      {specialist && (
         <Card>
           <div className="p-6">
             <div className="flex items-center gap-2 mb-6">
