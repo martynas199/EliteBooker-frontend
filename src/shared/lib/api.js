@@ -170,14 +170,17 @@ export const servicesAPI = {
   delete: (id) => api.delete(`/api/services/${id}`),
 };
 
-// Beauticians APIs
-export const beauticiansAPI = {
-  list: (params) => api.get("/api/beauticians", { params }),
-  get: (id) => api.get(`/api/beauticians/${id}`),
-  create: (data) => api.post("/api/beauticians", data),
-  update: (id, data) => api.put(`/api/beauticians/${id}`, data),
-  delete: (id) => api.delete(`/api/beauticians/${id}`),
+// Specialists APIs (renamed from beauticians)
+export const specialistsAPI = {
+  list: (params) => api.get("/api/specialists", { params }),
+  get: (id) => api.get(`/api/specialists/${id}`),
+  create: (data) => api.post("/api/specialists", data),
+  update: (id, data) => api.put(`/api/specialists/${id}`, data),
+  delete: (id) => api.delete(`/api/specialists/${id}`),
 };
+
+// Legacy beauticians API (backward compatibility - redirects to specialists)
+export const beauticiansAPI = specialistsAPI;
 
 // Appointments APIs
 export const appointmentsAPI = {
