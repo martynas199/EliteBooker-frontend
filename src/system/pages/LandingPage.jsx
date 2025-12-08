@@ -411,7 +411,7 @@ export default function LandingPage() {
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
                   </span>
                   <span className="text-sm font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
-                    Trusted by 500+ Beauty Businesses
+                    Trusted by 500+ Businesses
                   </span>
                 </motion.div>
 
@@ -506,7 +506,7 @@ export default function LandingPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    14-day trial
+                    Always free
                   </span>
                   <span className="flex items-center gap-1">
                     <svg
@@ -520,7 +520,7 @@ export default function LandingPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Cancel anytime
+                    No hidden fees
                   </span>
                 </p>
               </motion.div>
@@ -533,7 +533,7 @@ export default function LandingPage() {
                 className="flex-1 relative"
               >
                 {/* Floating Cards */}
-                <div className="relative w-full max-w-2xl mx-auto">
+                <div className="relative w-full max-w-2xl mx-auto pt-12">
                   {/* Main Dashboard Card */}
                   <motion.div
                     animate={{ y: [0, -10, 0] }}
@@ -661,7 +661,7 @@ export default function LandingPage() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1, y: [0, 5, 0] }}
                     transition={{ delay: 0.7, duration: 3, repeat: Infinity }}
-                    className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl border border-gray-200 p-4 max-w-[200px]"
+                    className="absolute -bottom-20 -left-6 bg-white rounded-2xl shadow-xl border border-gray-200 p-4 max-w-[200px]"
                   >
                     <div className="text-xs text-gray-500 mb-2">
                       No-show rate
@@ -772,8 +772,7 @@ export default function LandingPage() {
                   {[
                     "Setup in under 10 minutes",
                     "No credit card required",
-                    "14-day free trial",
-                    "Cancel anytime",
+                    "It's always free",
                   ].map((item, idx) => (
                     <motion.li
                       key={idx}
