@@ -14,10 +14,10 @@ import SEOHead from "../../shared/components/seo/SEOHead";
  */
 function SpotifyToggle({ value, onChange }) {
   return (
-    <div className="flex items-center justify-center gap-0 bg-black/40 backdrop-blur-md rounded-full p-1.5 sm:p-2 border border-white/10 w-full max-w-md">
+    <div className="flex items-center justify-center gap-0 bg-black/40 backdrop-blur-md rounded-full p-2 border border-white/10">
       <motion.button
         onClick={() => onChange("services")}
-        className={`relative px-6 sm:px-12 py-3 sm:py-4 text-base sm:text-xl font-black uppercase tracking-wide rounded-full transition-all duration-300 flex-1 ${
+        className={`relative px-12 py-4 text-xl font-black uppercase tracking-wide rounded-full transition-all duration-300 ${
           value === "services"
             ? "text-black"
             : "text-white/60 hover:text-white/80"
@@ -37,7 +37,7 @@ function SpotifyToggle({ value, onChange }) {
 
       <motion.button
         onClick={() => onChange("specialists")}
-        className={`relative px-6 sm:px-12 py-3 sm:py-4 text-base sm:text-xl font-black uppercase tracking-wide rounded-full transition-all duration-300 flex-1 ${
+        className={`relative px-12 py-4 text-xl font-black uppercase tracking-wide rounded-full transition-all duration-300 ${
           value === "specialists"
             ? "text-black"
             : "text-white/60 hover:text-white/80"
@@ -93,8 +93,15 @@ function EmptyState({ type }) {
       animate={{ opacity: 1, scale: 1 }}
       className="col-span-full flex flex-col items-center justify-center py-32 px-4"
     >
-      {/* Static Icon - Better Performance */}
-      <div className="mb-12">
+      {/* Animated Icon */}
+      <motion.div
+        animate={{
+          scale: [1, 1.1, 1],
+          rotate: [0, 5, -5, 0],
+        }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        className="mb-12"
+      >
         <div className="w-32 h-32 rounded-full bg-white/5 backdrop-blur-md flex items-center justify-center border border-white/10">
           {type === "services" ? (
             <svg
@@ -126,13 +133,13 @@ function EmptyState({ type }) {
             </svg>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Bold Text */}
-      <h3 className="text-3xl sm:text-5xl font-black text-white mb-4 text-center">
+      <h3 className="text-5xl font-black text-white mb-4 text-center">
         {type === "services" ? "No Services Yet" : "No Specialists Yet"}
       </h3>
-      <p className="text-base sm:text-xl text-white/50 text-center max-w-md font-light px-4">
+      <p className="text-xl text-white/50 text-center max-w-md font-light">
         {type === "services"
           ? "Check back soon for our curated service collection"
           : "Our talented team will be here soon"}
@@ -148,9 +155,10 @@ function EmptyState({ type }) {
 function ServiceCard({ service, onClick, formatPrice, index }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.3) }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
       className="group h-full cursor-pointer"
       onClick={onClick}
     >
@@ -176,26 +184,26 @@ function ServiceCard({ service, onClick, formatPrice, index }) {
           </div>
         )}
 
-        <div className="p-4 sm:p-6">
+        <div className="p-6">
           {/* Service Name */}
-          <h3 className="text-lg sm:text-xl font-bold text-white mb-2 group-hover:text-green-400 transition-colors">
+          <h3 className="text-xl font-bold text-white mb-2 group-hover:text-green-400 transition-colors">
             {service.name}
           </h3>
 
           {/* Description */}
           {service.description && (
-            <p className="text-xs sm:text-sm text-white/60 mb-3 sm:mb-4 line-clamp-2 leading-relaxed">
+            <p className="text-sm text-white/60 mb-4 line-clamp-2 leading-relaxed">
               {service.description}
             </p>
           )}
 
           {/* Price & Duration */}
-          <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-white/10">
+          <div className="flex items-center justify-between pt-4 border-t border-white/10">
             <div>
-              <div className="text-xs sm:text-sm text-white/50 font-medium mb-1">
+              <div className="text-sm text-white/50 font-medium mb-1">
                 Price
               </div>
-              <div className="text-xl sm:text-2xl font-black text-white">
+              <div className="text-2xl font-black text-white">
                 {formatPrice(service.price)}
               </div>
             </div>
@@ -226,7 +234,7 @@ function ServiceCard({ service, onClick, formatPrice, index }) {
           </div>
 
           {/* Book Button */}
-          <button className="w-full mt-4 sm:mt-6 px-4 sm:px-6 py-3 bg-white text-gray-900 text-sm sm:text-base font-bold rounded-xl hover:bg-green-400 active:scale-95 transition-all duration-300 shadow-lg touch-manipulation">
+          <button className="w-full mt-6 px-6 py-3 bg-white text-gray-900 font-bold rounded-xl hover:bg-green-400 transition-all duration-300 shadow-lg group-hover:shadow-xl group-hover:scale-105">
             Book Now
           </button>
         </div>
@@ -242,13 +250,14 @@ function ServiceCard({ service, onClick, formatPrice, index }) {
 function SpecialistCard({ specialist, onClick, index }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.3) }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
       className="group h-full cursor-pointer"
       onClick={onClick}
     >
-      <div className="group cursor-pointer overflow-hidden p-0 h-[400px] sm:h-[480px] rounded-2xl border-2 border-white/10 hover:border-brand-200 transition-all duration-300 hover:shadow-2xl">
+      <div className="group cursor-pointer overflow-hidden p-0 h-[480px] rounded-2xl border-2 border-white/10 hover:border-brand-200 transition-all duration-300 hover:shadow-2xl">
         {/* Full Card Image with Name Overlay */}
         <div className="relative h-full w-full bg-gradient-to-br from-gray-100 to-gray-200">
           {specialist.image?.url ? (
@@ -279,10 +288,10 @@ function SpecialistCard({ specialist, onClick, index }) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent group-hover:from-brand-900/90 transition-colors duration-300"></div>
 
           {/* Content */}
-          <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-6">
+          <div className="absolute inset-0 flex flex-col justify-end p-6">
             {/* Specialties badges at top */}
             {specialist.specialties && specialist.specialties.length > 0 && (
-              <div className="flex-1 flex flex-wrap gap-1.5 sm:gap-2 content-start mb-3 sm:mb-4">
+              <div className="flex-1 flex flex-wrap gap-2 content-start mb-4">
                 {specialist.specialties.slice(0, 3).map((specialty, idx) => (
                   <span
                     key={idx}
@@ -300,13 +309,13 @@ function SpecialistCard({ specialist, onClick, index }) {
             )}
 
             {/* Name & Bio */}
-            <div className="space-y-2 sm:space-y-3">
-              <h3 className="text-2xl sm:text-3xl font-black text-white group-hover:text-brand-300 transition-colors">
+            <div className="space-y-3">
+              <h3 className="text-3xl font-black text-white group-hover:text-brand-300 transition-colors">
                 {specialist.name}
               </h3>
 
               {specialist.bio && (
-                <p className="text-white/90 text-xs sm:text-sm leading-relaxed line-clamp-2">
+                <p className="text-white/90 text-sm leading-relaxed line-clamp-2">
                   {specialist.bio}
                 </p>
               )}
@@ -359,7 +368,7 @@ export default function SalonLandingLuxury() {
       try {
         const [settingsRes, beauticiansRes, servicesRes, heroSectionsRes] =
           await Promise.all([
-            api.get("/settings").catch(() => ({ data: null })),
+            api.get("/settings/display").catch(() => ({ data: null })),
             api.get("/beauticians"),
             api.get("/services"),
             api.get("/hero-sections").catch(() => ({ data: [] })),
@@ -392,7 +401,6 @@ export default function SalonLandingLuxury() {
     dispatch(
       setService({
         serviceId: service._id,
-        serviceName: service.name,
         variantName: service.variantName,
         price: service.price,
         durationMin: service.durationMin,
@@ -409,25 +417,14 @@ export default function SalonLandingLuxury() {
           inSalonPayment: false,
         })
       );
-      // Add URL params for persistence
-      const params = new URLSearchParams({
-        service: service._id,
-        variant: service.variantName,
-        beautician: beauticians[0]._id,
-      });
-      navigate(`/salon/${tenant?.slug}/times?${params.toString()}`);
+      navigate(`/salon/${tenant?.slug}/times`);
     } else {
-      // Add service to URL params when navigating to beautician selection
-      const params = new URLSearchParams({
-        service: service._id,
-        variant: service.variantName,
-      });
-      navigate(`/salon/${tenant?.slug}/beauticians?${params.toString()}`);
+      navigate("beauticians");
     }
   };
 
   const handleSpecialistClick = (specialist) => {
-    navigate(`/salon/${tenant?.slug}/beauticians?selected=${specialist._id}`);
+    navigate(`beauticians?selected=${specialist._id}`);
   };
 
   // Data
@@ -487,35 +484,68 @@ export default function SalonLandingLuxury() {
         description={salonDescription}
       />
 
-      {/* Simplified Static Background - Better Performance */}
-      <div
-        className="fixed inset-0 -z-10 transition-colors duration-700"
-        style={{
+      {/* Dynamic Background with Color Shift */}
+      <motion.div
+        className="fixed inset-0 -z-10"
+        animate={{
           background:
             viewMode === "services"
               ? "linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a)"
               : "linear-gradient(to bottom right, #172554, #312e81, #4c1d95)",
         }}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
       >
-        {/* Static Gradient Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
-      </div>
+        {/* Animated Noise Texture */}
+        <div className="absolute inset-0 opacity-20 mix-blend-overlay">
+          <motion.div
+            animate={{
+              backgroundPosition: ["0% 0%", "100% 100%"],
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="w-full h-full"
+            style={{
+              backgroundImage:
+                "url('data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E')",
+              backgroundSize: "200px 200px",
+            }}
+          />
+        </div>
+
+        {/* Gradient Orbs */}
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, 100, 0],
+            y: [0, -50, 0],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{
+            scale: [1.2, 1, 1.2],
+            x: [0, -100, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"
+        />
+      </motion.div>
 
       {/* Header Section */}
-      <section className="relative pt-12 sm:pt-20 pb-8 sm:pb-12 px-4">
+      <section className="relative pt-20 pb-12 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Salon Name - Massive Typography */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-12 sm:mb-16"
+            className="text-center mb-16"
           >
-            <h1 className="text-5xl sm:text-7xl md:text-9xl font-black text-white mb-4 sm:mb-6 leading-none tracking-tight">
+            <h1 className="text-7xl md:text-9xl font-black text-white mb-6 leading-none tracking-tight">
               {salonName}
             </h1>
-            <p className="text-lg sm:text-2xl text-white/60 font-light max-w-2xl mx-auto px-4">
+            <p className="text-2xl text-white/60 font-light max-w-2xl mx-auto">
               {salonDescription}
             </p>
           </motion.div>
@@ -526,7 +556,7 @@ export default function SalonLandingLuxury() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex justify-center mb-12 sm:mb-20 px-4"
+              className="flex justify-center mb-20"
             >
               <SpotifyToggle value={viewMode} onChange={setViewMode} />
             </motion.div>
@@ -535,7 +565,7 @@ export default function SalonLandingLuxury() {
       </section>
 
       {/* Main Content - Masonry Layout */}
-      <section className="relative px-4 pb-12 sm:pb-20">
+      <section className="relative px-4 pb-20">
         <div className="max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             {viewMode === "services" ? (
@@ -552,12 +582,12 @@ export default function SalonLandingLuxury() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="text-center mb-8 sm:mb-12 px-4"
+                    className="text-center mb-12"
                   >
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                       Services
                     </h2>
-                    <p className="text-white/60 text-base sm:text-lg">
+                    <p className="text-white/60 text-lg">
                       Choose from our selection of premium services
                     </p>
                   </motion.div>
@@ -566,7 +596,7 @@ export default function SalonLandingLuxury() {
                 {services.length === 0 ? (
                   <EmptyState type="services" />
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.map((service, index) => (
                       <ServiceCard
                         key={service._id}
@@ -590,7 +620,7 @@ export default function SalonLandingLuxury() {
                 {beauticians.length === 0 ? (
                   <EmptyState type="specialists" />
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {beauticians.map((specialist, index) => (
                       <SpecialistCard
                         key={specialist._id}

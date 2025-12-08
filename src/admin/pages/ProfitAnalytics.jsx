@@ -5,6 +5,9 @@ import Button from "../../shared/components/ui/Button";
 import FormField from "../../shared/components/forms/FormField";
 import { format, subDays, startOfMonth, endOfMonth } from "date-fns";
 import toast from "react-hot-toast";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+import dayjs from "dayjs";
 
 const formatCurrency = (amount) => `£${amount.toFixed(2)}`;
 const formatPercentage = (percentage) => `${percentage.toFixed(1)}%`;
@@ -21,9 +24,24 @@ export default function ProfitAnalytics() {
   const [products, setProducts] = useState([]);
   const [beauticians, setBeauticians] = useState([]);
   const [activeTab, setActiveTab] = useState("overview");
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
 
   useEffect(() => {
     loadInitialData();
+  }, []);
+
+  // Close date pickers when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".date-picker-container")) {
+        setShowStartPicker(false);
+        setShowEndPicker(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -136,25 +154,128 @@ export default function ProfitAnalytics() {
         <h2 className="text-base sm:text-lg font-semibold mb-4">Filters</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <FormField label="Start Date">
-            <input
-              type="date"
-              value={filters.startDate}
-              onChange={(e) =>
-                setFilters({ ...filters, startDate: e.target.value })
-              }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-            />
+            <div className="date-picker-container relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowStartPicker(!showStartPicker);
+                  setShowEndPicker(false);
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent text-left bg-white hover:bg-gray-50 transition-colors flex items-center justify-between"
+              >
+                <span className="text-gray-900">
+                  {dayjs(filters.startDate).format("MMM DD, YYYY")}
+                </span>
+                <svg
+                  className="w-5 h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </button>
+              {showStartPicker && (
+                <div className="absolute z-50 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 p-4">
+                  <DayPicker
+                    mode="single"
+                    selected={new Date(filters.startDate)}
+                    onSelect={(date) => {
+                      if (date) {
+                        const newStartDate = dayjs(date).format("YYYY-MM-DD");
+                        setFilters({ ...filters, startDate: newStartDate });
+                        setShowStartPicker(false);
+
+                        // Auto-adjust end date if it becomes invalid
+                        if (
+                          dayjs(newStartDate).isAfter(dayjs(filters.endDate))
+                        ) {
+                          setFilters((prev) => ({
+                            ...prev,
+                            startDate: newStartDate,
+                            endDate: newStartDate,
+                          }));
+                        }
+                      }
+                    }}
+                    toDate={new Date()}
+                    className="rdp-custom"
+                    modifiersClassNames={{
+                      selected: "!bg-brand-600 !text-white font-semibold",
+                      today: "!text-brand-600 font-bold",
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           </FormField>
 
           <FormField label="End Date">
-            <input
-              type="date"
-              value={filters.endDate}
-              onChange={(e) =>
-                setFilters({ ...filters, endDate: e.target.value })
-              }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-            />
+            <div className="date-picker-container relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEndPicker(!showEndPicker);
+                  setShowStartPicker(false);
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent text-left bg-white hover:bg-gray-50 transition-colors flex items-center justify-between"
+              >
+                <span className="text-gray-900">
+                  {dayjs(filters.endDate).format("MMM DD, YYYY")}
+                </span>
+                <svg
+                  className="w-5 h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </button>
+              {showEndPicker && (
+                <div className="absolute z-50 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 p-4">
+                  <DayPicker
+                    mode="single"
+                    selected={new Date(filters.endDate)}
+                    onSelect={(date) => {
+                      if (date) {
+                        const newEndDate = dayjs(date).format("YYYY-MM-DD");
+                        setFilters({ ...filters, endDate: newEndDate });
+                        setShowEndPicker(false);
+
+                        // Auto-adjust start date if it becomes invalid
+                        if (
+                          dayjs(filters.startDate).isAfter(dayjs(newEndDate))
+                        ) {
+                          setFilters((prev) => ({
+                            ...prev,
+                            endDate: newEndDate,
+                            startDate: newEndDate,
+                          }));
+                        }
+                      }
+                    }}
+                    fromDate={new Date(filters.startDate)}
+                    toDate={new Date()}
+                    className="rdp-custom"
+                    modifiersClassNames={{
+                      selected: "!bg-brand-600 !text-white font-semibold",
+                      today: "!text-brand-600 font-bold",
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           </FormField>
 
           <FormField label="Product">

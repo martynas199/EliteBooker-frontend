@@ -37,20 +37,8 @@ const navigationConfig = [
     label: "Appointments",
     icon: "Calendar",
     items: [
-      { label: "Calendar", path: "/admin/schedule" },
       { label: "Appointment List", path: "/admin/appointments" },
-      { label: "Time Off", path: "/admin/timeoff" },
-    ],
-  },
-  {
-    label: "Sales & Payments",
-    icon: "DollarSign",
-    items: [
-      { label: "Orders", path: "/admin/orders" },
       { label: "Revenue Analytics", path: "/admin/revenue" },
-      { label: "Profit Analytics", path: "/admin/profit-analytics" },
-      { label: "Stripe Connect", path: "/admin/stripe-connect" },
-      { label: "Subscriptions", path: "/admin/subscription" },
     ],
   },
   {
@@ -60,6 +48,7 @@ const navigationConfig = [
       { label: "Services", path: "/admin/services" },
       { label: "Staff", path: "/admin/staff" },
       { label: "My Schedule", path: "/admin/schedule" },
+      { label: "Time Off", path: "/admin/timeoff" },
       { label: "Booking Policies", path: "/admin/cancellation" },
     ],
   },
@@ -69,8 +58,11 @@ const navigationConfig = [
     condition: "ecommerceEnabled",
     items: [
       { label: "Products", path: "/admin/products" },
+      { label: "Orders", path: "/admin/orders" },
+      { label: "Profit Analytics", path: "/admin/profit-analytics" },
       { label: "Product Hero Image", path: "/admin/products-hero" },
       { label: "Shipping Rates", path: "/admin/shipping-rates" },
+      { label: "Subscriptions", path: "/admin/subscription" },
     ],
   },
   {
@@ -87,9 +79,10 @@ const navigationConfig = [
     label: "Configuration",
     icon: "Sliders",
     items: [
+      { label: "Stripe Connect", path: "/admin/stripe-connect" },
       { label: "Salon Settings", path: "/admin/tenant-settings" },
-      { label: "Admin Links", path: "/admin/admin-links" },
       { label: "General Settings", path: "/admin/settings" },
+      { label: "Admin Links", path: "/admin/admin-links" },
       { label: "Platform Features", path: "/admin/features" },
     ],
   },
@@ -213,11 +206,11 @@ export default function Sidebar({ tenant }) {
       </div>
 
       {/* Navigation */}
-      <nav 
+      <nav
         className="flex-1 p-4 overflow-y-auto"
-        style={{ 
-          WebkitOverflowScrolling: 'touch',
-          overscrollBehavior: 'contain'
+        style={{
+          WebkitOverflowScrolling: "touch",
+          overscrollBehavior: "contain",
         }}
       >
         <div className="space-y-6">

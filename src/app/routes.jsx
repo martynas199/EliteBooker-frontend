@@ -84,7 +84,6 @@ const BlogPosts = lazy(() => import("../admin/pages/BlogPosts"));
 const TenantSettings = lazy(() => import("../admin/pages/TenantSettings"));
 const BrandingSettings = lazy(() => import("../admin/pages/BrandingSettings"));
 const Tenants = lazy(() => import("../admin/pages/Tenants"));
-const PlatformFeatures = lazy(() => import("../admin/pages/PlatformFeatures"));
 
 function CustomerLayout() {
   const dispatch = useDispatch();
@@ -171,7 +170,13 @@ function CustomerLayout() {
                 Contact
                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-green-400 group-hover:w-3/4 transition-all duration-300" />
               </Link>
-              {/* Shop link hidden - focusing on bookings */}
+              <Link
+                to="products"
+                className="px-5 py-2.5 text-sm font-bold text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300 relative group"
+              >
+                Shop
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-green-400 group-hover:w-3/4 transition-all duration-300" />
+              </Link>
             </nav>
 
             {/* Right Actions - Desktop */}
@@ -327,7 +332,13 @@ function CustomerLayout() {
                 >
                   Contact
                 </Link>
-                {/* Shop link hidden - focusing on bookings */}
+                <Link
+                  to="products"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-3 text-sm font-bold text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                >
+                  Shop
+                </Link>
                 <div className="border-t border-white/10 my-2"></div>
                 {user ? (
                   <>
@@ -369,7 +380,11 @@ function CustomerLayout() {
           )}
         </div>
       </header>
-      <main className={isLandingPage ? "" : "max-w-6xl mx-auto px-4 py-8"}>
+      <main
+        className={
+          isLandingPage ? "" : "max-w-6xl mx-auto px-4 py-8 overflow-x-hidden"
+        }
+      >
         <Routes>
           <Route index element={<SalonLandingLuxury />} />
           <Route path="services" element={<ServicesPage />} />
@@ -655,14 +670,6 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
                 <Profile />
-              </Suspense>
-            }
-          />
-          <Route
-            path="features"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <PlatformFeatures />
               </Suspense>
             }
           />

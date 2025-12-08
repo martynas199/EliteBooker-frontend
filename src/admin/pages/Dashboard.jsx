@@ -1340,6 +1340,75 @@ export default function Dashboard() {
                 </div>
               </div>
 
+              {/* Payment Details */}
+              {selectedEvent.resource.payment && (
+                <div className="bg-purple-50 rounded-lg p-4">
+                  <h4 className="text-sm font-semibold text-purple-900 mb-2 flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                      />
+                    </svg>
+                    Payment Details
+                  </h4>
+                  {(() => {
+                    const paymentType =
+                      selectedEvent.resource.payment.type ||
+                      selectedEvent.resource.payment.mode;
+                    const isDeposit = paymentType === "deposit";
+                    const isFullPayment =
+                      paymentType === "pay_now" || paymentType === "full";
+                    const depositAmount =
+                      selectedEvent.resource.payment.depositAmount ||
+                      (selectedEvent.resource.payment.amountTotal
+                        ? (selectedEvent.resource.payment.amountTotal - 50) /
+                          100
+                        : null);
+
+                    return (
+                      <>
+                        <p className="text-gray-900 font-medium">
+                          {isDeposit
+                            ? "💳 Deposit Paid"
+                            : isFullPayment
+                            ? "✅ Paid in Full"
+                            : "Payment Required"}
+                        </p>
+                        {isDeposit && depositAmount && (
+                          <div className="text-sm text-gray-700 mt-2 space-y-1">
+                            <p>Deposit Paid: {formatCurrency(depositAmount)}</p>
+                            <p>
+                              Balance Due:{" "}
+                              {formatCurrency(
+                                selectedEvent.resource.price - depositAmount
+                              )}
+                            </p>
+                          </div>
+                        )}
+                        {selectedEvent.resource.payment.stripe
+                          ?.paymentIntentId && (
+                          <p className="text-xs text-gray-600 mt-2">
+                            Payment ID:{" "}
+                            {
+                              selectedEvent.resource.payment.stripe
+                                .paymentIntentId
+                            }
+                          </p>
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
+              )}
+
               {/* Status */}
               <div className="bg-gray-50 rounded-lg p-4">
                 <h4 className="text-sm font-semibold text-gray-700 mb-2">

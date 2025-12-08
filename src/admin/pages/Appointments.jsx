@@ -6,11 +6,21 @@ import { api } from "../../shared/lib/apiClient";
 import Modal from "../../shared/components/ui/Modal";
 import FormField from "../../shared/components/forms/FormField";
 import Button from "../../shared/components/ui/Button";
-import { SkeletonBox, TableRowSkeleton } from "../../shared/components/ui/Skeleton";
+import {
+  SkeletonBox,
+  TableRowSkeleton,
+} from "../../shared/components/ui/Skeleton";
 import { SlowRequestWarning } from "../../shared/components/ui/SlowRequestWarning";
 import { useLanguage } from "../../shared/contexts/LanguageContext";
 import { t } from "../../locales/adminTranslations";
 import DateTimePicker from "../../shared/components/DateTimePicker";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+import dayjs from "dayjs";
+import {
+  SelectDrawer,
+  SelectButton,
+} from "../../shared/components/ui/SelectDrawer";
 
 export default function Appointments() {
   const { language } = useLanguage();
@@ -63,6 +73,8 @@ export default function Appointments() {
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
 
   const fetchAppointments = async (page = 1) => {
     try {
@@ -144,6 +156,19 @@ export default function Appointments() {
       .get("/beauticians", { params: { limit: 1000 } })
       .then((r) => setBeauticians(r.data || []))
       .catch(() => {});
+  }, []);
+
+  // Close date pickers when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".date-picker-container")) {
+        setShowStartPicker(false);
+        setShowEndPicker(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleSort = (key) => {
@@ -633,13 +658,25 @@ export default function Appointments() {
       {/* Create Appointment Button - only show if admin has access */}
       {(isSuperAdmin || admin?.beauticianId) && (
         <div className="mb-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
-          <Button
-            variant="brand"
+          <button
             onClick={openCreateModal}
-            className="w-full sm:w-auto text-sm sm:text-base py-2.5 sm:py-2"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-sm sm:text-base group"
           >
-            + Create Appointment
-          </Button>
+            <svg
+              className="w-5 h-5 transition-transform group-hover:rotate-90 duration-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Create Appointment
+          </button>
           {admin?.beauticianId && (
             <Button
               variant="danger"
@@ -737,9 +774,7 @@ export default function Appointments() {
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
               >
-                <option value="all">
-                  All Time
-                </option>
+                <option value="all">All Time</option>
                 <option value="day">{t("today", language) || "Today"}</option>
                 <option value="week">
                   {t("thisWeek", language) || "This Week"}
@@ -762,26 +797,138 @@ export default function Appointments() {
                 htmlFor="start-date"
                 className="flex-1"
               >
-                <input
-                  id="start-date"
-                  type="date"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow"
-                  value={customStartDate}
-                  onChange={(e) => setCustomStartDate(e.target.value)}
-                />
+                <div className="date-picker-container relative">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowStartPicker(!showStartPicker);
+                      setShowEndPicker(false);
+                    }}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow text-left bg-white hover:bg-gray-50 flex items-center justify-between"
+                  >
+                    <span className="text-gray-900">
+                      {customStartDate
+                        ? dayjs(customStartDate).format("MMM DD, YYYY")
+                        : "Select start date"}
+                    </span>
+                    <svg
+                      className="w-4 h-4 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </button>
+                  {showStartPicker && (
+                    <div className="absolute z-50 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 p-4">
+                      <DayPicker
+                        mode="single"
+                        selected={
+                          customStartDate
+                            ? new Date(customStartDate)
+                            : undefined
+                        }
+                        onSelect={(date) => {
+                          if (date) {
+                            const newStartDate =
+                              dayjs(date).format("YYYY-MM-DD");
+                            setCustomStartDate(newStartDate);
+                            setShowStartPicker(false);
+
+                            // Auto-adjust end date if it becomes invalid
+                            if (
+                              customEndDate &&
+                              dayjs(newStartDate).isAfter(dayjs(customEndDate))
+                            ) {
+                              setCustomEndDate(newStartDate);
+                            }
+                          }
+                        }}
+                        className="rdp-custom"
+                        modifiersClassNames={{
+                          selected: "!bg-brand-600 !text-white font-semibold",
+                          today: "!text-brand-600 font-bold",
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
               </FormField>
               <FormField
                 label={t("endDate", language) || "End Date"}
                 htmlFor="end-date"
                 className="flex-1"
               >
-                <input
-                  id="end-date"
-                  type="date"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow"
-                  value={customEndDate}
-                  onChange={(e) => setCustomEndDate(e.target.value)}
-                />
+                <div className="date-picker-container relative">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowEndPicker(!showEndPicker);
+                      setShowStartPicker(false);
+                    }}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow text-left bg-white hover:bg-gray-50 flex items-center justify-between"
+                  >
+                    <span className="text-gray-900">
+                      {customEndDate
+                        ? dayjs(customEndDate).format("MMM DD, YYYY")
+                        : "Select end date"}
+                    </span>
+                    <svg
+                      className="w-4 h-4 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </button>
+                  {showEndPicker && (
+                    <div className="absolute z-50 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 p-4">
+                      <DayPicker
+                        mode="single"
+                        selected={
+                          customEndDate ? new Date(customEndDate) : undefined
+                        }
+                        onSelect={(date) => {
+                          if (date) {
+                            const newEndDate = dayjs(date).format("YYYY-MM-DD");
+                            setCustomEndDate(newEndDate);
+                            setShowEndPicker(false);
+
+                            // Auto-adjust start date if it becomes invalid
+                            if (
+                              customStartDate &&
+                              dayjs(customStartDate).isAfter(dayjs(newEndDate))
+                            ) {
+                              setCustomStartDate(newEndDate);
+                            }
+                          }
+                        }}
+                        fromDate={
+                          customStartDate
+                            ? new Date(customStartDate)
+                            : undefined
+                        }
+                        className="rdp-custom"
+                        modifiersClassNames={{
+                          selected: "!bg-brand-600 !text-white font-semibold",
+                          today: "!text-brand-600 font-bold",
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
               </FormField>
             </div>
           )}
@@ -882,9 +1029,9 @@ export default function Appointments() {
 
       {/* Desktop Table View */}
       {!loading && (
-        <div className="hidden lg:block overflow-auto border rounded-lg bg-white shadow-sm">
-          <table className="min-w-[800px] w-full text-sm">
-            <thead className="bg-gray-50">
+        <div className="hidden lg:block overflow-auto rounded-xl bg-white shadow-sm border border-gray-200">
+          <table className="min-w-[800px] w-full">
+            <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
               <tr>
                 <SortableHeader
                   label="Client"
@@ -905,7 +1052,7 @@ export default function Appointments() {
                   onSort={handleSort}
                 />
                 <SortableHeader
-                  label="Start"
+                  label="Date & Time"
                   sortKey="start"
                   sortConfig={sortConfig}
                   onSort={handleSort}
@@ -916,51 +1063,156 @@ export default function Appointments() {
                   sortConfig={sortConfig}
                   onSort={handleSort}
                 />
+                <th className="text-left px-4 py-4 font-semibold text-gray-700 text-sm">
+                  Payment Type
+                </th>
                 <SortableHeader
                   label="Status"
                   sortKey="status"
                   sortConfig={sortConfig}
                   onSort={handleSort}
                 />
-                <th className="text-left p-3">Actions</th>
+                <th className="text-left px-4 py-4 font-semibold text-gray-700 text-sm">
+                  Actions
+                </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-100">
               {sortedRows.map((r) => (
-                <tr key={r._id} className="border-t hover:bg-gray-50">
-                  <td className="p-3">{r.client?.name}</td>
-                  <td className="p-3">
-                    {r.beautician?.name || r.beauticianId}
+                <tr key={r._id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-4">
+                    <div className="font-medium text-gray-900">
+                      {r.client?.name}
+                    </div>
+                    {r.client?.email && (
+                      <div className="text-xs text-gray-500">
+                        {r.client.email}
+                      </div>
+                    )}
                   </td>
-                  <td className="p-3">
-                    {r.service?.name || r.serviceId} - {r.variantName}
+                  <td className="px-4 py-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-xs font-semibold">
+                        {(r.beautician?.name || r.beauticianId || "U")
+                          .charAt(0)
+                          .toUpperCase()}
+                      </div>
+                      <span className="text-gray-900">
+                        {r.beautician?.name || r.beauticianId}
+                      </span>
+                    </div>
                   </td>
-                  <td className="p-3">
-                    {new Date(r.start).toLocaleString("en-GB", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                  <td className="px-4 py-4">
+                    <div className="font-medium text-gray-900">
+                      {r.service?.name || r.serviceId}
+                    </div>
+                    <div className="text-xs text-gray-500">{r.variantName}</div>
                   </td>
-                  <td className="p-3 font-semibold text-green-700">
-                    £{Number(r.price || 0).toFixed(2)}
+                  <td className="px-4 py-4">
+                    <div className="text-gray-900">
+                      {new Date(r.start).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {new Date(r.start).toLocaleTimeString("en-GB", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
                   </td>
-                  <td className="p-3">
+                  <td className="px-4 py-4">
+                    <span className="text-lg font-semibold text-green-700">
+                      £{Number(r.price || 0).toFixed(2)}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4">
+                    {(() => {
+                      // Check for payment.type
+                      if (r.payment?.type) {
+                        return (
+                          <div>
+                            <div
+                              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold ${
+                                r.payment.type === "deposit"
+                                  ? "bg-purple-100 text-purple-800"
+                                  : "bg-blue-100 text-blue-800"
+                              }`}
+                            >
+                              {r.payment.type === "deposit"
+                                ? "💳 Deposit"
+                                : "✅ Full"}
+                            </div>
+                            {r.payment.type === "deposit" &&
+                              r.payment.depositAmount && (
+                                <div className="text-xs text-gray-600 mt-1.5">
+                                  £{Number(r.payment.depositAmount).toFixed(2)}{" "}
+                                  paid
+                                </div>
+                              )}
+                          </div>
+                        );
+                      }
+
+                      // Check for payment.mode (legacy)
+                      if (r.payment?.mode) {
+                        return (
+                          <div>
+                            <div
+                              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold ${
+                                r.payment.mode === "deposit"
+                                  ? "bg-purple-100 text-purple-800"
+                                  : "bg-blue-100 text-blue-800"
+                              }`}
+                            >
+                              {r.payment.mode === "deposit"
+                                ? "💳 Deposit"
+                                : r.payment.mode === "pay_now"
+                                ? "✅ Full"
+                                : r.payment.mode === "pay_in_salon"
+                                ? "🏪 In Salon"
+                                : r.payment.mode}
+                            </div>
+                            {r.payment.mode === "deposit" &&
+                              r.payment.amountTotal && (
+                                <div className="text-xs text-gray-600 mt-1.5">
+                                  £
+                                  {((r.payment.amountTotal - 50) / 100).toFixed(
+                                    2
+                                  )}{" "}
+                                  paid
+                                </div>
+                              )}
+                          </div>
+                        );
+                      }
+
+                      // Default when no payment info
+                      return (
+                        <span className="text-xs text-gray-400 italic">
+                          N/A
+                        </span>
+                      );
+                    })()}
+                  </td>
+                  <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
                       <span
-                        className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                        className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold ${
                           r.status === "confirmed"
                             ? "bg-green-100 text-green-800"
                             : r.status === "reserved_unpaid"
                             ? "bg-yellow-100 text-yellow-800"
                             : String(r.status).startsWith("cancelled")
                             ? "bg-red-100 text-red-800"
-                            : "bg-gray-100 text-gray-800"
+                            : r.status === "no_show"
+                            ? "bg-gray-100 text-gray-800"
+                            : "bg-blue-100 text-blue-800"
                         }`}
                       >
-                        {r.status}
+                        {r.status?.replace(/_/g, " ").toUpperCase()}
                       </span>
                       {r.payment?.stripe?.lastPaymentError && (
                         <div
@@ -998,27 +1250,27 @@ export default function Appointments() {
                       )}
                     </div>
                   </td>
-                  <td className="p-3">
+                  <td className="px-4 py-4">
                     <div className="flex gap-2">
                       <button
-                        className="border rounded px-3 py-1.5 text-sm text-blue-600 border-blue-200 hover:bg-blue-50"
+                        className="px-3 py-1.5 text-xs font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
                         onClick={() => openEditModal(r)}
                         title="Edit Appointment"
                       >
-                        Edit
+                        ✏️ Edit
                       </button>
                       <button
-                        className="border rounded px-3 py-1.5 text-sm text-red-600 border-red-200 hover:bg-red-50 disabled:opacity-50"
+                        className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                         disabled={
                           String(r.status || "").startsWith("cancelled") ||
                           r.status === "no_show"
                         }
                         onClick={() => openCancelModal(r._id)}
                       >
-                        Cancel
+                        ❌
                       </button>
                       <button
-                        className="border rounded px-3 py-1.5 text-sm text-gray-600 border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                        className="px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                         disabled={
                           String(r.status || "").startsWith("cancelled") ||
                           r.status === "no_show"
@@ -1026,7 +1278,7 @@ export default function Appointments() {
                         onClick={() => markAsNoShow(r._id)}
                         title="Mark as No Show"
                       >
-                        No Show
+                        🚫
                       </button>
                       {String(r.status || "").startsWith("cancelled") && (
                         <button
@@ -1048,45 +1300,63 @@ export default function Appointments() {
 
       {/* Mobile Card View */}
       {!loading && (
-        <div className="lg:hidden space-y-3 sm:space-y-4">
+        <div className="lg:hidden space-y-4">
           {sortedRows.map((r) => (
             <div
               key={r._id}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5 hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-all"
             >
-              {/* Header with name and status */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-base sm:text-lg text-gray-900 truncate">
-                    {r.client?.name}
+              {/* Header with gradient background */}
+              <div className="bg-gradient-to-br from-brand-50 to-brand-100/50 px-4 py-3 border-b border-brand-200">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-lg text-gray-900 truncate">
+                      {r.client?.name}
+                    </div>
+                    <div className="text-sm text-gray-600 mt-0.5 truncate">
+                      {r.client?.email}
+                    </div>
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-600 mt-0.5 truncate">
-                    {r.beautician?.name || r.beauticianId}
-                  </div>
+                  <span
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase whitespace-nowrap ml-2 ${
+                      r.status === "confirmed"
+                        ? "bg-green-100 text-green-800"
+                        : r.status === "reserved_unpaid"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : String(r.status).startsWith("cancelled")
+                        ? "bg-red-100 text-red-800"
+                        : r.status === "no_show"
+                        ? "bg-gray-100 text-gray-800"
+                        : "bg-blue-100 text-blue-800"
+                    }`}
+                  >
+                    {r.status?.replace(/_/g, " ")}
+                  </span>
                 </div>
-                <span
-                  className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap ml-2 ${
-                    r.status === "confirmed"
-                      ? "bg-green-100 text-green-800"
-                      : r.status === "reserved_unpaid"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : String(r.status).startsWith("cancelled")
-                      ? "bg-red-100 text-red-800"
-                      : r.status === "no_show"
-                      ? "bg-gray-100 text-gray-800"
-                      : "bg-blue-100 text-blue-800"
-                  }`}
-                >
-                  {r.status?.replace(/_/g, " ").toUpperCase()}
-                </span>
               </div>
 
               {/* Appointment Details */}
-              <div className="space-y-2.5 sm:space-y-3">
+              <div className="px-4 py-4 space-y-4">
+                {/* Staff */}
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-semibold text-base shadow-sm">
+                    {(r.beautician?.name || r.beauticianId || "?")
+                      .charAt(0)
+                      .toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs text-gray-500">Staff</div>
+                    <div className="font-medium text-sm text-gray-900">
+                      {r.beautician?.name || r.beauticianId}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Service */}
                 <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-brand-50 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center">
                     <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-brand-600"
+                      className="w-5 h-5 text-brand-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1100,20 +1370,23 @@ export default function Appointments() {
                     </svg>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs text-gray-500 mb-0.5">Service</div>
-                    <div className="font-medium text-sm sm:text-base text-gray-900">
+                    <div className="text-xs text-gray-500">Service</div>
+                    <div className="font-semibold text-base text-gray-900">
                       {r.service?.name || r.serviceId}
                     </div>
-                    <div className="text-xs sm:text-sm text-gray-600">
-                      {r.variantName}
-                    </div>
+                    {r.variantName && (
+                      <div className="text-sm text-gray-600 mt-0.5">
+                        {r.variantName}
+                      </div>
+                    )}
                   </div>
                 </div>
 
+                {/* Date & Time */}
                 <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
                     <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-[#3B82F6]"
+                      className="w-5 h-5 text-blue-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1127,17 +1400,15 @@ export default function Appointments() {
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <div className="text-xs text-gray-500 mb-0.5">
-                      Date & Time
-                    </div>
-                    <div className="font-medium text-sm sm:text-base text-gray-900">
+                    <div className="text-xs text-gray-500">Date & Time</div>
+                    <div className="font-medium text-base text-gray-900">
                       {new Date(r.start).toLocaleString("en-GB", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
                       })}
                     </div>
-                    <div className="text-xs sm:text-sm text-gray-600">
+                    <div className="text-sm text-gray-600">
                       {new Date(r.start).toLocaleString("en-GB", {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -1146,28 +1417,102 @@ export default function Appointments() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-green-50 flex items-center justify-center">
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-green-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-xs text-gray-500 mb-0.5">Price</div>
-                    <div className="font-semibold text-base sm:text-lg text-green-700">
-                      £{Number(r.price || 0).toFixed(2)}
+                {/* Price & Payment */}
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <div className="text-xs text-green-700 font-medium">
+                        Total Price
+                      </div>
+                      <div className="font-bold text-2xl text-green-700 mt-0.5">
+                        £{Number(r.price || 0).toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                      <svg
+                        className="w-6 h-6 text-green-700"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
                     </div>
                   </div>
+
+                  {/* Payment Details */}
+                  {(() => {
+                    const paymentType = r.payment?.type || r.payment?.mode;
+                    if (!paymentType) return null;
+
+                    const isDeposit = paymentType === "deposit";
+                    const isFullPayment = paymentType === "full_payment";
+                    const isPayNow = paymentType === "pay_now";
+                    const isPayInSalon = paymentType === "pay_in_salon";
+
+                    return (
+                      <div className="pt-3 border-t border-green-200">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold ${
+                              isDeposit
+                                ? "bg-purple-100 text-purple-800"
+                                : isFullPayment || isPayNow
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {isDeposit
+                              ? "💳 Deposit"
+                              : isFullPayment || isPayNow
+                              ? "✅ Full Payment"
+                              : "🏪 Pay in Salon"}
+                          </span>
+                        </div>
+                        {isDeposit && r.payment && (
+                          <div className="mt-2 space-y-1">
+                            {(() => {
+                              const depositAmount =
+                                r.payment.depositAmount ||
+                                (r.payment.amountTotal
+                                  ? (r.payment.amountTotal - 50) / 100
+                                  : null);
+                              const totalPrice = Number(r.price || 0);
+                              const balance = depositAmount
+                                ? totalPrice - depositAmount
+                                : null;
+
+                              return (
+                                <>
+                                  {depositAmount && (
+                                    <div className="text-xs text-green-800">
+                                      <span className="font-medium">
+                                        Deposit Paid:
+                                      </span>{" "}
+                                      £{depositAmount.toFixed(2)}
+                                    </div>
+                                  )}
+                                  {balance && balance > 0 && (
+                                    <div className="text-xs text-green-800">
+                                      <span className="font-medium">
+                                        Balance Due:
+                                      </span>{" "}
+                                      £{balance.toFixed(2)}
+                                    </div>
+                                  )}
+                                </>
+                              );
+                            })()}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Payment Error Details */}
@@ -1206,16 +1551,16 @@ export default function Appointments() {
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-4 pt-4 border-t border-gray-100 space-y-2.5">
+              <div className="px-4 pb-4 space-y-2.5">
                 <button
-                  className="w-full border-2 rounded-xl px-4 py-3 text-sm sm:text-base text-brand-600 border-brand-200 hover:bg-brand-50 font-medium transition-colors active:scale-[0.98]"
+                  className="w-full px-4 py-3 text-sm font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all active:scale-[0.98]"
                   onClick={() => openEditModal(r)}
                 >
                   ✏️ Edit Appointment
                 </button>
                 <div className="grid grid-cols-2 gap-2.5">
                   <button
-                    className="border-2 rounded-xl px-4 py-3 text-sm sm:text-base text-red-600 border-red-200 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors active:scale-[0.98]"
+                    className="px-4 py-3 text-sm font-semibold text-red-700 bg-red-50 hover:bg-red-100 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
                     disabled={
                       String(r.status || "").startsWith("cancelled") ||
                       r.status === "no_show"
@@ -1225,22 +1570,22 @@ export default function Appointments() {
                     ❌ Cancel
                   </button>
                   <button
-                    className="border-2 rounded-xl px-4 py-3 text-sm sm:text-base text-gray-600 border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors active:scale-[0.98]"
+                    className="px-4 py-3 text-sm font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
                     disabled={
                       String(r.status || "").startsWith("cancelled") ||
                       r.status === "no_show"
                     }
                     onClick={() => markAsNoShow(r._id)}
                   >
-                    👤 No Show
+                    🚫 No Show
                   </button>
                 </div>
                 {String(r.status || "").startsWith("cancelled") && (
                   <button
-                    className="w-full border-2 rounded-xl px-4 py-3 text-sm sm:text-base text-red-700 border-red-300 hover:bg-red-50 font-medium transition-colors active:scale-[0.98]"
+                    className="w-full px-4 py-3 text-sm font-semibold text-red-700 bg-red-50 hover:bg-red-100 rounded-xl transition-all active:scale-[0.98]"
                     onClick={() => deleteAppointment(r._id)}
                   >
-                    🗑️ Delete Canceled Appointment
+                    🗑️ Delete
                   </button>
                 )}
               </div>
@@ -1566,6 +1911,66 @@ function EditModal({
               onChange={(e) => updateField("price", e.target.value)}
             />
           </FormField>
+
+          {/* Payment Type & Details */}
+          {appointment.payment && (
+            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+              <div className="text-sm font-semibold text-purple-900 mb-2 flex items-center gap-2">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                  />
+                </svg>
+                Payment Details
+              </div>
+              {(() => {
+                const paymentType =
+                  appointment.payment.type || appointment.payment.mode;
+                const isDeposit = paymentType === "deposit";
+                const isFullPayment =
+                  paymentType === "pay_now" || paymentType === "full";
+                const depositAmount =
+                  appointment.payment.depositAmount ||
+                  (appointment.payment.amountTotal
+                    ? (appointment.payment.amountTotal - 50) / 100
+                    : null);
+
+                return (
+                  <>
+                    <div className="text-sm text-gray-900 font-medium">
+                      {isDeposit
+                        ? "💳 Deposit Paid"
+                        : isFullPayment
+                        ? "✅ Paid in Full"
+                        : "Payment Required"}
+                    </div>
+                    {isDeposit && depositAmount && (
+                      <div className="text-sm text-gray-700 mt-2 space-y-1">
+                        <p>Deposit Paid: £{Number(depositAmount).toFixed(2)}</p>
+                        <p>
+                          Balance Due: £
+                          {Number(appointment.price - depositAmount).toFixed(2)}
+                        </p>
+                      </div>
+                    )}
+                    {appointment.payment.stripe?.paymentIntentId && (
+                      <div className="text-xs text-gray-600 mt-2">
+                        Payment ID: {appointment.payment.stripe.paymentIntentId}
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          )}
         </div>
       </div>
 
@@ -1600,6 +2005,12 @@ function CreateModal({
   if (!appointment) return null;
 
   const [showTimePicker, setShowTimePicker] = useState(false);
+
+  // Drawer states
+  const [showBeauticianDrawer, setShowBeauticianDrawer] = useState(false);
+  const [showServiceDrawer, setShowServiceDrawer] = useState(false);
+  const [showVariantDrawer, setShowVariantDrawer] = useState(false);
+  const [showPaymentStatusDrawer, setShowPaymentStatusDrawer] = useState(false);
 
   // Prevent body scroll when DateTimePicker modal is open
   useEffect(() => {
@@ -1716,17 +2127,35 @@ function CreateModal({
 
   return (
     <Modal open={open} onClose={onClose} title="Create Appointment">
-      <div className="space-y-4">
+      <div className="space-y-6">
         {/* Client Information */}
-        <div className="space-y-3">
-          <h3 className="font-semibold text-gray-900">Client Information</h3>
+        <div className="space-y-3 sm:space-y-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-100">
+          <div className="flex items-center gap-2">
+            <svg
+              className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+            <h3 className="font-bold text-gray-900 text-base sm:text-lg">
+              Client Information
+            </h3>
+          </div>
           <FormField label="Name *" htmlFor="client-name">
             <input
               type="text"
               id="client-name"
-              className="border rounded w-full px-3 py-2"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400 text-sm sm:text-base"
               value={appointment.clientName}
               onChange={(e) => updateField("clientName", e.target.value)}
+              placeholder="Enter client's full name"
               required
             />
           </FormField>
@@ -1734,9 +2163,10 @@ function CreateModal({
             <input
               type="email"
               id="client-email"
-              className="border rounded w-full px-3 py-2"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400 text-sm sm:text-base"
               value={appointment.clientEmail}
               onChange={(e) => updateField("clientEmail", e.target.value)}
+              placeholder="client@example.com"
               required
             />
           </FormField>
@@ -1744,41 +2174,55 @@ function CreateModal({
             <input
               type="tel"
               id="client-phone"
-              className="border rounded w-full px-3 py-2"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400 text-sm sm:text-base"
               value={appointment.clientPhone}
               onChange={(e) => updateField("clientPhone", e.target.value)}
+              placeholder="+44 7700 900000"
             />
           </FormField>
           <FormField label="Notes" htmlFor="client-notes">
             <textarea
               id="client-notes"
-              className="border rounded w-full px-3 py-2"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400 text-sm sm:text-base"
               rows="2"
               value={appointment.clientNotes}
               onChange={(e) => updateField("clientNotes", e.target.value)}
+              placeholder="Any special requests or notes..."
             />
           </FormField>
         </div>
 
         {/* Appointment Details */}
-        <div className="space-y-3 pt-3 border-t">
-          <h3 className="font-semibold text-gray-900">Appointment Details</h3>
-          <FormField label="Beautician *" htmlFor="beautician-select-create">
-            <select
-              id="beautician-select-create"
-              className="border rounded w-full px-3 py-2 bg-gray-50"
-              value={appointment.beauticianId}
-              onChange={(e) => handleBeauticianChange(e.target.value)}
-              disabled={!isSuperAdmin}
-              required
+        <div className="space-y-3 sm:space-y-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-purple-100">
+          <div className="flex items-center gap-2">
+            <svg
+              className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <option value="">Select Beautician</option>
-              {beauticians.map((b) => (
-                <option key={b._id} value={b._id}>
-                  {b.name}
-                </option>
-              ))}
-            </select>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <h3 className="font-bold text-gray-900 text-base sm:text-lg">
+              Appointment Details
+            </h3>
+          </div>
+          <FormField label="Beautician *" htmlFor="beautician-select-create">
+            <SelectButton
+              value={appointment.beauticianId}
+              placeholder="Select Beautician"
+              options={beauticians.map((b) => ({
+                value: b._id,
+                label: b.name,
+              }))}
+              onClick={() => isSuperAdmin && setShowBeauticianDrawer(true)}
+              disabled={!isSuperAdmin}
+            />
             {!isSuperAdmin && appointment.beauticianId && (
               <p className="text-xs text-gray-500 mt-1">
                 Pre-selected for your beautician account
@@ -1786,29 +2230,22 @@ function CreateModal({
             )}
           </FormField>
           <FormField label="Service *" htmlFor="service-select-create">
-            <select
-              id="service-select-create"
-              className="border rounded w-full px-3 py-2"
+            <SelectButton
               value={appointment.serviceId}
-              onChange={(e) => {
-                updateField("serviceId", e.target.value);
-                updateField("variantName", "");
-                updateField("price", 0);
-              }}
-              disabled={!appointment.beauticianId}
-              required
-            >
-              <option value="">
-                {!appointment.beauticianId
+              placeholder={
+                !appointment.beauticianId
                   ? "Select beautician first"
-                  : "Select Service"}
-              </option>
-              {availableServices.map((s) => (
-                <option key={s._id} value={s._id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
+                  : "Select Service"
+              }
+              options={availableServices.map((s) => ({
+                value: s._id,
+                label: s.name,
+              }))}
+              onClick={() =>
+                appointment.beauticianId && setShowServiceDrawer(true)
+              }
+              disabled={!appointment.beauticianId}
+            />
             {appointment.beauticianId && availableServices.length === 0 && (
               <p className="text-xs text-red-500 mt-1">
                 No services available for this beautician
@@ -1816,21 +2253,18 @@ function CreateModal({
             )}
           </FormField>
           <FormField label="Variant *" htmlFor="variant-select-create">
-            <select
-              id="variant-select-create"
-              className="border rounded w-full px-3 py-2"
+            <SelectButton
               value={appointment.variantName}
-              onChange={(e) => handleVariantChange(e.target.value)}
+              placeholder="Select Variant"
+              options={variants.map((v) => ({
+                value: v.name,
+                label: `${v.name} - £${v.price} (${v.durationMin}min)`,
+              }))}
+              onClick={() =>
+                appointment.serviceId && setShowVariantDrawer(true)
+              }
               disabled={!appointment.serviceId}
-              required
-            >
-              <option value="">Select Variant</option>
-              {variants.map((v) => (
-                <option key={v.name} value={v.name}>
-                  {v.name} - £{v.price} ({v.durationMin}min)
-                </option>
-              ))}
-            </select>
+            />
           </FormField>
 
           {/* Date & Time Selection with DateTimePicker */}
@@ -1931,33 +2365,195 @@ function CreateModal({
             )}
 
           <FormField label="Payment Status *" htmlFor="payment-status-create">
-            <select
-              id="payment-status-create"
-              className="border rounded w-full px-3 py-2"
+            <SelectButton
               value={appointment.paymentStatus}
-              onChange={(e) => updateField("paymentStatus", e.target.value)}
-              required
-            >
-              <option value="paid">Paid (Cash/Card in Person)</option>
-              <option value="unpaid">Unpaid (Online Payment Required)</option>
-            </select>
+              placeholder="Select Payment Status"
+              options={[
+                { value: "paid", label: "💵 Paid (Cash/Card in Person)" },
+                {
+                  value: "unpaid",
+                  label: "🔄 Unpaid (Online Payment Required)",
+                },
+              ]}
+              onClick={() => setShowPaymentStatusDrawer(true)}
+            />
           </FormField>
+
+          {/* Payment Type & Details */}
+          {appointment.payment && (
+            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+              <div className="text-sm font-semibold text-purple-900 mb-2 flex items-center gap-2">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                  />
+                </svg>
+                Payment Details
+              </div>
+              {(() => {
+                const paymentType =
+                  appointment.payment.type || appointment.payment.mode;
+                const isDeposit = paymentType === "deposit";
+                const isFullPayment =
+                  paymentType === "pay_now" || paymentType === "full";
+                const depositAmount =
+                  appointment.payment.depositAmount ||
+                  (appointment.payment.amountTotal
+                    ? (appointment.payment.amountTotal - 50) / 100
+                    : null);
+
+                return (
+                  <>
+                    <div className="text-sm text-gray-900 font-medium">
+                      {isDeposit
+                        ? "💳 Deposit Paid"
+                        : isFullPayment
+                        ? "✅ Paid in Full"
+                        : "Payment Required"}
+                    </div>
+                    {isDeposit && depositAmount && (
+                      <div className="text-sm text-gray-700 mt-2 space-y-1">
+                        <p>Deposit Paid: £{Number(depositAmount).toFixed(2)}</p>
+                        <p>
+                          Balance Due: £
+                          {Number(appointment.price - depositAmount).toFixed(2)}
+                        </p>
+                      </div>
+                    )}
+                    {appointment.payment.stripe?.paymentIntentId && (
+                      <div className="text-xs text-gray-600 mt-2">
+                        Payment ID: {appointment.payment.stripe.paymentIntentId}
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-2 pt-4 border-t mt-4">
-        <Button variant="outline" onClick={onClose} disabled={submitting}>
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-4 sm:pt-6 border-t mt-4 sm:mt-6">
+        <button
+          onClick={onClose}
+          disabled={submitting}
+          className="w-full sm:w-auto px-4 sm:px-6 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all disabled:opacity-50 text-sm sm:text-base"
+        >
           Cancel
-        </Button>
-        <Button
-          variant="brand"
+        </button>
+        <button
           onClick={onSave}
           disabled={submitting}
-          loading={submitting}
+          className="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-sm sm:text-base"
         >
-          Create Appointment
-        </Button>
+          {submitting ? (
+            <>
+              <svg
+                className="animate-spin h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Creating...
+            </>
+          ) : (
+            <>
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              Create Appointment
+            </>
+          )}
+        </button>
       </div>
+
+      {/* Select Drawers */}
+      <SelectDrawer
+        open={showBeauticianDrawer}
+        onClose={() => setShowBeauticianDrawer(false)}
+        title="Select Beautician"
+        options={beauticians.map((b) => ({ value: b._id, label: b.name }))}
+        value={appointment.beauticianId}
+        onChange={handleBeauticianChange}
+        placeholder="Select Beautician"
+        emptyMessage="No beauticians available"
+      />
+
+      <SelectDrawer
+        open={showServiceDrawer}
+        onClose={() => setShowServiceDrawer(false)}
+        title="Select Service"
+        options={availableServices.map((s) => ({
+          value: s._id,
+          label: s.name,
+        }))}
+        value={appointment.serviceId}
+        onChange={(val) => {
+          updateField("serviceId", val);
+          updateField("variantName", "");
+          updateField("price", 0);
+        }}
+        placeholder="Select Service"
+        emptyMessage="No services available for this beautician"
+      />
+
+      <SelectDrawer
+        open={showVariantDrawer}
+        onClose={() => setShowVariantDrawer(false)}
+        title="Select Variant"
+        options={variants.map((v) => ({
+          value: v.name,
+          label: `${v.name} - £${v.price} (${v.durationMin}min)`,
+        }))}
+        value={appointment.variantName}
+        onChange={handleVariantChange}
+        placeholder="Select Variant"
+        emptyMessage="No variants available"
+      />
+
+      <SelectDrawer
+        open={showPaymentStatusDrawer}
+        onClose={() => setShowPaymentStatusDrawer(false)}
+        title="Select Payment Status"
+        options={[
+          { value: "paid", label: "💵 Paid (Cash/Card in Person)" },
+          { value: "unpaid", label: "🔄 Unpaid (Online Payment Required)" },
+        ]}
+        value={appointment.paymentStatus}
+        onChange={(val) => updateField("paymentStatus", val)}
+        placeholder="Select Payment Status"
+      />
     </Modal>
   );
 }

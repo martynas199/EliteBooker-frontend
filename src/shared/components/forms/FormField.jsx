@@ -20,15 +20,15 @@ export function FormField({
       {label && (
         <label
           htmlFor={htmlFor}
-          className="block text-sm font-semibold text-white mb-2"
+          className="block text-sm font-semibold text-gray-700 mb-2"
         >
-          {label} {required && <span className="text-red-400">*</span>}
+          {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
       {children}
-      {hint && !error && <p className="text-xs text-white/50 mt-1">{hint}</p>}
+      {hint && !error && <p className="text-xs text-gray-600 mt-1">{hint}</p>}
       {error && (
-        <p className="text-red-400 text-sm mt-1" role="alert">
+        <p className="text-red-500 text-sm mt-1 font-medium" role="alert">
           {error}
         </p>
       )}
