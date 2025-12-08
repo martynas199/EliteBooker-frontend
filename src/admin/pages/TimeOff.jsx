@@ -69,7 +69,7 @@ export default function TimeOff() {
     const newErrors = {};
 
     if (!formData.beauticianId) {
-      newErrors.beauticianId = "Please select a beautician";
+      newErrors.beauticianId = "Please select a specialist";
     }
 
     if (!formData.start) {
@@ -331,7 +331,7 @@ export default function TimeOff() {
             className="p-4 sm:p-8 space-y-6 bg-gradient-to-br from-gray-50 to-white"
           >
             <div className="grid gap-4 sm:grid-cols-2">
-              {/* Beautician Selection */}
+              {/* Specialist Selection */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Staff Member <span className="text-red-500">*</span>

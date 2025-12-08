@@ -245,7 +245,7 @@ function ServiceCard({ service, onClick, formatPrice, index }) {
 
 /**
  * SPECIALIST CARD COMPONENT
- * Matches the original BeauticianPage card design
+ * Matches the original SpecialistPage card design
  */
 function SpecialistCard({ specialist, onClick, index }) {
   return (
@@ -576,7 +576,7 @@ export default function SalonLandingLuxury() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}
               >
-                {/* Services Title - Only show when there's a single beautician */}
+                {/* Services Title - Only show when there's a single specialist */}
                 {!hasMultipleSpecialists && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}

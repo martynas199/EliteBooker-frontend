@@ -30,14 +30,14 @@ export default function BeauticianSelectionPage() {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    // Fetch all beauticians
+    // Fetch all specialists
     api
       .get("/beauticians")
       .then((res) => {
         const activeBeauticians = res.data.filter((b) => b.active);
         setBeauticians(activeBeauticians);
 
-        // Check if there's a selected beautician in URL params
+        // Check if there's a selected specialist in URL params
         const selectedId = searchParams.get("selected");
         if (selectedId) {
           const beautician = activeBeauticians.find(
@@ -48,7 +48,7 @@ export default function BeauticianSelectionPage() {
           }
         }
       })
-      .catch((err) => console.error("Failed to fetch beauticians:", err))
+      .catch((err) => console.error("Failed to fetch specialists:", err))
       .finally(() => setLoading(false));
   }, [searchParams]);
 
@@ -59,7 +59,7 @@ export default function BeauticianSelectionPage() {
     const beauticianParam = searchParams.get("selected");
 
     if (serviceParam && beauticianParam) {
-      // Restore service and beautician to Redux from URL
+      // Restore service and specialist to Redux from URL
       api
         .get(`/services/${serviceParam}`)
         .then((res) => {
@@ -101,19 +101,19 @@ export default function BeauticianSelectionPage() {
   }, []);
 
   const handleBeauticianSelect = async (beautician) => {
-    // Fetch the full beautician data to ensure we have the latest inSalonPayment flag
+    // Fetch the full specialist data to ensure we have the latest inSalonPayment flag
     let fullBeauticianData = beautician;
     try {
       const beauticianRes = await api.get(`/beauticians/${beautician._id}`);
       fullBeauticianData = beauticianRes.data;
     } catch (err) {
-      console.error("Failed to fetch full beautician data:", err);
+      console.error("Failed to fetch full specialist data:", err);
     }
 
     setSelectedBeautician(fullBeauticianData);
     setServicesLoading(true);
 
-    // Update URL to include selected beautician (preserve existing service params)
+    // Update URL to include selected specialist (preserve existing service params)
     const serviceParam = searchParams.get("service");
     const variantParam = searchParams.get("variant");
     const params = new URLSearchParams({ selected: beautician._id });
@@ -124,7 +124,7 @@ export default function BeauticianSelectionPage() {
     });
 
     try {
-      // Fetch services offered by this beautician
+      // Fetch services offered by this specialist
       const res = await api.get("/services", {
         params: { limit: 1000 }, // Fetch all services
       });
@@ -135,15 +135,15 @@ export default function BeauticianSelectionPage() {
           return typeof field === "object" && field._id ? field._id : field;
         };
 
-        // Check primary beautician (can be populated object or ID string)
+        // Check primary specialist (can be populated object or ID string)
         const primaryId = getId(service.primaryBeauticianId);
         if (primaryId === beautician._id) return true;
 
-        // Check legacy single beautician field
+        // Check legacy single specialist field
         const legacyId = getId(service.beauticianId);
         if (legacyId === beautician._id) return true;
 
-        // Check additional beauticians array
+        // Check additional specialists array
         if (
           service.additionalBeauticianIds &&
           Array.isArray(service.additionalBeauticianIds)
@@ -301,7 +301,7 @@ export default function BeauticianSelectionPage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {!selectedBeautician ? (
-            // Step 1: Select a Beautician
+            // Step 1: Select a Specialist
             <>
               {/* Hero Section - Dark Spotify Style */}
               <motion.div

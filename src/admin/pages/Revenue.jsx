@@ -487,14 +487,14 @@ export default function Revenue() {
               {data.beauticians.length > 1 && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Filter by Beautician
+                    Filter by Specialist
                   </label>
                   <select
                     value={selectedBeautician}
                     onChange={(e) => setSelectedBeautician(e.target.value)}
                     className="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                   >
-                    <option value="all">All Beauticians</option>
+                    <option value="all">All Specialists</option>
                     {data.beauticians.map((b) => (
                       <option key={b.beauticianId} value={b.beauticianId}>
                         {b.beautician}
@@ -508,7 +508,7 @@ export default function Revenue() {
               {filteredBeauticians.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 overflow-x-auto">
                   <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">
-                    Revenue by Beautician
+                    Revenue by Specialist
                   </h2>
                   <div className="min-w-full">
                     <BarChart
@@ -694,7 +694,7 @@ export default function Revenue() {
                       <thead className="bg-gray-50">
                         <tr>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Beautician
+                            Specialist
                           </th>
                           <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Revenue

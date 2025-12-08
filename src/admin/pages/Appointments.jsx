@@ -49,7 +49,7 @@ export default function Appointments() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState(null);
   const [services, setServices] = useState([]);
-  const [beauticians, setBeauticians] = useState([]);
+  const [specialists, setSpecialists] = useState([]);
 
   // Create modal state
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -58,7 +58,7 @@ export default function Appointments() {
     clientEmail: "",
     clientPhone: "",
     clientNotes: "",
-    beauticianId: "",
+    specialistId: "",
     serviceId: "",
     variantName: "",
     start: "",
@@ -68,7 +68,7 @@ export default function Appointments() {
   });
 
   // Filter state
-  const [selectedBeauticianId, setSelectedBeauticianId] = useState("");
+  const [selectedSpecialistId, setSelectedSpecialistId] = useState("");
   const [dateFilter, setDateFilter] = useState("all"); // all, day, week, month, custom
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
@@ -147,14 +147,14 @@ export default function Appointments() {
   useEffect(() => {
     fetchAppointments(pagination.page);
 
-    // Load services and beauticians for edit modal
+    // Load services and specialists for edit modal
     api
       .get("/services", { params: { limit: 1000 } })
       .then((r) => setServices(r.data || []))
       .catch(() => {});
     api
       .get("/beauticians", { params: { limit: 1000 } })
-      .then((r) => setBeauticians(r.data || []))
+      .then((r) => setSpecialists(r.data || []))
       .catch(() => {});
   }, []);
 
@@ -221,14 +221,14 @@ export default function Appointments() {
   const sortedRows = useMemo(() => {
     let filteredRows = rows;
 
-    // Apply beautician filter
-    if (selectedBeauticianId) {
+    // Apply specialist filter
+    if (selectedSpecialistId) {
       filteredRows = filteredRows.filter((r) => {
         const beauticianId =
           typeof r.beauticianId === "object" && r.beauticianId?._id
             ? r.beauticianId._id
             : r.beauticianId;
-        return String(beauticianId) === String(selectedBeauticianId);
+        return String(beauticianId) === String(selectedSpecialistId);
       });
     }
 
@@ -739,9 +739,9 @@ export default function Appointments() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            {/* Beautician Filter */}
+            {/* Specialist Filter */}
             <FormField
-              label={t("filterByBeautician", language) || "Beautician"}
+              label={t("filterByBeautician", language) || "Specialist"}
               htmlFor="beautician-filter"
               className="flex-1"
             >
@@ -752,9 +752,9 @@ export default function Appointments() {
                 onChange={(e) => setSelectedBeauticianId(e.target.value)}
               >
                 <option value="">
-                  {t("allBeauticians", language) || "All Beauticians"}
+                  {t("allBeauticians", language) || "All Specialists"}
                 </option>
-                {beauticians.map((b) => (
+                {specialists.map((b) => (
                   <option key={b._id} value={b._id}>
                     {b.name}
                   </option>
@@ -1825,15 +1825,15 @@ function EditModal({
         {/* Appointment Details */}
         <div className="space-y-3 pt-3 border-t">
           <h3 className="font-semibold text-gray-900">Appointment Details</h3>
-          <FormField label="Beautician" htmlFor="beautician-select">
+          <FormField label="Specialist" htmlFor="beautician-select">
             <select
               id="beautician-select"
               className="border rounded w-full px-3 py-2"
               value={appointment.beauticianId}
               onChange={(e) => updateField("beauticianId", e.target.value)}
             >
-              <option value="">Select Beautician</option>
-              {beauticians.map((b) => (
+              <option value="">Select Specialist</option>
+              {specialists.map((b) => (
                 <option key={b._id} value={b._id}>
                   {b.name}
                 </option>
@@ -2007,7 +2007,7 @@ function CreateModal({
   const [showTimePicker, setShowTimePicker] = useState(false);
 
   // Drawer states
-  const [showBeauticianDrawer, setShowBeauticianDrawer] = useState(false);
+  const [showSpecialistDrawer, setShowSpecialistDrawer] = useState(false);
   const [showServiceDrawer, setShowServiceDrawer] = useState(false);
   const [showVariantDrawer, setShowVariantDrawer] = useState(false);
   const [showPaymentStatusDrawer, setShowPaymentStatusDrawer] = useState(false);
@@ -2212,11 +2212,11 @@ function CreateModal({
               Appointment Details
             </h3>
           </div>
-          <FormField label="Beautician *" htmlFor="beautician-select-create">
+          <FormField label="Specialist *" htmlFor="beautician-select-create">
             <SelectButton
               value={appointment.beauticianId}
-              placeholder="Select Beautician"
-              options={beauticians.map((b) => ({
+              placeholder="Select Specialist"
+              options={specialists.map((b) => ({
                 value: b._id,
                 label: b.name,
               }))}
@@ -2225,7 +2225,7 @@ function CreateModal({
             />
             {!isSuperAdmin && appointment.beauticianId && (
               <p className="text-xs text-gray-500 mt-1">
-                Pre-selected for your beautician account
+                Pre-selected for your specialist account
               </p>
             )}
           </FormField>
@@ -2234,7 +2234,7 @@ function CreateModal({
               value={appointment.serviceId}
               placeholder={
                 !appointment.beauticianId
-                  ? "Select beautician first"
+                  ? "Select specialist first"
                   : "Select Service"
               }
               options={availableServices.map((s) => ({
@@ -2248,7 +2248,7 @@ function CreateModal({
             />
             {appointment.beauticianId && availableServices.length === 0 && (
               <p className="text-xs text-red-500 mt-1">
-                No services available for this beautician
+                No services available for this specialist
               </p>
             )}
           </FormField>
@@ -2502,12 +2502,12 @@ function CreateModal({
       <SelectDrawer
         open={showBeauticianDrawer}
         onClose={() => setShowBeauticianDrawer(false)}
-        title="Select Beautician"
-        options={beauticians.map((b) => ({ value: b._id, label: b.name }))}
+        title="Select Specialist"
+        options={specialists.map((b) => ({ value: b._id, label: b.name }))}
         value={appointment.beauticianId}
         onChange={handleBeauticianChange}
-        placeholder="Select Beautician"
-        emptyMessage="No beauticians available"
+        placeholder="Select Specialist"
+        emptyMessage="No specialists available"
       />
 
       <SelectDrawer
@@ -2525,7 +2525,7 @@ function CreateModal({
           updateField("price", 0);
         }}
         placeholder="Select Service"
-        emptyMessage="No services available for this beautician"
+        emptyMessage="No services available for this specialist"
       />
 
       <SelectDrawer
