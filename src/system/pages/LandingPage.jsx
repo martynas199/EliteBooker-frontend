@@ -4,6 +4,7 @@ import PageTransition from "../../shared/components/ui/PageTransition";
 import Card from "../../shared/components/ui/Card";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SEOHead from "../../shared/components/seo/SEOHead";
+import eliteLogo from "../../assets/elite.png";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -307,7 +308,7 @@ export default function LandingPage() {
               {/* Logo */}
               <div className="flex items-center gap-4">
                 <img
-                  src="/src/assets/elite.png"
+                  src={eliteLogo}
                   alt="Elite Logo"
                   className="h-28 w-auto"
                 />
