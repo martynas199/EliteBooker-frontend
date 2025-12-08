@@ -14,12 +14,12 @@ import dayjs from "dayjs";
 export default function TimeOff() {
   const { language } = useLanguage();
   const [timeOffList, setTimeOffList] = useState([]);
-  const [beauticians, setBeauticians] = useState([]);
+  const [specialists, setSpecialists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState({
-    beauticianId: "",
+    specialistId: "",
     start: "",
     end: "",
     reason: "",
@@ -59,7 +59,7 @@ export default function TimeOff() {
       console.error("Error loading data:", error);
       alert("Failed to load time-off data");
       setTimeOffList([]);
-      setBeauticians([]);
+      setSpecialists([]);
     } finally {
       setLoading(false);
     }
@@ -68,8 +68,8 @@ export default function TimeOff() {
   function validateForm() {
     const newErrors = {};
 
-    if (!formData.beauticianId) {
-      newErrors.beauticianId = "Please select a specialist";
+    if (!formData.specialistId) {
+      newErrors.specialistId = "Please select a specialist";
     }
 
     if (!formData.start) {
@@ -103,14 +103,14 @@ export default function TimeOff() {
     try {
       setSubmitting(true);
       const newTimeOff = await timeOffAPI.create({
-        beauticianId: formData.beauticianId,
+        beauticianId: formData.specialistId, // Map specialistId to beauticianId for API
         start: formData.start,
         end: formData.end,
         reason: formData.reason,
       });
 
       setTimeOffList([...timeOffList, newTimeOff]);
-      setFormData({ beauticianId: "", start: "", end: "", reason: "" });
+      setFormData({ specialistId: "", start: "", end: "", reason: "" });
       setShowAddForm(false);
       setErrors({});
     } catch (error) {
@@ -279,9 +279,9 @@ export default function TimeOff() {
                       </svg>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-gray-900">
-                        {beauticians.length}
-                      </div>
+                      <span className="text-3xl font-bold text-gray-900">
+                        {specialists.length}
+                      </span>
                       <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
                         Team Members
                       </div>
@@ -337,24 +337,24 @@ export default function TimeOff() {
                   Staff Member <span className="text-red-500">*</span>
                 </label>
                 <select
-                  value={formData.beauticianId}
+                  value={formData.specialistId}
                   onChange={(e) =>
-                    setFormData({ ...formData, beauticianId: e.target.value })
+                    setFormData({ ...formData, specialistId: e.target.value })
                   }
                   className={`w-full px-4 py-3 border-2 rounded-xl font-medium focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all ${
-                    errors.beauticianId ? "border-red-500" : "border-gray-300"
+                    errors.specialistId ? "border-red-500" : "border-gray-300"
                   }`}
                 >
                   <option value="">Select staff member</option>
-                  {beauticians.map((beautician) => (
-                    <option key={beautician._id} value={beautician._id}>
-                      {beautician.name}
+                  {specialists.map((specialist) => (
+                    <option key={specialist._id} value={specialist._id}>
+                      {specialist.name}
                     </option>
                   ))}
                 </select>
-                {errors.beauticianId && (
+                {errors.specialistId && (
                   <p className="text-red-500 text-sm mt-1">
-                    {errors.beauticianId}
+                    {errors.specialistId}
                   </p>
                 )}
               </div>
@@ -592,7 +592,7 @@ export default function TimeOff() {
                 onClick={() => {
                   setShowAddForm(false);
                   setFormData({
-                    beauticianId: "",
+                    specialistId: "",
                     start: "",
                     end: "",
                     reason: "",
