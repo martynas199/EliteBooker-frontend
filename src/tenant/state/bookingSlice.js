@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   service: null,
-  beautician: null,
+  specialist: null,
   date: null,
   time: null,
   customerInfo: null,
@@ -18,8 +18,8 @@ const bookingSlice = createSlice({
     setService: (state, action) => {
       state.service = action.payload;
     },
-    setBeautician: (state, action) => {
-      state.beautician = action.payload;
+    setSpecialist: (state, action) => {
+      state.specialist = action.payload;
     },
     setDateTime: (state, action) => {
       state.date = action.payload.date;
@@ -39,7 +39,7 @@ const bookingSlice = createSlice({
     },
     clearBooking: (state) => {
       state.service = null;
-      state.beautician = null;
+      state.specialist = null;
       state.date = null;
       state.time = null;
       state.customerInfo = null;
@@ -52,7 +52,7 @@ const bookingSlice = createSlice({
 
 export const {
   setService,
-  setBeautician,
+  setSpecialist,
   setDateTime,
   setCustomerInfo,
   setClient,
