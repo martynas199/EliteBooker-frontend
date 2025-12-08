@@ -17,8 +17,8 @@ export default function Dashboard() {
   const admin = useSelector(selectAdmin);
   const isSuperAdmin = admin?.role === "super_admin";
   const [allAppointments, setAllAppointments] = useState([]);
-  const [beauticians, setBeauticians] = useState([]);
-  const [selectedBeautician, setSelectedBeautician] = useState("all");
+  const [specialists, setSpecialists] = useState([]);
+  const [selectedSpecialist, setSelectedSpecialist] = useState("all");
   const [loading, setLoading] = useState(true);
   const [currentView, setCurrentView] = useState("month");
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -30,15 +30,15 @@ export default function Dashboard() {
     try {
       setLoading(true);
 
-      // Fetch appointments, beauticians, and salon info in parallel
-      const [appointmentsRes, beauticiansRes, salonRes] = await Promise.all([
+      // Fetch appointments, specialists, and salon info in parallel
+      const [appointmentsRes, specialistsRes, salonRes] = await Promise.all([
         api.get("/appointments"),
         api.get("/beauticians", { params: { limit: 1000 } }),
         api.get("/salon"),
       ]);
 
       let appointments = appointmentsRes.data || [];
-      const beauticiansData = beauticiansRes.data || [];
+      const specialistsData = specialistsRes.data || [];
       const salonData = salonRes.data || {};
 
       console.log("[Dashboard] Salon data:", salonData);
@@ -123,10 +123,10 @@ export default function Dashboard() {
 
     let filtered = allAppointments;
 
-    // Filter by beautician if selected
-    if (selectedBeautician !== "all") {
+    // Filter by specialist if selected
+    if (selectedSpecialist !== "all") {
       filtered = filtered.filter(
-        (apt) => apt.beauticianId?._id === selectedBeautician
+        (apt) => apt.beauticianId?._id === selectedSpecialist
       );
     }
 
@@ -373,32 +373,32 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Beautician Filter - Only show for super admins */}
+        {/* Specialist Filter - Only show for super admins */}
         {isSuperAdmin && (
           <div className="flex items-center gap-3">
             <label
-              htmlFor="beautician-filter"
+              htmlFor="specialist-filter"
               className="text-sm font-medium text-gray-700"
             >
               {t("filterByBeautician", language)}:
             </label>
             <select
-              id="beautician-filter"
-              value={selectedBeautician}
-              onChange={(e) => setSelectedBeautician(e.target.value)}
+              id="specialist-filter"
+              value={selectedSpecialist}
+              onChange={(e) => setSelectedSpecialist(e.target.value)}
               className="px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white shadow-sm hover:border-brand-300 transition-colors"
             >
               <option value="all">{t("allBeauticians", language)}</option>
-              {beauticians.map((beautician) => (
-                <option key={beautician._id} value={beautician._id}>
-                  {beautician.name}
+              {specialists.map((specialist) => (
+                <option key={specialist._id} value={specialist._id}>
+                  {specialist.name}
                 </option>
               ))}
             </select>
           </div>
         )}
 
-        {/* Show info for salon-admin without linked beautician */}
+        {/* Show info for salon-admin without linked specialist */}
         {!isSuperAdmin &&
           !admin?.beauticianId &&
           admin?.role === "salon-admin" && (
@@ -632,7 +632,7 @@ export default function Dashboard() {
 
       {/* Today's Appointments Widget */}
       {(() => {
-        // Don't show today's appointments if regular admin has no linked beautician
+        // Don't show today's appointments if regular admin has no linked specialist
         if (!isSuperAdmin && !admin?.beauticianId) {
           return null;
         }
@@ -709,7 +709,7 @@ export default function Dashboard() {
                     {apt.serviceId?.name || apt.variantName}
                   </div>
                   <div className="text-xs text-brand-600 font-medium mt-1">
-                    👤 {apt.beauticianId?.name || "No beautician assigned"}
+                    👤 {apt.beauticianId?.name || "No specialist assigned"}
                   </div>
                 </div>
               ))}
