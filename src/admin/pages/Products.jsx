@@ -8,7 +8,7 @@ import ConfirmDeleteModal from "../../shared/components/forms/ConfirmDeleteModal
 
 export default function Products() {
   const [products, setProducts] = useState([]);
-  const [beauticians, setBeauticians] = useState([]);
+  const [specialists, setSpecialists] = useState([]);
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -57,12 +57,12 @@ export default function Products() {
 
   const loadData = async () => {
     try {
-      const [productsData, beauticiansData] = await Promise.all([
+      const [productsData, specialistsData] = await Promise.all([
         ProductsAPI.list(),
         api.get("/beauticians", { params: { limit: 1000 } }),
       ]);
       setProducts(productsData);
-      setBeauticians(beauticiansData.data || []);
+      setSpecialists(specialistsData.data || []);
 
       // Extract unique brands from products
       const uniqueBrands = [
@@ -565,11 +565,11 @@ export default function Products() {
                 </select>
               </FormField>
 
-              {/* Beautician (Product Owner) */}
+              {/* Specialist (Product Owner) */}
               <FormField
                 label="Product Owner"
                 htmlFor="beauticianId"
-                help="Leave empty for platform-owned products. Select beautician for Stripe Connect payments."
+                help="Leave empty for platform-owned products. Select specialist for Stripe Connect payments."
               >
                 <select
                   id="beauticianId"
@@ -579,13 +579,13 @@ export default function Products() {
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                 >
-                  <option value="">Platform (No Beautician)</option>
-                  {beauticians
+                  <option value="">Platform (No Specialist)</option>
+                  {specialists
                     .filter((b) => b.active)
-                    .map((beautician) => (
-                      <option key={beautician._id} value={beautician._id}>
-                        {beautician.name}
-                        {beautician.stripeStatus === "connected"
+                    .map((specialist) => (
+                      <option key={specialist._id} value={specialist._id}>
+                        {specialist.name}
+                        {specialist.stripeStatus === "connected"
                           ? " ✓"
                           : " (Not connected to Stripe)"}
                       </option>
