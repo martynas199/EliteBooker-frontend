@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import {
   setDateTime,
-  setBeautician as setBeauticianInState,
+  setSpecialist as setSpecialistInState,
   setService as setServiceInState,
 } from "../state/bookingSlice";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -14,14 +14,14 @@ import PageTransition from "../../shared/components/ui/PageTransition";
 import toast from "react-hot-toast";
 
 export default function TimeSlots() {
-  const { service: bookingService, beautician: bookingBeautician } =
+  const { service: bookingService, specialist: bookingSpecialist } =
     useSelector((s) => s.booking);
   const serviceId = bookingService?.serviceId;
   const variantName = bookingService?.variantName;
-  const beauticianId = bookingBeautician?.beauticianId;
-  const any = bookingBeautician?.any;
+  const beauticianId = bookingSpecialist?.beauticianId; // Backend field name preserved
+  const any = bookingSpecialist?.any;
 
-  const [beautician, setBeautician] = useState(null);
+  const [specialist, setSpecialist] = useState(null);
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,10 +34,10 @@ export default function TimeSlots() {
     if (!serviceId || !beauticianId) {
       const serviceParam = searchParams.get("service");
       const variantParam = searchParams.get("variant");
-      const beauticianParam = searchParams.get("beautician");
+      const specialistParam = searchParams.get("beautician"); // URL param name unchanged
 
-      if (serviceParam && beauticianParam) {
-        // Restore service and beautician to Redux from URL
+      if (serviceParam && specialistParam) {
+        // Restore service and specialist to Redux from URL
         api
           .get(`/services/${serviceParam}`)
           .then((res) => {
@@ -64,17 +64,17 @@ export default function TimeSlots() {
           .catch((err) => console.error("Failed to restore service:", err));
 
         api
-          .get(`/beauticians/${beauticianParam}`)
+          .get(`/beauticians/${specialistParam}`)
           .then((res) => {
             dispatch(
-              setBeauticianInState({
+              setSpecialistInState({
                 beauticianId: res.data._id,
                 any: false,
                 inSalonPayment: res.data.inSalonPayment || false,
               })
             );
           })
-          .catch((err) => console.error("Failed to restore beautician:", err));
+          .catch((err) => console.error("Failed to restore specialist:", err));
       }
     }
   }, [serviceId, beauticianId, searchParams, dispatch]);
@@ -93,7 +93,7 @@ export default function TimeSlots() {
     const abortController = new AbortController();
     let isCancelled = false;
 
-    // Fetch service first to get assigned beautician
+    // Fetch service first to get assigned specialist
     api
       .get(`/services/${serviceId}`, {
         signal: abortController.signal, // Add cancellation signal
@@ -103,7 +103,7 @@ export default function TimeSlots() {
 
         setService(serviceResponse.data);
 
-        // Determine which beautician to use
+        // Determine which specialist to use
         // Note: primaryBeauticianId might be populated (object) or just an ID (string)
         const primaryBeautician = serviceResponse.data.primaryBeauticianId;
         const legacyBeautician = serviceResponse.data.beauticianId;
@@ -122,35 +122,35 @@ export default function TimeSlots() {
             : legacyBeauticianArray);
 
         if (!targetBeauticianId) {
-          setError("No beautician assigned to this service");
+          setError("No specialist assigned to this service");
           setLoading(false);
           return;
         }
 
-        // Fetch beautician details with cancellation FIRST
+        // Fetch specialist details with cancellation FIRST
         return api.get(`/beauticians/${targetBeauticianId}`, {
           signal: abortController.signal,
         });
       })
-      .then((beauticianResponse) => {
-        if (isCancelled || !beauticianResponse) return;
+      .then((specialistResponse) => {
+        if (isCancelled || !specialistResponse) return;
 
-        const beauticianData = beauticianResponse.data;
+        const specialistData = specialistResponse.data;
 
-        // Store beautician ID AND inSalonPayment flag in Redux state for checkout
+        // Store specialist ID AND inSalonPayment flag in Redux state for checkout
         dispatch(
-          setBeauticianInState({
-            beauticianId: beauticianData._id,
+          setSpecialistInState({
+            beauticianId: specialistData._id,
             any: false,
-            inSalonPayment: beauticianData.inSalonPayment || false,
+            inSalonPayment: specialistData.inSalonPayment || false,
           })
         );
 
         // Convert legacy working hours to new format if needed
         if (
-          (!beauticianData.workingHours ||
-            beauticianData.workingHours.length === 0) &&
-          beauticianData.legacyWorkingHours
+          (!specialistData.workingHours ||
+            specialistData.workingHours.length === 0) &&
+          specialistData.legacyWorkingHours
         ) {
           const dayMapping = {
             mon: 1,
@@ -188,7 +188,7 @@ export default function TimeSlots() {
 
         if (isCancelled) return;
 
-        console.error("Failed to load service/beautician:", err);
+        console.error("Failed to load service/specialist:", err);
         const errorMsg =
           err.response?.data?.error ||
           err.response?.data?.message ||

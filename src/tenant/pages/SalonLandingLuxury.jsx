@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../../shared/lib/apiClient";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
-import { setService, setBeautician } from "../state/bookingSlice";
+import { setService, setSpecialist } from "../state/bookingSlice";
 import SEOHead from "../../shared/components/seo/SEOHead";
 
 /**
@@ -359,17 +359,17 @@ export default function SalonLandingLuxury() {
   const [viewMode, setViewMode] = useState("services"); // 'services' or 'specialists'
   const [settings, setSettings] = useState(null);
   const [heroSection, setHeroSection] = useState(null);
-  const [beauticians, setBeauticians] = useState([]);
+  const [specialists, setSpecialists] = useState([]);
   const [services, setServices] = useState([]);
 
   // Load data
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [settingsRes, beauticiansRes, servicesRes, heroSectionsRes] =
+        const [settingsRes, specialistsRes, servicesRes, heroSectionsRes] =
           await Promise.all([
             api.get("/settings/display").catch(() => ({ data: null })),
-            api.get("/beauticians"),
+            api.get("/beauticians"), // API endpoint unchanged (backend compatibility)
             api.get("/services"),
             api.get("/hero-sections").catch(() => ({ data: [] })),
           ]);
@@ -381,8 +381,8 @@ export default function SalonLandingLuxury() {
           setHeroSection(activeHero || heroSectionsRes.data[0]);
         }
 
-        const activeBeauticians = beauticiansRes.data.filter((b) => b.active);
-        setBeauticians(activeBeauticians);
+        const activeSpecialists = specialistsRes.data.filter((b) => b.active);
+        setSpecialists(activeSpecialists);
 
         const activeServices = servicesRes.data.filter((s) => s.active);
         setServices(activeServices);
@@ -409,10 +409,10 @@ export default function SalonLandingLuxury() {
       })
     );
 
-    if (beauticians.length === 1) {
+    if (specialists.length === 1) {
       dispatch(
-        setBeautician({
-          beauticianId: beauticians[0]._id,
+        setSpecialist({
+          beauticianId: specialists[0]._id, // Backend field name preserved for API compatibility
           any: false,
           inSalonPayment: false,
         })
@@ -438,7 +438,7 @@ export default function SalonLandingLuxury() {
     heroSection?.rightImage?.url ||
     settings?.heroImage?.url;
 
-  const hasMultipleSpecialists = beauticians.length > 1;
+  const hasMultipleSpecialists = specialists.length > 1;
 
   // Set initial view mode based on specialists count
   useEffect(() => {
@@ -617,11 +617,11 @@ export default function SalonLandingLuxury() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}
               >
-                {beauticians.length === 0 ? (
+                {specialists.length === 0 ? (
                   <EmptyState type="specialists" />
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {beauticians.map((specialist, index) => (
+                    {specialists.map((specialist, index) => (
                       <SpecialistCard
                         key={specialist._id}
                         specialist={specialist}

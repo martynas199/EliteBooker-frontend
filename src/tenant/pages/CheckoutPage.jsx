@@ -8,7 +8,7 @@ import {
   setMode,
   setAppointmentId,
   setService,
-  setBeautician,
+  setSpecialist,
 } from "../state/bookingSlice";
 import {
   useNavigate,
@@ -96,14 +96,14 @@ export default function CheckoutPage() {
           .get(`/beauticians/${beauticianParam}`)
           .then((res) => {
             dispatch(
-              setBeautician({
+              setSpecialist({
                 beauticianId: res.data._id,
                 any: false,
                 inSalonPayment: res.data.inSalonPayment || false,
               })
             );
           })
-          .catch((err) => console.error("Failed to restore beautician:", err));
+          .catch((err) => console.error("Failed to restore specialist:", err));
       }
     }
   }, [bookingService, bookingBeautician, searchParams, dispatch]);
