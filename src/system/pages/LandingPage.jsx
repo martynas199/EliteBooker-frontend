@@ -302,19 +302,14 @@ export default function LandingPage() {
       <PageTransition className="overflow-x-hidden bg-white">
         {/* Navigation Header */}
         <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-8xl mx-auto px-4 sm:px-8 lg:px-10">
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
               <div className="flex items-center gap-4">
                 <img
-                  src="/src/assets/elite.jpg"
+                  src="/src/assets/elite.png"
                   alt="Elite Logo"
-                  className="h-20 w-auto"
-                />
-                <img
-                  src="/src/assets/elie-1.jpg"
-                  alt="Elite Logo 2"
-                  className="h-20 w-auto"
+                  className="h-28 w-auto"
                 />
               </div>
 
@@ -998,23 +993,6 @@ export default function LandingPage() {
                 </motion.div>
               ))}
             </div>
-
-            {/* Pricing Note */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mt-12 text-center"
-            >
-              <p className="text-sm text-gray-600">
-                * The £0.50 booking fee on the Basic plan is paid by the
-                customer making the booking, not by your business.
-              </p>
-              <p className="text-sm text-gray-600 mt-1">
-                Upgrade to Professional or Enterprise to remove customer booking
-                fees completely.
-              </p>
-            </motion.div>
           </div>
         </section>
 
