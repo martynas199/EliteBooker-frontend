@@ -93,7 +93,7 @@ export default function Appointments() {
         appointments = response.data || [];
       }
 
-      // Filter appointments based on admin role and linked beautician
+      // Filter appointments based on admin role and linked specialist
       if (isSuperAdmin) {
         // Super admin sees all appointments
         console.log(
@@ -101,13 +101,13 @@ export default function Appointments() {
           appointments.length
         );
       } else if (admin?.beauticianId) {
-        // Regular admin with linked beautician - only show their beautician's appointments
+        // Regular admin with linked specialist - only show their specialist's appointments
         const originalCount = appointments.length;
         appointments = appointments.filter(
           (apt) => apt.beauticianId?._id === admin.beauticianId
         );
         console.log(
-          `[Appointments] Regular admin with beautician ${admin.beauticianId} - filtered from ${originalCount} to ${appointments.length} appointments`
+          `[Appointments] Regular admin with specialist ${admin.beauticianId} - filtered from ${originalCount} to ${appointments.length} appointments`
         );
 
         // Recalculate pagination for filtered results
@@ -120,9 +120,9 @@ export default function Appointments() {
           hasMore: false,
         };
       } else {
-        // Regular admin without linked beautician - show no appointments
+        // Regular admin without linked specialist - show no appointments
         console.log(
-          "[Appointments] Regular admin without linked beautician - showing no appointments"
+          "[Appointments] Regular admin without linked specialist - showing no appointments"
         );
         appointments = [];
         paginationData = {
@@ -372,7 +372,7 @@ export default function Appointments() {
 
   async function handleDeleteAll() {
     if (!admin?.beauticianId) {
-      toast.error("No beautician linked to this account");
+      toast.error("No specialist linked to this account");
       return;
     }
 
@@ -389,7 +389,7 @@ export default function Appointments() {
                   `/appointments/beautician/${admin.beauticianId}`
                 );
 
-                // Remove all appointments for this beautician from the state
+                // Remove all appointments for this specialist from the state
                 setRows((old) =>
                   old.filter((apt) => {
                     const beauticianId =
@@ -476,7 +476,7 @@ export default function Appointments() {
       clientEmail: appointment.client?.email || "",
       clientPhone: appointment.client?.phone || "",
       clientNotes: appointment.client?.notes || "",
-      beauticianId: appointment.beauticianId || "",
+      specialistId: appointment.beauticianId || "", // Map beauticianId from API to specialistId for UI
       serviceId: appointment.serviceId || "",
       variantName: appointment.variantName || "",
       start: appointment.start
@@ -503,7 +503,7 @@ export default function Appointments() {
             phone: editingAppointment.clientPhone,
             notes: editingAppointment.clientNotes,
           },
-          beauticianId: editingAppointment.beauticianId,
+          beauticianId: editingAppointment.specialistId, // Map specialistId to beauticianId for API
           serviceId: editingAppointment.serviceId,
           variantName: editingAppointment.variantName,
           start: editingAppointment.start,
@@ -539,7 +539,7 @@ export default function Appointments() {
       clientEmail: "",
       clientPhone: "",
       clientNotes: "",
-      beauticianId: isSuperAdmin ? "" : admin?.beauticianId || "",
+      specialistId: isSuperAdmin ? "" : admin?.beauticianId || "", // Map backend's beauticianId to UI's specialistId
       serviceId: "",
       variantName: "",
       start: "",
@@ -559,11 +559,11 @@ export default function Appointments() {
       return;
     }
     if (
-      !newAppointment.beauticianId ||
+      !newAppointment.specialistId ||
       !newAppointment.serviceId ||
       !newAppointment.variantName
     ) {
-      toast.error("Beautician, service, and variant are required");
+      toast.error("Specialist, service, and variant are required");
       return;
     }
     if (!newAppointment.start) {
@@ -581,7 +581,7 @@ export default function Appointments() {
           phone: newAppointment.clientPhone,
           notes: newAppointment.clientNotes,
         },
-        beauticianId: newAppointment.beauticianId,
+        beauticianId: newAppointment.specialistId, // Map specialistId to beauticianId for API
         serviceId: newAppointment.serviceId,
         variantName: newAppointment.variantName,
         startISO: newAppointment.start,
@@ -748,8 +748,8 @@ export default function Appointments() {
               <select
                 id="beautician-filter"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow"
-                value={selectedBeauticianId}
-                onChange={(e) => setSelectedBeauticianId(e.target.value)}
+                value={selectedSpecialistId}
+                onChange={(e) => setSelectedSpecialistId(e.target.value)}
               >
                 <option value="">
                   {t("allBeauticians", language) || "All Specialists"}
@@ -1695,7 +1695,7 @@ export default function Appointments() {
         appointment={newAppointment}
         setAppointment={setNewAppointment}
         services={services}
-        beauticians={beauticians}
+        specialists={specialists}
         onSave={saveNewAppointment}
         submitting={submitting}
         isSuperAdmin={isSuperAdmin}
@@ -1997,7 +1997,7 @@ function CreateModal({
   appointment,
   setAppointment,
   services,
-  beauticians,
+  specialists,
   onSave,
   submitting,
   isSuperAdmin,
@@ -2029,12 +2029,10 @@ function CreateModal({
   };
 
   // Filter services based on selected beautician
-  const selectedBeautician = beauticians.find(
-    (b) => b._id === appointment.beauticianId
-  );
-
-  const availableServices = services.filter((service) => {
-    if (!appointment.beauticianId) return true; // Show all if no beautician selected
+    const selectedBeautician = specialists.find(
+      (b) => b._id === appointment.specialistId
+    );  const availableServices = services.filter((service) => {
+    if (!appointment.specialistId) return true; // Show all if no specialist selected
 
     // Check if beautician is assigned to this service
     const beauticianIds = service.beauticianIds || [];
@@ -2050,9 +2048,9 @@ function CreateModal({
     );
 
     const isMatch =
-      beauticianIds.includes(appointment.beauticianId) ||
-      additionalIdsExtracted.includes(appointment.beauticianId) ||
-      primaryId === appointment.beauticianId;
+      beauticianIds.includes(appointment.specialistId) ||
+      additionalIdsExtracted.includes(appointment.specialistId) ||
+      primaryId === appointment.specialistId;
 
     return isMatch;
   });
@@ -2100,10 +2098,10 @@ function CreateModal({
     }
   };
 
-  // Handle beautician change - reset service selection
-  const handleBeauticianChange = (beauticianId) => {
-    updateField("beauticianId", beauticianId);
-    // Reset service and variant if the selected service is not available for new beautician
+  // Handle specialist change - reset service selection
+  const handleSpecialistChange = (specialistId) => {
+    updateField("specialistId", specialistId);
+    // Reset service and variant if the selected service is not available for new specialist
     if (appointment.serviceId) {
       const service = services.find((s) => s._id === appointment.serviceId);
       if (service) {
@@ -2114,8 +2112,8 @@ function CreateModal({
             : service.primaryBeauticianId;
 
         if (
-          !beauticianIds.includes(beauticianId) &&
-          primaryId !== beauticianId
+          !beauticianIds.includes(specialistId) &&
+          primaryId !== specialistId
         ) {
           updateField("serviceId", "");
           updateField("variantName", "");
@@ -2214,16 +2212,16 @@ function CreateModal({
           </div>
           <FormField label="Specialist *" htmlFor="beautician-select-create">
             <SelectButton
-              value={appointment.beauticianId}
+              value={appointment.specialistId}
               placeholder="Select Specialist"
               options={specialists.map((b) => ({
                 value: b._id,
                 label: b.name,
               }))}
-              onClick={() => isSuperAdmin && setShowBeauticianDrawer(true)}
+              onClick={() => isSuperAdmin && setShowSpecialistDrawer(true)}
               disabled={!isSuperAdmin}
             />
-            {!isSuperAdmin && appointment.beauticianId && (
+            {!isSuperAdmin && appointment.specialistId && (
               <p className="text-xs text-gray-500 mt-1">
                 Pre-selected for your specialist account
               </p>
@@ -2233,7 +2231,7 @@ function CreateModal({
             <SelectButton
               value={appointment.serviceId}
               placeholder={
-                !appointment.beauticianId
+                !appointment.specialistId
                   ? "Select specialist first"
                   : "Select Service"
               }
@@ -2242,11 +2240,11 @@ function CreateModal({
                 label: s.name,
               }))}
               onClick={() =>
-                appointment.beauticianId && setShowServiceDrawer(true)
+                appointment.specialistId && setShowServiceDrawer(true)
               }
-              disabled={!appointment.beauticianId}
+              disabled={!appointment.specialistId}
             />
-            {appointment.beauticianId && availableServices.length === 0 && (
+            {appointment.specialistId && availableServices.length === 0 && (
               <p className="text-xs text-red-500 mt-1">
                 No services available for this specialist
               </p>
@@ -2268,7 +2266,7 @@ function CreateModal({
           </FormField>
 
           {/* Date & Time Selection with DateTimePicker */}
-          {appointment.beauticianId &&
+          {appointment.specialistId &&
             appointment.serviceId &&
             appointment.variantName && (
               <div className="space-y-3">
@@ -2348,7 +2346,7 @@ function CreateModal({
                       </div>
                       <div className="p-6 overflow-y-auto">
                         <DateTimePicker
-                          beauticianId={appointment.beauticianId}
+                          beauticianId={appointment.specialistId}
                           serviceId={appointment.serviceId}
                           variantName={appointment.variantName}
                           salonTz="Europe/London"
@@ -2500,12 +2498,12 @@ function CreateModal({
 
       {/* Select Drawers */}
       <SelectDrawer
-        open={showBeauticianDrawer}
-        onClose={() => setShowBeauticianDrawer(false)}
+        open={showSpecialistDrawer}
+        onClose={() => setShowSpecialistDrawer(false)}
         title="Select Specialist"
         options={specialists.map((b) => ({ value: b._id, label: b.name }))}
-        value={appointment.beauticianId}
-        onChange={handleBeauticianChange}
+        value={appointment.specialistId}
+        onChange={handleSpecialistChange}
         placeholder="Select Specialist"
         emptyMessage="No specialists available"
       />
