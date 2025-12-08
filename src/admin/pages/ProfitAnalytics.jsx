@@ -22,7 +22,7 @@ export default function ProfitAnalytics() {
     beauticianId: "",
   });
   const [products, setProducts] = useState([]);
-  const [beauticians, setBeauticians] = useState([]);
+  const [specialists, setSpecialists] = useState([]);
   const [activeTab, setActiveTab] = useState("overview");
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
@@ -45,34 +45,34 @@ export default function ProfitAnalytics() {
   }, []);
 
   useEffect(() => {
-    if (products.length > 0 && beauticians.length > 0) {
+    if (products.length > 0 && specialists.length > 0) {
       loadAnalytics();
     }
-  }, [filters, products, beauticians]);
+  }, [filters, products, specialists]);
 
   const loadInitialData = async () => {
     try {
-      const [productsRes, beauticiansRes] = await Promise.all([
+      const [productsRes, specialistsRes] = await Promise.all([
         api.get("/products"),
         api.get("/beauticians", { params: { limit: 1000 } }),
       ]);
 
       const productData = productsRes.data || [];
-      const beauticianData = beauticiansRes.data || [];
+      const specialistData = specialistsRes.data || [];
 
       // Log any invalid items for debugging
       const invalidProducts = productData.filter((p) => !p || !p._id);
-      const invalidBeauticians = beauticianData.filter((b) => !b || !b._id);
+      const invalidSpecialists = specialistData.filter((b) => !b || !b._id);
 
       if (invalidProducts.length > 0) {
         console.error("Invalid products found:", invalidProducts);
       }
-      if (invalidBeauticians.length > 0) {
-        console.error("Invalid beauticians found:", invalidBeauticians);
+      if (invalidSpecialists.length > 0) {
+        console.error("Invalid specialists found:", invalidSpecialists);
       }
 
       setProducts(productData.filter((p) => p && p._id));
-      setBeauticians(beauticianData.filter((b) => b && b._id));
+      setSpecialists(specialistData.filter((b) => b && b._id));
     } catch (error) {
       console.error("Error loading initial data:", error);
       toast.error("Failed to load data");
@@ -134,7 +134,7 @@ export default function ProfitAnalytics() {
     products: productData = [],
     categories = [],
     monthly = [],
-    beauticians: beauticianData = [],
+    beauticians: specialistData = [],
   } = analytics || {};
 
   return (
@@ -297,7 +297,7 @@ export default function ProfitAnalytics() {
             </select>
           </FormField>
 
-          <FormField label="Beautician">
+          <FormField label="Specialist">
             <select
               value={filters.beauticianId}
               onChange={(e) =>
@@ -305,12 +305,12 @@ export default function ProfitAnalytics() {
               }
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
             >
-              <option value="">All Beauticians</option>
-              {beauticians
+              <option value="">All Specialists</option>
+              {specialists
                 .filter((b) => b && b._id)
-                .map((beautician) => (
-                  <option key={beautician._id} value={beautician._id}>
-                    {beautician.name}
+                .map((specialist) => (
+                  <option key={specialist._id} value={specialist._id}>
+                    {specialist.name}
                   </option>
                 ))}
             </select>
@@ -374,7 +374,7 @@ export default function ProfitAnalytics() {
                   "This product hasn't been sold yet in the selected date range."}
                 {filters.beauticianId &&
                   !filters.productId &&
-                  "This beautician hasn't sold any products yet in the selected date range."}
+                  "This specialist hasn't sold any products yet in the selected date range."}
               </p>
               <p className="text-sm text-gray-500">
                 Try selecting "All Products" or adjusting the date range to see
@@ -713,7 +713,7 @@ export default function ProfitAnalytics() {
       {activeTab === "beauticians" && (
         <Card className="p-3 sm:p-6">
           <h3 className="text-base sm:text-lg font-semibold mb-4">
-            Beautician Performance
+            Specialist Performance
           </h3>
           <div className="overflow-x-auto -mx-3 sm:mx-0">
             <div className="inline-block min-w-full align-middle">
@@ -721,7 +721,7 @@ export default function ProfitAnalytics() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Beautician
+                      Specialist
                     </th>
                     <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Revenue
@@ -741,13 +741,13 @@ export default function ProfitAnalytics() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {beauticianData.map((beautician) => (
-                    <tr key={beautician.beauticianId || "platform"}>
+                  {specialistData.map((specialist) => (
+                    <tr key={specialist.beauticianId || "platform"}>
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         <div className="font-medium text-gray-900 text-xs sm:text-sm">
-                          {beautician.beauticianName}
+                          {specialist.beauticianName}
                         </div>
-                        {beautician.beauticianId ? (
+                        {specialist.beauticianId ? (
                           <div className="text-xs text-[#2563EB]">
                             Individual Owner
                           </div>
@@ -758,29 +758,29 @@ export default function ProfitAnalytics() {
                         )}
                       </td>
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-green-600 font-semibold text-xs sm:text-sm">
-                        {formatCurrency(beautician.totalRevenue)}
+                        {formatCurrency(specialist.totalRevenue)}
                       </td>
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-red-600 font-semibold text-xs sm:text-sm">
-                        {formatCurrency(beautician.totalCost)}
+                        {formatCurrency(specialist.totalCost)}
                       </td>
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-brand-600 font-semibold text-xs sm:text-sm">
-                        {formatCurrency(beautician.totalProfit)}
+                        {formatCurrency(specialist.totalProfit)}
                       </td>
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         <span
                           className={`font-semibold text-xs sm:text-sm ${
-                            beautician.averageMargin > 50
+                            specialist.averageMargin > 50
                               ? "text-green-600"
-                              : beautician.averageMargin > 30
+                              : specialist.averageMargin > 30
                               ? "text-yellow-600"
                               : "text-red-600"
                           }`}
                         >
-                          {formatPercentage(beautician.averageMargin)}
+                          {formatPercentage(specialist.averageMargin)}
                         </span>
                       </td>
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-gray-900 text-xs sm:text-sm">
-                        {beautician.totalQuantity}
+                        {specialist.totalQuantity}
                       </td>
                     </tr>
                   ))}
