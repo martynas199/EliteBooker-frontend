@@ -153,7 +153,7 @@ export default function Appointments() {
       .then((r) => setServices(r.data || []))
       .catch(() => {});
     api
-      .get("/beauticians", { params: { limit: 1000 } })
+      .get("/specialists", { params: { limit: 1000 } })
       .then((r) => setSpecialists(r.data || []))
       .catch(() => {});
   }, []);
@@ -251,7 +251,7 @@ export default function Appointments() {
           r.client?.name?.toLowerCase().includes(query) ||
           r.client?.email?.toLowerCase().includes(query) ||
           r.client?.phone?.toLowerCase().includes(query) ||
-          r.beautician?.name?.toLowerCase().includes(query) ||
+          r.specialist?.name?.toLowerCase().includes(query) ||
           r.service?.name?.toLowerCase().includes(query) ||
           r.variantName?.toLowerCase().includes(query)
         );
@@ -268,8 +268,8 @@ export default function Appointments() {
           bVal = b.client?.name || "";
           break;
         case "staff":
-          aVal = a.beautician?.name || a.beauticianId || "";
-          bVal = b.beautician?.name || b.beauticianId || "";
+          aVal = a.specialist?.name || a.beauticianId || "";
+          bVal = b.specialist?.name || b.beauticianId || "";
           break;
         case "service":
           aVal = `${a.service?.name || a.serviceId} - ${a.variantName}`;
@@ -297,7 +297,7 @@ export default function Appointments() {
     });
   }, [
     rows,
-    selectedBeauticianId,
+    selectedSpecialistId,
     dateFilter,
     customStartDate,
     customEndDate,
@@ -386,7 +386,7 @@ export default function Appointments() {
               toast.dismiss(t.id);
               try {
                 const res = await api.delete(
-                  `/appointments/beautician/${admin.beauticianId}`
+                  `/appointments/specialist/${admin.beauticianId}`
                 );
 
                 // Remove all appointments for this specialist from the state
@@ -626,7 +626,7 @@ export default function Appointments() {
         ) : null}
       </div>
 
-      {/* Show warning for regular admins without linked beautician */}
+      {/* Show warning for regular admins without linked specialist */}
       {!isSuperAdmin && !admin?.beauticianId && (
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4 mb-6">
           <div className="flex items-center gap-2 sm:gap-3">
@@ -742,11 +742,11 @@ export default function Appointments() {
             {/* Specialist Filter */}
             <FormField
               label={t("filterByBeautician", language) || "Specialist"}
-              htmlFor="beautician-filter"
+              htmlFor="specialist-filter"
               className="flex-1"
             >
               <select
-                id="beautician-filter"
+                id="specialist-filter"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow"
                 value={selectedSpecialistId}
                 onChange={(e) => setSelectedSpecialistId(e.target.value)}
@@ -1028,7 +1028,7 @@ export default function Appointments() {
       )}
 
       {/* Desktop Table View */}
-      {!loading && (
+      {!loading && sortedRows.length > 0 && (
         <div className="hidden lg:block overflow-auto rounded-xl bg-white shadow-sm border border-gray-200">
           <table className="min-w-[800px] w-full">
             <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
@@ -1093,12 +1093,12 @@ export default function Appointments() {
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-xs font-semibold">
-                        {(r.beautician?.name || r.beauticianId || "U")
+                        {(r.specialist?.name || r.beauticianId || "U")
                           .charAt(0)
                           .toUpperCase()}
                       </div>
                       <span className="text-gray-900">
-                        {r.beautician?.name || r.beauticianId}
+                        {r.specialist?.name || r.beauticianId}
                       </span>
                     </div>
                   </td>
@@ -1298,8 +1298,39 @@ export default function Appointments() {
         </div>
       )}
 
+      {/* Empty State for Desktop */}
+      {!loading && sortedRows.length === 0 && (
+        <div className="hidden lg:block bg-white rounded-xl shadow-sm border border-gray-200 p-12">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-brand-50 to-brand-100 mb-6">
+              <svg
+                className="w-10 h-10 text-brand-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              No appointments found
+            </h3>
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              {searchQuery || selectedSpecialistId || dateFilter !== "all"
+                ? "Try adjusting your filters or search criteria to find appointments."
+                : "Get started by creating your first appointment."}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Mobile Card View */}
-      {!loading && (
+      {!loading && sortedRows.length > 0 && (
         <div className="lg:hidden space-y-4">
           {sortedRows.map((r) => (
             <div
@@ -1340,14 +1371,14 @@ export default function Appointments() {
                 {/* Staff */}
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-semibold text-base shadow-sm">
-                    {(r.beautician?.name || r.beauticianId || "?")
+                    {(r.specialist?.name || r.beauticianId || "?")
                       .charAt(0)
                       .toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-xs text-gray-500">Staff</div>
                     <div className="font-medium text-sm text-gray-900">
-                      {r.beautician?.name || r.beauticianId}
+                      {r.specialist?.name || r.beauticianId}
                     </div>
                   </div>
                 </div>
@@ -1591,11 +1622,16 @@ export default function Appointments() {
               </div>
             </div>
           ))}
+        </div>
+      )}
 
-          {sortedRows.length === 0 && (
-            <div className="text-center py-16 sm:py-20">
+      {/* Empty State for Mobile */}
+      {!loading && sortedRows.length === 0 && (
+        <div className="lg:hidden bg-white rounded-xl shadow-md border border-gray-200 p-8">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-brand-50 to-brand-100 mb-4">
               <svg
-                className="mx-auto h-12 w-12 text-gray-400"
+                className="w-8 h-8 text-brand-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -1607,14 +1643,37 @@ export default function Appointments() {
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              <p className="mt-4 text-base sm:text-lg font-medium text-gray-900">
-                No appointments found
-              </p>
-              <p className="mt-1 text-xs sm:text-sm text-gray-500">
-                Try adjusting your filters
-              </p>
             </div>
-          )}
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              No appointments found
+            </h3>
+            <p className="text-sm text-gray-600 mb-6">
+              {searchQuery || selectedSpecialistId || dateFilter !== "all"
+                ? "Try adjusting your filters or search criteria."
+                : "Get started by creating your first appointment."}
+            </p>
+            {(isSuperAdmin || admin?.beauticianId) && (
+              <button
+                onClick={openCreateModal}
+                className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Create First Appointment
+              </button>
+            )}
+          </div>
         </div>
       )}
 
@@ -1681,7 +1740,7 @@ export default function Appointments() {
         appointment={editingAppointment}
         setAppointment={setEditingAppointment}
         services={services}
-        beauticians={beauticians}
+        specialists={specialists}
         onSave={saveEdit}
         submitting={submitting}
       />
@@ -1765,7 +1824,7 @@ function EditModal({
   appointment,
   setAppointment,
   services,
-  beauticians,
+  specialists,
   onSave,
   submitting,
 }) {
@@ -1825,9 +1884,9 @@ function EditModal({
         {/* Appointment Details */}
         <div className="space-y-3 pt-3 border-t">
           <h3 className="font-semibold text-gray-900">Appointment Details</h3>
-          <FormField label="Specialist" htmlFor="beautician-select">
+          <FormField label="Specialist" htmlFor="specialist-select">
             <select
-              id="beautician-select"
+              id="specialist-select"
               className="border rounded w-full px-3 py-2"
               value={appointment.beauticianId}
               onChange={(e) => updateField("beauticianId", e.target.value)}
@@ -2035,7 +2094,7 @@ function CreateModal({
   const availableServices = services.filter((service) => {
     if (!appointment.specialistId) return true; // Show all if no specialist selected
 
-    // Check if beautician is assigned to this service
+    // Check if specialist is assigned to this service
     const beauticianIds = service.beauticianIds || [];
     const additionalIds = service.additionalBeauticianIds || [];
     const primaryId =
@@ -2061,22 +2120,22 @@ function CreateModal({
   );
   const variants = selectedService?.variants || [];
 
-  // Get beautician's working hours for DateTimePicker
-  const beauticianWorkingHours = selectedBeautician?.workingHours || [];
-  const customSchedule = selectedBeautician?.customSchedule || {};
+  // Get specialist's working hours for DateTimePicker
+  const beauticianWorkingHours = selectedSpecialist?.workingHours || [];
+  const customSchedule = selectedSpecialist?.customSchedule || {};
 
   // Debug logging
   useEffect(() => {
     if (showTimePicker) {
       console.log("[CreateModal] DateTimePicker opened with:", {
         beauticianId: appointment.beauticianId,
-        beauticianName: selectedBeautician?.name,
+        beauticianName: selectedSpecialist?.name,
         serviceId: appointment.serviceId,
         serviceName: selectedService?.name,
         variantName: appointment.variantName,
         workingHours: beauticianWorkingHours,
         customSchedule: customSchedule,
-        selectedBeautician: selectedBeautician,
+        selectedSpecialist: selectedSpecialist,
       });
     }
   }, [showTimePicker]);
@@ -2211,7 +2270,7 @@ function CreateModal({
               Appointment Details
             </h3>
           </div>
-          <FormField label="Specialist *" htmlFor="beautician-select-create">
+          <FormField label="Specialist *" htmlFor="specialist-select-create">
             <SelectButton
               value={appointment.specialistId}
               placeholder="Select Specialist"

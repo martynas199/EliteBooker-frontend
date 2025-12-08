@@ -363,11 +363,11 @@ describe("Admin Access & Security", () => {
       cy.loginAsTenantAdmin(tenantAdmin1.email, tenantAdmin1.password);
 
       cy.request({
-        url: "/api/beauticians",
+        url: "/api/specialists",
       }).then((response) => {
         expect(response.status).to.eq(200);
         expect(response.body).to.be.an("array");
-        expect(response.body.length).to.equal(1); // Only tenant1's 1 beautician
+        expect(response.body.length).to.equal(1); // Only tenant1's 1 specialist
 
         // All staff should belong to tenant1
         response.body.forEach((staff) => {

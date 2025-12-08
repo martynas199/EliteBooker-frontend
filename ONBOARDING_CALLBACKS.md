@@ -299,7 +299,7 @@ ConnectAPI.createOnboardingLink(beauticianId, email);
 
 - ✅ Routes are protected (within `/admin/*`)
 - ✅ Requires authentication to access
-- ✅ Validates beautician ID from Redux state
+- ✅ Validates specialist ID from Redux state
 - ✅ Backend validates Stripe webhook signatures
 
 ---
@@ -324,7 +324,7 @@ Potential improvements:
 
 1. **Progress Tracking**: Show onboarding completion percentage
 2. **Email Notifications**: Send email when onboarding complete
-3. **Admin Notifications**: Alert admin when beautician connects account
+3. **Admin Notifications**: Alert admin when specialist connects account
 4. **Detailed Requirements**: Better formatting of Stripe requirements list
 5. **Multi-language Support**: Translate messages for international users
 6. **Analytics**: Track onboarding completion rates

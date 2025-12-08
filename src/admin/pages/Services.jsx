@@ -31,7 +31,7 @@ export default function Services() {
     isFetching: servicesFetching,
   } = useServices();
 
-  const { data: beauticians = [], isLoading: beauticiansLoading } =
+  const { data: specialists = [], isLoading: beauticiansLoading } =
     useBeauticians();
 
   // Mutations
@@ -264,7 +264,7 @@ export default function Services() {
 
         <ServiceForm
           service={editingService}
-          beauticians={beauticians}
+          specialists={specialists}
           onSave={handleSave}
           onCancel={handleCancel}
           onDelete={

@@ -53,7 +53,7 @@ Every page now includes:
 **Pages Updated:**
 
 1. **Homepage (`/`)** - "Noble Elegance Beauty Salon | Huntingdon, Cambridgeshire"
-2. **Booking Page (`/beauticians`)** - "Book Appointment - Select Your Beautician"
+2. **Booking Page (`/specialists`)** - "Book Appointment - Select Your Beautician"
 3. **Products Catalog (`/products`)** - "Beauty Products Catalog - Premium Beauty & Skincare"
 4. **About Us (`/about`)** - "About Us - Our Story & Mission"
 5. **Contact (`/salon`)** - "Contact Us - Location, Hours & Directions"
@@ -157,7 +157,7 @@ Every page now includes:
 - "beauty treatments Huntingdon"
 - "brows and lashes Huntingdon"
 - "beauty salon near Peterborough"
-- "professional beautician Huntingdon"
+- "professional specialist Huntingdon"
 
 ### Geographic Meta Tags
 
@@ -212,7 +212,7 @@ All pages include:
 
 6. **Add Booking Link:**
 
-   - https://www.nobleelegance.co.uk/beauticians
+   - https://www.nobleelegance.co.uk/specialists
 
 7. **Collect & Respond to Reviews:**
    - Ask satisfied clients to leave Google reviews
@@ -234,7 +234,7 @@ All pages include:
 **Booking Page:**
 
 - H1: "Book Your Appointment in Huntingdon"
-- Focus: Booking flow, beautician selection
+- Focus: Booking flow, specialist selection
 - Clear CTAs, trust signals
 
 **Products Page:**
@@ -266,7 +266,7 @@ All pages include:
 ALL images now include:
 
 - Descriptive alt text with keywords
-- Example: `"${beautician.name} - Expert Beautician in Huntingdon specializing in ${specialties}"`
+- Example: `"${specialist.name} - Expert Beautician in Huntingdon specializing in ${specialties}"`
 - Lazy loading enabled (except hero images)
 - Proper file naming conventions recommended
 
@@ -293,7 +293,7 @@ ALL images now include:
 ### Indexable Pages:
 
 - `/` (Homepage)
-- `/beauticians` (Booking)
+- `/specialists` (Booking)
 - `/products` (Catalog)
 - `/about` (About Us)
 - `/salon` (Contact)
@@ -607,7 +607,7 @@ index.html                     ✅ Base SEO meta tags
 src/main.jsx                   ✅ Added HelmetProvider
 vite.config.js                 ✅ Performance optimizations
 src/features/landing/LandingPage.jsx              ✅ Homepage SEO
-src/features/beauticians/BeauticianSelectionPage.jsx  ✅ Booking SEO
+src/features/specialists/BeauticianSelectionPage.jsx  ✅ Booking SEO
 src/features/products/ProductsPage.jsx            ✅ Products SEO
 src/features/about/AboutUsPage.jsx                ✅ About SEO
 src/features/salon/SalonDetails.jsx               ✅ Contact SEO

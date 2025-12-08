@@ -11,7 +11,7 @@ These optimizations can be implemented **right now** without installing React Qu
 **File:** `src/hooks/useDebounce.js` (CREATE NEW)
 
 ```javascript
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export function useDebounce(value, delay = 500) {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -38,20 +38,26 @@ import { useDebounce } from "../../hooks/useDebounce";
 export default function AdminBeauticianLink() {
   const [searchAdmin, setSearchAdmin] = useState("");
   const [searchBeautician, setSearchBeautician] = useState("");
-  
+
   // Debounce search inputs (waits 300ms after user stops typing)
   const debouncedAdminSearch = useDebounce(searchAdmin, 300);
   const debouncedBeauticianSearch = useDebounce(searchBeautician, 300);
 
   // Use debounced values in filters instead of direct state
-  const filteredAdmins = admins.filter((admin) =>
-    admin.name.toLowerCase().includes(debouncedAdminSearch.toLowerCase()) ||
-    admin.email.toLowerCase().includes(debouncedAdminSearch.toLowerCase())
+  const filteredAdmins = admins.filter(
+    (admin) =>
+      admin.name.toLowerCase().includes(debouncedAdminSearch.toLowerCase()) ||
+      admin.email.toLowerCase().includes(debouncedAdminSearch.toLowerCase())
   );
 
-  const filteredBeauticians = beauticians.filter((beautician) =>
-    beautician.name.toLowerCase().includes(debouncedBeauticianSearch.toLowerCase()) ||
-    (beautician.email || "").toLowerCase().includes(debouncedBeauticianSearch.toLowerCase())
+  const filteredBeauticians = specialists.filter(
+    (specialist) =>
+      specialist.name
+        .toLowerCase()
+        .includes(debouncedBeauticianSearch.toLowerCase()) ||
+      (specialist.email || "")
+        .toLowerCase()
+        .includes(debouncedBeauticianSearch.toLowerCase())
   );
 
   // ... rest of component
@@ -59,6 +65,7 @@ export default function AdminBeauticianLink() {
 ```
 
 **Impact:**
+
 - ✅ Reduces unnecessary re-renders by 80-90%
 - ✅ Smoother search experience
 - ✅ Better performance on low-end devices
@@ -92,26 +99,26 @@ useEffect(() => {
     })
     .then((serviceResponse) => {
       if (isCancelled) return; // Don't update state if unmounted
-      
+
       setService(serviceResponse.data);
 
-      // Determine beautician ID...
+      // Determine specialist ID...
       const targetBeauticianId = /* ... logic ... */;
 
       if (!targetBeauticianId) {
-        setError("No beautician assigned to this service");
+        setError("No specialist assigned to this service");
         setLoading(false);
         return;
       }
 
-      // Fetch beautician with cancellation
-      return api.get(`/beauticians/${targetBeauticianId}`, {
+      // Fetch specialist with cancellation
+      return api.get(`/specialists/${targetBeauticianId}`, {
         signal: abortController.signal,
       });
     })
     .then((beauticianResponse) => {
       if (isCancelled || !beauticianResponse) return;
-      
+
       const beauticianData = beauticianResponse.data;
       // ... conversion logic ...
       setBeautician(beauticianData);
@@ -121,10 +128,10 @@ useEffect(() => {
       if (err.name === 'CanceledError' || err.code === 'ERR_CANCELED') {
         return;
       }
-      
+
       if (isCancelled) return;
-      
-      console.error("Failed to load service/beautician:", err);
+
+      console.error("Failed to load service/specialist:", err);
       const errorMsg = err.response?.data?.error || err.message || "Failed to load availability";
       setError(errorMsg);
       toast.error(errorMsg);
@@ -144,6 +151,7 @@ useEffect(() => {
 ```
 
 **Impact:**
+
 - ✅ Prevents memory leaks on navigation
 - ✅ Cancels in-flight requests when user navigates away
 - ✅ Reduces server load from abandoned requests
@@ -165,9 +173,7 @@ export function Skeleton({ className = "", variant = "default" }) {
     text: "h-4 bg-gray-200 rounded w-3/4",
   };
 
-  return (
-    <div className={`animate-pulse ${variants[variant]} ${className}`} />
-  );
+  return <div className={`animate-pulse ${variants[variant]} ${className}`} />;
 }
 
 export function TableSkeleton({ rows = 5, columns = 6 }) {
@@ -268,6 +274,7 @@ export default function Appointments() {
 ```
 
 **Impact:**
+
 - ✅ 40-60% improvement in **perceived performance**
 - ✅ Better UX - users see content structure immediately
 - ✅ Reduces bounce rate during slow loads
@@ -299,7 +306,7 @@ const fetchData = useCallback(async () => {
 
     const [appointmentsRes, beauticiansRes] = await Promise.all([
       api.get("/appointments"),
-      api.get("/beauticians"),
+      api.get("/specialists"),
     ]);
 
     let appointments = appointmentsRes.data || [];
@@ -341,10 +348,10 @@ useEffect(() => {
 const loadServices = useCallback(async () => {
   try {
     setLoading(true);
-    
+
     const [servicesRes, beauticiansRes] = await Promise.all([
       api.get("/services"),
-      api.get("/beauticians"),
+      api.get("/specialists"),
     ]);
 
     setServices(servicesRes.data || []);
@@ -363,6 +370,7 @@ useEffect(() => {
 ```
 
 **Impact:**
+
 - ✅ Eliminates React warnings
 - ✅ Prevents stale closures and bugs
 - ✅ More predictable component behavior
@@ -380,7 +388,7 @@ useEffect(() => {
 const servicesRes = await api.get("/services");
 setServices(servicesRes.data);
 
-const beauticiansRes = await api.get("/beauticians");
+const beauticiansRes = await api.get("/specialists");
 setBeauticians(beauticiansRes.data);
 
 const settingsRes = await api.get("/settings");
@@ -391,7 +399,7 @@ setSettings(settingsRes.data);
 // ✅ AFTER - Parallel requests (fast)
 const [servicesRes, beauticiansRes, settingsRes] = await Promise.all([
   api.get("/services"),
-  api.get("/beauticians"),
+  api.get("/specialists"),
   api.get("/settings"),
 ]);
 
@@ -425,7 +433,7 @@ The `events` array is already memoized:
 ```javascript
 const events = useMemo(() => {
   // ... expensive formatting logic ...
-}, [selectedBeautician, allAppointments]);
+}, [selectedSpecialist, allAppointments]);
 ```
 
 ### Appointments - Add Memoization
@@ -437,10 +445,10 @@ const events = useMemo(() => {
 const filteredAppointments = useMemo(() => {
   let filtered = appointments;
 
-  // Filter by beautician
-  if (isSuperAdmin && selectedBeautician !== "all") {
+  // Filter by specialist
+  if (isSuperAdmin && selectedSpecialist !== "all") {
     filtered = filtered.filter(
-      (apt) => apt.beauticianId?._id === selectedBeautician
+      (apt) => apt.beauticianId?._id === selectedSpecialist
     );
   }
 
@@ -463,7 +471,7 @@ const filteredAppointments = useMemo(() => {
   return filtered;
 }, [
   appointments,
-  selectedBeautician,
+  selectedSpecialist,
   selectedStatus,
   searchTerm,
   isSuperAdmin,
@@ -485,6 +493,7 @@ const paginationData = useMemo(() => {
 ```
 
 **Impact:**
+
 - ✅ Prevents unnecessary recalculations
 - ✅ Smoother UI interactions (no lag on filter change)
 - ✅ Better performance on large datasets
@@ -505,9 +514,9 @@ api.interceptors.response.use(
     // Handle network errors
     if (!error.response) {
       const networkError = new Error(
-        error.code === 'ECONNABORTED'
-          ? 'Request timed out. Please check your connection and try again.'
-          : 'Network error. Please check your internet connection.'
+        error.code === "ECONNABORTED"
+          ? "Request timed out. Please check your connection and try again."
+          : "Network error. Please check your internet connection."
       );
       networkError.isNetworkError = true;
       networkError.originalError = error;
@@ -527,11 +536,11 @@ api.interceptors.response.use(
 
     // Handle 429 Too Many Requests
     if (error.response.status === 429) {
-      const retryAfter = error.response.headers['retry-after'];
+      const retryAfter = error.response.headers["retry-after"];
       const errorMessage = retryAfter
         ? `Too many requests. Please wait ${retryAfter} seconds.`
-        : 'Too many requests. Please try again later.';
-      
+        : "Too many requests. Please try again later.";
+
       const rateLimitError = new Error(errorMessage);
       rateLimitError.isRateLimitError = true;
       rateLimitError.retryAfter = retryAfter;
@@ -541,7 +550,7 @@ api.interceptors.response.use(
     // Handle 503 Service Unavailable
     if (error.response.status === 503) {
       const maintenanceError = new Error(
-        'Service temporarily unavailable. We\'re working on it!'
+        "Service temporarily unavailable. We're working on it!"
       );
       maintenanceError.isMaintenanceError = true;
       return Promise.reject(maintenanceError);
@@ -549,15 +558,15 @@ api.interceptors.response.use(
 
     // Return structured error
     const errorMessage =
-      error?.response?.data?.error || 
+      error?.response?.data?.error ||
       error?.response?.data?.message ||
-      error?.message || 
+      error?.message ||
       "An unexpected error occurred";
-    
+
     const structuredError = new Error(errorMessage);
     structuredError.status = error.response?.status;
     structuredError.response = error.response;
-    
+
     return Promise.reject(structuredError);
   }
 );
@@ -576,7 +585,7 @@ The Hours page already has excellent retry logic!
 **File:** `src/components/ui/SlowRequestWarning.jsx` (CREATE NEW)
 
 ```javascript
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export function SlowRequestWarning({ isLoading, threshold = 3000 }) {
   const [showWarning, setShowWarning] = useState(false);
@@ -633,11 +642,11 @@ import { SlowRequestWarning } from "../../components/ui/SlowRequestWarning";
 
 export default function Appointments() {
   const [loading, setLoading] = useState(false);
-  
+
   return (
     <>
       <SlowRequestWarning isLoading={loading} threshold={2000} />
-      
+
       {/* Rest of component */}
     </>
   );
@@ -645,6 +654,7 @@ export default function Appointments() {
 ```
 
 **Impact:**
+
 - ✅ Reduces user anxiety during slow loads
 - ✅ Prevents premature page abandonment
 - ✅ Better perceived reliability
@@ -654,6 +664,7 @@ export default function Appointments() {
 ## 📋 Implementation Checklist
 
 ### Immediate Wins (Can do in 1-2 hours)
+
 - [ ] Create `useDebounce` hook
 - [ ] Apply debouncing to search inputs (AdminBeauticianLink, Appointments)
 - [ ] Add request cancellation to TimeSlots page
@@ -661,6 +672,7 @@ export default function Appointments() {
 - [ ] Add skeletons to Appointments, Dashboard, Services pages
 
 ### Quick Wins (Can do in 2-3 hours)
+
 - [ ] Fix useEffect dependencies in Dashboard
 - [ ] Fix useEffect dependencies in Services
 - [ ] Add memoization to Appointments filtering
@@ -669,6 +681,7 @@ export default function Appointments() {
 - [ ] Apply SlowRequestWarning to key pages
 
 ### Verification
+
 - [ ] Open Network tab - confirm requests aren't duplicated
 - [ ] Test search - confirm API isn't called on every keystroke
 - [ ] Navigate away during loading - confirm no console errors
@@ -679,13 +692,13 @@ export default function Appointments() {
 
 ## 📊 Expected Improvements (Without React Query)
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Search typing lag | 100-200ms | 0ms | ✅ 100% |
-| Unnecessary re-renders | High | Low | ✅ 60-80% |
-| Memory leaks | Present | None | ✅ 100% |
-| Perceived load time | 2-3s | 0.5-1s | ✅ 50-75% |
-| Error clarity | Poor | Excellent | ✅ 300% |
+| Metric                 | Before    | After     | Improvement |
+| ---------------------- | --------- | --------- | ----------- |
+| Search typing lag      | 100-200ms | 0ms       | ✅ 100%     |
+| Unnecessary re-renders | High      | Low       | ✅ 60-80%   |
+| Memory leaks           | Present   | None      | ✅ 100%     |
+| Perceived load time    | 2-3s      | 0.5-1s    | ✅ 50-75%   |
+| Error clarity          | Poor      | Excellent | ✅ 300%     |
 
 ---
 

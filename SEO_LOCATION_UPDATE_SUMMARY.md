@@ -54,7 +54,7 @@ All location references have been updated from Huntingdon to **Wisbech** with ac
    - Updated keywords: "Wisbech" replaces "Huntingdon"
    - Updated service areas in description
 
-5. **src/features/beauticians/BeauticianSelectionPage.jsx** ✅
+5. **src/features/specialists/BeauticianSelectionPage.jsx** ✅
 
    - Updated SEOHead description: "Wisbech, Cambridgeshire... 12 Blackfriars Rd, PE13 1AT... Open 7 days, 9am-5pm"
    - Updated keywords: "book beauty appointment Wisbech", "beauty salon booking March", "King's Lynn beauty appointments"

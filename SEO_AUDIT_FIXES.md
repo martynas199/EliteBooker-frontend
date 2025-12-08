@@ -81,7 +81,7 @@ This document details all SEO improvements made based on the SEO audit feedback.
 - **Booking Page**:
 
   - ❌ 260 characters
-  - ✅ 156 characters: "Book your beauty appointment in Wisbech. Expert beauticians specializing in permanent makeup, brows, lashes & treatments. Online booking available 24/7!"
+  - ✅ 156 characters: "Book your beauty appointment in Wisbech. Expert specialists specializing in permanent makeup, brows, lashes & treatments. Online booking available 24/7!"
 
 - **Contact Page**:
   - ❌ 294 characters
@@ -104,10 +104,10 @@ This document details all SEO improvements made based on the SEO audit feedback.
 - All links use descriptive anchor text with location keywords
 
 ```html
-<a href="/beauticians" className="text-brand-600 hover:text-brand-700 underline"
+<a href="/specialists" className="text-brand-600 hover:text-brand-700 underline"
   >lip fillers</a
 >
-<a href="/beauticians" className="text-brand-600 hover:text-brand-700 underline"
+<a href="/specialists" className="text-brand-600 hover:text-brand-700 underline"
   >anti-wrinkle injections</a
 >
 ```
@@ -121,7 +121,7 @@ This document details all SEO improvements made based on the SEO audit feedback.
 <a href="/" className="text-brand-300 hover:text-brand-200 underline"
   >Wisbech beauty salon</a
 >
-<a href="/beauticians" className="text-brand-300 hover:text-brand-200 underline"
+<a href="/specialists" className="text-brand-300 hover:text-brand-200 underline"
   >beauty treatments</a
 >
 ```
@@ -169,7 +169,7 @@ This document details all SEO improvements made based on the SEO audit feedback.
 1. `src/features/landing/LandingPage.jsx`
 2. `src/features/products/ProductsPage.jsx`
 3. `src/features/faq/FAQPage.jsx`
-4. `src/features/beauticians/BeauticianSelectionPage.jsx`
+4. `src/features/specialists/BeauticianSelectionPage.jsx`
 5. `src/features/salon/SalonDetails.jsx`
 
 ### SEO Improvements:

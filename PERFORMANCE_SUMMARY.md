@@ -123,7 +123,7 @@ const [events, setEvents] = useState([]);
 
 useEffect(() => {
   filterAppointments(); // Runs on every state change
-}, [selectedBeautician, allAppointments]);
+}, [selectedSpecialist, allAppointments]);
 
 function filterAppointments() {
   let filtered = allAppointments.filter(/* ... */);
@@ -134,8 +134,8 @@ function filterAppointments() {
 const events = useMemo(() => {
   let filtered = allAppointments.filter(
     (apt) =>
-      selectedBeautician === "all" ||
-      apt.beauticianId?._id === selectedBeautician
+      selectedSpecialist === "all" ||
+      apt.beauticianId?._id === selectedSpecialist
   );
 
   return filtered.map((apt) => ({
@@ -145,7 +145,7 @@ const events = useMemo(() => {
     end: new Date(apt.end),
     resource: apt,
   }));
-}, [selectedBeautician, allAppointments]);
+}, [selectedSpecialist, allAppointments]);
 ```
 
 **Results**:
@@ -234,7 +234,7 @@ const fetchAppointments = async (page = 1) => {
 
 - ✅ `GET /api/appointments?page=1&limit=50`
 - ✅ `GET /api/services?page=1&limit=20` (with backward compatibility)
-- ✅ `GET /api/beauticians?page=1&limit=20` (with backward compatibility)
+- ✅ `GET /api/specialists?page=1&limit=20` (with backward compatibility)
 
 **Results**:
 
@@ -346,7 +346,7 @@ npm run seed -- --appointments 500
 - [x] Add useMemo to Dashboard component
 - [x] Add pagination to appointments endpoint
 - [x] Add pagination to services endpoint
-- [x] Add pagination to beauticians endpoint
+- [x] Add pagination to specialists endpoint
 - [x] Update frontend to handle paginated appointments
 - [x] Add pagination UI controls
 - [x] Test build output and bundle sizes

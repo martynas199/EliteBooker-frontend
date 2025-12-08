@@ -1,114 +1,198 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
+/**
+ * Get current admin info from API
+ * Returns admin data including tenantId
+ */
+const getCurrentAdmin = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/auth/me`, {
+      withCredentials: true,
+    });
+    return response.data.admin;
+  } catch (error) {
+    console.error("Failed to get current admin:", error);
+    throw error;
+  }
+};
 
 /**
  * Tenant Settings Store
- * Manages feature flags and configuration settings
+ * Manages feature flags and configuration settings in memory
+ * Data is loaded from database on demand and kept in memory for performance
  */
-const useTenantSettingsStore = create(
-  persist(
-    (set, get) => ({
-      // Feature flags
+const useTenantSettingsStore = create((set, get) => ({
+  // Feature flags
+  featureFlags: {
+    smsConfirmations: false,
+    smsReminders: false,
+    onlinePayments: true,
+    ecommerce: false,
+    emailNotifications: true,
+  },
+
+  // Gateway connections
+  smsGatewayConnected: false,
+  stripeConnected: true,
+
+  // E-commerce state
+  ecommerceEnabled: false,
+
+  // Tenant ID
+  tenantId: null,
+
+  // Loading state
+  loading: false,
+
+  /**
+   * Update a single feature flag
+   * @param {string} feature - Feature flag name
+   * @param {boolean} value - New value
+   */
+  updateFeatureFlag: async (feature, value) => {
+    set({ loading: true });
+
+    try {
+      // Get current admin info from API
+      const admin = await getCurrentAdmin();
+
+      if (!admin || !admin.tenantId) {
+        throw new Error("Authentication required");
+      }
+
+      const tenantId = admin.tenantId;
+
+      // Map frontend feature names to backend schema
+      const featureMapping = {
+        ecommerce: "enableProducts",
+        // Add more mappings as needed
+      };
+
+      const backendFeatureName = featureMapping[feature] || feature;
+
+      console.log("[TenantSettings] Updating feature:", {
+        frontendName: feature,
+        backendName: backendFeatureName,
+        value: value,
+        tenantId: tenantId,
+      });
+
+      // Update tenant features in database
+      const updateResponse = await axios.put(
+        `${API_URL}/api/tenants/${tenantId}`,
+        {
+          features: {
+            [backendFeatureName]: value,
+          },
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(
+        "[TenantSettings] Update response features:",
+        updateResponse.data.tenant?.features
+      );
+
+      set((state) => ({
+        featureFlags: {
+          ...state.featureFlags,
+          [feature]: value,
+        },
+        // Special handling for ecommerce flag
+        ecommerceEnabled:
+          feature === "ecommerce" ? value : state.ecommerceEnabled,
+        loading: false,
+      }));
+
+      return { success: true };
+    } catch (error) {
+      set({ loading: false });
+      console.error("Failed to update feature flag:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Load tenant settings from API
+   */
+  loadSettings: async () => {
+    set({ loading: true });
+
+    try {
+      // Get current admin info from API
+      const admin = await getCurrentAdmin();
+
+      if (!admin || !admin.tenantId) {
+        set({ loading: false });
+        return;
+      }
+
+      const tenantId = admin.tenantId;
+
+      const response = await axios.get(`${API_URL}/api/tenants/${tenantId}`, {
+        withCredentials: true,
+      });
+
+      const tenant = response.data.tenant || response.data;
+
+      // Map backend features to frontend flags
+      const features = tenant.features || {};
+
+      console.log("[TenantSettings] Loaded features from DB:", features);
+
+      set({
+        featureFlags: {
+          smsConfirmations: features.smsConfirmations === true,
+          smsReminders: features.smsReminders === true,
+          onlinePayments: features.onlinePayments === true,
+          ecommerce: features.enableProducts === true,
+          emailNotifications: features.emailNotifications === true,
+        },
+        ecommerceEnabled: features.enableProducts === true,
+        tenantId: tenant._id,
+        loading: false,
+      });
+
+      console.log("[TenantSettings] Set feature flags:", {
+        smsConfirmations: features.smsConfirmations === true,
+        smsReminders: features.smsReminders === true,
+        onlinePayments: features.onlinePayments === true,
+        ecommerce: features.enableProducts === true,
+        emailNotifications: features.emailNotifications === true,
+      });
+    } catch (error) {
+      console.error("Failed to load tenant settings:", error);
+      set({ loading: false });
+      throw error;
+    }
+  },
+
+  /**
+   * Reset to defaults
+   */
+  reset: () => {
+    set({
       featureFlags: {
         smsConfirmations: false,
         smsReminders: false,
         onlinePayments: true,
-        bookingFee: false,
         ecommerce: false,
         emailNotifications: true,
       },
-
-      // Gateway connections
       smsGatewayConnected: false,
       stripeConnected: true,
-
-      // E-commerce state
       ecommerceEnabled: false,
-
-      // Loading state
-      loading: false,
-
-      /**
-       * Update a single feature flag
-       * @param {string} feature - Feature flag name
-       * @param {boolean} value - New value
-       */
-      updateFeatureFlag: async (feature, value) => {
-        set({ loading: true });
-
-        try {
-          // Simulate API call
-          await new Promise((resolve) => setTimeout(resolve, 300));
-
-          set((state) => ({
-            featureFlags: {
-              ...state.featureFlags,
-              [feature]: value,
-            },
-            // Special handling for ecommerce flag
-            ecommerceEnabled:
-              feature === "ecommerce" ? value : state.ecommerceEnabled,
-            loading: false,
-          }));
-
-          return { success: true };
-        } catch (error) {
-          set({ loading: false });
-          throw error;
-        }
-      },
-
-      /**
-       * Load tenant settings from API
-       */
-      loadSettings: async () => {
-        set({ loading: true });
-
-        try {
-          // Simulate API call
-          await new Promise((resolve) => setTimeout(resolve, 500));
-
-          // In production, this would fetch from your API:
-          // const response = await fetch('/api/tenant/settings');
-          // const data = await response.json();
-
-          set({
-            loading: false,
-          });
-        } catch (error) {
-          set({ loading: false });
-          throw error;
-        }
-      },
-
-      /**
-       * Reset to defaults
-       */
-      reset: () => {
-        set({
-          featureFlags: {
-            smsConfirmations: false,
-            smsReminders: false,
-            onlinePayments: true,
-            bookingFee: false,
-            ecommerce: false,
-            emailNotifications: true,
-          },
-          smsGatewayConnected: false,
-          stripeConnected: true,
-          ecommerceEnabled: false,
-        });
-      },
-    }),
-    {
-      name: "tenant-settings-storage",
-      partialize: (state) => ({
-        featureFlags: state.featureFlags,
-        ecommerceEnabled: state.ecommerceEnabled,
-      }),
-    }
-  )
-);
+    });
+  },
+}));
 
 /**
  * Custom hook for accessing tenant settings

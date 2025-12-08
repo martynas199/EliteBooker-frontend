@@ -43,9 +43,9 @@ export default function StripeConnect() {
                 Admin Account Not Linked
               </h3>
               <p className="text-sm text-yellow-800 mb-3">
-                Your admin account is not linked to a beautician profile. To
+                Your admin account is not linked to a specialist profile. To
                 manage Stripe Connect settings, you need to be linked to a
-                beautician.
+                specialist.
               </p>
               <p className="text-sm text-yellow-800">
                 Ask a super admin to link your account in the{" "}

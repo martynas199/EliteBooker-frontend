@@ -35,7 +35,7 @@ export const adminTranslations = {
 
     // User Menu
     superAdmin: "Super Admin",
-    beautician: "Beautician",
+    specialist: "Beautician",
     logout: "Logout",
 
     // Common
@@ -71,8 +71,8 @@ export const adminTranslations = {
       "Detailed information about what's included and what customers can expect",
     primaryBeautician: "Primary Beautician",
     primaryBeauticianHint:
-      "The main beautician responsible for providing this service",
-    selectBeautician: "Select a beautician",
+      "The main specialist responsible for providing this service",
+    selectBeautician: "Select a specialist",
     youCanOnlyCreateForYourself: "You can only create services for yourself",
     serviceImage: "Service Image",
     serviceImageHint:
@@ -106,18 +106,18 @@ export const adminTranslations = {
     // Dashboard
     viewManageAllAppointments: "View and manage all appointments",
     viewAppointmentsLinkedBeautician:
-      "View appointments for your linked beautician",
-    noBeauticianLinked: "No beautician linked - contact administrator",
+      "View appointments for your linked specialist",
+    noBeauticianLinked: "No specialist linked - contact administrator",
     filterByBeautician: "Filter by Beautician",
     allBeauticians: "All Beauticians",
     todaysAppointments: "Today's Appointments",
     accountNotLinked: "Account Not Linked",
     contactSuperAdmin:
-      "Your admin account is not linked to a beautician. Please contact the super administrator to link your account.",
+      "Your admin account is not linked to a specialist. Please contact the super administrator to link your account.",
     viewManageAllAppointmentsFromAllBeauticians:
-      "View and manage all appointments from all beauticians",
+      "View and manage all appointments from all specialists",
     viewAppointmentsLinkedBeauticianOnly:
-      "View appointments for your linked beautician only",
+      "View appointments for your linked specialist only",
 
     // Orders
     manageCustomerOrders: "Manage customer orders and fulfillment",
@@ -322,7 +322,7 @@ export const adminTranslations = {
 
     // User Menu
     superAdmin: "Super Administratorius",
-    beautician: "Kosmetologė",
+    specialist: "Kosmetologė",
     logout: "Atsijungti",
 
     // Common

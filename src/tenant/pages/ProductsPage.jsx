@@ -461,7 +461,7 @@ export default function ProductsPage() {
                 Discover professional skincare, luxury cosmetics, and beauty
                 essentials. Complement your{" "}
                 <a
-                  href="/beauticians"
+                  href="/specialists"
                   className="text-brand-300 hover:text-brand-200 underline transition-colors"
                 >
                   beauty treatments

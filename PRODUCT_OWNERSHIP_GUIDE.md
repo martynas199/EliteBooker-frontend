@@ -76,7 +76,7 @@ Customer buys:
    - Find "Product Owner" dropdown (below Category)
    - Options:
      - "Platform (No Beautician)" - Default, platform-owned
-     - Each active beautician with Stripe status
+     - Each active specialist with Stripe status
    - Look for ✓ checkmark indicating Stripe connected
 
 4. **Save Product**
@@ -89,7 +89,7 @@ Customer buys:
 
 - **Purple Badge**: "💰 Beautician Product"
 - **Blue Badge**: "🏢 Platform Product"
-- **Owner Name**: Shows below product title (if beautician-owned)
+- **Owner Name**: Shows below product title (if specialist-owned)
 
 **In Dropdown:**
 
@@ -100,24 +100,24 @@ Customer buys:
 
 ⚠️ **Stripe Connect Required**
 
-- Only beauticians with `stripeStatus: "connected"` can receive payments
-- Admin must connect beautician via Stripe Connect Settings
-- Products can still be assigned to unconnected beauticians (payments will fail)
+- Only specialists with `stripeStatus: "connected"` can receive payments
+- Admin must connect specialist via Stripe Connect Settings
+- Products can still be assigned to unconnected specialists (payments will fail)
 
 💡 **Best Practice**
 
-- Verify beautician is Stripe connected before assigning products
+- Verify specialist is Stripe connected before assigning products
 - Check Stripe Connect status in Admin → Stripe Connect page
 
 ## Customer Experience
 
 Customers don't see ownership - they simply shop products. The system automatically:
 
-1. Groups items by beautician during checkout
+1. Groups items by specialist during checkout
 2. Calculates payment splits
 3. Creates Stripe Checkout session
 4. Processes payment
-5. Distributes funds to beauticians
+5. Distributes funds to specialists
 6. Updates earnings tracking
 
 ## Beautician Benefits
@@ -135,7 +135,7 @@ Customers don't see ownership - they simply shop products. The system automatica
 Beauticians can view their earnings:
 
 1. Admin → Revenue page
-2. Filter by beautician
+2. Filter by specialist
 3. See product sales vs service bookings
 4. View Stripe Connect transfer history
 
@@ -146,7 +146,7 @@ Beauticians can view their earnings:
 **Checkout Creation** (`POST /api/orders/checkout`):
 
 ```javascript
-// Groups items by beautician
+// Groups items by specialist
 const itemsByBeautician = new Map();
 for (const item of validatedItems) {
   const beauticianId = item.beauticianId?.toString() || "platform";
@@ -156,7 +156,7 @@ for (const item of validatedItems) {
 // Tracks expected payments
 stripeConnectPayments.push({
   beauticianId,
-  beauticianStripeAccount: beautician.stripeAccountId,
+  beauticianStripeAccount: specialist.stripeAccountId,
   amount: itemsTotal,
   status: "pending",
 });
@@ -165,18 +165,18 @@ stripeConnectPayments.push({
 **Payment Confirmation** (`GET /api/orders/confirm-checkout`):
 
 ```javascript
-// For each beautician payment
+// For each specialist payment
 for (const payment of order.stripeConnectPayments) {
-  // Single-beautician: destination charge already handled
-  // Multi-beautician: create transfer
+  // Single-specialist: destination charge already handled
+  // Multi-specialist: create transfer
   const transfer = await stripe.transfers.create({
     amount: payment.amount * 100,
-    destination: beautician.stripeAccountId,
+    destination: specialist.stripeAccountId,
     transfer_group: `ORDER_${order._id}`,
   });
 
   // Update earnings
-  await Beautician.findByIdAndUpdate(beautician._id, {
+  await Beautician.findByIdAndUpdate(specialist._id, {
     $inc: { totalEarnings: payment.amount },
   });
 }
@@ -215,8 +215,8 @@ for (const payment of order.stripeConnectPayments) {
 
 **Checklist**:
 
-1. ✅ Is beautician connected to Stripe? (Admin → Stripe Connect)
-2. ✅ Is product assigned to beautician? (Check Product Owner field)
+1. ✅ Is specialist connected to Stripe? (Admin → Stripe Connect)
+2. ✅ Is product assigned to specialist? (Check Product Owner field)
 3. ✅ Did customer complete payment? (Check order status = "paid")
 4. ✅ Check Stripe Dashboard for transfer/destination charge
 5. ✅ Check `order.stripeConnectPayments` array
@@ -254,9 +254,9 @@ for (const payment of order.stripeConnectPayments) {
 
 **When to use Beautician ownership:**
 
-- Products beautician sources independently
+- Products specialist sources independently
 - Personal brand products
-- Exclusive items beautician created
+- Exclusive items specialist created
 - Beautician wants direct payment
 
 ## Related Documentation

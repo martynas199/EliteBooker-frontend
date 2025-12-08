@@ -309,7 +309,7 @@ describe("Smart Time Slot Generator", () => {
           method: "POST",
           url: `${Cypress.env(
             "API_URL"
-          )}/api/beauticians/test-staff-id/time-off`,
+          )}/api/specialists/test-staff-id/time-off`,
           headers: {
             Authorization: `Bearer ${token}`,
             "x-tenant-slug": tenant1.slug,

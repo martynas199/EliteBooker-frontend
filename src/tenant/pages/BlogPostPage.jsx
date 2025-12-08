@@ -282,11 +282,11 @@ export default function BlogPostPage() {
             Ready to Experience Beauty Excellence?
           </h3>
           <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
-            Book your appointment with our expert beauticians in Wisbech and
+            Book your appointment with our expert specialists in Wisbech and
             discover the treatments mentioned in this article.
           </p>
           <button
-            onClick={() => navigate(`/salon/${tenant?.slug}/beauticians`)}
+            onClick={() => navigate(`/salon/${tenant?.slug}/specialists`)}
             className="px-8 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
           >
             Book Now

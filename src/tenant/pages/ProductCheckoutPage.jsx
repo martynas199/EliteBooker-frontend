@@ -19,15 +19,15 @@ export default function ProductCheckoutPage() {
   const { currency, formatPrice, convertPrice } = useCurrency();
   const cartItems = useSelector((state) => state.cart.items);
 
-  // Check for multiple beauticians in cart
-  const beauticians = new Set(
+  // Check for multiple specialists in cart
+  const specialists = new Set(
     cartItems
       .map(
         (item) => item.product?.beauticianId?._id || item.product?.beauticianId
       )
       .filter(Boolean)
   );
-  const hasMultipleBeauticians = beauticians.size > 1;
+  const hasMultipleBeauticians = specialists.size > 1;
 
   const [loading, setLoading] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(false);
@@ -308,7 +308,7 @@ export default function ProductCheckoutPage() {
     );
   }
 
-  // Show error if multiple beauticians in cart
+  // Show error if multiple specialists in cart
   if (hasMultipleBeauticians) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12">
@@ -328,7 +328,7 @@ export default function ProductCheckoutPage() {
             Multiple Sellers in Cart
           </h2>
           <p className="text-gray-600 mb-4">
-            Your cart contains products from {beauticians.size} different
+            Your cart contains products from {specialists.size} different
             sellers.
           </p>
           <p className="text-gray-600 mb-6">

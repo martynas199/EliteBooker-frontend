@@ -170,7 +170,7 @@ export const servicesAPI = {
   delete: (id) => api.delete(`/api/services/${id}`),
 };
 
-// Specialists APIs (renamed from beauticians)
+// Specialists APIs (renamed from specialists)
 export const specialistsAPI = {
   list: (params) => api.get("/api/specialists", { params }),
   get: (id) => api.get(`/api/specialists/${id}`),
@@ -179,7 +179,7 @@ export const specialistsAPI = {
   delete: (id) => api.delete(`/api/specialists/${id}`),
 };
 
-// Legacy beauticians API (backward compatibility - redirects to specialists)
+// Legacy specialists API (backward compatibility - redirects to specialists)
 export const beauticiansAPI = specialistsAPI;
 
 // Appointments APIs

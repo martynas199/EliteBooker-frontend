@@ -2,14 +2,14 @@
 
 ## Overview
 
-A new admin dashboard page that provides a user-friendly interface for linking admin accounts to beautician profiles. This eliminates the need to run command-line scripts for managing these relationships.
+A new admin dashboard page that provides a user-friendly interface for linking admin accounts to specialist profiles. This eliminates the need to run command-line scripts for managing these relationships.
 
 ## Purpose
 
-The Admin-Beautician link allows administrators to manage Stripe Connect settings for specific beauticians. When an admin is linked to a beautician:
+The Admin-Beautician link allows administrators to manage Stripe Connect settings for specific specialists. When an admin is linked to a specialist:
 
-- The admin can access and manage the beautician's Stripe Connect account
-- The admin can view earnings reports for that beautician
+- The admin can access and manage the specialist's Stripe Connect account
+- The admin can view earnings reports for that specialist
 - The admin must log out and log back in to see changes take effect
 
 ## Features
@@ -17,21 +17,21 @@ The Admin-Beautician link allows administrators to manage Stripe Connect setting
 ### 1. Visual Link Creation
 
 - **Searchable Admin List**: Filter admins by name or email
-- **Searchable Beautician List**: Filter beauticians by name or email
+- **Searchable Beautician List**: Filter specialists by name or email
 - **Visual Selection**: Click to select from scrollable lists
-- **Link Status**: Shows if an admin is already linked to another beautician
+- **Link Status**: Shows if an admin is already linked to another specialist
 - **Confirmation**: Displays preview of the link before creating
 
 ### 2. Current Links Management
 
-- **Table View**: Shows all existing admin-beautician relationships
+- **Table View**: Shows all existing admin-specialist relationships
 - **Detailed Information**: Displays names, emails, and status
 - **Unlink Action**: One-click removal of relationships with confirmation
 - **Empty State**: Friendly message when no links exist
 
 ### 3. User Experience
 
-- **Search Functionality**: Quick filtering for both admins and beauticians
+- **Search Functionality**: Quick filtering for both admins and specialists
 - **Real-time Updates**: Automatically refreshes after creating/removing links
 - **Error Handling**: Clear error messages with toast notifications
 - **Loading States**: Shows spinners during API operations
@@ -47,9 +47,9 @@ The Admin-Beautician link allows administrators to manage Stripe Connect setting
 - **Authentication**: Required (JWT token)
 - **Response**: Array of admin objects (without passwords)
 
-#### `PATCH /api/admin/admins/:adminId/link-beautician`
+#### `PATCH /api/admin/admins/:adminId/link-specialist`
 
-- **Description**: Links or unlinks an admin to a beautician
+- **Description**: Links or unlinks an admin to a specialist
 - **Authentication**: Required (JWT token)
 - **Body**:
   ```json
@@ -60,7 +60,7 @@ The Admin-Beautician link allows administrators to manage Stripe Connect setting
 - **Response**:
   ```json
   {
-    "message": "Admin successfully linked to beautician",
+    "message": "Admin successfully linked to specialist",
     "admin": {
       /* updated admin object */
     }
@@ -110,7 +110,7 @@ beauty-salon-backend/
 
 1. In the "Create New Link" section:
    - Search for and select an admin from the left column
-   - Search for and select a beautician from the right column
+   - Search for and select a specialist from the right column
 2. Review the preview showing: "Admin Name → Beautician Name"
 3. Click "Link Admin to Beautician" button
 4. Success toast appears confirming the link
@@ -127,9 +127,9 @@ beauty-salon-backend/
 ### Important Notes
 
 - **Re-login Required**: After linking/unlinking, the admin must log out and log back in to see Stripe Connect settings
-- **Single Link**: Each admin can only be linked to one beautician at a time
-- **Overwriting**: Linking an already-linked admin to a new beautician will overwrite the previous link
-- **Beautician Email**: Some beauticians may not have email addresses (shows "No email")
+- **Single Link**: Each admin can only be linked to one specialist at a time
+- **Overwriting**: Linking an already-linked admin to a new specialist will overwrite the previous link
+- **Beautician Email**: Some specialists may not have email addresses (shows "No email")
 
 ## UI Components Used
 
@@ -157,21 +157,21 @@ beauty-salon-backend/
 
 ### Frontend Errors
 
-- Network errors: "Failed to load admins and beauticians"
+- Network errors: "Failed to load admins and specialists"
 - Link errors: Shows specific error from backend
-- Validation: "Please select both an admin and a beautician"
+- Validation: "Please select both an admin and a specialist"
 
 ### Backend Errors
 
-- 404: Admin or beautician not found
+- 404: Admin or specialist not found
 - 500: Database or server errors
 - 401: Unauthorized (invalid/missing token)
 
 ## Testing Checklist
 
 - [ ] Can access page from admin navigation
-- [ ] Search filters work for both admins and beauticians
-- [ ] Can select admin and beautician visually
+- [ ] Search filters work for both admins and specialists
+- [ ] Can select admin and specialist visually
 - [ ] Link button is disabled until both are selected
 - [ ] Creating link shows success toast
 - [ ] New link appears in Current Links table immediately
@@ -188,7 +188,7 @@ beauty-salon-backend/
 ### Old Method (scripts/linkAdminToBeautician.js)
 
 ```bash
-node scripts/linkAdminToBeautician.js admin@salon.com beautician@salon.com
+node scripts/linkAdminToBeautician.js admin@salon.com specialist@salon.com
 ```
 
 - Requires server access
@@ -215,7 +215,7 @@ Possible improvements:
 - Permissions management (who can create links)
 - Export links as CSV
 - Filter/sort current links table
-- Show beautician earnings in the table
+- Show specialist earnings in the table
 
 ## Related Documentation
 

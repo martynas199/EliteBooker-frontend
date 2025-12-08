@@ -13,11 +13,13 @@ Track your progress as you implement the recommended optimizations.
 ### Setup & Infrastructure
 
 - [ ] Create `src/hooks/useDebounce.js`
+
   - [ ] Copy code from `QUICK_WINS.md` Quick Win #1
   - [ ] Test with simple example
   - [ ] Verify 300-500ms delay works
 
 - [ ] Create Skeleton Components
+
   - [ ] `src/components/ui/Skeleton.jsx` - Base skeleton component
   - [ ] `src/components/ui/TableSkeleton.jsx` - Table skeleton
   - [ ] `src/components/ui/CardSkeleton.jsx` - Card skeleton
@@ -34,6 +36,7 @@ Track your progress as you implement the recommended optimizations.
 #### 🔴 Critical Files (Do First)
 
 - [ ] **`src/admin/pages/Appointments.jsx`**
+
   - [ ] Add `useDebounce` for search input
   - [ ] Replace loading spinner with `<AppointmentsSkeleton />`
   - [ ] Add `useMemo` for filtered appointments
@@ -42,6 +45,7 @@ Track your progress as you implement the recommended optimizations.
   - [ ] Test: Loading shows skeleton instead of spinner
 
 - [ ] **`src/admin/pages/Dashboard.jsx`**
+
   - [ ] Fix `fetchData` with `useCallback`
   - [ ] Fix useEffect dependencies
   - [ ] Add `<CardSkeleton />` for loading state
@@ -49,12 +53,14 @@ Track your progress as you implement the recommended optimizations.
   - [ ] Test: Skeleton appears during load
 
 - [ ] **`src/admin/pages/Services.jsx`**
+
   - [ ] Fix useEffect dependencies (add or use `useCallback`)
   - [ ] Add `<TableSkeleton />` for loading state
   - [ ] Test: No React warnings in console
   - [ ] Test: Skeleton appears during load
 
 - [ ] **`src/features/availability/TimeSlots.jsx`**
+
   - [ ] Add `AbortController` for request cancellation
   - [ ] Add `isCancelled` flag
   - [ ] Return cleanup function from useEffect
@@ -69,22 +75,26 @@ Track your progress as you implement the recommended optimizations.
 #### 🟡 Medium Priority Files
 
 - [ ] **`src/admin/pages/AdminBeauticianLink.jsx`**
+
   - [ ] Add `useDebounce` for admin search
-  - [ ] Add `useDebounce` for beautician search
+  - [ ] Add `useDebounce` for specialist search
   - [ ] Add `<TableSkeleton />` for loading states
   - [ ] Test: Search is smooth, no lag
 
 - [ ] **`src/admin/AdminLayout.jsx`**
+
   - [ ] Fix fetchAdminName with proper dependencies
   - [ ] Consider moving to useCallback
   - [ ] Test: No unnecessary re-fetches
 
 - [ ] **`src/features/landing/LandingPage.jsx`**
+
   - [ ] Convert to `Promise.all` (if not already)
   - [ ] Add hero section skeleton
   - [ ] Test: Faster page load
 
 - [ ] **`src/admin/pages/Products.jsx`**
+
   - [ ] Add `useDebounce` for search/filter
   - [ ] Add product grid skeleton
   - [ ] Test: Smooth search experience
@@ -96,11 +106,13 @@ Track your progress as you implement the recommended optimizations.
 #### 🟢 Low Priority Files
 
 - [ ] **`src/features/products/ProductsPage.jsx`**
+
   - [ ] Convert to `Promise.all` if sequential
   - [ ] Add product grid skeleton
   - [ ] Test: Faster load time
 
 - [ ] **`src/features/products/PopularCollections.jsx`**
+
   - [ ] Add product carousel skeleton
   - [ ] Test: Skeleton appears during load
 
@@ -121,17 +133,20 @@ Track your progress as you implement the recommended optimizations.
 ### Testing Phase 1
 
 - [ ] **Network Tab Verification**
+
   - [ ] Open DevTools → Network tab
   - [ ] Navigate through admin panel
   - [ ] Count API requests (should see fewer duplicates)
   - [ ] Verify AbortController cancels requests
 
 - [ ] **Search Testing**
+
   - [ ] Type in search fields
   - [ ] Verify no API calls until typing stops
   - [ ] Verify smooth, lag-free experience
 
 - [ ] **Memory Leak Testing**
+
   - [ ] Open Chrome DevTools → Memory tab
   - [ ] Take heap snapshot
   - [ ] Navigate through pages rapidly
@@ -139,6 +154,7 @@ Track your progress as you implement the recommended optimizations.
   - [ ] Compare: Should not see growing listeners
 
 - [ ] **Loading State Testing**
+
   - [ ] Throttle network to Slow 3G
   - [ ] Navigate to each page
   - [ ] Verify skeletons appear
@@ -171,11 +187,13 @@ Track your progress as you implement the recommended optimizations.
 ### Setup & Installation
 
 - [ ] Install React Query
+
   ```bash
   npm install @tanstack/react-query @tanstack/react-query-devtools
   ```
 
 - [ ] Create `src/lib/queryClient.js`
+
   - [ ] Copy setup from `API_OPTIMIZATION_GUIDE.md` Step 1
   - [ ] Configure default options
   - [ ] Test import works
@@ -190,6 +208,7 @@ Track your progress as you implement the recommended optimizations.
 ### Custom Hooks Creation
 
 - [ ] **`src/features/appointments/appointments.hooks.js`**
+
   - [ ] Define `appointmentKeys` object
   - [ ] Create `useAppointments` hook
   - [ ] Create `useAppointment` (single) hook
@@ -198,6 +217,7 @@ Track your progress as you implement the recommended optimizations.
   - [ ] Test hooks with simple component
 
 - [ ] **`src/features/services/services.hooks.js`**
+
   - [ ] Define `servicesKeys` object
   - [ ] Create `useServices` hook
   - [ ] Create `useService` (single) hook
@@ -207,6 +227,7 @@ Track your progress as you implement the recommended optimizations.
   - [ ] Test hooks
 
 - [ ] **`src/features/staff/staff.hooks.js`**
+
   - [ ] Define `beauticiansKeys` object
   - [ ] Create `useBeauticians` hook
   - [ ] Create `useBeautician` (single) hook
@@ -216,6 +237,7 @@ Track your progress as you implement the recommended optimizations.
   - [ ] Test hooks
 
 - [ ] **`src/features/auth/auth.hooks.js`**
+
   - [ ] Create `useCurrentAdmin` hook
   - [ ] Create `useLogin` mutation
   - [ ] Create `useLogout` mutation
@@ -231,6 +253,7 @@ Track your progress as you implement the recommended optimizations.
 #### High Priority Pages
 
 - [ ] **`src/admin/pages/Appointments.jsx`**
+
   - [ ] Replace useEffect + useState with `useAppointments`
   - [ ] Replace mutations with `useUpdateAppointmentStatus`
   - [ ] Use `isLoading`, `isError`, `isFetching` states
@@ -240,6 +263,7 @@ Track your progress as you implement the recommended optimizations.
   - [ ] Test: Open React Query DevTools, verify cache
 
 - [ ] **`src/admin/pages/Dashboard.jsx`**
+
   - [ ] Replace useEffect with `useAppointments` + `useBeauticians`
   - [ ] Remove manual loading state
   - [ ] Use React Query loading states
@@ -247,12 +271,14 @@ Track your progress as you implement the recommended optimizations.
   - [ ] Test: Verify cache deduplication
 
 - [ ] **`src/admin/pages/Services.jsx`**
+
   - [ ] Replace useEffect with `useServices` + `useBeauticians`
   - [ ] Replace mutations with `useCreateService`, `useDeleteService`
   - [ ] Test: Verify cache invalidation on create/delete
   - [ ] Test: Verify no duplicate requests
 
 - [ ] **`src/admin/pages/Staff.jsx`**
+
   - [ ] Replace useEffect with `useBeauticians` + `useServices`
   - [ ] Replace mutations with create/update/delete hooks
   - [ ] Test: Verify cache works
@@ -266,15 +292,18 @@ Track your progress as you implement the recommended optimizations.
 #### Medium Priority Pages
 
 - [ ] **`src/admin/pages/Orders.jsx`**
+
   - [ ] Create `useOrders` hook
   - [ ] Add optimistic updates for status changes
   - [ ] Test: Verify instant UI feedback
 
 - [ ] **`src/admin/AdminLayout.jsx`**
+
   - [ ] Replace fetchAdminName with `useCurrentAdmin`
   - [ ] Test: Verify cached across pages
 
 - [ ] **`src/features/landing/LandingPage.jsx`**
+
   - [ ] Use `useServices`, `useSalon`, `useBeauticians` hooks
   - [ ] Test: Verify public cache works
 
@@ -285,11 +314,13 @@ Track your progress as you implement the recommended optimizations.
 #### Low Priority Pages
 
 - [ ] **`src/features/profile/ProfilePage.jsx`**
+
   - [ ] Create `useBookings` + `useOrders` hooks
   - [ ] Remove manual `dataFetched` flag
   - [ ] Test: Verify cache works
 
 - [ ] **`src/features/products/ProductsPage.jsx`**
+
   - [ ] Use `useProducts` + `useSettings` hooks
   - [ ] Test: Verify cache works
 
@@ -300,23 +331,27 @@ Track your progress as you implement the recommended optimizations.
 ### Testing Phase 2
 
 - [ ] **Cache Testing**
+
   - [ ] Navigate between pages rapidly
   - [ ] Open React Query DevTools
   - [ ] Verify data is cached (green = fresh, yellow = stale)
   - [ ] Verify no duplicate requests in Network tab
 
 - [ ] **Mutation Testing**
+
   - [ ] Create/update/delete items
   - [ ] Verify optimistic updates (instant UI feedback)
   - [ ] Verify cache invalidation (list updates after mutation)
   - [ ] Verify rollback on error
 
 - [ ] **Background Refetch Testing**
+
   - [ ] Stay on page for 5+ minutes
   - [ ] Verify background refetch happens
   - [ ] Verify no loading spinner (stale-while-revalidate)
 
 - [ ] **Offline Testing**
+
   - [ ] Load pages normally
   - [ ] Disconnect network
   - [ ] Navigate between pages
@@ -332,11 +367,13 @@ Track your progress as you implement the recommended optimizations.
 ### Performance Verification
 
 - [ ] **Network Requests Count**
+
   - [ ] Record session before migration
   - [ ] Record session after migration
   - [ ] Compare: Should see 60-80% reduction
 
 - [ ] **Lighthouse Scores**
+
   - [ ] Run Lighthouse on key pages before
   - [ ] Run Lighthouse on key pages after
   - [ ] Compare: Should see 30-40% improvement
@@ -459,17 +496,20 @@ _____________________________________________
 ### When Stuck, Check:
 
 1. **React Query DevTools**
+
    - Open DevTools → React Query tab
    - Check if query is cached (green = fresh)
    - Check if query is fetching (loading indicator)
    - Check query key structure
 
 2. **Network Tab**
+
    - Are requests being duplicated?
    - Are requests being cancelled properly?
    - Are request sizes reasonable?
 
 3. **Console**
+
    - Any React warnings about dependencies?
    - Any memory leak warnings?
    - Any uncaught errors?

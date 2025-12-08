@@ -33,7 +33,7 @@ export default function CheckoutPage() {
   const booking = useSelector((s) => s.booking);
   const {
     service: bookingService,
-    beautician: bookingBeautician,
+    specialist: bookingBeautician,
     time,
   } = booking;
   const dispatch = useDispatch();
@@ -63,10 +63,10 @@ export default function CheckoutPage() {
     if (!bookingService || !bookingBeautician) {
       const serviceParam = searchParams.get("service");
       const variantParam = searchParams.get("variant");
-      const beauticianParam = searchParams.get("beautician");
+      const beauticianParam = searchParams.get("specialist");
 
       if (serviceParam && beauticianParam) {
-        // Restore service and beautician to Redux from URL
+        // Restore service and specialist to Redux from URL
         api
           .get(`/services/${serviceParam}`)
           .then((res) => {
@@ -93,7 +93,7 @@ export default function CheckoutPage() {
           .catch((err) => console.error("Failed to restore service:", err));
 
         api
-          .get(`/beauticians/${beauticianParam}`)
+          .get(`/specialists/${beauticianParam}`)
           .then((res) => {
             dispatch(
               setSpecialist({

@@ -104,16 +104,16 @@ export const useService = (serviceId, options = {}) => {
 // ============================================================================
 
 /**
- * Hook to fetch all beauticians - PERFORMANCE OPTIMIZED
+ * Hook to fetch all specialists - PERFORMANCE OPTIMIZED
  */
 export const useBeauticians = () => {
   return useQuery({
-    queryKey: queryKeys.beauticians.list(),
+    queryKey: queryKeys.specialists.list(),
     queryFn: async () => {
-      // Fetch all beauticians without limit for admin panel
-      console.log("[useBeauticians] Fetching beauticians with limit: 1000");
-      const response = await api.get("/beauticians", {
-        params: { limit: 1000 }, // High limit to get all beauticians
+      // Fetch all specialists without limit for admin panel
+      console.log("[useBeauticians] Fetching specialists with limit: 1000");
+      const response = await api.get("/specialists", {
+        params: { limit: 1000 }, // High limit to get all specialists
       });
 
       console.log("[useBeauticians] Raw response:", response.data);
@@ -138,7 +138,7 @@ export const useBeauticians = () => {
       }
 
       // Fallback
-      console.warn("Unexpected beauticians response format:", response.data);
+      console.warn("Unexpected specialists response format:", response.data);
       return [];
     },
     staleTime: 5 * 60 * 1000, // Staff changes rarely
@@ -152,15 +152,15 @@ export const useBeauticians = () => {
 };
 
 /**
- * Hook to fetch single beautician by ID - PERFORMANCE OPTIMIZED
+ * Hook to fetch single specialist by ID - PERFORMANCE OPTIMIZED
  */
 export const useBeautician = (beauticianId, options = {}) => {
   return useQuery({
-    queryKey: queryKeys.beauticians.byId(beauticianId),
+    queryKey: queryKeys.specialists.byId(beauticianId),
     queryFn: async () => {
       if (!beauticianId) throw new Error("Beautician ID is required");
 
-      const response = await api.get(`/beauticians/${beauticianId}`);
+      const response = await api.get(`/specialists/${beauticianId}`);
 
       // Handle different response formats (same as single service)
       if (
@@ -172,11 +172,11 @@ export const useBeautician = (beauticianId, options = {}) => {
         if (response.data.success && response.data.data) {
           return response.data.data;
         }
-        // Direct beautician object
+        // Direct specialist object
         return response.data;
       }
 
-      throw new Error("Invalid beautician response format");
+      throw new Error("Invalid specialist response format");
     },
     enabled: !!beauticianId && options.enabled !== false,
     staleTime: 10 * 60 * 1000,
@@ -187,18 +187,18 @@ export const useBeautician = (beauticianId, options = {}) => {
 };
 
 /**
- * Hook to fetch beautician availability - OPTIMIZED
+ * Hook to fetch specialist availability - OPTIMIZED
  */
 export const useBeauticianAvailability = (beauticianId, date, options = {}) => {
   return useQuery({
-    queryKey: queryKeys.beauticians.availability(beauticianId, date),
+    queryKey: queryKeys.specialists.availability(beauticianId, date),
     queryFn: async () => {
       if (!beauticianId || !date) {
         throw new Error("Beautician ID and date are required");
       }
 
       const response = await api.get(
-        `/beauticians/${beauticianId}/availability`,
+        `/specialists/${beauticianId}/availability`,
         {
           params: { date },
         }
@@ -430,14 +430,14 @@ export const useDeleteService = () => {
 // ============================================================================
 
 /**
- * Hook to create a new beautician - FAST
+ * Hook to create a new specialist - FAST
  */
 export const useCreateBeautician = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (beauticianData) => {
-      const response = await api.post("/beauticians", beauticianData, {
+      const response = await api.post("/specialists", beauticianData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -455,35 +455,35 @@ export const useCreateBeautician = () => {
         return response.data;
       }
 
-      throw new Error("Failed to create beautician");
+      throw new Error("Failed to create specialist");
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.beauticians.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.specialists.all });
     },
   });
 };
 
 /**
- * Hook to delete a beautician - FAST
+ * Hook to delete a specialist - FAST
  */
 export const useDeleteBeautician = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (beauticianId) => {
-      const response = await api.delete(`/beauticians/${beauticianId}`);
+      const response = await api.delete(`/specialists/${beauticianId}`);
 
       // Delete returns { ok: true, message: "..." }
       if (response.data?.ok || response.data?.success) {
         return response.data;
       }
 
-      throw new Error(response.data?.message || "Failed to delete beautician");
+      throw new Error(response.data?.message || "Failed to delete specialist");
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.beauticians.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.specialists.all });
     },
   });
 };
@@ -516,13 +516,13 @@ export const prefetchServices = (queryClient) => {
 };
 
 /**
- * Prefetch beauticians for better perceived performance
+ * Prefetch specialists for better perceived performance
  */
 export const prefetchBeauticians = (queryClient) => {
   return queryClient.prefetchQuery({
-    queryKey: queryKeys.beauticians.list(),
+    queryKey: queryKeys.specialists.list(),
     queryFn: async () => {
-      const response = await api.get("/beauticians");
+      const response = await api.get("/specialists");
 
       if (Array.isArray(response.data)) {
         return response.data;

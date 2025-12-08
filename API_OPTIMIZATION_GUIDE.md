@@ -9,18 +9,21 @@ This guide provides specific, actionable optimizations for improving API request
 ## 🎯 Priority Recommendations
 
 ### **HIGH PRIORITY** - Immediate Impact
+
 1. Install React Query for request deduplication and caching
 2. Add loading skeletons for admin pages (Dashboard, Appointments, Services)
 3. Implement debounced search for admin filters
 4. Fix unnecessary re-fetching in `useEffect` hooks
 
 ### **MEDIUM PRIORITY** - Performance Gains
+
 5. Add stale-while-revalidate caching for static data
 6. Implement optimistic updates for mutations
 7. Add request cancellation for navigation changes
 8. Improve error feedback with retry mechanisms
 
 ### **LOW PRIORITY** - Polish
+
 9. Add request batching for parallel fetches
 10. Implement infinite scroll for large lists
 
@@ -37,7 +40,7 @@ npm install @tanstack/react-query @tanstack/react-query-devtools
 **File:** `src/lib/queryClient.js` (CREATE NEW)
 
 ```javascript
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient } from "@tanstack/react-query";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,15 +67,15 @@ export const queryClient = new QueryClient({
 **File:** `src/main.jsx`
 
 ```javascript
-import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { queryClient } from './lib/queryClient';
+import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { queryClient } from "./lib/queryClient";
 
 // Wrap your app
 <QueryClientProvider client={queryClient}>
   <App />
   <ReactQueryDevtools initialIsOpen={false} />
-</QueryClientProvider>
+</QueryClientProvider>;
 ```
 
 ---
@@ -84,16 +87,16 @@ import { queryClient } from './lib/queryClient';
 **File:** `src/features/appointments/appointments.hooks.js` (CREATE NEW)
 
 ```javascript
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../lib/apiClient';
-import toast from 'react-hot-toast';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "../../lib/apiClient";
+import toast from "react-hot-toast";
 
 // Query Keys - Centralized for cache invalidation
 export const appointmentKeys = {
-  all: ['appointments'],
-  lists: () => [...appointmentKeys.all, 'list'],
+  all: ["appointments"],
+  lists: () => [...appointmentKeys.all, "list"],
   list: (filters) => [...appointmentKeys.lists(), filters],
-  details: () => [...appointmentKeys.all, 'detail'],
+  details: () => [...appointmentKeys.all, "detail"],
   detail: (id) => [...appointmentKeys.details(), id],
 };
 
@@ -164,14 +167,14 @@ export function useUpdateAppointmentStatus() {
           queryClient.setQueryData(queryKey, data);
         });
       }
-      toast.error(err.message || 'Failed to update appointment');
+      toast.error(err.message || "Failed to update appointment");
     },
     // Always refetch after error or success
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: appointmentKeys.lists() });
     },
     onSuccess: () => {
-      toast.success('Appointment updated successfully');
+      toast.success("Appointment updated successfully");
     },
   });
 }
@@ -189,10 +192,10 @@ export function useCancelAppointment() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: appointmentKeys.all });
-      toast.success('Appointment cancelled');
+      toast.success("Appointment cancelled");
     },
     onError: (err) => {
-      toast.error(err.message || 'Failed to cancel appointment');
+      toast.error(err.message || "Failed to cancel appointment");
     },
   });
 }
@@ -297,6 +300,7 @@ export function CardSkeleton({ count = 1 }) {
 **File:** `src/admin/pages/Appointments.jsx`
 
 **CHANGES:**
+
 - Replace `useEffect` + `useState` with `useAppointments` hook
 - Add loading skeleton
 - Implement debounced search
@@ -306,7 +310,10 @@ export function CardSkeleton({ count = 1 }) {
 import { useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { selectAdmin } from "../../features/auth/authSlice";
-import { useAppointments, useUpdateAppointmentStatus } from "../../features/appointments/appointments.hooks";
+import {
+  useAppointments,
+  useUpdateAppointmentStatus,
+} from "../../features/appointments/appointments.hooks";
 import AppointmentsSkeleton from "../../components/ui/AppointmentsSkeleton";
 import { useDebounce } from "../../hooks/useDebounce"; // We'll create this
 import toast from "react-hot-toast";
@@ -317,27 +324,22 @@ export default function Appointments() {
 
   // Local UI state
   const [page, setPage] = useState(1);
-  const [selectedBeautician, setSelectedBeautician] = useState("all");
+  const [selectedSpecialist, setSelectedBeautician] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   // Debounce search to avoid API call on every keystroke
   const debouncedSearch = useDebounce(searchTerm, 500);
 
   // Fetch appointments with React Query
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-    isFetching,
-    refetch,
-  } = useAppointments({
-    page,
-    limit: 50,
-    beauticianId: selectedBeautician !== "all" ? selectedBeautician : undefined,
-    status: selectedStatus !== "all" ? selectedStatus : undefined,
-  });
+  const { data, isLoading, isError, error, isFetching, refetch } =
+    useAppointments({
+      page,
+      limit: 50,
+      beauticianId:
+        selectedSpecialist !== "all" ? selectedSpecialist : undefined,
+      status: selectedStatus !== "all" ? selectedStatus : undefined,
+    });
 
   // Update appointment mutation
   const updateStatus = useUpdateAppointmentStatus();
@@ -345,7 +347,7 @@ export default function Appointments() {
   // Client-side filtering for search (or move to backend)
   const filteredAppointments = useMemo(() => {
     if (!data?.appointments) return [];
-    
+
     if (!debouncedSearch) return data.appointments;
 
     const search = debouncedSearch.toLowerCase();
@@ -417,9 +419,7 @@ export default function Appointments() {
               </div>
             )}
           </div>
-          <p className="text-gray-600 mt-1">
-            Manage and view all appointments
-          </p>
+          <p className="text-gray-600 mt-1">Manage and view all appointments</p>
         </div>
         <button
           onClick={() => refetch()}
@@ -450,16 +450,15 @@ export default function Appointments() {
           <p className="text-gray-600">No appointments found</p>
         </div>
       ) : (
-        <>
-          {/* ... existing table ... */}
-        </>
+        <>{/* ... existing table ... */}</>
       )}
 
       {/* Pagination */}
       {data?.totalPages > 1 && (
         <div className="flex justify-between items-center">
           <p className="text-sm text-gray-700">
-            Showing {filteredAppointments.length} of {data?.totalAppointments || 0} appointments
+            Showing {filteredAppointments.length} of{" "}
+            {data?.totalAppointments || 0} appointments
           </p>
           <div className="flex gap-2">
             <button
@@ -494,7 +493,7 @@ export default function Appointments() {
 **File:** `src/hooks/useDebounce.js` (CREATE NEW)
 
 ```javascript
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 /**
  * Debounce a value to avoid excessive API calls
@@ -545,26 +544,26 @@ useEffect(() => {
 **File:** `src/features/staff/staff.hooks.js` (CREATE NEW)
 
 ```javascript
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../lib/apiClient';
-import toast from 'react-hot-toast';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "../../lib/apiClient";
+import toast from "react-hot-toast";
 
 export const beauticiansKeys = {
-  all: ['beauticians'],
-  lists: () => [...beauticiansKeys.all, 'list'],
+  all: ["specialists"],
+  lists: () => [...beauticiansKeys.all, "list"],
   list: (filters) => [...beauticiansKeys.lists(), filters],
-  details: () => [...beauticiansKeys.all, 'detail'],
+  details: () => [...beauticiansKeys.all, "detail"],
   detail: (id) => [...beauticiansKeys.details(), id],
 };
 
 /**
- * Fetch all beauticians - cached for 10 minutes (rarely changes)
+ * Fetch all specialists - cached for 10 minutes (rarely changes)
  */
 export function useBeauticians() {
   return useQuery({
     queryKey: beauticiansKeys.lists(),
     queryFn: async () => {
-      const response = await api.get('/beauticians');
+      const response = await api.get("/specialists");
       return response.data;
     },
     staleTime: 10 * 60 * 1000, // 10 minutes
@@ -572,13 +571,13 @@ export function useBeauticians() {
 }
 
 /**
- * Fetch single beautician
+ * Fetch single specialist
  */
 export function useBeautician(beauticianId) {
   return useQuery({
     queryKey: beauticiansKeys.detail(beauticianId),
     queryFn: async () => {
-      const response = await api.get(`/beauticians/${beauticianId}`);
+      const response = await api.get(`/specialists/${beauticianId}`);
       return response.data;
     },
     enabled: !!beauticianId, // Only fetch if ID exists
@@ -587,35 +586,35 @@ export function useBeautician(beauticianId) {
 }
 
 /**
- * Create beautician
+ * Create specialist
  */
 export function useCreateBeautician() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (data) => {
-      const response = await api.post('/beauticians', data);
+      const response = await api.post("/specialists", data);
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: beauticiansKeys.all });
-      toast.success('Beautician created successfully');
+      toast.success("Beautician created successfully");
     },
     onError: (err) => {
-      toast.error(err.message || 'Failed to create beautician');
+      toast.error(err.message || "Failed to create specialist");
     },
   });
 }
 
 /**
- * Update beautician
+ * Update specialist
  */
 export function useUpdateBeautician() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ beauticianId, data }) => {
-      const response = await api.patch(`/beauticians/${beauticianId}`, data);
+      const response = await api.patch(`/specialists/${beauticianId}`, data);
       return response.data;
     },
     onSuccess: (data, variables) => {
@@ -623,10 +622,10 @@ export function useUpdateBeautician() {
       queryClient.invalidateQueries({
         queryKey: beauticiansKeys.detail(variables.beauticianId),
       });
-      toast.success('Beautician updated successfully');
+      toast.success("Beautician updated successfully");
     },
     onError: (err) => {
-      toast.error(err.message || 'Failed to update beautician');
+      toast.error(err.message || "Failed to update specialist");
     },
   });
 }
@@ -637,15 +636,15 @@ export function useUpdateBeautician() {
 **File:** `src/features/services/services.hooks.js` (CREATE NEW)
 
 ```javascript
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../lib/apiClient';
-import toast from 'react-hot-toast';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "../../lib/apiClient";
+import toast from "react-hot-toast";
 
 export const servicesKeys = {
-  all: ['services'],
-  lists: () => [...servicesKeys.all, 'list'],
+  all: ["services"],
+  lists: () => [...servicesKeys.all, "list"],
   list: (filters) => [...servicesKeys.lists(), filters],
-  details: () => [...servicesKeys.all, 'detail'],
+  details: () => [...servicesKeys.all, "detail"],
   detail: (id) => [...servicesKeys.details(), id],
 };
 
@@ -687,15 +686,15 @@ export function useCreateService() {
 
   return useMutation({
     mutationFn: async (data) => {
-      const response = await api.post('/services', data);
+      const response = await api.post("/services", data);
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: servicesKeys.all });
-      toast.success('Service created successfully');
+      toast.success("Service created successfully");
     },
     onError: (err) => {
-      toast.error(err.message || 'Failed to create service');
+      toast.error(err.message || "Failed to create service");
     },
   });
 }
@@ -734,13 +733,13 @@ export function useDeleteService() {
           queryClient.setQueryData(queryKey, data);
         });
       }
-      toast.error(err.message || 'Failed to delete service');
+      toast.error(err.message || "Failed to delete service");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: servicesKeys.all });
     },
     onSuccess: () => {
-      toast.success('Service deleted successfully');
+      toast.success("Service deleted successfully");
     },
   });
 }
@@ -753,6 +752,7 @@ export function useDeleteService() {
 **File:** `src/admin/pages/Dashboard.jsx`
 
 **KEY IMPROVEMENTS:**
+
 - Use React Query hooks instead of useEffect
 - Parallel data fetching automatically handled
 - Loading skeleton
@@ -774,7 +774,7 @@ const localizer = dayjsLocalizer(dayjs);
 export default function Dashboard() {
   const admin = useSelector(selectAdmin);
   const isSuperAdmin = admin?.role === "super_admin";
-  const [selectedBeautician, setSelectedBeautician] = useState("all");
+  const [selectedSpecialist, setSelectedBeautician] = useState("all");
   const [currentView, setCurrentView] = useState("month");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -786,33 +786,33 @@ export default function Dashboard() {
     isLoading: appointmentsLoading,
     isError: appointmentsError,
   } = useAppointments({
-    // Backend can filter by beautician if not super admin
+    // Backend can filter by specialist if not super admin
     beauticianId: !isSuperAdmin && admin?.beauticianId ? admin.beauticianId : undefined,
   });
 
-  // Fetch beauticians - automatically cached and deduplicated
+  // Fetch specialists - automatically cached and deduplicated
   const {
-    data: beauticians = [],
+    data: specialists = [],
     isLoading: beauticiansLoading,
   } = useBeauticians();
 
   const isLoading = appointmentsLoading || beauticiansLoading;
 
-  // Filter appointments based on selected beautician
+  // Filter appointments based on selected specialist
   const allAppointments = useMemo(() => {
     if (!appointmentsData?.appointments) return [];
 
     let filtered = appointmentsData.appointments;
 
-    // Client-side filter if super admin selects specific beautician
-    if (isSuperAdmin && selectedBeautician !== "all") {
+    // Client-side filter if super admin selects specific specialist
+    if (isSuperAdmin && selectedSpecialist !== "all") {
       filtered = filtered.filter(
-        (apt) => apt.beauticianId?._id === selectedBeautician
+        (apt) => apt.beauticianId?._id === selectedSpecialist
       );
     }
 
     return filtered;
-  }, [appointmentsData, selectedBeautician, isSuperAdmin]);
+  }, [appointmentsData, selectedSpecialist, isSuperAdmin]);
 
   // ... rest of component logic stays the same ...
   // Memoize events, formatters, etc.
@@ -875,7 +875,7 @@ useEffect(() => {
 // ✅ GOOD - With React Query, no useEffect needed at all!
 // Just use the hook:
 const { data: services } = useServices();
-const { data: beauticians } = useBeauticians();
+const { data: specialists } = useBeauticians();
 ```
 
 **File:** `src/admin/AdminLayout.jsx` (Line 111)
@@ -902,12 +902,12 @@ useEffect(() => {
 // File: src/features/auth/auth.hooks.js
 export function useCurrentAdmin() {
   return useQuery({
-    queryKey: ['auth', 'me'],
+    queryKey: ["auth", "me"],
     queryFn: async () => {
-      const response = await api.get('/auth/me');
+      const response = await api.get("/auth/me");
       return response.data;
     },
-    enabled: !!localStorage.getItem('authToken'),
+    enabled: !!localStorage.getItem("authToken"),
     staleTime: 30 * 60 * 1000, // 30 minutes
     retry: false,
   });
@@ -915,7 +915,7 @@ export function useCurrentAdmin() {
 
 // In AdminLayout.jsx
 const { data: currentAdmin } = useCurrentAdmin();
-const adminName = currentAdmin?.name || 'Admin';
+const adminName = currentAdmin?.name || "Admin";
 ```
 
 ---
@@ -932,13 +932,12 @@ const adminName = currentAdmin?.name || 'Admin';
 // Before (manual cancellation needed)
 useEffect(() => {
   let cancelled = false;
-  
-  api.get(`/services/${serviceId}`)
-    .then((response) => {
-      if (!cancelled) {
-        setService(response.data);
-      }
-    });
+
+  api.get(`/services/${serviceId}`).then((response) => {
+    if (!cancelled) {
+      setService(response.data);
+    }
+  });
 
   return () => {
     cancelled = true;
@@ -947,7 +946,7 @@ useEffect(() => {
 
 // After (automatic cancellation with React Query)
 const { data: service } = useQuery({
-  queryKey: ['services', serviceId],
+  queryKey: ["services", serviceId],
   queryFn: async () => {
     const response = await api.get(`/services/${serviceId}`);
     return response.data;
@@ -966,9 +965,9 @@ const { data: service } = useQuery({
 
 ```javascript
 export function ErrorDisplay({ error, onRetry, retryCount = 0 }) {
-  const isNetworkError = error?.message?.includes('Network') || 
-                         error?.code === 'ERR_NETWORK';
-  const isTimeout = error?.code === 'ECONNABORTED';
+  const isNetworkError =
+    error?.message?.includes("Network") || error?.code === "ERR_NETWORK";
+  const isTimeout = error?.code === "ECONNABORTED";
   const isRateLimit = error?.response?.status === 429;
 
   return (
@@ -977,44 +976,90 @@ export function ErrorDisplay({ error, onRetry, retryCount = 0 }) {
         {/* Icon */}
         <div className="flex justify-center mb-4">
           {isNetworkError ? (
-            <svg className="w-16 h-16 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414" />
+            <svg
+              className="w-16 h-16 text-orange-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414"
+              />
             </svg>
           ) : isTimeout ? (
-            <svg className="w-16 h-16 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-16 h-16 text-yellow-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           ) : isRateLimit ? (
-            <svg className="w-16 h-16 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <svg
+              className="w-16 h-16 text-red-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
             </svg>
           ) : (
-            <svg className="w-16 h-16 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-16 h-16 text-red-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           )}
         </div>
 
         {/* Title */}
         <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
-          {isNetworkError ? 'Connection Lost' :
-           isTimeout ? 'Request Timed Out' :
-           isRateLimit ? 'Too Many Requests' :
-           'Something Went Wrong'}
+          {isNetworkError
+            ? "Connection Lost"
+            : isTimeout
+            ? "Request Timed Out"
+            : isRateLimit
+            ? "Too Many Requests"
+            : "Something Went Wrong"}
         </h3>
 
         {/* Description */}
         <p className="text-gray-600 text-center mb-4">
-          {isNetworkError ? 'Please check your internet connection and try again.' :
-           isTimeout ? 'The request took too long. Please try again.' :
-           isRateLimit ? 'Please wait a moment before trying again.' :
-           error?.message || 'An unexpected error occurred'}
+          {isNetworkError
+            ? "Please check your internet connection and try again."
+            : isTimeout
+            ? "The request took too long. Please try again."
+            : isRateLimit
+            ? "Please wait a moment before trying again."
+            : error?.message || "An unexpected error occurred"}
         </p>
 
         {/* Retry count */}
         {retryCount > 0 && (
           <p className="text-sm text-gray-500 text-center mb-4">
-            Retried {retryCount} time{retryCount > 1 ? 's' : ''}
+            Retried {retryCount} time{retryCount > 1 ? "s" : ""}
           </p>
         )}
 
@@ -1027,7 +1072,7 @@ export function ErrorDisplay({ error, onRetry, retryCount = 0 }) {
             Try Again
           </button>
           <button
-            onClick={() => window.location.href = '/admin'}
+            onClick={() => (window.location.href = "/admin")}
             className="flex-1 px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
           >
             Go Home
@@ -1036,8 +1081,11 @@ export function ErrorDisplay({ error, onRetry, retryCount = 0 }) {
 
         {/* Support link */}
         <p className="text-xs text-gray-500 text-center mt-4">
-          Problem persists?{' '}
-          <a href="mailto:support@beautysalon.com" className="text-brand-600 hover:underline">
+          Problem persists?{" "}
+          <a
+            href="mailto:support@beautysalon.com"
+            className="text-brand-600 hover:underline"
+          >
             Contact Support
           </a>
         </p>
@@ -1056,36 +1104,36 @@ Create hooks for commonly fetched data to ensure deduplication:
 **File:** `src/hooks/useSharedData.js` (CREATE NEW)
 
 ```javascript
-import { useQueries } from '@tanstack/react-query';
-import { api } from '../lib/apiClient';
+import { useQueries } from "@tanstack/react-query";
+import { api } from "../lib/apiClient";
 
 /**
  * Fetch multiple common resources in parallel
- * Useful for forms/pages that need beauticians + services + settings
+ * Useful for forms/pages that need specialists + services + settings
  */
 export function useSharedData() {
   const results = useQueries({
     queries: [
       {
-        queryKey: ['beauticians', 'list'],
+        queryKey: ["specialists", "list"],
         queryFn: async () => {
-          const response = await api.get('/beauticians');
+          const response = await api.get("/specialists");
           return response.data;
         },
         staleTime: 10 * 60 * 1000,
       },
       {
-        queryKey: ['services', 'list'],
+        queryKey: ["services", "list"],
         queryFn: async () => {
-          const response = await api.get('/services');
+          const response = await api.get("/services");
           return response.data;
         },
         staleTime: 5 * 60 * 1000,
       },
       {
-        queryKey: ['settings'],
+        queryKey: ["settings"],
         queryFn: async () => {
-          const response = await api.get('/settings');
+          const response = await api.get("/settings");
           return response.data;
         },
         staleTime: 15 * 60 * 1000, // Settings change rarely
@@ -1094,7 +1142,7 @@ export function useSharedData() {
   });
 
   return {
-    beauticians: results[0].data || [],
+    specialists: results[0].data || [],
     services: results[1].data || [],
     settings: results[2].data || {},
     isLoading: results.some((r) => r.isLoading),
@@ -1111,12 +1159,12 @@ export function useSharedData() {
 import { useSharedData } from '../../hooks/useSharedData';
 
 function MyComponent() {
-  const { beauticians, services, settings, isLoading } = useSharedData();
-  
+  const { specialists, services, settings, isLoading } = useSharedData();
+
   if (isLoading) return <div>Loading...</div>;
-  
+
   return (
-    // Use beauticians, services, settings
+    // Use specialists, services, settings
   );
 }
 ```
@@ -1126,6 +1174,7 @@ function MyComponent() {
 ## 📋 Migration Checklist
 
 ### Phase 1: Setup (1 hour)
+
 - [ ] Install `@tanstack/react-query` and devtools
 - [ ] Create `src/lib/queryClient.js`
 - [ ] Wrap app in `<QueryClientProvider>`
@@ -1133,6 +1182,7 @@ function MyComponent() {
 - [ ] Create skeleton components
 
 ### Phase 2: Core Hooks (2-3 hours)
+
 - [ ] Create `src/features/appointments/appointments.hooks.js`
 - [ ] Create `src/features/staff/staff.hooks.js`
 - [ ] Create `src/features/services/services.hooks.js`
@@ -1140,6 +1190,7 @@ function MyComponent() {
 - [ ] Create `src/hooks/useSharedData.js`
 
 ### Phase 3: Refactor Pages (4-6 hours)
+
 - [ ] Refactor `Appointments.jsx` with React Query
 - [ ] Refactor `Dashboard.jsx` with React Query
 - [ ] Refactor `Services.jsx` with React Query
@@ -1148,6 +1199,7 @@ function MyComponent() {
 - [ ] Refactor `Hours.jsx` with React Query
 
 ### Phase 4: UI Polish (2-3 hours)
+
 - [ ] Add loading skeletons to all pages
 - [ ] Add `ErrorDisplay` component to error states
 - [ ] Add debounced search to filter inputs
@@ -1155,6 +1207,7 @@ function MyComponent() {
 - [ ] Test error retry mechanisms
 
 ### Phase 5: Testing (2-3 hours)
+
 - [ ] Test offline behavior
 - [ ] Test request cancellation on navigation
 - [ ] Verify no duplicate requests in Network tab
@@ -1166,14 +1219,16 @@ function MyComponent() {
 ## 📊 Expected Performance Improvements
 
 ### Before Optimization:
+
 - **Dashboard load**: 3-4 API requests, ~2s
 - **Appointments page**: Re-fetches on every filter change
-- **Services page**: Re-fetches beauticians + services on every mount
+- **Services page**: Re-fetches specialists + services on every mount
 - **Network requests**: ~50-100 per session
 - **No offline support**
 - **No loading states** (just spinners)
 
 ### After Optimization:
+
 - **Dashboard load**: 2 parallel requests (cached), ~800ms
 - **Appointments page**: Cached data, instant filter changes
 - **Services page**: Cached data, 0 duplicate requests
@@ -1187,30 +1242,35 @@ function MyComponent() {
 ## 🐛 Common Pitfalls to Avoid
 
 ### 1. Over-caching Static Data
+
 ```javascript
 // ❌ BAD - User data should have short staleTime
 useQuery({
-  queryKey: ['users', 'me'],
+  queryKey: ["users", "me"],
   staleTime: 60 * 60 * 1000, // 1 hour - too long!
 });
 
 // ✅ GOOD
 useQuery({
-  queryKey: ['users', 'me'],
+  queryKey: ["users", "me"],
   staleTime: 5 * 60 * 1000, // 5 minutes
 });
 ```
 
 ### 2. Not Using Query Keys Properly
+
 ```javascript
 // ❌ BAD - Can't invalidate specific queries
-useQuery({ queryKey: ['data'] });
+useQuery({ queryKey: ["data"] });
 
 // ✅ GOOD - Hierarchical keys
-useQuery({ queryKey: ['appointments', 'list', { page: 1, status: 'confirmed' }] });
+useQuery({
+  queryKey: ["appointments", "list", { page: 1, status: "confirmed" }],
+});
 ```
 
 ### 3. Forgetting to Invalidate Mutations
+
 ```javascript
 // ❌ BAD - Cache never updates after mutation
 useMutation({
@@ -1222,7 +1282,7 @@ useMutation({
 useMutation({
   mutationFn: updateAppointment,
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['appointments'] });
+    queryClient.invalidateQueries({ queryKey: ["appointments"] });
   },
 });
 ```
@@ -1241,6 +1301,7 @@ useMutation({
 ## 📞 Support
 
 For questions about implementation:
+
 1. Check React Query DevTools (F12 → React Query tab)
 2. Review query key structure
 3. Check network tab for duplicate requests

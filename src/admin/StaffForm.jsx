@@ -6,7 +6,7 @@ import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
 import Button from "../shared/components/ui/Button";
 
 /**
- * StaffForm - Create or Edit a beautician/staff member
+ * StaffForm - Create or Edit a specialist/staff member
  *
  * @param {object} props
  * @param {object|null} props.staff - Existing staff for edit mode, null for create mode
@@ -14,6 +14,23 @@ import Button from "../shared/components/ui/Button";
  * @param {function} props.onCancel - Callback when user cancels
  * @param {function} props.onDelete - Callback when user deletes (edit mode only)
  */
+// Generate random color for staff member
+const generateRandomColor = () => {
+  const colors = [
+    "#3B82F6", // Blue
+    "#8B5CF6", // Purple
+    "#EC4899", // Pink
+    "#F59E0B", // Amber
+    "#10B981", // Emerald
+    "#06B6D4", // Cyan
+    "#EF4444", // Red
+    "#14B8A6", // Teal
+    "#F97316", // Orange
+    "#6366F1", // Indigo
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
+
 export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
   const isEditMode = Boolean(staff);
   const {
@@ -31,7 +48,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
     specialties: [],
     active: true,
     inSalonPayment: false,
-    color: "#3B82F6",
+    color: generateRandomColor(),
     image: null,
     workingHours: [],
   });
@@ -62,7 +79,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
         specialties: staff.specialties || [],
         active: staff.active !== undefined ? staff.active : true,
         inSalonPayment: staff.inSalonPayment || false,
-        color: staff.color || "#3B82F6",
+        color: staff.color || generateRandomColor(),
         image: staff.image || null,
         workingHours: staff.workingHours || [],
       });
@@ -73,7 +90,11 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error for this field
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: null }));
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
     }
   };
 
@@ -96,7 +117,11 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
     try {
       const uploadedImage = await uploadImage(file, { alt: formData.name });
       setFormData((prev) => ({ ...prev, image: uploadedImage }));
-      setErrors((prev) => ({ ...prev, image: null }));
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.image;
+        return newErrors;
+      });
     } catch (err) {
       setErrors((prev) => ({ ...prev, image: err.message }));
     }
@@ -157,10 +182,6 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
 
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
-    }
-
-    if (formData.color && !/^#[0-9A-Fa-f]{6}$/.test(formData.color)) {
-      newErrors.color = "Please enter a valid hex color (e.g., #3B82F6)";
     }
 
     // Validate working hours
@@ -230,7 +251,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
   };
 
   const errorCount = Object.keys(errors).filter(
-    (key) => key !== "submit"
+    (key) => key !== "submit" && errors[key] != null
   ).length;
 
   return (
@@ -280,51 +301,54 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
             Basic Information
           </h3>
 
-          {/* Name */}
-          <FormField
-            label="Full Name"
-            error={errors.name}
-            required
-            htmlFor="name"
-          >
-            <input
-              type="text"
-              id="name"
-              value={formData.name}
-              onChange={(e) => handleChange("name", e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 ${
-                errors.name ? "border-red-500" : "border-gray-300"
-              }`}
-              aria-invalid={!!errors.name}
-            />
-          </FormField>
+          {/* Name and Email - 2 columns on desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            <FormField
+              label="Full Name"
+              error={errors.name}
+              required
+              htmlFor="name"
+            >
+              <input
+                type="text"
+                id="name"
+                value={formData.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 ${
+                  errors.name ? "border-red-500" : "border-gray-300"
+                }`}
+                aria-invalid={!!errors.name}
+              />
+            </FormField>
 
-          {/* Email */}
-          <FormField label="Email" error={errors.email} htmlFor="email">
-            <input
-              type="email"
-              id="email"
-              value={formData.email}
-              onChange={(e) => handleChange("email", e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="staff@example.com"
-              aria-invalid={!!errors.email}
-            />
-          </FormField>
+            <FormField label="Email" error={errors.email} htmlFor="email">
+              <input
+                type="email"
+                id="email"
+                value={formData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                }`}
+                placeholder="staff@example.com"
+                aria-invalid={!!errors.email}
+              />
+            </FormField>
+          </div>
 
-          {/* Phone */}
-          <FormField label="Phone Number" htmlFor="phone">
-            <input
-              type="tel"
-              id="phone"
-              value={formData.phone}
-              onChange={(e) => handleChange("phone", e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
-              placeholder="+44 20 1234 5678"
-            />
-          </FormField>
+          {/* Phone - Full width on mobile, half on desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            <FormField label="Phone Number" htmlFor="phone">
+              <input
+                type="tel"
+                id="phone"
+                value={formData.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                placeholder="+44 20 1234 5678"
+              />
+            </FormField>
+          </div>
 
           {/* Bio */}
           <FormField label="Bio / Description" htmlFor="bio">
@@ -338,99 +362,118 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
             />
           </FormField>
 
-          {/* Color */}
-          <FormField
-            label="Calendar Color"
-            error={errors.color}
-            htmlFor="color"
-          >
-            <div className="flex gap-2 items-center">
-              <input
-                type="color"
-                id="color"
-                value={formData.color}
-                onChange={(e) => handleChange("color", e.target.value)}
-                className="w-16 h-10 border border-gray-300 rounded cursor-pointer"
-              />
-              <input
-                type="text"
-                value={formData.color}
-                onChange={(e) => handleChange("color", e.target.value)}
-                className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 ${
-                  errors.color ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="#3B82F6"
-              />
-            </div>
-          </FormField>
-
           {/* Image Upload */}
-          <FormField
-            label="Profile Photo"
-            error={errors.image}
-            htmlFor="image"
-            hint={isUploadingImage ? "Uploading..." : undefined}
-          >
-            <input
-              type="file"
-              id="image"
-              accept="image/*"
-              onChange={handleImageChange}
-              disabled={isUploadingImage}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
-            />
-            {formData.image && (
-              <div className="mt-2">
-                <img
-                  src={formData.image.url}
-                  alt={formData.image.alt || "Profile photo"}
-                  className="w-32 h-32 object-cover rounded-full"
-                />
+          <FormField label="Profile Photo" error={errors.image} htmlFor="image">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              {/* Preview */}
+              <div className="relative group">
+                {formData.image ? (
+                  <div className="relative">
+                    <img
+                      src={formData.image.url}
+                      alt={formData.image.alt || "Profile photo"}
+                      className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full border-4 border-gray-200 shadow-lg"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 rounded-full transition-all duration-200 flex items-center justify-center">
+                      <svg
+                        className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-dashed border-gray-300 flex items-center justify-center bg-gray-50">
+                    <svg
+                      className="w-10 h-10 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+                )}
               </div>
-            )}
-          </FormField>
 
-          {/* Active Status */}
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="active"
-              checked={formData.active}
-              onChange={(e) => handleChange("active", e.target.checked)}
-              className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
-            />
-            <label htmlFor="active" className="text-sm font-medium">
-              Active (can accept bookings)
-            </label>
-          </div>
-
-          {/* In-Salon Payment */}
-          <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
-            <div className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                id="inSalonPayment"
-                checked={formData.inSalonPayment}
-                onChange={(e) =>
-                  handleChange("inSalonPayment", e.target.checked)
-                }
-                className="mt-1 w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
-              />
-              <div className="flex-1">
+              {/* Upload Button */}
+              <div className="flex-1 w-full">
                 <label
-                  htmlFor="inSalonPayment"
-                  className="text-sm font-medium cursor-pointer"
+                  htmlFor="image"
+                  className="relative cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Accept Payment in Salon
+                  {isUploadingImage ? (
+                    <>
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      <span>Uploading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                        />
+                      </svg>
+                      <span>
+                        {formData.image ? "Change Photo" : "Upload Photo"}
+                      </span>
+                    </>
+                  )}
                 </label>
-                <p className="text-xs text-gray-600 mt-1">
-                  When enabled, clients will only pay a booking fee online (no
-                  deposit required). Full service payment will be collected
-                  in-salon.
+                <input
+                  type="file"
+                  id="image"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  disabled={isUploadingImage}
+                  className="hidden"
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  PNG, JPG or WEBP (max 5MB)
                 </p>
               </div>
             </div>
-          </div>
+          </FormField>
         </div>
 
         {/* Specialties Section */}
@@ -480,6 +523,56 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
           )}
         </div>
 
+        {/* Settings Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold border-b pb-2">Settings</h3>
+
+          {/* Active Status */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="active"
+              checked={formData.active}
+              onChange={(e) => handleChange("active", e.target.checked)}
+              className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
+            />
+            <label htmlFor="active" className="text-sm font-medium">
+              Active (can accept bookings)
+            </label>
+          </div>
+
+          {/* In-Salon Payment */}
+          <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <div className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                id="inSalonPayment"
+                checked={formData.inSalonPayment}
+                onChange={(e) =>
+                  handleChange("inSalonPayment", e.target.checked)
+                }
+                className="mt-1 w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
+              />
+              <div className="flex-1">
+                <label
+                  htmlFor="inSalonPayment"
+                  className="text-sm font-medium cursor-pointer"
+                >
+                  Accept Payment in Salon
+                </label>
+                <p className="text-xs text-gray-600 mt-1">
+                  When enabled, clients will only pay a booking fee online (no
+                  deposit required). Full service payment will be collected
+                  in-salon.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="border-t-2 border-gray-200 my-6"></div>
+
         {/* Working Hours Section */}
         <div className="space-y-4">
           <div className="flex items-center justify-between border-b pb-2">
@@ -507,23 +600,12 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
             return (
               <div
                 key={index}
-                className="p-4 border border-gray-200 rounded-lg"
+                className="flex flex-col sm:flex-row gap-3 items-start sm:items-end p-3 border border-gray-200 rounded-lg bg-gray-50"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium">Schedule {index + 1}</h4>
-                  <button
-                    type="button"
-                    onClick={() => removeWorkingHours(index)}
-                    className="text-red-500 hover:text-red-700 text-sm"
-                  >
-                    Remove
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
                   <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Day of Week
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Day
                     </label>
                     <select
                       value={wh.dayOfWeek ?? 1}
@@ -534,7 +616,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                           parseInt(e.target.value)
                         )
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                     >
                       {daysOfWeek.map((day) => (
                         <option key={day.value} value={day.value}>
@@ -545,8 +627,8 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Start Time
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Start
                     </label>
                     <input
                       type="time"
@@ -555,7 +637,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                         handleWorkingHoursChange(index, "start", e.target.value)
                       }
                       style={{ minWidth: 0 }}
-                      className={`w-full max-w-full px-2 py-2 border rounded-lg text-sm ${
+                      className={`w-full px-2 py-2 border rounded-lg text-sm ${
                         errors[`workingHours_${index}_start`]
                           ? "border-red-500"
                           : "border-gray-300"
@@ -569,8 +651,8 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">
-                      End Time
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      End
                     </label>
                     <input
                       type="time"
@@ -579,7 +661,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                         handleWorkingHoursChange(index, "end", e.target.value)
                       }
                       style={{ minWidth: 0 }}
-                      className={`w-full max-w-full px-2 py-2 border rounded-lg text-sm ${
+                      className={`w-full px-2 py-2 border rounded-lg text-sm ${
                         errors[`workingHours_${index}_end`]
                           ? "border-red-500"
                           : "border-gray-300"
@@ -592,8 +674,18 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                     )}
                   </div>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => removeWorkingHours(index)}
+                  className="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+                  title="Remove schedule"
+                >
+                  Remove
+                </button>
+
                 {errors[`workingHours_${index}_range`] && (
-                  <p className="text-red-500 text-xs mt-2">
+                  <p className="text-red-500 text-xs mt-1 w-full">
                     {errors[`workingHours_${index}_range`]}
                   </p>
                 )}

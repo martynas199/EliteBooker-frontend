@@ -92,7 +92,7 @@ const ProfilePage = () => {
   };
 
   const handleRebook = (booking) => {
-    // Navigate to booking page with pre-filled service and beautician
+    // Navigate to booking page with pre-filled service and specialist
     navigate(
       `/booking?serviceId=${booking.serviceId._id}&beauticianId=${booking.beauticianId._id}`
     );

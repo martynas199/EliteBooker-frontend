@@ -18,7 +18,7 @@ export default function Staff() {
     setIsLoading(true);
     try {
       const [staffRes, servicesRes] = await Promise.all([
-        api.get("/beauticians", { params: { limit: 1000 } }),
+        api.get("/specialists", { params: { limit: 1000 } }),
         api.get("/services", { params: { limit: 1000 } }),
       ]);
       setStaff(staffRes.data);
@@ -65,8 +65,8 @@ export default function Staff() {
       }
 
       const url = editingStaff
-        ? `/beauticians/${editingStaff._id}`
-        : "/beauticians";
+        ? `/specialists/${editingStaff._id}`
+        : "/specialists";
 
       const method = editingStaff ? "patch" : "post";
 
@@ -83,7 +83,7 @@ export default function Staff() {
           formData.append("image", imageFile);
 
           await api.post(
-            `/beauticians/${response.data._id}/upload-image`,
+            `/specialists/${response.data._id}/upload-image`,
             formData,
             {
               headers: {
@@ -112,7 +112,7 @@ export default function Staff() {
 
   const handleDelete = async (staffId) => {
     try {
-      await api.delete(`/beauticians/${staffId}`);
+      await api.delete(`/specialists/${staffId}`);
       await loadData();
       setShowForm(false);
       setEditingStaff(null);

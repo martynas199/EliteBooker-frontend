@@ -7,7 +7,7 @@ const cache = new Map();
 const CACHE_TTL = 60000; // 60 seconds
 
 /**
- * useAvailableDates - Fetch and cache fully booked dates for a beautician/month
+ * useAvailableDates - Fetch and cache fully booked dates for a specialist/month
  *
  * @param {string} beauticianId - Beautician ID
  * @param {number} year - Year (e.g., 2025)
@@ -137,7 +137,7 @@ export function clearAvailableDatesCache() {
 }
 
 /**
- * Clear cache for specific beautician
+ * Clear cache for specific specialist
  */
 export function clearBeauticianCache(beauticianId) {
   for (const key of cache.keys()) {

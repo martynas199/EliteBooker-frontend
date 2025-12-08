@@ -34,7 +34,7 @@ export default function TimeSlots() {
     if (!serviceId || !beauticianId) {
       const serviceParam = searchParams.get("service");
       const variantParam = searchParams.get("variant");
-      const specialistParam = searchParams.get("beautician"); // URL param name unchanged
+      const specialistParam = searchParams.get("specialist"); // URL param name unchanged
 
       if (serviceParam && specialistParam) {
         // Restore service and specialist to Redux from URL
@@ -64,7 +64,7 @@ export default function TimeSlots() {
           .catch((err) => console.error("Failed to restore service:", err));
 
         api
-          .get(`/beauticians/${specialistParam}`)
+          .get(`/specialists/${specialistParam}`)
           .then((res) => {
             dispatch(
               setSpecialistInState({
@@ -79,7 +79,7 @@ export default function TimeSlots() {
     }
   }, [serviceId, beauticianId, searchParams, dispatch]);
 
-  // Fetch service and beautician details
+  // Fetch service and specialist details
   useEffect(() => {
     if (!serviceId) {
       setLoading(false);
@@ -128,7 +128,7 @@ export default function TimeSlots() {
         }
 
         // Fetch specialist details with cancellation FIRST
-        return api.get(`/beauticians/${targetBeauticianId}`, {
+        return api.get(`/specialists/${targetBeauticianId}`, {
           signal: abortController.signal,
         });
       })
@@ -380,14 +380,14 @@ export default function TimeSlots() {
                 <p className="text-white/60">Loading availability...</p>
               </div>
             </div>
-          ) : beautician ? (
+          ) : specialist ? (
             <DateTimePicker
-              beauticianId={beautician._id}
+              beauticianId={specialist._id}
               serviceId={serviceId}
               variantName={variantName}
               salonTz="Europe/London"
               stepMin={15}
-              beauticianWorkingHours={(beautician.workingHours || []).filter(
+              beauticianWorkingHours={(specialist.workingHours || []).filter(
                 (wh) => wh && wh.dayOfWeek != null
               )}
               onSelect={handleSlotSelect}

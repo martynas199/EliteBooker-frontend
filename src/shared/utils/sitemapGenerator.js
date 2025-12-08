@@ -17,7 +17,7 @@ export function generateSitemap(services = [], products = []) {
   const staticPages = [
     { url: "", changefreq: "daily", priority: "1.0", lastmod: currentDate },
     {
-      url: "/beauticians",
+      url: "/specialists",
       changefreq: "weekly",
       priority: "0.9",
       lastmod: currentDate,

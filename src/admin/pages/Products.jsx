@@ -59,7 +59,7 @@ export default function Products() {
     try {
       const [productsData, specialistsData] = await Promise.all([
         ProductsAPI.list(),
-        api.get("/beauticians", { params: { limit: 1000 } }),
+        api.get("/specialists", { params: { limit: 1000 } }),
       ]);
       setProducts(productsData);
       setSpecialists(specialistsData.data || []);
@@ -1177,7 +1177,7 @@ export default function Products() {
                   {product.beauticianId && (
                     <p className="text-xs text-[#2563EB] font-medium mt-0.5 break-words">
                       👤 Owned by:{" "}
-                      {beauticians.find((b) => b._id === product.beauticianId)
+                      {specialists.find((b) => b._id === product.beauticianId)
                         ?.name || "Unknown"}
                     </p>
                   )}

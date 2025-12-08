@@ -6,7 +6,7 @@ import { api } from "../../../shared/lib/apiClient";
 
 export const StripeConnectAPI = {
   /**
-   * Create onboarding link for a beautician
+   * Create onboarding link for a specialist
    */
   createOnboardingLink: async (beauticianId, email) => {
     const response = await api.post("/connect/onboard", {
@@ -17,7 +17,7 @@ export const StripeConnectAPI = {
   },
 
   /**
-   * Get Stripe Connect account status for a beautician
+   * Get Stripe Connect account status for a specialist
    */
   getAccountStatus: async (beauticianId) => {
     const response = await api.get(`/connect/status/${beauticianId}`);
@@ -41,7 +41,7 @@ export const StripeConnectAPI = {
   },
 
   /**
-   * Get beautician earnings
+   * Get specialist earnings
    */
   getEarnings: async (beauticianId, startDate = null, endDate = null) => {
     const params = new URLSearchParams();
@@ -49,7 +49,7 @@ export const StripeConnectAPI = {
     if (endDate) params.append("endDate", endDate);
 
     const response = await api.get(
-      `/reports/beautician-earnings/${beauticianId}?${params}`
+      `/reports/specialist-earnings/${beauticianId}?${params}`
     );
     return response.data;
   },

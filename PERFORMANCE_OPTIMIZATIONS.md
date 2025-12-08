@@ -148,7 +148,7 @@ const Legend = lazy(() =>
   <ResponsiveContainer width="100%" height={300}>
     <BarChart data={filteredBeauticians}>
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="beautician" />
+      <XAxis dataKey="specialist" />
       <YAxis />
       <Tooltip />
       <Legend />

@@ -12,8 +12,8 @@ export const testApiConnection = async () => {
     const servicesResponse = await api.get("/services");
     console.log("✅ Services response:", servicesResponse);
 
-    console.log("2️⃣ Testing /api/beauticians...");
-    const beauticiansResponse = await api.get("/beauticians");
+    console.log("2️⃣ Testing /api/specialists...");
+    const beauticiansResponse = await api.get("/specialists");
     console.log("✅ Beauticians response:", beauticiansResponse);
 
     console.log("3️⃣ Testing /api/auth/me...");
@@ -23,7 +23,7 @@ export const testApiConnection = async () => {
     return {
       success: true,
       services: servicesResponse.data,
-      beauticians: beauticiansResponse.data,
+      specialists: beauticiansResponse.data,
       auth: authResponse.data,
     };
   } catch (error) {

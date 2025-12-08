@@ -210,7 +210,7 @@ Once connected, test the earnings features:
 
 ### Issue 1: "Beautician ID not found"
 
-**Cause**: You're not logged in as an admin with a beautician account  
+**Cause**: You're not logged in as an admin with a specialist account  
 **Solution**:
 
 - Log in to admin panel first
@@ -306,7 +306,7 @@ To test on mobile viewport:
 
 ```javascript
 // When checking status
-"Fetching account status for beautician: 123456...";
+"Fetching account status for specialist: 123456...";
 "Account status received: { connected: true, ... }";
 
 // When creating onboarding link

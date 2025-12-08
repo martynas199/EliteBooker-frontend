@@ -81,7 +81,7 @@ export default function SalonDetails() {
           <p className="text-gray-700 mt-3 leading-relaxed">
             Visit us for{" "}
             <a
-              href="/beauticians"
+              href="/specialists"
               className="text-brand-600 hover:text-brand-700 underline"
             >
               professional beauty treatments
@@ -95,7 +95,7 @@ export default function SalonDetails() {
             </a>
             , or
             <a
-              href="/beauticians"
+              href="/specialists"
               className="text-brand-600 hover:text-brand-700 underline"
             >
               {" "}

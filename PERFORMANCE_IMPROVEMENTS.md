@@ -24,7 +24,7 @@
 **Changes**:
 
 - Converted `filterAppointments()` function to `useMemo` hook
-- Events now only recalculate when dependencies change: `[selectedBeautician, allAppointments]`
+- Events now only recalculate when dependencies change: `[selectedSpecialist, allAppointments]`
 - Removed redundant `useEffect` and `events` state
 
 **Before**:
@@ -33,7 +33,7 @@
 const [events, setEvents] = useState([]);
 useEffect(() => {
   filterAppointments();
-}, [selectedBeautician, allAppointments]);
+}, [selectedSpecialist, allAppointments]);
 ```
 
 **After**:
@@ -42,7 +42,7 @@ useEffect(() => {
 const events = useMemo(() => {
   let filtered = allAppointments.filter(/* ... */);
   return filtered.map(/* ... */);
-}, [selectedBeautician, allAppointments]);
+}, [selectedSpecialist, allAppointments]);
 ```
 
 ### 3. Code Splitting (Lazy Loading)
@@ -116,7 +116,7 @@ Add pagination to large data endpoints:
 
 - `GET /api/appointments?page=1&limit=50`
 - `GET /api/services?page=1&limit=20`
-- `GET /api/beauticians?page=1&limit=20`
+- `GET /api/specialists?page=1&limit=20`
 
 **Expected Impact**: 60-80% reduction in API response size for large datasets
 

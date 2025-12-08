@@ -2,28 +2,33 @@
 
 ## Overview
 
-Updated frontend to support **single-beautician product checkouts** with clear user warnings and validations to match the backend's direct payment system.
+Updated frontend to support **single-specialist product checkouts** with clear user warnings and validations to match the backend's direct payment system.
 
 ## Changes Made
 
 ### 1. Cart Sidebar Enhancements (`CartSidebar.jsx`)
 
 **Added Multi-Seller Detection:**
+
 ```javascript
-const beauticians = new Set(
+const specialists = new Set(
   items
-    .map((item) => item.product?.beauticianId?._id || item.product?.beauticianId)
+    .map(
+      (item) => item.product?.beauticianId?._id || item.product?.beauticianId
+    )
     .filter(Boolean)
 );
-const hasMultipleBeauticians = beauticians.size > 1;
+const hasMultipleBeauticians = specialists.size > 1;
 ```
 
 **Warning Banner:**
+
 - Displays amber alert when cart contains products from multiple sellers
 - Shows count of different sellers
 - Explains need to checkout separately
 
 **Disabled Checkout:**
+
 - Checkout button disabled when `hasMultipleBeauticians === true`
 - Button text changes to "Remove Items to Continue"
 - Prevents users from proceeding to broken checkout
@@ -31,11 +36,13 @@ const hasMultipleBeauticians = beauticians.size > 1;
 ### 2. Checkout Page Validation (`ProductCheckoutPage.jsx`)
 
 **Early Validation:**
-- Checks for multiple beauticians on page load
+
+- Checks for multiple specialists on page load
 - Blocks checkout form display entirely
 - Shows clear error page with options
 
 **Error Page Features:**
+
 - Amber warning icon
 - Explains the limitation clearly
 - Shows count of sellers in cart
@@ -46,15 +53,17 @@ const hasMultipleBeauticians = beauticians.size > 1;
 ## User Experience Flow
 
 ### Happy Path (Single Seller)
-1. User adds products from one beautician to cart
+
+1. User adds products from one specialist to cart
 2. Cart sidebar shows normal checkout button
 3. User proceeds to checkout
-4. Payment goes directly to beautician
+4. Payment goes directly to specialist
 5. Beautician pays all Stripe fees
 6. Platform takes no fees
 
 ### Multi-Seller Path (Blocked)
-1. User adds products from multiple beauticians
+
+1. User adds products from multiple specialists
 2. Cart sidebar shows amber warning:
    ```
    ⚠️ Multiple Sellers
@@ -72,27 +81,28 @@ const hasMultipleBeauticians = beauticians.size > 1;
 ### Cart Beautician Detection
 
 ```javascript
-// Extract unique beautician IDs from cart items
-const beauticians = new Set(
+// Extract unique specialist IDs from cart items
+const specialists = new Set(
   items
-    .map((item) => 
-      item.product?.beauticianId?._id || 
-      item.product?.beauticianId
+    .map(
+      (item) => item.product?.beauticianId?._id || item.product?.beauticianId
     )
     .filter(Boolean) // Remove null/undefined
 );
 
-const hasMultipleBeauticians = beauticians.size > 1;
+const hasMultipleBeauticians = specialists.size > 1;
 ```
 
 **Handles:**
-- Populated beautician objects (with `_id`)
-- Direct beautician ID strings
-- Missing beautician data (filtered out)
+
+- Populated specialist objects (with `_id`)
+- Direct specialist ID strings
+- Missing specialist data (filtered out)
 
 ### Validation Points
 
 1. **Cart Sidebar** - Real-time warning
+
    - Updates as items are added/removed
    - Non-blocking (user can still browse)
    - Clear call-to-action
@@ -105,24 +115,28 @@ const hasMultipleBeauticians = beauticians.size > 1;
 ### UI Components
 
 **Warning Banner (Cart):**
+
 ```jsx
 <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
   <div className="flex items-start gap-3">
     <WarningIcon />
     <div>
       <h4>Multiple Sellers</h4>
-      <p>Your cart contains products from {beauticians.size} different sellers...</p>
+      <p>
+        Your cart contains products from {specialists.size} different sellers...
+      </p>
     </div>
   </div>
 </div>
 ```
 
 **Error Page (Checkout):**
+
 ```jsx
 <div className="text-center">
   <WarningIcon size="large" />
   <h2>Multiple Sellers in Cart</h2>
-  <p>Your cart contains products from {beauticians.size} different sellers.</p>
+  <p>Your cart contains products from {specialists.size} different sellers.</p>
   <p>Please checkout separately for each seller...</p>
   <Actions />
 </div>
@@ -134,12 +148,14 @@ const hasMultipleBeauticians = beauticians.size > 1;
 
 The frontend now handles these backend errors gracefully:
 
-1. **"Cannot checkout with products from multiple beauticians"**
+1. **"Cannot checkout with products from multiple specialists"**
+
    - Should never occur due to frontend validation
    - If occurs: Shows toast error with backend message
    - User redirected back to cart
 
-2. **"Product belongs to a beautician who hasn't set up payment processing"**
+2. **"Product belongs to a specialist who hasn't set up payment processing"**
+
    - Shows toast error
    - Clear message about contacting support
    - User remains on checkout page to review
@@ -156,7 +172,7 @@ try {
   window.location.href = response.url;
 } catch (error) {
   toast.error(
-    error.response?.data?.error || 
+    error.response?.data?.error ||
     "Failed to create checkout session. Please try again."
   );
 }
@@ -165,18 +181,21 @@ try {
 ## Benefits
 
 ### For Users
+
 - ✅ Clear warnings before attempting checkout
 - ✅ No confusing server errors during payment
 - ✅ Understand why checkout is blocked
 - ✅ Easy path to resolve (remove items or checkout separately)
 
 ### For Platform
+
 - ✅ Reduced failed checkout attempts
 - ✅ Fewer support tickets about cart errors
 - ✅ Better conversion rates (clear user guidance)
 - ✅ Matches backend constraints perfectly
 
 ### For Beauticians
+
 - ✅ Direct payments work reliably
 - ✅ No payment splitting issues
 - ✅ Clear seller identity in each transaction
@@ -187,14 +206,15 @@ try {
 ### Potential Features
 
 1. **Auto-Split Cart**
+
    ```javascript
-   // Group items by beautician
-   const cartsByBeautician = groupBy(items, 'product.beauticianId');
-   
+   // Group items by specialist
+   const cartsByBeautician = groupBy(items, "product.beauticianId");
+
    // Show separate carts in UI
    Object.entries(cartsByBeautician).map(([id, items]) => (
-     <BeauticianCart 
-       beautician={id} 
+     <BeauticianCart
+       specialist={id}
        items={items}
        onCheckout={() => checkoutBeautician(id)}
      />
@@ -202,15 +222,17 @@ try {
    ```
 
 2. **Seller Filter in Shop**
+
    ```javascript
    // Allow filtering products by seller
    const [selectedSeller, setSelectedSeller] = useState(null);
-   const filteredProducts = products.filter(p => 
-     !selectedSeller || p.beauticianId === selectedSeller
+   const filteredProducts = products.filter(
+     (p) => !selectedSeller || p.beauticianId === selectedSeller
    );
    ```
 
 3. **Smart Add-to-Cart**
+
    ```javascript
    // Warn before adding from different seller
    const addToCart = (product) => {
@@ -220,8 +242,8 @@ try {
          message: "This product is from a different seller. Add anyway?",
          actions: [
            { label: "Clear cart and add", onClick: clearAndAdd },
-           { label: "Cancel", onClick: close }
-         ]
+           { label: "Cancel", onClick: close },
+         ],
        });
      } else {
        dispatch(addToCart(product));
@@ -231,12 +253,12 @@ try {
 
 4. **Checkout History**
    ```javascript
-   // Show separate orders per beautician in order history
+   // Show separate orders per specialist in order history
    <OrdersList>
-     {orders.map(order => (
-       <OrderCard 
+     {orders.map((order) => (
+       <OrderCard
          order={order}
-         beautician={order.beautician}
+         specialist={order.specialist}
          showSellerInfo={true}
        />
      ))}
@@ -253,23 +275,27 @@ try {
 - [x] Toast errors display backend messages
 - [x] Cart count updates correctly
 - [x] Beautician detection handles null values
-- [x] Works with both populated and unpopulated beautician data
+- [x] Works with both populated and unpopulated specialist data
 
 ## Deployment Notes
 
 ### Pre-Deployment
+
 1. Backend must be deployed first (direct payment logic)
 2. Verify Stripe Connect accounts are set up
 3. Test with Stripe test mode
 
 ### Post-Deployment
+
 1. Monitor for multi-seller cart attempts
 2. Check conversion rates on checkout page
 3. Track any server-side errors that slip through
 4. Gather user feedback on messaging clarity
 
 ### Rollback Plan
+
 If issues arise:
+
 1. Revert frontend changes (remove validation)
 2. Backend will handle validation server-side
 3. Users will see toast errors instead of blocked UI
@@ -280,22 +306,24 @@ If issues arise:
 ### Metrics to Track
 
 1. **Multi-Seller Cart Rate**
+
    ```javascript
    // Track how often users hit the restriction
    if (hasMultipleBeauticians) {
-     analytics.track('multi_seller_cart', {
-       sellerCount: beauticians.size,
-       itemCount: items.length
+     analytics.track("multi_seller_cart", {
+       sellerCount: specialists.size,
+       itemCount: items.length,
      });
    }
    ```
 
 2. **Checkout Abandonment**
+
    ```javascript
    // Compare before/after validation implementation
-   analytics.track('checkout_started', { 
+   analytics.track("checkout_started", {
      fromCart: true,
-     itemCount: items.length 
+     itemCount: items.length,
    });
    ```
 
@@ -329,12 +357,12 @@ A: Yes! You can add as many products as you want from a single seller to one ord
 ### Admin FAQ
 
 **Q: Why restrict to single seller per order?**
-A: Direct payments to beauticians' Stripe accounts work best with single-destination charges, avoiding complex payment splitting and fees.
+A: Direct payments to specialists' Stripe accounts work best with single-destination charges, avoiding complex payment splitting and fees.
 
 **Q: Can we support multi-seller checkout in the future?**
 A: Yes, but it requires separate payment sessions per seller and more complex payment coordination.
 
-**Q: What if a beautician's Stripe account isn't connected?**
+**Q: What if a specialist's Stripe account isn't connected?**
 A: Their products will be blocked at checkout with a clear error message directing users to contact support.
 
 ---

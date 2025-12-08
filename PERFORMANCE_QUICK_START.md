@@ -29,7 +29,7 @@ All performance optimizations are **complete and production-ready**! No action n
 
 - ✅ `GET /api/appointments?page=1&limit=50`
 - ✅ `GET /api/services?page=1&limit=20`
-- ✅ `GET /api/beauticians?page=1&limit=20`
+- ✅ `GET /api/specialists?page=1&limit=20`
 - ✅ Frontend pagination UI with Previous/Next buttons
 
 ---
@@ -71,7 +71,7 @@ All performance optimizations are **complete and production-ready**! No action n
 
 5. **Test Dashboard Performance:**
    - Navigate to /admin
-   - Change beautician filter dropdown
+   - Change specialist filter dropdown
    - Calendar should update instantly without flickering
    - Check React DevTools Profiler: minimal re-renders
 
@@ -162,7 +162,7 @@ const events = useMemo(() => {
   return allAppointments
     .filter(apt => /* filter logic */)
     .map(apt => /* transform */);
-}, [selectedBeautician, allAppointments]);
+}, [selectedSpecialist, allAppointments]);
 // Only recalculates when dependencies change
 ```
 
@@ -174,7 +174,7 @@ const events = useMemo(() => {
 
 - `src/routes/appointments.js` - Added pagination
 - `src/routes/services.js` - Added pagination with backward compatibility
-- `src/routes/beauticians.js` - Added pagination with backward compatibility
+- `src/routes/specialists.js` - Added pagination with backward compatibility
 
 ### Frontend (3 files)
 

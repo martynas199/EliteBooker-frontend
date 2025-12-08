@@ -11,7 +11,7 @@ Reorganized the admin dashboard navigation for better UX and logical grouping. S
 **File**: `src/admin/pages/StripeConnect.jsx`
 
 - **Dedicated page** for Stripe Connect account management
-- **Conditional display**: Shows settings if admin is linked to a beautician
+- **Conditional display**: Shows settings if admin is linked to a specialist
 - **Helper message**: If not linked, displays instructions to get linked via Admin Links page
 - **Clean separation**: Removes Stripe settings clutter from the general Settings page
 
@@ -164,8 +164,8 @@ System settings, integrations, and admin management.
 ```
 ⚠️ Admin Account Not Linked
 
-Your admin account is not linked to a beautician profile. To manage
-Stripe Connect settings, you need to be linked to a beautician.
+Your admin account is not linked to a specialist profile. To manage
+Stripe Connect settings, you need to be linked to a specialist.
 
 Ask a super admin to link your account in the Admin Links page.
 ```

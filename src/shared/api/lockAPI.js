@@ -10,7 +10,7 @@ import { api } from "./apiClient";
  *
  * @param {Object} params - Lock parameters
  * @param {string} params.tenantId - Tenant identifier
- * @param {string} params.resourceId - Resource (beautician) identifier
+ * @param {string} params.resourceId - Resource (specialist) identifier
  * @param {string} params.date - Date in YYYY-MM-DD format
  * @param {string} params.startTime - Start time in HH:mm format
  * @param {number} [params.duration] - Booking duration in minutes

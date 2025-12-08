@@ -4,10 +4,10 @@ import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
 import { BeauticianCardSkeleton } from "../shared/components/ui/Skeleton";
 
 /**
- * StaffList - Display and manage staff/beauticians in admin panel
+ * StaffList - Display and manage staff/specialists in admin panel
  *
  * @param {object} props
- * @param {Array} props.staff - Array of staff/beautician objects
+ * @param {Array} props.staff - Array of staff/specialist objects
  * @param {Array} props.services - Array of service objects (to show service assignments)
  * @param {function} props.onEdit - Callback(staff) when edit button clicked
  * @param {function} props.onDelete - Callback(staffId) when delete confirmed

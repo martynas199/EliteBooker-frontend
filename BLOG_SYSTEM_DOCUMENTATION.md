@@ -250,7 +250,7 @@ npm run dev
    - Click "Create New Post"
    - Fill in:
      - Title: "Top 5 Beauty Tips for Glowing Skin"
-     - Excerpt: "Discover our professional beautician's secrets..."
+     - Excerpt: "Discover our professional specialist's secrets..."
      - Content: Use HTML formatting
      - Tags: "skincare, beauty tips, facial treatments"
      - Status: "Published"

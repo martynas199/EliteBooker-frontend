@@ -305,10 +305,17 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
-              <div className="flex items-center">
-                <span className="text-2xl font-black bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
-                  BookingPro
-                </span>
+              <div className="flex items-center gap-4">
+                <img
+                  src="/src/assets/elite.jpg"
+                  alt="Elite Logo"
+                  className="h-20 w-auto"
+                />
+                <img
+                  src="/src/assets/elie-1.jpg"
+                  alt="Elite Logo 2"
+                  className="h-20 w-auto"
+                />
               </div>
 
               {/* Navigation Links */}

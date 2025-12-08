@@ -60,7 +60,7 @@ describe("Multi-Tenant Routing & Isolation", () => {
       cy.contains(tenant1.name, { timeout: 10000 }).should("be.visible");
 
       // Verify tenant isolation in API request
-      cy.intercept("GET", "**/api/beauticians*", (req) => {
+      cy.intercept("GET", "**/api/specialists*", (req) => {
         expect(req.headers["x-tenant-slug"]).to.equal(tenant1.slug);
       }).as("getStaffIsolated");
 

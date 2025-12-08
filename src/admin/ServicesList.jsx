@@ -15,7 +15,7 @@ import { t } from "../locales/adminTranslations";
  * @param {function} props.onCreate - Callback when create button clicked
  * @param {boolean} props.isLoading - Loading state
  * @param {boolean} props.isSuperAdmin - Is user a super admin
- * @param {boolean} props.isBeautician - Is user a beautician
+ * @param {boolean} props.isBeautician - Is user a specialist
  */
 export default function ServicesList({
   services,

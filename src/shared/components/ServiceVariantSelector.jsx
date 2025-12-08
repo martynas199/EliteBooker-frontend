@@ -5,7 +5,7 @@ export default function ServiceVariantSelector({
   service,
   onVariantSelect,
   onCancel,
-  selectedBeautician,
+  selectedSpecialist,
 }) {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -66,13 +66,13 @@ export default function ServiceVariantSelector({
                 </div>
               </div>
 
-              {selectedBeautician && (
+              {selectedSpecialist && (
                 <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">
                   <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                    {selectedBeautician.image?.url ? (
+                    {selectedSpecialist.image?.url ? (
                       <img
-                        src={selectedBeautician.image.url}
-                        alt={selectedBeautician.name}
+                        src={selectedSpecialist.image.url}
+                        alt={selectedSpecialist.name}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -94,7 +94,7 @@ export default function ServiceVariantSelector({
                     )}
                   </div>
                   <span className="truncate">
-                    with {selectedBeautician.name}
+                    with {selectedSpecialist.name}
                   </span>
                 </div>
               )}

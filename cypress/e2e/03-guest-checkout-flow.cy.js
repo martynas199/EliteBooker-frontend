@@ -39,7 +39,7 @@ describe("Guest Checkout Flow (End-to-End)", () => {
       cy.contains("Select").click();
 
       // Step 3: Select staff member (or skip for "any available")
-      cy.url().should("include", "beauticians");
+      cy.url().should("include", "specialists");
 
       // Select specific staff member
       cy.get('[data-testid="staff-card"]').first().click();
@@ -214,7 +214,7 @@ describe("Guest Checkout Flow (End-to-End)", () => {
 
       // Go back to change staff
       cy.contains("Back").click();
-      cy.url().should("include", "beauticians");
+      cy.url().should("include", "specialists");
 
       // Select different staff
       cy.get('[data-testid="staff-card"]').eq(1).click();

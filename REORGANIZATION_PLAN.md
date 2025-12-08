@@ -55,7 +55,7 @@ src/
 - `features/salon/SalonLanding.jsx` → `tenant/pages/SalonLanding.jsx`
 - `features/salon/SalonDetails.jsx` → `tenant/pages/SalonDetails.jsx`
 - `features/services/ServicesPage.jsx` → `tenant/pages/ServicesPage.jsx`
-- `features/beauticians/BeauticianSelectionPage.jsx` → `tenant/pages/BeauticiansPage.jsx`
+- `features/specialists/BeauticianSelectionPage.jsx` → `tenant/pages/BeauticiansPage.jsx`
 - `features/availability/TimeSlots.jsx` → `tenant/pages/TimeSlotsPage.jsx`
 - `features/checkout/CheckoutPage.jsx` → `tenant/pages/CheckoutPage.jsx`
 - `features/booking/ConfirmationPage.jsx` → `tenant/pages/ConfirmationPage.jsx`

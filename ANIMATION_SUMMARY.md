@@ -121,8 +121,8 @@
    - ⏳ CartSidebar: Slide-in animation (pending)
 
 2. **Staff Picker Page** (15 minutes):
-   - StaggerContainer for beautician cards
-   - Hover effects on beautician selection
+   - StaggerContainer for specialist cards
+   - Hover effects on specialist selection
    - Toast for selection confirmation
 
 ### Medium Priority (Admin Pages)

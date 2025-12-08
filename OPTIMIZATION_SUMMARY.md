@@ -94,32 +94,32 @@
 
 ### 🔴 HIGH PRIORITY (Critical Performance Issues)
 
-| File | Current State | Optimization | Impact |
-|------|---------------|--------------|--------|
-| **Appointments.jsx** | 🔴 Fetches on every mount<br>🔴 No caching<br>🔴 No debounce | 1. Add `useDebounce`<br>2. Add skeleton<br>3. Add React Query | ⚡ 80% |
-| **Dashboard.jsx** | 🔴 Fetches on every admin change<br>🔴 No caching<br>⚠️  useEffect deps issue | 1. Fix dependencies<br>2. Add skeleton<br>3. Add React Query | ⚡ 70% |
-| **Services.jsx** | 🔴 Fetches on every mount<br>🔴 No caching<br>⚠️  Empty deps array | 1. Fix dependencies<br>2. Add skeleton<br>3. Add React Query | ⚡ 75% |
-| **TimeSlots.jsx** | 🔴 Memory leak potential<br>🔴 No cancellation<br>🔴 Complex chaining | 1. Add AbortController<br>2. Add skeleton<br>3. Add React Query | ⚡ 65% |
-| **Staff.jsx** | 🔴 Fetches on every mount<br>🔴 No caching<br>✅ Uses Promise.all | 1. Add skeleton<br>2. Add React Query | ⚡ 70% |
+| File                 | Current State                                                                | Optimization                                                    | Impact |
+| -------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------- | ------ |
+| **Appointments.jsx** | 🔴 Fetches on every mount<br>🔴 No caching<br>🔴 No debounce                 | 1. Add `useDebounce`<br>2. Add skeleton<br>3. Add React Query   | ⚡ 80% |
+| **Dashboard.jsx**    | 🔴 Fetches on every admin change<br>🔴 No caching<br>⚠️ useEffect deps issue | 1. Fix dependencies<br>2. Add skeleton<br>3. Add React Query    | ⚡ 70% |
+| **Services.jsx**     | 🔴 Fetches on every mount<br>🔴 No caching<br>⚠️ Empty deps array            | 1. Fix dependencies<br>2. Add skeleton<br>3. Add React Query    | ⚡ 75% |
+| **TimeSlots.jsx**    | 🔴 Memory leak potential<br>🔴 No cancellation<br>🔴 Complex chaining        | 1. Add AbortController<br>2. Add skeleton<br>3. Add React Query | ⚡ 65% |
+| **Staff.jsx**        | 🔴 Fetches on every mount<br>🔴 No caching<br>✅ Uses Promise.all            | 1. Add skeleton<br>2. Add React Query                           | ⚡ 70% |
 
 ### 🟡 MEDIUM PRIORITY (Performance Gains)
 
-| File | Current State | Optimization | Impact |
-|------|---------------|--------------|--------|
-| **Products.jsx** | 🔴 Fetches on every mount<br>✅ Uses Promise.all | 1. Add debounce<br>2. Add skeleton<br>3. Add React Query | ⚡ 60% |
-| **Orders.jsx** | 🔴 Fetches on every mount<br>🔴 No optimistic updates | 1. Add skeleton<br>2. Add React Query<br>3. Optimistic updates | ⚡ 65% |
-| **AdminBeauticianLink.jsx** | 🔴 No debounced search<br>✅ Uses Promise.all | 1. Add debounce ⭐<br>2. Add skeleton<br>3. Add React Query | ⚡ 55% |
-| **AdminLayout.jsx** | 🔴 Fetches on every token change<br>⚠️  useEffect deps | 1. Fix dependencies<br>2. Add React Query | ⚡ 50% |
-| **LandingPage.jsx** | 🔴 Sequential requests<br>🔴 No caching | 1. Use Promise.all ⭐<br>2. Add skeleton<br>3. Add React Query | ⚡ 60% |
+| File                        | Current State                                         | Optimization                                                   | Impact |
+| --------------------------- | ----------------------------------------------------- | -------------------------------------------------------------- | ------ |
+| **Products.jsx**            | 🔴 Fetches on every mount<br>✅ Uses Promise.all      | 1. Add debounce<br>2. Add skeleton<br>3. Add React Query       | ⚡ 60% |
+| **Orders.jsx**              | 🔴 Fetches on every mount<br>🔴 No optimistic updates | 1. Add skeleton<br>2. Add React Query<br>3. Optimistic updates | ⚡ 65% |
+| **AdminBeauticianLink.jsx** | 🔴 No debounced search<br>✅ Uses Promise.all         | 1. Add debounce ⭐<br>2. Add skeleton<br>3. Add React Query    | ⚡ 55% |
+| **AdminLayout.jsx**         | 🔴 Fetches on every token change<br>⚠️ useEffect deps | 1. Fix dependencies<br>2. Add React Query                      | ⚡ 50% |
+| **LandingPage.jsx**         | 🔴 Sequential requests<br>🔴 No caching               | 1. Use Promise.all ⭐<br>2. Add skeleton<br>3. Add React Query | ⚡ 60% |
 
 ### 🟢 LOW PRIORITY (Polish)
 
-| File | Current State | Optimization | Impact |
-|------|---------------|--------------|--------|
-| **ProfilePage.jsx** | 🔴 Manual `dataFetched` flag<br>✅ Uses Promise.all | 1. Add React Query<br>2. Remove manual flags | ⚡ 40% |
-| **ProductsPage.jsx** | 🔴 Sequential requests | 1. Use Promise.all<br>2. Add skeleton | ⚡ 40% |
-| **PopularCollections.jsx** | 🔴 Fetches on every mount | 1. Add skeleton<br>2. Add React Query | ⚡ 35% |
-| **Hours.jsx** | ✅ Excellent retry logic!<br>✅ Good error handling | 1. Add skeleton (optional) | ⚡ 20% |
+| File                       | Current State                                       | Optimization                                 | Impact |
+| -------------------------- | --------------------------------------------------- | -------------------------------------------- | ------ |
+| **ProfilePage.jsx**        | 🔴 Manual `dataFetched` flag<br>✅ Uses Promise.all | 1. Add React Query<br>2. Remove manual flags | ⚡ 40% |
+| **ProductsPage.jsx**       | 🔴 Sequential requests                              | 1. Use Promise.all<br>2. Add skeleton        | ⚡ 40% |
+| **PopularCollections.jsx** | 🔴 Fetches on every mount                           | 1. Add skeleton<br>2. Add React Query        | ⚡ 35% |
+| **Hours.jsx**              | ✅ Excellent retry logic!<br>✅ Good error handling | 1. Add skeleton (optional)                   | ⚡ 20% |
 
 ---
 
@@ -166,23 +166,23 @@ Session Timeline (5 minutes browsing):
 │
 ├─ Dashboard ────────────────────────── 2000ms
 │  ├─ GET /appointments
-│  └─ GET /beauticians
+│  └─ GET /specialists
 │
 ├─ Navigate to Services ────────────── 1800ms
 │  ├─ GET /services
-│  └─ GET /beauticians (DUPLICATE!)
+│  └─ GET /specialists (DUPLICATE!)
 │
 ├─ Navigate to Staff ───────────────── 1900ms
-│  ├─ GET /beauticians (DUPLICATE!)
+│  ├─ GET /specialists (DUPLICATE!)
 │  └─ GET /services (DUPLICATE!)
 │
 ├─ Back to Dashboard ───────────────── 2000ms
 │  ├─ GET /appointments (DUPLICATE!)
-│  └─ GET /beauticians (DUPLICATE!)
+│  └─ GET /specialists (DUPLICATE!)
 │
 └─ Open Appointments ───────────────── 2200ms
    ├─ GET /appointments (DUPLICATE!)
-   └─ GET /beauticians (DUPLICATE!)
+   └─ GET /specialists (DUPLICATE!)
 
 Total API Requests: 12
 Total Wait Time: 10.4 seconds
@@ -200,24 +200,24 @@ Session Timeline (5 minutes browsing):
 │
 ├─ Dashboard ────────────────────────── 800ms ⚡ 60% faster
 │  ├─ GET /appointments [CACHED 2min]
-│  └─ GET /beauticians [CACHED 10min]
+│  └─ GET /specialists [CACHED 10min]
 │
 ├─ Navigate to Services ────────────── 200ms ⚡ 89% faster
 │  ├─ GET /services [CACHED 5min]
-│  └─ CACHED beauticians ✅ (from Dashboard)
+│  └─ CACHED specialists ✅ (from Dashboard)
 │
 ├─ Navigate to Staff ───────────────── 150ms ⚡ 92% faster
-│  ├─ CACHED beauticians ✅
+│  ├─ CACHED specialists ✅
 │  └─ CACHED services ✅
 │
 ├─ Back to Dashboard ───────────────── 100ms ⚡ 95% faster
 │  ├─ CACHED appointments ✅ (stale-while-revalidate)
-│  └─ CACHED beauticians ✅
+│  └─ CACHED specialists ✅
 │  └─ (Background refetch happening silently)
 │
 └─ Open Appointments ───────────────── 150ms ⚡ 93% faster
    ├─ CACHED appointments ✅
-   └─ CACHED beauticians ✅
+   └─ CACHED specialists ✅
 
 Total API Requests: 4 (67% reduction!)
 Total Wait Time: 1.9 seconds (82% faster!)
@@ -431,6 +431,7 @@ npm install @tanstack/react-query @tanstack/react-query-devtools
 ## 📞 Questions?
 
 Refer to the detailed guides:
+
 - `QUICK_WINS.md` - Immediate, no-dependency fixes
 - `API_OPTIMIZATION_GUIDE.md` - Complete React Query guide
 - `OPTIMIZATION_ROADMAP.md` - File-by-file breakdown

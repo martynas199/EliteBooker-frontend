@@ -156,7 +156,7 @@ export default function AdminLayout() {
                         <div className="text-xs text-gray-500 capitalize">
                           {isSuperAdmin
                             ? t("superAdmin", language)
-                            : t("beautician", language)}
+                            : t("specialist", language)}
                         </div>
                       </div>
                     </div>
@@ -247,7 +247,10 @@ export default function AdminLayout() {
       <div className="lg:flex">
         {/* Desktop Sidebar */}
         <div className="hidden lg:block">
-          <Sidebar tenant={{ name: admin?.name || "Elite Booker" }} />
+          <Sidebar
+            tenant={{ name: admin?.name || "Elite Booker" }}
+            onLogout={handleLogout}
+          />
         </div>
 
         {/* Mobile Sidebar with Overlay */}
@@ -267,7 +270,10 @@ export default function AdminLayout() {
                 overscrollBehavior: "contain",
               }}
             >
-              <Sidebar tenant={{ name: admin?.name || "Elite Booker" }} />
+              <Sidebar
+                tenant={{ name: admin?.name || "Elite Booker" }}
+                onLogout={handleLogout}
+              />
             </div>
           </>
         )}

@@ -11,6 +11,7 @@ import {
   Sliders,
   ChevronDown,
   Package,
+  LogOut,
 } from "lucide-react";
 import { useTenantSettings } from "../../shared/hooks/useTenantSettings";
 
@@ -177,7 +178,7 @@ const SidebarItem = ({ item, isNested = false }) => {
   );
 };
 
-export default function Sidebar({ tenant }) {
+export default function Sidebar({ tenant, onLogout }) {
   return (
     <aside className="w-64 min-h-screen bg-slate-50 border-r border-gray-200 flex flex-col overflow-hidden">
       {/* Header */}
@@ -229,7 +230,7 @@ export default function Sidebar({ tenant }) {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 pb-32 lg:pb-4 border-t border-gray-200 flex-shrink-0 bg-slate-50">
+      <div className="p-4 pb-32 lg:pb-4 border-t border-gray-200 flex-shrink-0 bg-slate-50 space-y-1">
         <Link
           to="/admin/profile"
           className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-all duration-150"
@@ -241,6 +242,15 @@ export default function Sidebar({ tenant }) {
             <span className="text-sm">Account Settings</span>
           </div>
         </Link>
+        {onLogout && (
+          <button
+            onClick={onLogout}
+            className="w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-all duration-150 flex items-center gap-3"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Logout</span>
+          </button>
+        )}
       </div>
     </aside>
   );

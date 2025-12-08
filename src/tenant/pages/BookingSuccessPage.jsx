@@ -192,7 +192,7 @@ export default function SuccessPage() {
                         </p>
                       </div>
                       <p className="text-lg sm:text-xl font-bold text-white break-words">
-                        {appt?.beautician?.name || "Any specialist"}
+                        {appt?.specialist?.name || "Any specialist"}
                       </p>
                     </div>
 

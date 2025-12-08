@@ -33,6 +33,7 @@ import TokenDebugPage from "../tenant/pages/TokenDebugPage";
 import SalonLandingLuxury from "../tenant/pages/SalonLandingLuxury";
 import { useAuth } from "../shared/contexts/AuthContext";
 import { useTenant } from "../shared/contexts/TenantContext";
+import { useTenantSettings } from "../shared/hooks/useTenantSettings";
 
 import AdminLayout from "../admin/layouts/AdminLayout";
 import LoadingSpinner from "../shared/components/ui/LoadingSpinner";
@@ -84,11 +85,13 @@ const BlogPosts = lazy(() => import("../admin/pages/BlogPosts"));
 const TenantSettings = lazy(() => import("../admin/pages/TenantSettings"));
 const BrandingSettings = lazy(() => import("../admin/pages/BrandingSettings"));
 const Tenants = lazy(() => import("../admin/pages/Tenants"));
+const PlatformFeatures = lazy(() => import("../admin/pages/PlatformFeatures"));
 
 function CustomerLayout() {
   const dispatch = useDispatch();
   const { user, logout } = useAuth();
   const { tenant } = useTenant();
+  const { ecommerceEnabled } = useTenantSettings();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -170,13 +173,15 @@ function CustomerLayout() {
                 Contact
                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-green-400 group-hover:w-3/4 transition-all duration-300" />
               </Link>
-              <Link
-                to="products"
-                className="px-5 py-2.5 text-sm font-bold text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300 relative group"
-              >
-                Shop
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-green-400 group-hover:w-3/4 transition-all duration-300" />
-              </Link>
+              {ecommerceEnabled && (
+                <Link
+                  to="products"
+                  className="px-5 py-2.5 text-sm font-bold text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300 relative group"
+                >
+                  Shop
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-green-400 group-hover:w-3/4 transition-all duration-300" />
+                </Link>
+              )}
             </nav>
 
             {/* Right Actions - Desktop */}
@@ -332,13 +337,15 @@ function CustomerLayout() {
                 >
                   Contact
                 </Link>
-                <Link
-                  to="products"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-4 py-3 text-sm font-bold text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all"
-                >
-                  Shop
-                </Link>
+                {ecommerceEnabled && (
+                  <Link
+                    to="products"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-4 py-3 text-sm font-bold text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                  >
+                    Shop
+                  </Link>
+                )}
                 <div className="border-t border-white/10 my-2"></div>
                 {user ? (
                   <>
@@ -388,7 +395,7 @@ function CustomerLayout() {
         <Routes>
           <Route index element={<SalonLandingLuxury />} />
           <Route path="services" element={<ServicesPage />} />
-          <Route path="beauticians" element={<BeauticianSelectionPage />} />
+          <Route path="specialists" element={<BeauticianSelectionPage />} />
           <Route path="times" element={<TimeSlots />} />
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="confirmation" element={<ConfirmationPage />} />
@@ -654,6 +661,14 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
                 <Tenants />
+              </Suspense>
+            }
+          />
+          <Route
+            path="features"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <PlatformFeatures />
               </Suspense>
             }
           />

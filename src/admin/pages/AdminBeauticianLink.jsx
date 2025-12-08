@@ -52,7 +52,7 @@ export default function AdminBeauticianLink() {
       // Fetch admins and specialists in parallel - API client handles auth automatically
       const [adminsRes, specialistsRes] = await Promise.all([
         api.get("/admin/admins"),
-        api.get("/beauticians", { params: { limit: 1000 } }),
+        api.get("/specialists", { params: { limit: 1000 } }),
       ]);
 
       console.log("Loaded admins:", adminsRes.data);
@@ -74,7 +74,7 @@ export default function AdminBeauticianLink() {
 
     setLinking(true);
     try {
-      await api.patch(`/admin/admins/${selectedAdmin}/link-beautician`, {
+      await api.patch(`/admin/admins/${selectedAdmin}/link-specialist`, {
         beauticianId: selectedSpecialist,
       });
 
@@ -124,7 +124,7 @@ export default function AdminBeauticianLink() {
 
   const performUnlink = async (adminId) => {
     try {
-      await api.patch(`/admin/admins/${adminId}/link-beautician`, {
+      await api.patch(`/admin/admins/${adminId}/link-specialist`, {
         beauticianId: null,
       });
 

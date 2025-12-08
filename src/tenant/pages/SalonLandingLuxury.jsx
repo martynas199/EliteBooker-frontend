@@ -369,7 +369,7 @@ export default function SalonLandingLuxury() {
         const [settingsRes, specialistsRes, servicesRes, heroSectionsRes] =
           await Promise.all([
             api.get("/settings/display").catch(() => ({ data: null })),
-            api.get("/beauticians"), // API endpoint unchanged (backend compatibility)
+            api.get("/specialists"), // API endpoint unchanged (backend compatibility)
             api.get("/services"),
             api.get("/hero-sections").catch(() => ({ data: [] })),
           ]);
@@ -419,12 +419,12 @@ export default function SalonLandingLuxury() {
       );
       navigate(`/salon/${tenant?.slug}/times`);
     } else {
-      navigate("beauticians");
+      navigate("specialists");
     }
   };
 
   const handleSpecialistClick = (specialist) => {
-    navigate(`beauticians?selected=${specialist._id}`);
+    navigate(`specialists?selected=${specialist._id}`);
   };
 
   // Data

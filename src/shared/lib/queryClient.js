@@ -46,7 +46,7 @@ export const queryKeys = {
   admin: {
     all: ["admin"],
     profile: () => [...queryKeys.admin.all, "profile"],
-    beauticians: () => [...queryKeys.admin.all, "beauticians"],
+    specialists: () => [...queryKeys.admin.all, "specialists"],
     appointments: (filters) => [
       ...queryKeys.admin.all,
       "appointments",
@@ -63,12 +63,12 @@ export const queryKeys = {
   },
 
   // Beauticians
-  beauticians: {
-    all: ["beauticians"],
-    list: () => [...queryKeys.beauticians.all, "list"],
-    byId: (id) => [...queryKeys.beauticians.all, "detail", id],
+  specialists: {
+    all: ["specialists"],
+    list: () => [...queryKeys.specialists.all, "list"],
+    byId: (id) => [...queryKeys.specialists.all, "detail", id],
     availability: (id, date) => [
-      ...queryKeys.beauticians.all,
+      ...queryKeys.specialists.all,
       id,
       "availability",
       date,
@@ -81,7 +81,7 @@ export const queryKeys = {
     byUser: (userId) => [...queryKeys.appointments.all, "user", userId],
     byBeautician: (beauticianId) => [
       ...queryKeys.appointments.all,
-      "beautician",
+      "specialist",
       beauticianId,
     ],
     byDate: (date) => [...queryKeys.appointments.all, "date", date],

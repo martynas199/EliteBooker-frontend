@@ -102,13 +102,13 @@ export default function AboutUsPage() {
       />
 
       <div className="relative z-10">
-      {/* SEO Meta Tags */}
-      <SEOHead
-        title="About Us - Our Story & Mission"
-        description="Discover Noble Elegance Beauty Salon in Wisbech, Cambridgeshire. Learn about our expert beauticians, premium beauty services, and our commitment to excellence. Located at 12 Blackfriars Rd, PE13 1AT. We specialize in permanent makeup, brows, lashes and luxury beauty treatments for clients across Wisbech, March, King's Lynn, Peterborough and Cambridgeshire."
-        keywords="about Noble Elegance, beauty salon Wisbech story, experienced beauticians Cambridgeshire, professional beauty services, award winning beauty salon, best beauty salon Wisbech"
-        schema={combinedSchema}
-      />
+        {/* SEO Meta Tags */}
+        <SEOHead
+          title="About Us - Our Story & Mission"
+          description="Discover Noble Elegance Beauty Salon in Wisbech, Cambridgeshire. Learn about our expert specialists, premium beauty services, and our commitment to excellence. Located at 12 Blackfriars Rd, PE13 1AT. We specialize in permanent makeup, brows, lashes and luxury beauty treatments for clients across Wisbech, March, King's Lynn, Peterborough and Cambridgeshire."
+          keywords="about Noble Elegance, beauty salon Wisbech story, experienced specialists Cambridgeshire, professional beauty services, award winning beauty salon, best beauty salon Wisbech"
+          schema={combinedSchema}
+        />
 
         {/* Background Refresh Indicator */}
         {isFetching && !isLoading && (
@@ -220,7 +220,7 @@ export default function AboutUsPage() {
                 >
                   <div className="relative p-8 md:p-10 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-green-400/30 transition-all duration-300 hover:bg-white/[0.07]">
                     <div className="absolute top-6 left-6 text-6xl font-bold text-green-400/10 select-none">
-                      {String(index + 1).padStart(2, '0')}
+                      {String(index + 1).padStart(2, "0")}
                     </div>
                     <p className="text-lg md:text-xl leading-relaxed text-white/80 relative z-10">
                       {paragraph}
@@ -254,31 +254,46 @@ export default function AboutUsPage() {
               {[
                 {
                   icon: (
-                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="w-8 h-8"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                     </svg>
                   ),
                   title: "Excellence",
-                  description: "We pursue perfection in every detail, ensuring exceptional results and outstanding service."
+                  description:
+                    "We pursue perfection in every detail, ensuring exceptional results and outstanding service.",
                 },
                 {
                   icon: (
-                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="w-8 h-8"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                     </svg>
                   ),
                   title: "Passion",
-                  description: "Our dedication drives us to continuously innovate and perfect what we do."
+                  description:
+                    "Our dedication drives us to continuously innovate and perfect what we do.",
                 },
                 {
                   icon: (
-                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="w-8 h-8"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
                     </svg>
                   ),
                   title: "Community",
-                  description: "Building lasting relationships and creating a welcoming space for everyone."
-                }
+                  description:
+                    "Building lasting relationships and creating a welcoming space for everyone.",
+                },
               ].map((value, index) => (
                 <motion.div
                   key={index}
@@ -318,18 +333,19 @@ export default function AboutUsPage() {
               {/* Background gradient */}
               <div className="absolute inset-0 bg-gradient-to-br from-green-400/10 via-purple-500/10 to-blue-500/10 backdrop-blur-sm" />
               <div className="absolute inset-0 border border-white/10 rounded-3xl" />
-              
+
               <div className="relative z-10 text-center">
                 <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">
                   Ready to Start Your Journey?
                 </h2>
                 <p className="text-xl text-white/70 mb-10 max-w-2xl mx-auto">
-                  Experience the difference. Book your appointment today and discover what makes us special.
+                  Experience the difference. Book your appointment today and
+                  discover what makes us special.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <a
-                    href="beauticians"
+                    href="specialists"
                     className="group inline-flex items-center gap-3 bg-green-400 text-black px-8 py-4 rounded-full hover:bg-green-300 transition-all duration-300 font-black text-lg shadow-xl shadow-green-400/30 hover:shadow-2xl hover:shadow-green-400/40 hover:scale-105"
                   >
                     <svg

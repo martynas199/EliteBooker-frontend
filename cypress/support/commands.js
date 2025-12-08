@@ -212,7 +212,7 @@ Cypress.Commands.add("createStaff", (staffData, tenantSlug) => {
   cy.get("@authToken").then((token) => {
     cy.request({
       method: "POST",
-      url: `${apiUrl}/api/beauticians`,
+      url: `${apiUrl}/api/specialists`,
       headers: {
         Authorization: `Bearer ${token}`,
         "x-tenant-slug": tenantSlug,
@@ -238,7 +238,7 @@ Cypress.Commands.add("updateStaff", (staffId, updates, tenantSlug) => {
   cy.get("@authToken").then((token) => {
     cy.request({
       method: "PUT",
-      url: `${apiUrl}/api/beauticians/${staffId}`,
+      url: `${apiUrl}/api/specialists/${staffId}`,
       headers: {
         Authorization: `Bearer ${token}`,
         "x-tenant-slug": tenantSlug,
@@ -262,7 +262,7 @@ Cypress.Commands.add("deleteStaff", (staffId, tenantSlug) => {
   cy.get("@authToken").then((token) => {
     cy.request({
       method: "DELETE",
-      url: `${apiUrl}/api/beauticians/${staffId}`,
+      url: `${apiUrl}/api/specialists/${staffId}`,
       headers: {
         Authorization: `Bearer ${token}`,
         "x-tenant-slug": tenantSlug,
@@ -287,7 +287,7 @@ Cypress.Commands.add(
     cy.get("@authToken").then((token) => {
       cy.request({
         method: "PUT",
-        url: `${apiUrl}/api/beauticians/${staffId}/availability`,
+        url: `${apiUrl}/api/specialists/${staffId}/availability`,
         headers: {
           Authorization: `Bearer ${token}`,
           "x-tenant-slug": tenantSlug,

@@ -54,7 +54,7 @@ export default function ProfitAnalytics() {
     try {
       const [productsRes, specialistsRes] = await Promise.all([
         api.get("/products"),
-        api.get("/beauticians", { params: { limit: 1000 } }),
+        api.get("/specialists", { params: { limit: 1000 } }),
       ]);
 
       const productData = productsRes.data || [];
@@ -134,7 +134,7 @@ export default function ProfitAnalytics() {
     products: productData = [],
     categories = [],
     monthly = [],
-    beauticians: specialistData = [],
+    specialists: specialistData = [],
   } = analytics || {};
 
   return (
@@ -478,7 +478,7 @@ export default function ProfitAnalytics() {
             { id: "overview", name: "Overview" },
             { id: "products", name: "Products" },
             { id: "categories", name: "Categories" },
-            { id: "beauticians", name: "Beauticians" },
+            { id: "specialists", name: "Beauticians" },
             { id: "trends", name: "Trends" },
           ].map((tab) => (
             <button
@@ -710,7 +710,7 @@ export default function ProfitAnalytics() {
         </Card>
       )}
 
-      {activeTab === "beauticians" && (
+      {activeTab === "specialists" && (
         <Card className="p-3 sm:p-6">
           <h3 className="text-base sm:text-lg font-semibold mb-4">
             Specialist Performance

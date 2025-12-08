@@ -2,7 +2,7 @@
 
 ## Overview
 
-Complete Stripe Checkout integration for product purchases with support for Stripe Connect (beautician-owned products) and automated payment distribution.
+Complete Stripe Checkout integration for product purchases with support for Stripe Connect (specialist-owned products) and automated payment distribution.
 
 ## Features Implemented
 
@@ -16,17 +16,17 @@ Complete Stripe Checkout integration for product purchases with support for Stri
 
 ### 2. **Stripe Connect Integration** 🔗
 
-- **Single-beautician orders**: Destination charges (beautician pays Stripe fees)
-- **Multi-beautician orders**: Platform receives payment, transfers to beauticians
+- **Single-specialist orders**: Destination charges (specialist pays Stripe fees)
+- **Multi-specialist orders**: Platform receives payment, transfers to specialists
 - **Platform products**: Direct payment to platform account
-- Automatic earnings tracking for beauticians
+- Automatic earnings tracking for specialists
 
 ### 3. **Payment Confirmation Flow** ✅
 
 - Post-payment verification
 - Order status updates
 - Stock reduction after payment
-- Earnings distribution to beauticians
+- Earnings distribution to specialists
 - Email notifications (configured in Stripe)
 
 ### 4. **User Experience** 🎨
@@ -43,7 +43,7 @@ Complete Stripe Checkout integration for product purchases with support for Stri
 
 1. **Customer adds products to cart**
 
-   - Products can be from different beauticians
+   - Products can be from different specialists
    - Cart stored in Redux state
 
 2. **Customer proceeds to checkout** (`/product-checkout`)
@@ -68,7 +68,7 @@ Complete Stripe Checkout integration for product purchases with support for Stri
    - Validates products and stock
    - Calculates totals (subtotal, shipping, tax)
    - Creates pending order in database
-   - Groups items by beautician
+   - Groups items by specialist
    - Creates Stripe Checkout session
    - Returns session URL
 
@@ -95,8 +95,8 @@ Complete Stripe Checkout integration for product purchases with support for Stri
    - Verifies payment with Stripe
    - Updates order status to "processing"
    - Reduces product stock
-   - Distributes payments to beauticians
-   - Updates beautician earnings
+   - Distributes payments to specialists
+   - Updates specialist earnings
 
 9. **Customer sees success page**
    - Order confirmation
@@ -206,7 +206,7 @@ for (const payment of stripeConnectPayments) {
 ```
 
 - Platform pays Stripe fees
-- Separate transfer to each beautician
+- Separate transfer to each specialist
 - Transfers happen after payment confirmation
 
 ### Platform-Owned Products
@@ -268,8 +268,8 @@ stripeAmount = Math.round(gbpAmount * 100);
 
 ## Testing Checklist
 
-- [ ] Add products to cart (single beautician)
-- [ ] Add products to cart (multiple beauticians)
+- [ ] Add products to cart (single specialist)
+- [ ] Add products to cart (multiple specialists)
 - [ ] Proceed to checkout
 - [ ] Fill shipping information
 - [ ] Click "Place Order"
@@ -347,8 +347,8 @@ POST /api/orders/:id/refund
 Features:
 
 - Reverses Stripe charge
-- Reverses transfers to beauticians
-- Updates beautician earnings
+- Reverses transfers to specialists
+- Updates specialist earnings
 - Restores product stock
 - Updates order status
 
@@ -378,32 +378,32 @@ Cart → Checkout Form → Stripe Payment → Payment Fails → Error Screen →
 
 When creating or editing a product in the admin panel (`/admin/products`), you can assign ownership:
 
-1. **Product Owner Field**: Select a beautician or leave as "Platform"
-2. **Beautician List**: Shows all active beauticians
-3. **Stripe Status Indicator**: ✓ indicates beautician is connected to Stripe
+1. **Product Owner Field**: Select a specialist or leave as "Platform"
+2. **Beautician List**: Shows all active specialists
+3. **Stripe Status Indicator**: ✓ indicates specialist is connected to Stripe
 4. **Visual Tags**:
-   - 💰 "Beautician Product" - Owned by specific beautician
+   - 💰 "Beautician Product" - Owned by specific specialist
    - 🏢 "Platform Product" - Owned by platform
    - Owner name displayed below product title
 
 **Important Notes**:
 
-- Only beauticians with `stripeStatus: "connected"` can receive payments
+- Only specialists with `stripeStatus: "connected"` can receive payments
 - Beauticians without Stripe accounts will still appear but show "(Not connected to Stripe)"
-- Platform products (no beautician assigned) go 100% to platform account
+- Platform products (no specialist assigned) go 100% to platform account
 - You can change product ownership at any time
 
 ## Benefits
 
 1. **Secure**: Stripe handles all sensitive payment data
 2. **Fast**: Redirects minimize loading times
-3. **Flexible**: Supports multiple beauticians per order
-4. **Transparent**: Clear fee structure for beauticians
+3. **Flexible**: Supports multiple specialists per order
+4. **Transparent**: Clear fee structure for specialists
 5. **Compliant**: PCI DSS, SCA, GDPR compliant via Stripe
 6. **Trackable**: Full order and payment history
 7. **Recoverable**: Failed payments can be retried
 8. **Refundable**: Easy refund process for admins
-9. **Multi-Seller**: Supports beautician-owned products with automatic payment distribution
+9. **Multi-Seller**: Supports specialist-owned products with automatic payment distribution
 
 ## Future Enhancements
 
@@ -438,7 +438,7 @@ Possible improvements:
 
 ### Beautician not receiving earnings
 
-- Verify beautician.stripeStatus === "connected"
+- Verify specialist.stripeStatus === "connected"
 - Check Stripe Connect account status
 - Review transfer logs in Stripe dashboard
 

@@ -55,7 +55,7 @@ export default function Profile() {
 
   const fetchSpecialistData = async () => {
     try {
-      const response = await api.get(`/beauticians/${admin.beauticianId}`);
+      const response = await api.get(`/specialists/${admin.beauticianId}`);
       setSpecialist(response.data);
       setWorkingHours(response.data.workingHours || []);
       setInSalonPayment(response.data.inSalonPayment || false);
@@ -151,7 +151,7 @@ export default function Profile() {
       setSavingWorkingHours(true);
       const loadingToast = toast.loading("Saving working hours...");
 
-      await api.patch("/beauticians/me/working-hours", {
+      await api.patch("/specialists/me/working-hours", {
         workingHours,
       });
 
@@ -176,7 +176,7 @@ export default function Profile() {
       setSavingPaymentSettings(true);
       const loadingToast = toast.loading("Saving payment settings...");
 
-      await api.patch(`/beauticians/${admin.beauticianId}`, {
+      await api.patch(`/specialists/${admin.beauticianId}`, {
         inSalonPayment,
       });
 

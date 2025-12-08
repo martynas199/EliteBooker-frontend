@@ -30,7 +30,7 @@
 2. Enter your homepage URL
 3. Click "Request Indexing"
 4. Repeat for key pages:
-   - `/beauticians`
+   - `/specialists`
    - `/products`
    - `/about`
    - `/salon`
@@ -110,7 +110,7 @@ Add event tracking to key actions:
 // When user books appointment
 gtag("event", "booking_completed", {
   service_name: serviceName,
-  beautician: beauticianName,
+  specialist: beauticianName,
   price: price,
 });
 
@@ -156,7 +156,7 @@ Choose verification method:
 - Service area: Huntingdon, Peterborough, March, Wisbech, St Ives, Ramsey
 - Phone: [YOUR ACTUAL PHONE]
 - Website: https://www.nobleelegance.co.uk
-- Appointment URL: https://www.nobleelegance.co.uk/beauticians
+- Appointment URL: https://www.nobleelegance.co.uk/specialists
 
 **Opening Hours:**
 Add your actual hours for each day

@@ -90,8 +90,8 @@ export default function FAQPage() {
           a: "You can book appointments up to 3 months in advance. We recommend booking at least 1-2 weeks ahead for popular time slots.",
         },
         {
-          q: "Can I choose a specific beautician?",
-          a: "Yes! When booking, you can select a specific beautician or choose 'Any Available' to see all available time slots.",
+          q: "Can I choose a specific specialist?",
+          a: "Yes! When booking, you can select a specific specialist or choose 'Any Available' to see all available time slots.",
         },
         {
           q: "What if I need to reschedule?",
@@ -160,7 +160,7 @@ export default function FAQPage() {
         <p className="text-gray-600">
           Find answers to common questions about{" "}
           <a
-            href="/beauticians"
+            href="/specialists"
             className="text-brand-600 hover:text-brand-700 underline"
           >
             bookings

@@ -51,10 +51,10 @@ export default function TimeOff() {
       setLoading(true);
       const [timeOffData, staffResponse] = await Promise.all([
         timeOffAPI.getAll(),
-        api.get("/beauticians", { params: { limit: 1000 } }),
+        api.get("/specialists", { params: { limit: 1000 } }),
       ]);
       setTimeOffList(timeOffData || []);
-      setBeauticians(staffResponse.data?.filter((b) => b.active) || []);
+      setSpecialists(staffResponse.data?.filter((b) => b.active) || []);
     } catch (error) {
       console.error("Error loading data:", error);
       alert("Failed to load time-off data");
@@ -303,7 +303,7 @@ export default function TimeOff() {
 
       {/* Add Time Off Form */}
       {showAddForm && (
-        <Card className="overflow-hidden shadow-2xl border-0 ring-1 ring-gray-900/5 animate-in fade-in slide-in-from-top-4 duration-300">
+        <Card className="overflow-visible shadow-2xl border-0 ring-1 ring-gray-900/5 animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="bg-gradient-to-r from-brand-500 to-brand-600 px-8 py-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -414,7 +414,7 @@ export default function TimeOff() {
                   </svg>
                 </button>
                 {showStartPicker && (
-                  <div className="absolute z-50 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 p-4">
+                  <div className="absolute left-0 z-[100] mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 p-4">
                     <DayPicker
                       mode="single"
                       selected={
@@ -492,7 +492,7 @@ export default function TimeOff() {
                   </svg>
                 </button>
                 {showEndPicker && (
-                  <div className="absolute z-50 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 p-4">
+                  <div className="absolute left-0 z-[100] mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 p-4">
                     <DayPicker
                       mode="single"
                       selected={

@@ -36,7 +36,7 @@ beforeEach(() => {
   cy.intercept("POST", "**/api/auth/login").as("login");
   cy.intercept("GET", "**/api/salon").as("getSalon");
   cy.intercept("GET", "**/api/services*").as("getServices");
-  cy.intercept("GET", "**/api/beauticians*").as("getStaff");
+  cy.intercept("GET", "**/api/specialists*").as("getStaff");
   cy.intercept("GET", "**/api/availability/slots*").as("getSlots");
   cy.intercept("POST", "**/api/checkout").as("checkout");
   cy.intercept("POST", "**/api/bookings").as("createBooking");

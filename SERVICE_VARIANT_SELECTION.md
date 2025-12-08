@@ -15,7 +15,7 @@ Added comprehensive service variant selection functionality that allows clients 
 **Features:**
 
 - ✅ **Visual Service Display** - Shows service image, name, category, and description
-- ✅ **Beautician Context** - Displays selected beautician information
+- ✅ **Beautician Context** - Displays selected specialist information
 - ✅ **Variant Selection** - Interactive list of all available service variants
 - ✅ **Detailed Variant Info** - Shows name, price, duration, buffer times for each variant
 - ✅ **Fallback Support** - Handles services without variants gracefully
@@ -25,7 +25,7 @@ Added comprehensive service variant selection functionality that allows clients 
 **Props:**
 
 - `service` - Service object with variants array
-- `selectedBeautician` - Currently selected beautician object
+- `selectedSpecialist` - Currently selected specialist object
 - `onVariantSelect(variant, service)` - Callback when variant is confirmed
 - `onCancel()` - Callback when selection is cancelled
 
@@ -41,7 +41,7 @@ Added comprehensive service variant selection functionality that allows clients 
 
 ### 3. Enhanced BeauticianSelectionPage
 
-**Location:** `src/features/beauticians/BeauticianSelectionPage.jsx`
+**Location:** `src/features/specialists/BeauticianSelectionPage.jsx`
 
 **New Flow:**
 
@@ -123,7 +123,7 @@ const VariantSchema = {
 BeauticianSelectionPage
 ├── ServiceCard (enhanced with variant indicators)
 └── ServiceVariantSelector (modal)
-    ├── Service Header (image, name, category, beautician)
+    ├── Service Header (image, name, category, specialist)
     ├── Variant List (interactive cards)
     └── Action Buttons (cancel/continue)
 ```
@@ -246,7 +246,7 @@ BeauticianSelectionPage
 
 - `src/components/ServiceVariantSelector.jsx` (new)
 - `src/features/landing/ServiceCard.jsx` (enhanced)
-- `src/features/beauticians/BeauticianSelectionPage.jsx` (enhanced)
+- `src/features/specialists/BeauticianSelectionPage.jsx` (enhanced)
 - `src/features/booking/bookingSlice.js` (enhanced)
 
 **Impact:** Improved booking experience with clear service options and transparent pricing.

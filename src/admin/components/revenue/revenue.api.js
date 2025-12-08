@@ -5,7 +5,7 @@ export const RevenueAPI = {
    * Get revenue analytics for a date range
    * @param {string} startDate - YYYY-MM-DD
    * @param {string} endDate - YYYY-MM-DD
-   * @returns {Promise<Object>} Revenue data with beauticians array
+   * @returns {Promise<Object>} Revenue data with specialists array
    */
   async getRevenue(startDate, endDate) {
     const params = new URLSearchParams({ startDate, endDate });
@@ -26,7 +26,7 @@ export const RevenueAPI = {
   },
 
   /**
-   * Get beautician earnings from Stripe Connect
+   * Get specialist earnings from Stripe Connect
    * @param {string} beauticianId - Beautician ID
    * @param {string} startDate - YYYY-MM-DD
    * @param {string} endDate - YYYY-MM-DD
@@ -35,7 +35,7 @@ export const RevenueAPI = {
   async getBeauticianEarnings(beauticianId, startDate, endDate) {
     const params = new URLSearchParams({ startDate, endDate });
     const res = await api.get(
-      `/reports/beautician-earnings/${beauticianId}?${params}`
+      `/reports/specialist-earnings/${beauticianId}?${params}`
     );
     return res.data;
   },

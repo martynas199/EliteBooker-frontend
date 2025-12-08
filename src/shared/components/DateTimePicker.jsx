@@ -15,7 +15,7 @@ dayjs.extend(timezone);
  * DateTimePicker - Production-ready date and time slot picker
  *
  * @param {object} props
- * @param {string} props.beauticianId - ID of the beautician
+ * @param {string} props.beauticianId - ID of the specialist
  * @param {string} props.serviceId - ID of the selected service
  * @param {string} props.variantName - Name of the selected variant
  * @param {string} props.salonTz - Timezone (e.g., "Europe/London")

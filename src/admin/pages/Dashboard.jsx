@@ -33,7 +33,7 @@ export default function Dashboard() {
       // Fetch appointments, specialists, and salon info in parallel
       const [appointmentsRes, specialistsRes, salonRes] = await Promise.all([
         api.get("/appointments"),
-        api.get("/beauticians", { params: { limit: 1000 } }),
+        api.get("/specialists", { params: { limit: 1000 } }),
         api.get("/salon"),
       ]);
 
@@ -65,7 +65,7 @@ export default function Dashboard() {
         role: admin?.role,
       });
 
-      // Filter appointments based on admin role and linked beautician
+      // Filter appointments based on admin role and linked specialist
       if (isSuperAdmin) {
         // Super admin sees all appointments
         console.log(
@@ -73,26 +73,26 @@ export default function Dashboard() {
           appointments.length
         );
       } else if (admin?.beauticianId) {
-        // Regular admin with linked beautician - only show their beautician's appointments
+        // Regular admin with linked specialist - only show their specialist's appointments
         const originalCount = appointments.length;
         appointments = appointments.filter(
           (apt) => apt.beauticianId?._id === admin.beauticianId
         );
         console.log(
-          `[Dashboard] Regular admin with beautician ${admin.beauticianId} - filtered from ${originalCount} to ${appointments.length} appointments`
+          `[Dashboard] Regular admin with specialist ${admin.beauticianId} - filtered from ${originalCount} to ${appointments.length} appointments`
         );
-        // Auto-select the beautician's filter
-        setSelectedBeautician(admin.beauticianId);
+        // Auto-select the specialist's filter
+        setSelectedSpecialist(admin.beauticianId);
       } else {
-        // Regular admin without linked beautician - show no appointments
+        // Regular admin without linked specialist - show no appointments
         console.log(
-          "[Dashboard] Regular admin without linked beautician - showing no appointments"
+          "[Dashboard] Regular admin without linked specialist - showing no appointments"
         );
         appointments = [];
       }
 
       setAllAppointments(appointments);
-      setBeauticians(beauticiansData);
+      setSpecialists(specialistsData);
     } catch (error) {
       console.error("Failed to fetch data:", error);
       toast.error("Failed to load dashboard data");
@@ -165,7 +165,7 @@ export default function Dashboard() {
         };
       })
       .filter(Boolean); // Remove any null entries
-  }, [selectedBeautician, allAppointments]);
+  }, [selectedSpecialist, allAppointments]);
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -174,9 +174,9 @@ export default function Dashboard() {
     const lastMonth = dayjs().subtract(1, "month").startOf("month");
 
     let filtered = allAppointments;
-    if (selectedBeautician !== "all") {
+    if (selectedSpecialist !== "all") {
       filtered = filtered.filter(
-        (apt) => apt.beauticianId?._id === selectedBeautician
+        (apt) => apt.beauticianId?._id === selectedSpecialist
       );
     }
 
@@ -239,7 +239,7 @@ export default function Dashboard() {
       todayAppointments,
       uniqueCustomers,
     };
-  }, [allAppointments, selectedBeautician]);
+  }, [allAppointments, selectedSpecialist]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-GB", {
@@ -643,8 +643,8 @@ export default function Dashboard() {
             const aptDate = dayjs(apt.start).startOf("day");
             return (
               aptDate.isSame(today) &&
-              (selectedBeautician === "all" ||
-                apt.beauticianId?._id === selectedBeautician)
+              (selectedSpecialist === "all" ||
+                apt.beauticianId?._id === selectedSpecialist)
             );
           })
           .sort((a, b) => new Date(a.start) - new Date(b.start));
@@ -1554,7 +1554,7 @@ export default function Dashboard() {
             <span className="font-semibold">Add Service</span>
           </a>
           <a
-            href="/admin/beauticians"
+            href="/admin/specialists"
             className="group flex items-center gap-3 px-5 py-3.5 hover:bg-gradient-to-r hover:from-brand-50 hover:to-brand-50/50 transition-all duration-200 text-gray-700 hover:text-brand-700 rounded-2xl mx-2"
           >
             <div className="p-2 bg-blue-100 rounded-xl group-hover:bg-blue-500 group-hover:scale-110 transition-all">

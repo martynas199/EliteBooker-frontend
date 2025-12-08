@@ -42,7 +42,7 @@ describe("DateTimePicker - Disabled Days Logic", () => {
     assert.strictEqual(isFuture, true, "Future date should be identified");
   });
 
-  it("should disable days when beautician does not work", () => {
+  it("should disable days when specialist does not work", () => {
     const workingHours = [
       { dayOfWeek: 1, start: "09:00", end: "17:00" }, // Monday
       { dayOfWeek: 2, start: "09:00", end: "17:00" }, // Tuesday

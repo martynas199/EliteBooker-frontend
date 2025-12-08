@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTenantSettings } from "../../shared/hooks/useTenantSettings";
 import { Check, X } from "lucide-react";
+import toast from "react-hot-toast";
 
 // Toggle Switch Component
 const Toggle = ({ enabled, onChange, disabled = false }) => {
@@ -66,19 +67,35 @@ export default function FeaturesPage() {
   const {
     featureFlags,
     updateFeatureFlag,
+    loadSettings,
     smsGatewayConnected,
     ecommerceEnabled,
     loading,
   } = useTenantSettings();
 
   const [localFlags, setLocalFlags] = useState({
-    smsConfirmations: featureFlags?.smsConfirmations || false,
-    smsReminders: featureFlags?.smsReminders || false,
-    onlinePayments: featureFlags?.onlinePayments || true,
-    bookingFee: featureFlags?.bookingFee || false,
-    ecommerce: ecommerceEnabled || false,
-    emailNotifications: featureFlags?.emailNotifications || true,
+    smsConfirmations: featureFlags?.smsConfirmations === true,
+    smsReminders: featureFlags?.smsReminders === true,
+    onlinePayments: featureFlags?.onlinePayments === true,
+    ecommerce: ecommerceEnabled === true,
+    emailNotifications: featureFlags?.emailNotifications === true,
   });
+
+  // Load settings from API on mount
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  // Sync local state when featureFlags change
+  useEffect(() => {
+    setLocalFlags({
+      smsConfirmations: featureFlags?.smsConfirmations === true,
+      smsReminders: featureFlags?.smsReminders === true,
+      onlinePayments: featureFlags?.onlinePayments === true,
+      ecommerce: ecommerceEnabled === true,
+      emailNotifications: featureFlags?.emailNotifications === true,
+    });
+  }, [featureFlags, ecommerceEnabled]);
 
   const handleToggle = async (feature) => {
     const newValue = !localFlags[feature];
@@ -92,9 +109,12 @@ export default function FeaturesPage() {
     // Call API to persist change
     try {
       await updateFeatureFlag(feature, newValue);
-      console.log(`✅ ${feature} updated to ${newValue}`);
+      toast.success(
+        `${feature} ${newValue ? "enabled" : "disabled"} successfully`
+      );
     } catch (error) {
       console.error(`❌ Failed to update ${feature}:`, error);
+      toast.error("Failed to update feature setting");
       // Revert on error
       setLocalFlags((prev) => ({
         ...prev,
@@ -164,14 +184,6 @@ export default function FeaturesPage() {
               description="Allow clients to pay deposits and booking fees online via Stripe."
               enabled={localFlags.onlinePayments}
               onChange={() => handleToggle("onlinePayments")}
-            />
-
-            {/* Booking Fee */}
-            <FeatureRow
-              title="Booking Fee"
-              description="Add a fixed or percentage-based booking fee to all online payments."
-              enabled={localFlags.bookingFee}
-              onChange={() => handleToggle("bookingFee")}
             />
 
             {/* E-commerce Module */}

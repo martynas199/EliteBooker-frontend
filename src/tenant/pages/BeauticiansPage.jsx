@@ -32,7 +32,7 @@ export default function SpecialistSelectionPage() {
   useEffect(() => {
     // Fetch all specialists
     api
-      .get("/beauticians")
+      .get("/specialists")
       .then((res) => {
         const activeSpecialists = res.data.filter((b) => b.active);
         setSpecialists(activeSpecialists);
@@ -86,7 +86,7 @@ export default function SpecialistSelectionPage() {
         .catch((err) => console.error("Failed to restore service:", err));
 
       api
-        .get(`/beauticians/${specialistParam}`)
+        .get(`/specialists/${specialistParam}`)
         .then((res) => {
           dispatch(
             setSpecialist({
@@ -104,7 +104,7 @@ export default function SpecialistSelectionPage() {
     // Fetch the full specialist data to ensure we have the latest inSalonPayment flag
     let fullSpecialistData = specialist;
     try {
-      const specialistRes = await api.get(`/beauticians/${specialist._id}`);
+      const specialistRes = await api.get(`/specialists/${specialist._id}`);
       fullSpecialistData = specialistRes.data;
     } catch (err) {
       console.error("Failed to fetch full specialist data:", err);
@@ -119,7 +119,7 @@ export default function SpecialistSelectionPage() {
     const params = new URLSearchParams({ selected: specialist._id });
     if (serviceParam) params.set("service", serviceParam);
     if (variantParam) params.set("variant", variantParam);
-    navigate(`/salon/${tenant?.slug}/beauticians?${params.toString()}`, {
+    navigate(`/salon/${tenant?.slug}/specialists?${params.toString()}`, {
       replace: true,
     });
 
@@ -221,7 +221,7 @@ export default function SpecialistSelectionPage() {
     const params = new URLSearchParams({
       service: service._id,
       variant: selectedVariant.name,
-      beautician: selectedSpecialist._id, // URL param name unchanged for compatibility
+      specialist: selectedSpecialist._id, // URL param name unchanged for compatibility
     });
     navigate(`/salon/${tenant?.slug}/times?${params.toString()}`);
   };
@@ -238,7 +238,7 @@ export default function SpecialistSelectionPage() {
     setSelectedService(null);
     setIsBioExpanded(false);
     // Clear all URL parameters when going back
-    navigate(`/salon/${tenant?.slug}/beauticians`, { replace: true });
+    navigate(`/salon/${tenant?.slug}/specialists`, { replace: true });
   };
 
   if (loading) {
@@ -252,7 +252,7 @@ export default function SpecialistSelectionPage() {
   // Breadcrumb schema
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: "Home", url: "/" },
-    { name: "Book Appointment", url: "/beauticians" },
+    { name: "Book Appointment", url: "/specialists" },
   ]);
 
   return (
@@ -295,7 +295,7 @@ export default function SpecialistSelectionPage() {
         <SEOHead
           title="Book Appointment Wisbech | Expert Specialists - Noble Elegance"
           description="Book your beauty appointment in Wisbech. Expert specialists specializing in permanent makeup, brows, lashes & treatments. Online booking available 24/7!"
-          keywords="book beauty appointment Wisbech, beauty booking Cambridgeshire, permanent makeup appointment, book beautician Wisbech, beauty salon booking March, online booking beauty salon, King's Lynn beauty appointments"
+          keywords="book beauty appointment Wisbech, beauty booking Cambridgeshire, permanent makeup appointment, book specialist Wisbech, beauty salon booking March, online booking beauty salon, King's Lynn beauty appointments"
           schema={breadcrumbSchema}
         />
 
@@ -327,7 +327,7 @@ export default function SpecialistSelectionPage() {
                 >
                   <div className="text-center px-6 sm:px-8 py-3 sm:py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
                     <div className="text-3xl sm:text-4xl font-black text-white mb-1">
-                      {beauticians.length}
+                      {specialists.length}
                     </div>
                     <div className="text-xs sm:text-sm text-white/60 font-semibold uppercase tracking-wider">
                       Specialists
@@ -621,7 +621,7 @@ export default function SpecialistSelectionPage() {
                       Coming Soon!
                     </h3>
                     <p className="text-sm sm:text-base text-white/70 leading-relaxed">
-                      This beautician is preparing their service menu. In the
+                      This specialist is preparing their service menu. In the
                       meantime, feel free to explore our other talented
                       professionals!
                     </p>
@@ -647,7 +647,7 @@ export default function SpecialistSelectionPage() {
         {showVariantSelector && selectedService && (
           <ServiceVariantSelector
             service={selectedService}
-            selectedBeautician={selectedSpecialist}
+            selectedSpecialist={selectedSpecialist}
             onVariantSelect={handleVariantConfirm}
             onCancel={handleVariantCancel}
           />

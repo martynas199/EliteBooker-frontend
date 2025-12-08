@@ -46,11 +46,11 @@ export default function Revenue() {
       // Merge the data - map backend field names (bookings only)
       // Use platform specialists data if regular API returns empty array
       const specialistsData =
-        regularRevenue?.beauticians?.length > 0
-          ? regularRevenue.beauticians
-          : (platformRevenue?.beauticians || []).map((b) => ({
+        regularRevenue?.specialists?.length > 0
+          ? regularRevenue.specialists
+          : (platformRevenue?.specialists || []).map((b) => ({
               beauticianId: b?.beauticianId || "",
-              beautician: b?.beauticianName || "Unknown",
+              specialist: b?.beauticianName || "Unknown",
               revenue: b?.bookings?.revenue || 0,
               bookings: b?.bookings?.count || 0,
               serviceCount: b?.services?.length || 0,
@@ -71,7 +71,7 @@ export default function Revenue() {
               bookingsRevenue:
                 platformRevenue.platform?.totalBookingRevenue || 0,
               totalBookings:
-                platformRevenue.beauticians?.reduce(
+                platformRevenue.specialists?.reduce(
                   (sum, b) => sum + b.bookings.count,
                   0
                 ) || 0,
@@ -497,7 +497,7 @@ export default function Revenue() {
                     <option value="all">All Specialists</option>
                     {data.specialists.map((b) => (
                       <option key={b.beauticianId} value={b.beauticianId}>
-                        {b.beautician}
+                        {b.specialist}
                       </option>
                     ))}
                   </select>
@@ -543,7 +543,7 @@ export default function Revenue() {
                         vertical={false}
                       />
                       <XAxis
-                        dataKey="beautician"
+                        dataKey="specialist"
                         tick={{
                           fill: "#6b7280",
                           fontSize: 13,
@@ -619,7 +619,7 @@ export default function Revenue() {
                         <div className="flex items-center gap-3 mb-3">
                           <div className="flex-shrink-0 h-12 w-12 rounded-full bg-brand-100 flex items-center justify-center">
                             <span className="text-brand-700 font-medium text-sm">
-                              {specialist.beautician
+                              {specialist.specialist
                                 .split(" ")
                                 .map((n) => n[0])
                                 .join("")}
@@ -627,7 +627,7 @@ export default function Revenue() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="text-sm font-semibold text-gray-900 truncate">
-                              {specialist.beautician}
+                              {specialist.specialist}
                             </div>
                           </div>
                         </div>
@@ -717,7 +717,7 @@ export default function Revenue() {
                               <div className="flex items-center">
                                 <div className="flex-shrink-0 h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center">
                                   <span className="text-brand-700 font-medium text-sm">
-                                    {specialist.beautician
+                                    {specialist.specialist
                                       .split(" ")
                                       .map((n) => n[0])
                                       .join("")}
@@ -725,7 +725,7 @@ export default function Revenue() {
                                 </div>
                                 <div className="ml-4">
                                   <div className="text-sm font-medium text-gray-900">
-                                    {specialist.beautician}
+                                    {specialist.specialist}
                                   </div>
                                 </div>
                               </div>

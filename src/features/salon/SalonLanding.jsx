@@ -18,11 +18,11 @@ export default function SalonLanding() {
   const { formatPrice } = useCurrency();
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState(null);
-  const [beauticians, setBeauticians] = useState([]);
+  const [specialists, setBeauticians] = useState([]);
   const [services, setServices] = useState([]);
   const [stats, setStats] = useState({
     services: 0,
-    beauticians: 0,
+    specialists: 0,
     categories: 0,
   });
   const [hoveredService, setHoveredService] = useState(null);
@@ -32,7 +32,7 @@ export default function SalonLanding() {
       try {
         const [settingsRes, beauticiansRes, servicesRes] = await Promise.all([
           api.get("/settings").catch(() => ({ data: null })),
-          api.get("/beauticians"),
+          api.get("/specialists"),
           api.get("/services"),
         ]);
 
@@ -50,7 +50,7 @@ export default function SalonLanding() {
         );
         setStats({
           services: activeServices.length,
-          beauticians: activeBeauticians.length,
+          specialists: activeBeauticians.length,
           categories: categories.size,
         });
       } catch (error) {
@@ -64,11 +64,11 @@ export default function SalonLanding() {
   }, []);
 
   const handleBookNow = () => {
-    // Navigate based on beautician count
-    if (beauticians.length <= 1) {
+    // Navigate based on specialist count
+    if (specialists.length <= 1) {
       navigate("services");
     } else {
-      navigate("beauticians");
+      navigate("specialists");
     }
   };
 
@@ -146,7 +146,7 @@ export default function SalonLanding() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
               >
-                Book your appointment online in seconds. Expert beauticians,
+                Book your appointment online in seconds. Expert specialists,
                 premium products, exceptional results.
               </motion.p>
 
@@ -198,7 +198,7 @@ export default function SalonLanding() {
               >
                 {[
                   { value: stats.services, label: "Services" },
-                  { value: stats.beauticians, label: "Specialists" },
+                  { value: stats.specialists, label: "Specialists" },
                   { value: stats.categories, label: "Categories" },
                 ].map((stat) => (
                   <div key={stat.label} className="text-center">
@@ -216,7 +216,7 @@ export default function SalonLanding() {
         </div>
 
         {/* Beauticians Section - Show if multiple specialists */}
-        {beauticians.length > 1 && (
+        {specialists.length > 1 && (
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -232,14 +232,14 @@ export default function SalonLanding() {
                 Meet Our Team
               </h2>
               <p className="text-xl text-gray-600">
-                Expert beauticians ready to serve you
+                Expert specialists ready to serve you
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {beauticians.map((beautician) => (
+              {specialists.map((specialist) => (
                 <motion.div
-                  key={beautician._id}
+                  key={specialist._id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -248,18 +248,18 @@ export default function SalonLanding() {
                     hoverable
                     className="group cursor-pointer overflow-hidden p-0 h-[480px] border-2 border-transparent hover:border-brand-200 transition-all duration-300"
                     onClick={() =>
-                      navigate(`beauticians?selected=${beautician._id}`)
+                      navigate(`specialists?selected=${specialist._id}`)
                     }
                   >
                     {/* Full Card Image with Name Overlay */}
                     <div className="relative h-full w-full bg-gradient-to-br from-gray-100 to-gray-200">
-                      {beautician.image?.url ? (
+                      {specialist.image?.url ? (
                         <img
-                          src={beautician.image.url}
+                          src={specialist.image.url}
                           alt={`${
-                            beautician.name
+                            specialist.name
                           } - Expert Beautician specializing in ${
-                            beautician.specialties?.slice(0, 2).join(", ") ||
+                            specialist.specialties?.slice(0, 2).join(", ") ||
                             "beauty treatments"
                           }`}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -289,10 +289,10 @@ export default function SalonLanding() {
                       {/* Content */}
                       <div className="absolute inset-0 flex flex-col justify-end p-6">
                         {/* Specialties badges at top */}
-                        {beautician.specialties &&
-                          beautician.specialties.length > 0 && (
+                        {specialist.specialties &&
+                          specialist.specialties.length > 0 && (
                             <div className="flex-1 flex flex-wrap gap-2 content-start mb-4">
-                              {beautician.specialties
+                              {specialist.specialties
                                 .slice(0, 3)
                                 .map((specialty, idx) => (
                                   <span
@@ -302,9 +302,9 @@ export default function SalonLanding() {
                                     {specialty}
                                   </span>
                                 ))}
-                              {beautician.specialties.length > 3 && (
+                              {specialist.specialties.length > 3 && (
                                 <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-bold rounded-full shadow-lg">
-                                  +{beautician.specialties.length - 3} more
+                                  +{specialist.specialties.length - 3} more
                                 </span>
                               )}
                             </div>
@@ -313,12 +313,12 @@ export default function SalonLanding() {
                         {/* Name and CTA */}
                         <div>
                           <h3 className="text-3xl font-black text-white mb-3">
-                            {beautician.name}
+                            {specialist.name}
                           </h3>
 
-                          {beautician.bio && (
+                          {specialist.bio && (
                             <p className="text-white/90 text-sm mb-4 line-clamp-2 leading-relaxed">
-                              {beautician.bio}
+                              {specialist.bio}
                             </p>
                           )}
 
@@ -352,7 +352,7 @@ export default function SalonLanding() {
         )}
 
         {/* Services Section - Show if only one specialist */}
-        {beauticians.length <= 1 && services.length > 0 && (
+        {specialists.length <= 1 && services.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}

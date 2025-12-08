@@ -87,7 +87,7 @@ Hours: Monday-Sunday 9:00 AM - 5:00 PM
 - [ ] List all services with descriptions and prices
 - [ ] Add attributes (Women-owned, Online bookings, etc.)
 - [ ] Enable messaging
-- [ ] Set up booking button linking to: https://www.nobleelegance.co.uk/beauticians
+- [ ] Set up booking button linking to: https://www.nobleelegance.co.uk/specialists
 
 ### 3. Categories to Add
 
@@ -171,7 +171,7 @@ Noble Elegance is Wisbech's premier aesthetic clinic and beauty salon, specializ
 2. Enter your URLs:
    - Homepage: https://www.nobleelegance.co.uk
    - Contact: https://www.nobleelegance.co.uk/salon
-   - Services: https://www.nobleelegance.co.uk/beauticians
+   - Services: https://www.nobleelegance.co.uk/specialists
 3. Verify LocalBusiness schema appears correctly
 
 ### Check NAP Consistency:

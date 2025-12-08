@@ -12,7 +12,7 @@ import { t } from "../locales/adminTranslations";
  *
  * @param {object} props
  * @param {object|null} props.service - Existing service for edit mode, null for create mode
- * @param {array} props.beauticians - List of beauticians for dropdown
+ * @param {array} props.specialists - List of specialists for dropdown
  * @param {function} props.onSave - Callback(serviceData) when form is submitted
  * @param {function} props.onCancel - Callback when user cancels
  * @param {function} props.onDelete - Callback when user deletes (edit mode only)
@@ -21,7 +21,7 @@ import { t } from "../locales/adminTranslations";
  */
 export default function ServiceForm({
   service,
-  beauticians,
+  specialists,
   onSave,
   onCancel,
   onDelete,
@@ -99,9 +99,9 @@ export default function ServiceForm({
               ],
       });
     } else if (!isSuperAdmin && admin?.beauticianId) {
-      // For non-super admins creating a new service, pre-select their beautician ID
+      // For non-super admins creating a new service, pre-select their specialist ID
       console.log(
-        "Auto-filling beautician for non-super admin:",
+        "Auto-filling specialist for non-super admin:",
         admin.beauticianId
       );
       setFormData((prev) => ({
@@ -115,8 +115,8 @@ export default function ServiceForm({
   useEffect(() => {
     console.log("ServiceForm - Admin object:", admin);
     console.log("ServiceForm - isSuperAdmin:", isSuperAdmin);
-    console.log("ServiceForm - Beauticians available:", beauticians.length);
-  }, [admin, isSuperAdmin, beauticians]);
+    console.log("ServiceForm - Beauticians available:", specialists.length);
+  }, [admin, isSuperAdmin, specialists]);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -186,7 +186,7 @@ export default function ServiceForm({
     }
 
     if (!formData.primaryBeauticianId) {
-      newErrors.primaryBeauticianId = "Please select a primary beautician";
+      newErrors.primaryBeauticianId = "Please select a primary specialist";
     }
 
     if (formData.variants.length === 0) {
@@ -406,7 +406,7 @@ export default function ServiceForm({
               aria-invalid={!!errors.primaryBeauticianId}
             >
               <option value="">{t("selectBeautician", language)}</option>
-              {beauticians.map((b) => (
+              {specialists.map((b) => (
                 <option key={b._id} value={b._id}>
                   {b.name}
                 </option>
@@ -414,7 +414,7 @@ export default function ServiceForm({
             </select>
             {!isSuperAdmin && !admin?.beauticianId && (
               <p className="text-sm text-red-600 mt-1 font-medium">
-                ⚠️ Your admin account is not linked to a beautician. Please
+                ⚠️ Your admin account is not linked to a specialist. Please
                 contact your administrator to link your account before creating
                 services.
               </p>

@@ -17,15 +17,15 @@ export default function CartSidebar() {
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Check for multiple beauticians in cart
-  const beauticians = new Set(
+  // Check for multiple specialists in cart
+  const specialists = new Set(
     items
       .map(
         (item) => item.product?.beauticianId?._id || item.product?.beauticianId
       )
       .filter(Boolean)
   );
-  const hasMultipleBeauticians = beauticians.size > 1;
+  const hasMultipleBeauticians = specialists.size > 1;
 
   // Close on escape key
   useEffect(() => {
@@ -289,7 +289,7 @@ export default function CartSidebar() {
                       Multiple Sellers
                     </h4>
                     <p className="text-xs text-amber-800">
-                      Your cart contains products from {beauticians.size}{" "}
+                      Your cart contains products from {specialists.size}{" "}
                       different sellers. You'll need to check out separately for
                       each seller.
                     </p>

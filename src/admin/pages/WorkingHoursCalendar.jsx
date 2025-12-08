@@ -38,7 +38,7 @@ export default function WorkingHoursCalendar() {
   useEffect(() => {
     const fetchSpecialists = async () => {
       try {
-        const response = await api.get("/beauticians", {
+        const response = await api.get("/specialists", {
           params: { limit: 1000 },
         });
         console.log("Fetched specialists:", response.data);
@@ -68,7 +68,7 @@ export default function WorkingHoursCalendar() {
     const fetchSpecialist = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/beauticians/${selectedSpecialistId}`);
+        const response = await api.get(`/specialists/${selectedSpecialistId}`);
         console.log(
           "[WorkingHoursCalendar] Fetched specialist:",
           response.data
@@ -261,7 +261,7 @@ export default function WorkingHoursCalendar() {
         delete newCustomSchedule[dateStr];
       }
 
-      await api.patch(`/beauticians/${selectedSpecialist._id}`, {
+      await api.patch(`/specialists/${selectedSpecialist._id}`, {
         customSchedule: newCustomSchedule,
       });
 
@@ -290,7 +290,7 @@ export default function WorkingHoursCalendar() {
       const newCustomSchedule = { ...customSchedule };
       delete newCustomSchedule[dateStr];
 
-      await api.patch(`/beauticians/${selectedSpecialist._id}`, {
+      await api.patch(`/specialists/${selectedSpecialist._id}`, {
         customSchedule: newCustomSchedule,
       });
 
@@ -370,7 +370,7 @@ export default function WorkingHoursCalendar() {
 
       const updatedWorkingHours = [...otherDaysHours, ...newHours];
 
-      await api.patch(`/beauticians/${selectedSpecialist._id}`, {
+      await api.patch(`/specialists/${selectedSpecialist._id}`, {
         workingHours: updatedWorkingHours,
       });
 
@@ -400,7 +400,7 @@ export default function WorkingHoursCalendar() {
         selectedSpecialist.workingHours || []
       ).filter((wh) => wh.dayOfWeek !== editingDayOfWeek);
 
-      await api.patch(`/beauticians/${selectedSpecialist._id}`, {
+      await api.patch(`/specialists/${selectedSpecialist._id}`, {
         workingHours: updatedWorkingHours,
       });
 
