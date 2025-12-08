@@ -11,17 +11,17 @@ import { selectAdmin } from "../../shared/state/authSlice";
 export default function AdminBeauticianLink() {
   const currentAdmin = useSelector(selectAdmin);
   const [admins, setAdmins] = useState([]);
-  const [beauticians, setBeauticians] = useState([]);
+  const [specialists, setSpecialists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedAdmin, setSelectedAdmin] = useState("");
-  const [selectedBeautician, setSelectedBeautician] = useState("");
+  const [selectedSpecialist, setSelectedSpecialist] = useState("");
   const [linking, setLinking] = useState(false);
   const [searchAdmin, setSearchAdmin] = useState("");
-  const [searchBeautician, setSearchBeautician] = useState("");
+  const [searchSpecialist, setSearchSpecialist] = useState("");
 
   // Debounce search inputs to avoid excessive re-renders
   const debouncedAdminSearch = useDebounce(searchAdmin, 300);
-  const debouncedBeauticianSearch = useDebounce(searchBeautician, 300);
+  const debouncedSpecialistSearch = useDebounce(searchSpecialist, 300);
 
   // Create admin form state
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -49,43 +49,43 @@ export default function AdminBeauticianLink() {
     try {
       console.log("Loading admin data...", { currentAdmin });
 
-      // Fetch admins and beauticians in parallel - API client handles auth automatically
-      const [adminsRes, beauticiansRes] = await Promise.all([
+      // Fetch admins and specialists in parallel - API client handles auth automatically
+      const [adminsRes, specialistsRes] = await Promise.all([
         api.get("/admin/admins"),
         api.get("/beauticians", { params: { limit: 1000 } }),
       ]);
 
       console.log("Loaded admins:", adminsRes.data);
       setAdmins(adminsRes.data || []);
-      setBeauticians(beauticiansRes.data || []);
+      setSpecialists(specialistsRes.data || []);
     } catch (error) {
       console.error("Failed to load data:", error);
-      toast.error("Failed to load admins and beauticians");
+      toast.error("Failed to load admins and specialists");
     } finally {
       setLoading(false);
     }
   };
 
   const handleLink = async () => {
-    if (!selectedAdmin || !selectedBeautician) {
-      toast.error("Please select both an admin and a beautician");
+    if (!selectedAdmin || !selectedSpecialist) {
+      toast.error("Please select both an admin and a specialist");
       return;
     }
 
     setLinking(true);
     try {
       await api.patch(`/admin/admins/${selectedAdmin}/link-beautician`, {
-        beauticianId: selectedBeautician,
+        beauticianId: selectedSpecialist,
       });
 
-      toast.success("Successfully linked admin to beautician!");
+      toast.success("Successfully linked admin to specialist!");
       loadData(); // Reload to show updated links
       setSelectedAdmin("");
-      setSelectedBeautician("");
+      setSelectedSpecialist("");
     } catch (error) {
       console.error("Failed to link:", error);
       toast.error(
-        error.response?.data?.error || "Failed to link admin to beautician"
+        error.response?.data?.error || "Failed to link admin to specialist"
       );
     } finally {
       setLinking(false);
@@ -97,7 +97,7 @@ export default function AdminBeauticianLink() {
       (t) => (
         <div className="flex flex-col gap-3">
           <p className="font-medium">
-            Are you sure you want to unlink this admin from their beautician?
+            Are you sure you want to unlink this admin from their specialist?
           </p>
           <div className="flex gap-2">
             <button
@@ -128,7 +128,7 @@ export default function AdminBeauticianLink() {
         beauticianId: null,
       });
 
-      toast.success("Successfully unlinked admin from beautician");
+      toast.success("Successfully unlinked admin from specialist");
       loadData();
     } catch (error) {
       console.error("Failed to unlink:", error);
@@ -373,9 +373,9 @@ export default function AdminBeauticianLink() {
     }
   };
 
-  const getBeauticianName = (beauticianId) => {
-    const beautician = beauticians.find((b) => b._id === beauticianId);
-    return beautician ? beautician.name : "Unknown";
+  const getSpecialistName = (beauticianId) => {
+    const specialist = specialists.find((b) => b._id === beauticianId);
+    return specialist ? specialist.name : "Unknown";
   };
 
   const filteredAdmins = admins.filter(
@@ -384,14 +384,14 @@ export default function AdminBeauticianLink() {
       admin.email.toLowerCase().includes(debouncedAdminSearch.toLowerCase())
   );
 
-  const filteredBeauticians = beauticians.filter(
-    (beautician) =>
-      beautician.name
+  const filteredSpecialists = specialists.filter(
+    (specialist) =>
+      specialist.name
         .toLowerCase()
-        .includes(debouncedBeauticianSearch.toLowerCase()) ||
-      (beautician.email || "")
+        .includes(debouncedSpecialistSearch.toLowerCase()) ||
+      (specialist.email || "")
         .toLowerCase()
-        .includes(debouncedBeauticianSearch.toLowerCase())
+        .includes(debouncedSpecialistSearch.toLowerCase())
   );
 
   if (loading) {
@@ -411,7 +411,7 @@ export default function AdminBeauticianLink() {
             Admin Management
           </h1>
           <p className="mt-2 text-gray-600 font-light">
-            Create admin accounts and link them to beautician profiles
+            Create admin accounts and link them to specialist profiles
           </p>
         </div>
         <Button
@@ -546,10 +546,10 @@ export default function AdminBeauticianLink() {
                 </select>
               </div>
 
-              {/* Link to Beautician (Optional) */}
+              {/* Link to Specialist (Optional) */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Link to Beautician (Optional)
+                  Link to Specialist (Optional)
                 </label>
                 <select
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
@@ -558,16 +558,16 @@ export default function AdminBeauticianLink() {
                     setNewAdmin({ ...newAdmin, beauticianId: e.target.value })
                   }
                 >
-                  <option value="">None - No beautician link</option>
-                  {beauticians.map((beautician) => (
-                    <option key={beautician._id} value={beautician._id}>
-                      {beautician.name}{" "}
-                      {beautician.email ? `(${beautician.email})` : ""}
+                  <option value="">None - No specialist link</option>
+                  {specialists.map((specialist) => (
+                    <option key={specialist._id} value={specialist._id}>
+                      {specialist.name}{" "}
+                      {specialist.email ? `(${specialist.email})` : ""}
                     </option>
                   ))}
                 </select>
                 <p className="text-xs text-gray-500 mt-1">
-                  Link this admin to a beautician for Stripe Connect management
+                  Link this admin to a specialist for Stripe Connect management
                 </p>
               </div>
             </div>
@@ -605,10 +605,10 @@ export default function AdminBeauticianLink() {
         </Card>
       )}
 
-      {/* Link Existing Admin to Beautician */}
+      {/* Link Existing Admin to Specialist */}
       <Card className="p-6">
         <h2 className="text-xl font-serif font-semibold mb-4 tracking-wide">
-          Link Existing Admin to Beautician
+          Link Existing Admin to Specialist
         </h2>
         <div className="grid gap-6 md:grid-cols-2">
           {/* Select Admin */}
@@ -652,40 +652,40 @@ export default function AdminBeauticianLink() {
             </div>
           </div>
 
-          {/* Select Beautician */}
+          {/* Select Specialist */}
           <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-700">
-              Select Beautician
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Specialist
             </label>
             <Input
-              placeholder="Search beautician by name or email..."
-              value={searchBeautician}
-              onChange={(e) => setSearchBeautician(e.target.value)}
+              placeholder="Search specialist by name or email..."
+              value={searchSpecialist}
+              onChange={(e) => setSearchSpecialist(e.target.value)}
               className="mb-2"
             />
             <div className="border border-gray-300 rounded-lg max-h-64 overflow-y-auto">
-              {filteredBeauticians.length === 0 ? (
+              {filteredSpecialists.length === 0 ? (
                 <div className="p-4 text-center text-gray-500">
-                  No beauticians found
+                  No specialists found
                 </div>
               ) : (
-                filteredBeauticians.map((beautician) => (
+                filteredSpecialists.map((specialist) => (
                   <button
-                    key={beautician._id}
-                    onClick={() => setSelectedBeautician(beautician._id)}
+                    key={specialist._id}
+                    onClick={() => setSelectedSpecialist(specialist._id)}
                     className={`w-full text-left px-4 py-3 border-b border-gray-200 hover:bg-brand-50 transition-colors ${
-                      selectedBeautician === beautician._id
+                      selectedSpecialist === specialist._id
                         ? "bg-brand-100 border-l-4 border-l-brand-600"
                         : ""
                     }`}
                   >
-                    <div className="font-medium">{beautician.name}</div>
+                    <div className="font-medium">{specialist.name}</div>
                     <div className="text-sm text-gray-600">
-                      {beautician.email || "No email"}
+                      {specialist.email || "No email"}
                     </div>
-                    {beautician.specialty && (
+                    {specialist.specialty && (
                       <div className="text-xs text-gray-500 mt-1">
-                        Specialty: {beautician.specialty}
+                        Specialty: {specialist.specialty}
                       </div>
                     )}
                   </button>
@@ -701,15 +701,15 @@ export default function AdminBeauticianLink() {
             variant="brand"
             onClick={handleLink}
             loading={linking}
-            disabled={!selectedAdmin || !selectedBeautician}
+            disabled={!selectedAdmin || !selectedSpecialist}
             fullWidth
           >
-            Link Admin to Beautician
+            Link Admin to Specialist
           </Button>
-          {selectedAdmin && selectedBeautician && (
+          {selectedAdmin && selectedSpecialist && (
             <p className="text-sm text-gray-600 mt-2 text-center">
               Linking: {admins.find((a) => a._id === selectedAdmin)?.name} →{" "}
-              {beauticians.find((b) => b._id === selectedBeautician)?.name}
+              {specialists.find((b) => b._id === selectedSpecialist)?.name}
             </p>
           )}
         </div>
@@ -738,7 +738,7 @@ export default function AdminBeauticianLink() {
               </svg>
               <p className="font-medium">No links created yet</p>
               <p className="text-sm">
-                Use the form above to link an admin to a beautician
+                Use the form above to link an admin to a specialist
               </p>
             </div>
           ) : (
@@ -753,7 +753,7 @@ export default function AdminBeauticianLink() {
                       Email
                     </th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Linked Beautician
+                      Linked Specialist
                     </th>
                     <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
@@ -767,7 +767,7 @@ export default function AdminBeauticianLink() {
                   {admins
                     .filter((admin) => admin.beauticianId)
                     .map((admin) => {
-                      const beautician = beauticians.find(
+                      const specialist = specialists.find(
                         (b) => b._id === admin.beauticianId
                       );
                       return (
@@ -787,11 +787,11 @@ export default function AdminBeauticianLink() {
                           </td>
                           <td className="px-3 sm:px-6 py-4">
                             <div className="font-medium text-brand-700 text-sm break-words">
-                              {beautician?.name || "Unknown"}
+                              {specialist?.name || "Unknown"}
                             </div>
-                            {beautician?.email && (
+                            {specialist?.email && (
                               <div className="text-xs text-gray-500 break-all">
-                                {beautician.email}
+                                {specialist.email}
                               </div>
                             )}
                             <span className="md:hidden inline-flex mt-1 px-2 py-0.5 text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
@@ -969,15 +969,15 @@ export default function AdminBeauticianLink() {
           </svg>
           <div>
             <h3 className="font-semibold text-blue-900 mb-2">
-              About Admin-Beautician Links
+              About Admin-Specialist Links
             </h3>
             <ul className="text-sm text-blue-800 space-y-1">
               <li>
-                • Linking an admin to a beautician allows the admin to manage
-                that beautician's Stripe Connect settings
+                • Linking an admin to a specialist allows the admin to manage
+                that specialist's Stripe Connect settings
               </li>
               <li>
-                • Each admin can only be linked to one beautician at a time
+                • Each admin can only be linked to one specialist at a time
               </li>
               <li>
                 • Unlinking will remove access to Stripe Connect management
