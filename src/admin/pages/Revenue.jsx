@@ -22,7 +22,7 @@ export default function Revenue() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedBeautician, setSelectedBeautician] = useState("all");
+  const [selectedSpecialist, setSelectedSpecialist] = useState("all");
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [dateError, setDateError] = useState("");
@@ -44,8 +44,8 @@ export default function Revenue() {
       console.log("Platform Connect data:", platformRevenue);
 
       // Merge the data - map backend field names (bookings only)
-      // Use platform beauticians data if regular API returns empty array
-      const beauticiansData =
+      // Use platform specialists data if regular API returns empty array
+      const specialistsData =
         regularRevenue?.beauticians?.length > 0
           ? regularRevenue.beauticians
           : (platformRevenue?.beauticians || []).map((b) => ({
@@ -61,7 +61,7 @@ export default function Revenue() {
         endDate: regularRevenue?.endDate || endDate,
         totalRevenue: regularRevenue?.totalRevenue || 0,
         totalBookings: regularRevenue?.totalBookings || 0,
-        beauticians: beauticiansData,
+        specialists: specialistsData,
         platform: platformRevenue
           ? {
               totalRevenue: platformRevenue.platform?.totalBookingRevenue || 0,
@@ -118,20 +118,20 @@ export default function Revenue() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Filter beauticians based on selection
-  const filteredBeauticians =
-    data?.beauticians?.filter((b) =>
-      selectedBeautician === "all"
+  // Filter specialists based on selection
+  const filteredSpecialists =
+    data?.specialists?.filter((b) =>
+      selectedSpecialist === "all"
         ? true
-        : b.beauticianId === selectedBeautician
+        : b.beauticianId === selectedSpecialist
     ) || [];
 
   // Calculate filtered totals
-  const filteredTotalRevenue = filteredBeauticians.reduce(
+  const filteredTotalRevenue = filteredSpecialists.reduce(
     (sum, b) => sum + b.revenue,
     0
   );
-  const filteredTotalBookings = filteredBeauticians.reduce(
+  const filteredTotalBookings = filteredSpecialists.reduce(
     (sum, b) => sum + b.bookings,
     0
   );
@@ -384,7 +384,7 @@ export default function Revenue() {
         <>
           {/* Check if we have any data at all */}
           {data.platform?.totalBookings > 0 ||
-          filteredBeauticians.length > 0 ? (
+          filteredSpecialists.length > 0 ? (
             <>
               {/* Summary Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -483,19 +483,19 @@ export default function Revenue() {
                 </div>
               </div>
 
-              {/* Beautician Filter */}
-              {data.beauticians.length > 1 && (
+              {/* Specialist Filter */}
+              {data.specialists.length > 1 && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Filter by Specialist
                   </label>
                   <select
-                    value={selectedBeautician}
-                    onChange={(e) => setSelectedBeautician(e.target.value)}
+                    value={selectedSpecialist}
+                    onChange={(e) => setSelectedSpecialist(e.target.value)}
                     className="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                   >
                     <option value="all">All Specialists</option>
-                    {data.beauticians.map((b) => (
+                    {data.specialists.map((b) => (
                       <option key={b.beauticianId} value={b.beauticianId}>
                         {b.beautician}
                       </option>
@@ -505,16 +505,16 @@ export default function Revenue() {
               )}
 
               {/* Bar Chart */}
-              {filteredBeauticians.length > 0 && (
+              {filteredSpecialists.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 overflow-x-auto">
                   <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">
                     Revenue by Specialist
                   </h2>
                   <div className="min-w-full">
                     <BarChart
-                      width={Math.max(800, filteredBeauticians.length * 150)}
+                      width={Math.max(800, filteredSpecialists.length * 150)}
                       height={350}
-                      data={filteredBeauticians}
+                      data={filteredSpecialists}
                       margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
                     >
                       <defs>
@@ -599,8 +599,8 @@ export default function Revenue() {
                 </div>
               )}
 
-              {/* Table / Cards - Only show if there's beautician breakdown data */}
-              {filteredBeauticians.length > 0 && (
+              {/* Table / Cards - Only show if there's specialist breakdown data */}
+              {filteredSpecialists.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                   <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-900">
@@ -610,16 +610,16 @@ export default function Revenue() {
 
                   {/* Mobile Card View */}
                   <div className="block md:hidden divide-y divide-gray-200">
-                    {filteredBeauticians.map((beautician) => (
+                    {filteredSpecialists.map((specialist) => (
                       <div
-                        key={beautician.beauticianId}
+                        key={specialist.beauticianId}
                         className="p-4 hover:bg-gray-50 transition-colors"
                       >
-                        {/* Beautician Header */}
+                        {/* Specialist Header */}
                         <div className="flex items-center gap-3 mb-3">
                           <div className="flex-shrink-0 h-12 w-12 rounded-full bg-brand-100 flex items-center justify-center">
                             <span className="text-brand-700 font-medium text-sm">
-                              {beautician.beautician
+                              {specialist.beautician
                                 .split(" ")
                                 .map((n) => n[0])
                                 .join("")}
@@ -627,7 +627,7 @@ export default function Revenue() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="text-sm font-semibold text-gray-900 truncate">
-                              {beautician.beautician}
+                              {specialist.beautician}
                             </div>
                           </div>
                         </div>
@@ -639,7 +639,7 @@ export default function Revenue() {
                               Revenue
                             </div>
                             <div className="text-base font-bold text-gray-900">
-                              {formatCurrency(beautician.revenue)}
+                              {formatCurrency(specialist.revenue)}
                             </div>
                           </div>
                           <div className="bg-gray-50 rounded-lg p-3">
@@ -647,7 +647,7 @@ export default function Revenue() {
                               Bookings
                             </div>
                             <div className="text-base font-bold text-gray-900">
-                              {beautician.bookings}
+                              {specialist.bookings}
                             </div>
                           </div>
                           <div className="bg-gray-50 rounded-lg p-3">
@@ -656,7 +656,7 @@ export default function Revenue() {
                             </div>
                             <div className="text-sm font-semibold text-gray-700">
                               {formatCurrency(
-                                beautician.revenue / beautician.bookings
+                                specialist.revenue / specialist.bookings
                               )}
                             </div>
                           </div>
@@ -708,16 +708,16 @@ export default function Revenue() {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredBeauticians.map((beautician) => (
+                        {filteredSpecialists.map((specialist) => (
                           <tr
-                            key={beautician.beauticianId}
+                            key={specialist.beauticianId}
                             className="hover:bg-gray-50 transition-colors"
                           >
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
                                 <div className="flex-shrink-0 h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center">
                                   <span className="text-brand-700 font-medium text-sm">
-                                    {beautician.beautician
+                                    {specialist.beautician
                                       .split(" ")
                                       .map((n) => n[0])
                                       .join("")}
@@ -725,25 +725,25 @@ export default function Revenue() {
                                 </div>
                                 <div className="ml-4">
                                   <div className="text-sm font-medium text-gray-900">
-                                    {beautician.beautician}
+                                    {specialist.beautician}
                                   </div>
                                 </div>
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right">
-                              <div className="text-sm font-semibold text-gray-900">
-                                {formatCurrency(beautician.revenue)}
+                              <div className="text-sm text-gray-900">
+                                {formatCurrency(specialist.revenue)}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right">
                               <div className="text-sm text-gray-900">
-                                {beautician.bookings}
+                                {specialist.bookings}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right">
                               <div className="text-sm text-gray-600">
                                 {formatCurrency(
-                                  beautician.revenue / beautician.bookings
+                                  specialist.revenue / specialist.bookings
                                 )}
                               </div>
                             </td>
