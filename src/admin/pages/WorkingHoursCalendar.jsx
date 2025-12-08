@@ -15,9 +15,9 @@ export default function WorkingHoursCalendar() {
   const isSuperAdmin = admin?.role === "super_admin";
   const isSalonAdmin = admin?.role === "salon-admin";
 
-  const [beauticians, setBeauticians] = useState([]);
-  const [selectedBeauticianId, setSelectedBeauticianId] = useState("");
-  const [selectedBeautician, setSelectedBeautician] = useState(null);
+  const [specialists, setSpecialists] = useState([]);
+  const [selectedSpecialistId, setSelectedSpecialistId] = useState("");
+  const [selectedSpecialist, setSelectedSpecialist] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -34,43 +34,43 @@ export default function WorkingHoursCalendar() {
   const [editingDayOfWeek, setEditingDayOfWeek] = useState(null);
   const [weeklyDayHours, setWeeklyDayHours] = useState([]);
 
-  // Fetch beauticians
+  // Fetch specialists
   useEffect(() => {
-    const fetchBeauticians = async () => {
+    const fetchSpecialists = async () => {
       try {
         const response = await api.get("/beauticians", {
           params: { limit: 1000 },
         });
-        console.log("Fetched beauticians:", response.data);
-        setBeauticians(response.data);
+        console.log("Fetched specialists:", response.data);
+        setSpecialists(response.data);
 
-        // Auto-select beautician if not super admin
+        // Auto-select specialist if not super admin (using legacy beauticianId field)
         if (!isSuperAdmin && admin?.beauticianId) {
-          setSelectedBeauticianId(admin.beauticianId);
+          setSelectedSpecialistId(admin.beauticianId);
         }
       } catch (error) {
-        console.error("Failed to fetch beauticians:", error);
-        toast.error("Failed to load beauticians");
+        console.error("Failed to fetch specialists:", error);
+        toast.error("Failed to load specialists");
       }
     };
 
-    fetchBeauticians();
+    fetchSpecialists();
   }, [isSuperAdmin, admin?.beauticianId]);
 
-  // Fetch selected beautician details
+  // Fetch selected specialist details
   useEffect(() => {
-    if (!selectedBeauticianId) {
-      setSelectedBeautician(null);
+    if (!selectedSpecialistId) {
+      setSelectedSpecialist(null);
       setCustomSchedule({});
       return;
     }
 
-    const fetchBeautician = async () => {
+    const fetchSpecialist = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/beauticians/${selectedBeauticianId}`);
+        const response = await api.get(`/beauticians/${selectedSpecialistId}`);
         console.log(
-          "[WorkingHoursCalendar] Fetched beautician:",
+          "[WorkingHoursCalendar] Fetched specialist:",
           response.data
         );
         console.log(
@@ -116,7 +116,7 @@ export default function WorkingHoursCalendar() {
           );
         }
 
-        setSelectedBeautician(response.data);
+        setSelectedSpecialist(response.data);
 
         // Load custom schedule if it exists
         if (response.data.customSchedule) {
@@ -130,15 +130,15 @@ export default function WorkingHoursCalendar() {
           setCustomSchedule({});
         }
       } catch (error) {
-        console.error("Failed to fetch beautician:", error);
-        toast.error("Failed to load beautician details");
+        console.error("Failed to fetch specialist:", error);
+        toast.error("Failed to load specialist details");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchBeautician();
-  }, [selectedBeauticianId]);
+    fetchSpecialist();
+  }, [selectedSpecialistId]);
 
   // Get working hours for a specific date
   const getWorkingHoursForDate = (date) => {
@@ -169,8 +169,8 @@ export default function WorkingHoursCalendar() {
 
     // Fall back to default weekly schedule
     if (
-      !selectedBeautician?.workingHours ||
-      !Array.isArray(selectedBeautician.workingHours)
+      !selectedSpecialist?.workingHours ||
+      !Array.isArray(selectedSpecialist.workingHours)
     ) {
       console.log(`[getWorkingHoursForDate] No working hours array found`);
       return [];
@@ -178,9 +178,9 @@ export default function WorkingHoursCalendar() {
 
     console.log(
       `[getWorkingHoursForDate] Filtering from working hours:`,
-      selectedBeautician.workingHours
+      selectedSpecialist.workingHours
     );
-    const filtered = selectedBeautician.workingHours.filter(
+    const filtered = selectedSpecialist.workingHours.filter(
       (wh) =>
         wh && typeof wh.dayOfWeek === "number" && wh.dayOfWeek === dayOfWeek
     );
@@ -205,7 +205,7 @@ export default function WorkingHoursCalendar() {
 
   // Handle day click
   const handleDayClick = (date) => {
-    if (!date || !selectedBeautician) return;
+    if (!date || !selectedSpecialist) return;
 
     setSelectedDate(date);
     const dateStr = dayjs(date).format("YYYY-MM-DD");
@@ -243,7 +243,7 @@ export default function WorkingHoursCalendar() {
 
   // Save working hours for the specific selected date
   const saveWorkingHours = async () => {
-    if (!selectedDate || !selectedBeautician) return;
+    if (!selectedDate || !selectedSpecialist) return;
 
     const dateStr = dayjs(selectedDate).format("YYYY-MM-DD");
 
@@ -261,14 +261,14 @@ export default function WorkingHoursCalendar() {
         delete newCustomSchedule[dateStr];
       }
 
-      await api.patch(`/beauticians/${selectedBeautician._id}`, {
+      await api.patch(`/beauticians/${selectedSpecialist._id}`, {
         customSchedule: newCustomSchedule,
       });
 
       // Update local state
       setCustomSchedule(newCustomSchedule);
-      setSelectedBeautician({
-        ...selectedBeautician,
+      setSelectedSpecialist({
+        ...selectedSpecialist,
         customSchedule: newCustomSchedule,
       });
 
@@ -282,7 +282,7 @@ export default function WorkingHoursCalendar() {
 
   // Clear working hours for the selected date
   const clearWorkingHours = async () => {
-    if (!selectedDate || !selectedBeautician) return;
+    if (!selectedDate || !selectedSpecialist) return;
 
     const dateStr = dayjs(selectedDate).format("YYYY-MM-DD");
 
@@ -290,14 +290,14 @@ export default function WorkingHoursCalendar() {
       const newCustomSchedule = { ...customSchedule };
       delete newCustomSchedule[dateStr];
 
-      await api.patch(`/beauticians/${selectedBeautician._id}`, {
+      await api.patch(`/beauticians/${selectedSpecialist._id}`, {
         customSchedule: newCustomSchedule,
       });
 
       // Update local state
       setCustomSchedule(newCustomSchedule);
-      setSelectedBeautician({
-        ...selectedBeautician,
+      setSelectedSpecialist({
+        ...selectedSpecialist,
         customSchedule: newCustomSchedule,
       });
 
@@ -311,11 +311,11 @@ export default function WorkingHoursCalendar() {
 
   // Open weekly schedule edit modal
   const openWeeklyEditModal = (dayOfWeek) => {
-    if (!selectedBeautician) return;
+    if (!selectedSpecialist) return;
 
     setEditingDayOfWeek(dayOfWeek);
     const existingHours =
-      selectedBeautician.workingHours?.filter(
+      selectedSpecialist.workingHours?.filter(
         (wh) =>
           wh && typeof wh.dayOfWeek === "number" && wh.dayOfWeek === dayOfWeek
       ) || [];
@@ -348,11 +348,11 @@ export default function WorkingHoursCalendar() {
 
   // Save weekly schedule
   const saveWeeklySchedule = async () => {
-    if (editingDayOfWeek === null || !selectedBeautician) return;
+    if (editingDayOfWeek === null || !selectedSpecialist) return;
 
     try {
       // Remove existing hours for this day
-      const otherDaysHours = (selectedBeautician.workingHours || []).filter(
+      const otherDaysHours = (selectedSpecialist.workingHours || []).filter(
         (wh) =>
           wh &&
           typeof wh.dayOfWeek === "number" &&
@@ -370,13 +370,13 @@ export default function WorkingHoursCalendar() {
 
       const updatedWorkingHours = [...otherDaysHours, ...newHours];
 
-      await api.patch(`/beauticians/${selectedBeautician._id}`, {
+      await api.patch(`/beauticians/${selectedSpecialist._id}`, {
         workingHours: updatedWorkingHours,
       });
 
       // Update local state
-      setSelectedBeautician({
-        ...selectedBeautician,
+      setSelectedSpecialist({
+        ...selectedSpecialist,
         workingHours: updatedWorkingHours,
       });
 
@@ -392,21 +392,21 @@ export default function WorkingHoursCalendar() {
 
   // Clear weekly schedule for a day
   const clearWeeklySchedule = async () => {
-    if (editingDayOfWeek === null || !selectedBeautician) return;
+    if (editingDayOfWeek === null || !selectedSpecialist) return;
 
     try {
       // Remove all hours for this day
       const updatedWorkingHours = (
-        selectedBeautician.workingHours || []
+        selectedSpecialist.workingHours || []
       ).filter((wh) => wh.dayOfWeek !== editingDayOfWeek);
 
-      await api.patch(`/beauticians/${selectedBeautician._id}`, {
+      await api.patch(`/beauticians/${selectedSpecialist._id}`, {
         workingHours: updatedWorkingHours,
       });
 
       // Update local state
-      setSelectedBeautician({
-        ...selectedBeautician,
+      setSelectedSpecialist({
+        ...selectedSpecialist,
         workingHours: updatedWorkingHours,
       });
 
@@ -449,18 +449,18 @@ export default function WorkingHoursCalendar() {
         </p>
       </div>
 
-      {/* Beautician Selector */}
+      {/* Specialist Selector */}
       <div className="bg-white border rounded-lg shadow-sm p-6">
-        <FormField label="Select Beautician" htmlFor="beautician-select">
+        <FormField label="Select Specialist" htmlFor="specialist-select">
           <select
-            id="beautician-select"
+            id="specialist-select"
             className="border border-gray-300 rounded-lg w-full max-w-md px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
-            value={selectedBeauticianId}
-            onChange={(e) => setSelectedBeauticianId(e.target.value)}
+            value={selectedSpecialistId}
+            onChange={(e) => setSelectedSpecialistId(e.target.value)}
             disabled={!isSuperAdmin && !isSalonAdmin}
           >
-            <option value="">Select a beautician</option>
-            {beauticians.map((b) => (
+            <option value="">Select a specialist</option>
+            {specialists.map((b) => (
               <option key={b._id} value={b._id}>
                 {b.name}
               </option>
@@ -470,11 +470,11 @@ export default function WorkingHoursCalendar() {
       </div>
 
       {/* Calendar */}
-      {selectedBeautician && (
+      {selectedSpecialist && (
         <div className="bg-white border rounded-lg shadow-sm p-4 md:p-8 overflow-hidden">
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-2">
-              {selectedBeautician.name}'s Schedule
+              {selectedSpecialist.name}'s Schedule
             </h2>
             <p className="text-sm text-gray-600 mb-4">
               Click on a date to set custom working hours for that specific day.
@@ -675,7 +675,7 @@ export default function WorkingHoursCalendar() {
                 "Saturday",
               ].map((dayName, dayOfWeek) => {
                 const dayHours =
-                  selectedBeautician.workingHours?.filter(
+                  selectedSpecialist.workingHours?.filter(
                     (wh) =>
                       wh &&
                       typeof wh.dayOfWeek === "number" &&
