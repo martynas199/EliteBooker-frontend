@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { api } from "../../shared/lib/apiClient";
 import { useDispatch } from "react-redux";
-import { setService, setBeautician } from "../state/bookingSlice";
+import { setService, setSpecialist } from "../state/bookingSlice";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import PageTransition, {
   StaggerContainer,
@@ -15,9 +15,9 @@ import ServiceVariantSelector from "../../shared/components/ServiceVariantSelect
 import SEOHead from "../../shared/components/seo/SEOHead";
 import { generateBreadcrumbSchema } from "../../shared/utils/schemaGenerator";
 
-export default function BeauticianSelectionPage() {
-  const [beauticians, setBeauticians] = useState([]);
-  const [selectedBeautician, setSelectedBeautician] = useState(null);
+export default function SpecialistSelectionPage() {
+  const [specialists, setSpecialists] = useState([]);
+  const [selectedSpecialist, setSelectedSpecialist] = useState(null);
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [servicesLoading, setServicesLoading] = useState(false);
@@ -34,17 +34,17 @@ export default function BeauticianSelectionPage() {
     api
       .get("/beauticians")
       .then((res) => {
-        const activeBeauticians = res.data.filter((b) => b.active);
-        setBeauticians(activeBeauticians);
+        const activeSpecialists = res.data.filter((b) => b.active);
+        setSpecialists(activeSpecialists);
 
         // Check if there's a selected specialist in URL params
         const selectedId = searchParams.get("selected");
         if (selectedId) {
-          const beautician = activeBeauticians.find(
+          const specialist = activeSpecialists.find(
             (b) => b._id === selectedId
           );
-          if (beautician) {
-            handleBeauticianSelect(beautician);
+          if (specialist) {
+            handleSpecialistSelect(specialist);
           }
         }
       })
@@ -56,9 +56,9 @@ export default function BeauticianSelectionPage() {
   useEffect(() => {
     const serviceParam = searchParams.get("service");
     const variantParam = searchParams.get("variant");
-    const beauticianParam = searchParams.get("selected");
+    const specialistParam = searchParams.get("selected");
 
-    if (serviceParam && beauticianParam) {
+    if (serviceParam && specialistParam) {
       // Restore service and specialist to Redux from URL
       api
         .get(`/services/${serviceParam}`)
@@ -86,37 +86,37 @@ export default function BeauticianSelectionPage() {
         .catch((err) => console.error("Failed to restore service:", err));
 
       api
-        .get(`/beauticians/${beauticianParam}`)
+        .get(`/beauticians/${specialistParam}`)
         .then((res) => {
           dispatch(
-            setBeautician({
+            setSpecialist({
               beauticianId: res.data._id,
               any: false,
               inSalonPayment: res.data.inSalonPayment || false,
             })
           );
         })
-        .catch((err) => console.error("Failed to restore beautician:", err));
+        .catch((err) => console.error("Failed to restore specialist:", err));
     }
   }, []);
 
-  const handleBeauticianSelect = async (beautician) => {
+  const handleSpecialistSelect = async (specialist) => {
     // Fetch the full specialist data to ensure we have the latest inSalonPayment flag
-    let fullBeauticianData = beautician;
+    let fullSpecialistData = specialist;
     try {
-      const beauticianRes = await api.get(`/beauticians/${beautician._id}`);
-      fullBeauticianData = beauticianRes.data;
+      const specialistRes = await api.get(`/beauticians/${specialist._id}`);
+      fullSpecialistData = specialistRes.data;
     } catch (err) {
       console.error("Failed to fetch full specialist data:", err);
     }
 
-    setSelectedBeautician(fullBeauticianData);
+    setSelectedSpecialist(fullSpecialistData);
     setServicesLoading(true);
 
     // Update URL to include selected specialist (preserve existing service params)
     const serviceParam = searchParams.get("service");
     const variantParam = searchParams.get("variant");
-    const params = new URLSearchParams({ selected: beautician._id });
+    const params = new URLSearchParams({ selected: specialist._id });
     if (serviceParam) params.set("service", serviceParam);
     if (variantParam) params.set("variant", variantParam);
     navigate(`/salon/${tenant?.slug}/beauticians?${params.toString()}`, {
@@ -128,7 +128,7 @@ export default function BeauticianSelectionPage() {
       const res = await api.get("/services", {
         params: { limit: 1000 }, // Fetch all services
       });
-      const beauticianServices = res.data.filter((service) => {
+      const specialistServices = res.data.filter((service) => {
         // Helper to get ID from either string or object
         const getId = (field) => {
           if (!field) return null;
@@ -137,11 +137,11 @@ export default function BeauticianSelectionPage() {
 
         // Check primary specialist (can be populated object or ID string)
         const primaryId = getId(service.primaryBeauticianId);
-        if (primaryId === beautician._id) return true;
+        if (primaryId === specialist._id) return true;
 
         // Check legacy single specialist field
         const legacyId = getId(service.beauticianId);
-        if (legacyId === beautician._id) return true;
+        if (legacyId === specialist._id) return true;
 
         // Check additional specialists array
         if (
@@ -149,15 +149,15 @@ export default function BeauticianSelectionPage() {
           Array.isArray(service.additionalBeauticianIds)
         ) {
           const hasMatch = service.additionalBeauticianIds.some(
-            (id) => getId(id) === beautician._id
+            (id) => getId(id) === specialist._id
           );
           if (hasMatch) return true;
         }
 
-        // Check legacy beauticians array
+        // Check legacy specialists array
         if (service.beauticianIds && Array.isArray(service.beauticianIds)) {
           const hasMatch = service.beauticianIds.some(
-            (id) => getId(id) === beautician._id
+            (id) => getId(id) === specialist._id
           );
           if (hasMatch) return true;
         }
@@ -165,7 +165,7 @@ export default function BeauticianSelectionPage() {
         return false;
       });
 
-      setServices(beauticianServices);
+      setServices(specialistServices);
     } catch (err) {
       console.error("Failed to fetch services:", err);
       setServices([]);
@@ -210,10 +210,10 @@ export default function BeauticianSelectionPage() {
     );
 
     dispatch(
-      setBeautician({
-        beauticianId: selectedBeautician._id,
+      setSpecialist({
+        beauticianId: selectedSpecialist._id,
         any: false,
-        inSalonPayment: selectedBeautician.inSalonPayment || false,
+        inSalonPayment: selectedSpecialist.inSalonPayment || false,
       })
     );
 
@@ -221,7 +221,7 @@ export default function BeauticianSelectionPage() {
     const params = new URLSearchParams({
       service: service._id,
       variant: selectedVariant.name,
-      beautician: selectedBeautician._id,
+      beautician: selectedSpecialist._id, // URL param name unchanged for compatibility
     });
     navigate(`/salon/${tenant?.slug}/times?${params.toString()}`);
   };
@@ -232,7 +232,7 @@ export default function BeauticianSelectionPage() {
   };
 
   const handleBack = () => {
-    setSelectedBeautician(null);
+    setSelectedSpecialist(null);
     setServices([]);
     setShowVariantSelector(false);
     setSelectedService(null);
@@ -261,7 +261,7 @@ export default function BeauticianSelectionPage() {
       <motion.div
         className="fixed inset-0 -z-10"
         animate={{
-          background: selectedBeautician
+          background: selectedSpecialist
             ? "linear-gradient(to bottom right, #172554, #312e81, #4c1d95)"
             : "linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a)",
         }}
@@ -293,14 +293,14 @@ export default function BeauticianSelectionPage() {
       <PageTransition className="min-h-screen py-8 relative z-0">
         {/* SEO Meta Tags */}
         <SEOHead
-          title="Book Appointment Wisbech | Expert Beauticians - Noble Elegance"
-          description="Book your beauty appointment in Wisbech. Expert beauticians specializing in permanent makeup, brows, lashes & treatments. Online booking available 24/7!"
+          title="Book Appointment Wisbech | Expert Specialists - Noble Elegance"
+          description="Book your beauty appointment in Wisbech. Expert specialists specializing in permanent makeup, brows, lashes & treatments. Online booking available 24/7!"
           keywords="book beauty appointment Wisbech, beauty booking Cambridgeshire, permanent makeup appointment, book beautician Wisbech, beauty salon booking March, online booking beauty salon, King's Lynn beauty appointments"
           schema={breadcrumbSchema}
         />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {!selectedBeautician ? (
+          {!selectedSpecialist ? (
             // Step 1: Select a Specialist
             <>
               {/* Hero Section - Dark Spotify Style */}
@@ -337,22 +337,22 @@ export default function BeauticianSelectionPage() {
               </motion.div>
 
               <StaggerContainer className="grid gap-6 sm:gap-10 sm:grid-cols-2 lg:grid-cols-3 pt-12 pb-8">
-                {beauticians.map((beautician) => (
-                  <StaggerItem key={beautician._id} className="mt-4">
+                {specialists.map((specialist) => (
+                  <StaggerItem key={specialist._id} className="mt-4">
                     <motion.div
                       whileHover={{ y: -8, scale: 1.02 }}
                       className="group cursor-pointer overflow-hidden p-0 h-[400px] sm:h-[480px] rounded-2xl border-2 border-white/10 hover:border-white/20 transition-all duration-300 shadow-2xl hover:shadow-white/5"
-                      onClick={() => handleBeauticianSelect(beautician)}
+                      onClick={() => handleSpecialistSelect(specialist)}
                     >
                       {/* Full Card Image with Name Overlay */}
                       <div className="relative h-full w-full bg-gradient-to-br from-gray-100 to-gray-200">
-                        {beautician.image?.url ? (
+                        {specialist.image?.url ? (
                           <img
-                            src={beautician.image.url}
+                            src={specialist.image.url}
                             alt={`${
-                              beautician.name
-                            } - Expert Beautician specializing in ${
-                              beautician.specialties?.slice(0, 2).join(", ") ||
+                              specialist.name
+                            } - Expert Specialist specializing in ${
+                              specialist.specialties?.slice(0, 2).join(", ") ||
                               "beauty treatments"
                             }`}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -382,10 +382,10 @@ export default function BeauticianSelectionPage() {
                         {/* Content */}
                         <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-6">
                           {/* Specialties badges at top */}
-                          {beautician.specialties &&
-                            beautician.specialties.length > 0 && (
+                          {specialist.specialties &&
+                            specialist.specialties.length > 0 && (
                               <div className="flex-1 flex flex-wrap gap-1.5 sm:gap-2 content-start mb-3 sm:mb-4">
-                                {beautician.specialties
+                                {specialist.specialties
                                   .slice(0, 3)
                                   .map((specialty, idx) => (
                                     <span
@@ -395,9 +395,9 @@ export default function BeauticianSelectionPage() {
                                       {specialty}
                                     </span>
                                   ))}
-                                {beautician.specialties.length > 3 && (
+                                {specialist.specialties.length > 3 && (
                                   <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-bold rounded-full shadow-lg">
-                                    +{beautician.specialties.length - 3} more
+                                    +{specialist.specialties.length - 3} more
                                   </span>
                                 )}
                               </div>
@@ -406,12 +406,12 @@ export default function BeauticianSelectionPage() {
                           {/* Name and CTA */}
                           <div>
                             <h3 className="text-2xl sm:text-3xl font-black text-white mb-2 sm:mb-3 group-hover:text-green-400 transition-colors">
-                              {beautician.name}
+                              {specialist.name}
                             </h3>
 
-                            {beautician.bio && (
+                            {specialist.bio && (
                               <p className="text-white/90 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 leading-relaxed">
-                                {beautician.bio}
+                                {specialist.bio}
                               </p>
                             )}
 
@@ -476,10 +476,10 @@ export default function BeauticianSelectionPage() {
                 <div className="flex items-start gap-4 sm:gap-6 p-4 sm:p-8">
                   {/* Selected Beautician Image */}
                   <div className="flex-shrink-0 w-20 h-20 sm:w-32 sm:h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 shadow-2xl ring-2 sm:ring-4 ring-white/10">
-                    {selectedBeautician.image?.url ? (
+                    {selectedSpecialist.image?.url ? (
                       <img
-                        src={selectedBeautician.image.url}
-                        alt={selectedBeautician.name}
+                        src={selectedSpecialist.image.url}
+                        alt={selectedSpecialist.name}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -504,7 +504,7 @@ export default function BeauticianSelectionPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                       <h1 className="text-2xl sm:text-4xl font-black text-white">
-                        {selectedBeautician.name}
+                        {selectedSpecialist.name}
                       </h1>
                       <svg
                         className="w-5 h-5 sm:w-7 sm:h-7 text-green-400 flex-shrink-0"
@@ -520,10 +520,10 @@ export default function BeauticianSelectionPage() {
                     </div>
 
                     {/* Specialties */}
-                    {selectedBeautician.specialties &&
-                      selectedBeautician.specialties.length > 0 && (
+                    {selectedSpecialist.specialties &&
+                      selectedSpecialist.specialties.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-                          {selectedBeautician.specialties.map(
+                          {selectedSpecialist.specialties.map(
                             (specialty, idx) => (
                               <span
                                 key={idx}
@@ -536,16 +536,16 @@ export default function BeauticianSelectionPage() {
                         </div>
                       )}
 
-                    {selectedBeautician.bio && (
+                    {selectedSpecialist.bio && (
                       <div>
                         <p
                           className={`text-white/80 leading-relaxed text-sm sm:text-base ${
                             isBioExpanded ? "" : "line-clamp-2"
                           }`}
                         >
-                          {selectedBeautician.bio}
+                          {selectedSpecialist.bio}
                         </p>
-                        {selectedBeautician.bio.length > 120 && (
+                        {selectedSpecialist.bio.length > 120 && (
                           <button
                             onClick={() => setIsBioExpanded(!isBioExpanded)}
                             className="flex items-center gap-1 text-green-400 hover:text-green-300 transition-colors mt-3 text-sm font-bold"
@@ -647,7 +647,7 @@ export default function BeauticianSelectionPage() {
         {showVariantSelector && selectedService && (
           <ServiceVariantSelector
             service={selectedService}
-            selectedBeautician={selectedBeautician}
+            selectedBeautician={selectedSpecialist}
             onVariantSelect={handleVariantConfirm}
             onCancel={handleVariantCancel}
           />
