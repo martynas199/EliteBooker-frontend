@@ -68,11 +68,13 @@ export default function Modal({
   const variants = {
     system: {
       headerBg: "bg-gradient-to-r from-violet-50 to-fuchsia-50",
-      titleGradient: "bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600",
+      titleGradient:
+        "bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600",
     },
     dashboard: {
       headerBg: "bg-gradient-to-r from-brand-50 to-blue-50",
-      titleGradient: "bg-gradient-to-r from-brand-600 via-brand-500 to-blue-600",
+      titleGradient:
+        "bg-gradient-to-r from-brand-600 via-brand-500 to-blue-600",
     },
   };
 
@@ -103,8 +105,12 @@ export default function Modal({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className={`flex items-center justify-between px-6 py-4 border-b border-gray-200 ${currentVariant.headerBg} flex-shrink-0`}>
-              <h2 className={`text-xl sm:text-2xl font-bold ${currentVariant.titleGradient} bg-clip-text text-transparent`}>
+            <div
+              className={`flex items-center justify-between px-6 py-4 border-b border-gray-200 ${currentVariant.headerBg} flex-shrink-0`}
+            >
+              <h2
+                className={`text-xl sm:text-2xl font-bold ${currentVariant.titleGradient} bg-clip-text text-transparent`}
+              >
                 {title}
               </h2>
               {showCloseButton && (

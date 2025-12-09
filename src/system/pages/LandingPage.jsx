@@ -10,6 +10,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [activePlan, setActivePlan] = useState("monthly");
   const [showFeeModal, setShowFeeModal] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const features = [
     {
@@ -305,10 +306,14 @@ export default function LandingPage() {
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
               <div className="flex items-center gap-4">
-                <img src={eliteLogo} alt="Elite Logo" className="h-28 w-auto" />
+                <img
+                  src={eliteLogo}
+                  alt="Elite Logo"
+                  className="h-20 sm:h-28 w-auto"
+                />
               </div>
 
-              {/* Navigation Links */}
+              {/* Navigation Links - Desktop */}
               <nav className="hidden md:flex items-center gap-8">
                 <a
                   href="#features"
@@ -330,8 +335,8 @@ export default function LandingPage() {
                 </a>
               </nav>
 
-              {/* Right Actions */}
-              <div className="flex items-center gap-4">
+              {/* Right Actions - Desktop */}
+              <div className="hidden md:flex items-center gap-4">
                 <button
                   onClick={() => navigate("/admin/login")}
                   className="text-gray-600 hover:text-violet-600 font-medium transition-colors"
@@ -345,8 +350,101 @@ export default function LandingPage() {
                   Get Started
                 </button>
               </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 text-gray-600 hover:text-violet-600 transition-colors"
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? (
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
+
+          {/* Mobile Menu */}
+          <motion.div
+            initial={false}
+            animate={
+              mobileMenuOpen
+                ? { height: "auto", opacity: 1 }
+                : { height: 0, opacity: 0 }
+            }
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden overflow-hidden bg-white border-t border-gray-200"
+          >
+            <nav className="px-4 py-4 space-y-3">
+              <a
+                href="#features"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
+              >
+                Features
+              </a>
+              <a
+                href="#pricing"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
+              >
+                Pricing
+              </a>
+              <a
+                href="#testimonials"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
+              >
+                Testimonials
+              </a>
+              <div className="pt-3 space-y-2 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate("/admin/login");
+                  }}
+                  className="w-full text-left py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate("/signup");
+                  }}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all"
+                >
+                  Get Started
+                </button>
+              </div>
+            </nav>
+          </motion.div>
         </header>
 
         {/* Hero Section - Ultra Modern */}
