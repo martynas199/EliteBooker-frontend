@@ -763,6 +763,7 @@ export default function WorkingHoursCalendar() {
       <Modal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
+        variant="dashboard"
         title={
           selectedDate
             ? `Schedule - ${dayjs(selectedDate).format("dddd, MMMM D, YYYY")}`
@@ -865,6 +866,7 @@ export default function WorkingHoursCalendar() {
       <Modal
         open={editWeeklyModalOpen}
         onClose={() => setEditWeeklyModalOpen(false)}
+        variant="dashboard"
         title={
           editingDayOfWeek !== null
             ? `Edit ${

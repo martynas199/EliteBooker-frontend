@@ -9,6 +9,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../styles/calendar.css";
 import { useLanguage } from "../../shared/contexts/LanguageContext";
 import { t } from "../../locales/adminTranslations";
+import CreateServiceModal from "../components/CreateServiceModal";
+import CreateStaffModal from "../components/CreateStaffModal";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -25,6 +27,8 @@ export default function Dashboard() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [salonSlug, setSalonSlug] = useState(null);
+  const [showCreateServiceModal, setShowCreateServiceModal] = useState(false);
+  const [showCreateStaffModal, setShowCreateStaffModal] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -1532,9 +1536,15 @@ export default function Dashboard() {
           id="quick-actions-menu"
           className="hidden absolute bottom-24 right-0 bg-white rounded-3xl shadow-2xl border border-gray-100 py-3 min-w-[220px] backdrop-blur-xl ring-1 ring-gray-200/50"
         >
-          <a
-            href="/admin/services"
-            className="group flex items-center gap-3 px-5 py-3.5 hover:bg-gradient-to-r hover:from-brand-50 hover:to-brand-50/50 transition-all duration-200 text-gray-700 hover:text-brand-700 rounded-2xl mx-2"
+          <button
+            onClick={() => {
+              setShowCreateServiceModal(true);
+              // Close the quick actions menu
+              document
+                .getElementById("quick-actions-menu")
+                .classList.add("hidden");
+            }}
+            className="group flex items-center gap-3 px-5 py-3.5 hover:bg-gradient-to-r hover:from-brand-50 hover:to-brand-50/50 transition-all duration-200 text-gray-700 hover:text-brand-700 rounded-2xl mx-2 w-full text-left"
           >
             <div className="p-2 bg-brand-100 rounded-xl group-hover:bg-brand-500 group-hover:scale-110 transition-all">
               <svg
@@ -1552,10 +1562,16 @@ export default function Dashboard() {
               </svg>
             </div>
             <span className="font-semibold">Add Service</span>
-          </a>
-          <a
-            href="/admin/specialists"
-            className="group flex items-center gap-3 px-5 py-3.5 hover:bg-gradient-to-r hover:from-brand-50 hover:to-brand-50/50 transition-all duration-200 text-gray-700 hover:text-brand-700 rounded-2xl mx-2"
+          </button>
+          <button
+            onClick={() => {
+              setShowCreateStaffModal(true);
+              // Close the quick actions menu
+              document
+                .getElementById("quick-actions-menu")
+                .classList.add("hidden");
+            }}
+            className="group flex items-center gap-3 px-5 py-3.5 hover:bg-gradient-to-r hover:from-brand-50 hover:to-brand-50/50 transition-all duration-200 text-gray-700 hover:text-brand-700 rounded-2xl mx-2 w-full text-left"
           >
             <div className="p-2 bg-blue-100 rounded-xl group-hover:bg-blue-500 group-hover:scale-110 transition-all">
               <svg
@@ -1573,7 +1589,7 @@ export default function Dashboard() {
               </svg>
             </div>
             <span className="font-semibold">Add Staff</span>
-          </a>
+          </button>
           <a
             href="/admin/clients"
             className="group flex items-center gap-3 px-5 py-3.5 hover:bg-gradient-to-r hover:from-brand-50 hover:to-brand-50/50 transition-all duration-200 text-gray-700 hover:text-brand-700 rounded-2xl mx-2"
@@ -1597,6 +1613,26 @@ export default function Dashboard() {
           </a>
         </div>
       </div>
+
+      {/* Create Service Modal */}
+      <CreateServiceModal
+        isOpen={showCreateServiceModal}
+        onClose={() => setShowCreateServiceModal(false)}
+        onSuccess={() => {
+          // Optionally refresh data after service creation
+          fetchData();
+        }}
+      />
+
+      {/* Create Staff Modal */}
+      <CreateStaffModal
+        isOpen={showCreateStaffModal}
+        onClose={() => setShowCreateStaffModal(false)}
+        onSuccess={() => {
+          // Optionally refresh data after staff creation
+          fetchData();
+        }}
+      />
     </div>
   );
 }

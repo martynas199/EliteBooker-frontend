@@ -590,6 +590,7 @@ export default function Settings() {
       <Modal
         open={editWeeklyModalOpen}
         onClose={() => setEditWeeklyModalOpen(false)}
+        variant="dashboard"
         title={
           editingDayOfWeek !== null
             ? `Edit ${

@@ -280,12 +280,6 @@ export default function ServiceForm({
 
   return (
     <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-8">
-      <h2 className="text-2xl font-bold mb-6">
-        {isEditMode
-          ? t("editService", language)
-          : t("createNewService", language)}
-      </h2>
-
       {errorCount > 0 && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
           <div className="flex items-start gap-3">

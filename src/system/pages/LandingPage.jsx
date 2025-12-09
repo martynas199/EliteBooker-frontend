@@ -244,7 +244,7 @@ export default function LandingPage() {
         "Unlimited staff members",
         "Unlimited bookings",
         "Online payments",
-        "Email reminders",
+        "Email confirmations",
         "Mobile-friendly booking page",
         "Customer management",
         "Email support",
@@ -260,7 +260,6 @@ export default function LandingPage() {
       features: [
         "Everything in Basic",
         "No booking fees",
-        "Product sales & inventory",
         "Advanced analytics",
         "Automated reminders",
         "Custom branding",
@@ -280,12 +279,11 @@ export default function LandingPage() {
         "Multiple locations",
         "E-commerce store",
         "Advanced reporting",
-        "API access",
         "Dedicated account manager",
         "Training & onboarding",
         "24/7 phone support",
       ],
-      cta: "Contact Sales",
+      cta: "Start Free Trial",
       popular: false,
       learnMore: false,
     },
@@ -307,11 +305,7 @@ export default function LandingPage() {
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
               <div className="flex items-center gap-4">
-                <img
-                  src={eliteLogo}
-                  alt="Elite Logo"
-                  className="h-28 w-auto"
-                />
+                <img src={eliteLogo} alt="Elite Logo" className="h-28 w-auto" />
               </div>
 
               {/* Navigation Links */}

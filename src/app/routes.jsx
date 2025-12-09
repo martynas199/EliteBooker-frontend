@@ -43,6 +43,7 @@ import AdminLogin from "../admin/pages/Login";
 import ForgotPassword from "../admin/pages/ForgotPassword";
 import ResetPassword from "../admin/pages/ResetPassword";
 import TenantSignup from "../system/pages/SignupPage";
+import SignupSuccessPage from "../system/pages/SignupSuccessPage";
 import ScrollToTop from "../shared/components/ScrollToTop";
 import CurrencySelector from "../shared/components/CurrencySelector";
 import Footer from "../system/components/Footer";
@@ -439,6 +440,7 @@ export default function AppRoutes() {
       <Routes>
         {/* Tenant Signup (public) */}
         <Route path="/signup" element={<TenantSignup />} />
+        <Route path="/signup/success" element={<SignupSuccessPage />} />
 
         {/* OAuth Success Page (must be before CustomerLayout catch-all) */}
         <Route path="/auth/success" element={<AuthSuccessPage />} />

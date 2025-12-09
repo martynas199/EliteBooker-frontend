@@ -7,6 +7,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../shared/lib/apiClient";
+import { motion } from "framer-motion";
+import eliteLogo from "../../assets/elite.png";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
@@ -126,14 +128,10 @@ export default function TenantSignup() {
         // Token is stored in httpOnly cookie by backend
         console.log("[Signup] Login successful, cookie should be set");
 
-        // Wait a moment to ensure cookie is properly set before redirecting
-        // Then use window.location for full page reload
-        console.log("[Signup] Waiting for cookie to be set...");
+        // Redirect to success page
+        console.log("[Signup] Redirecting to success page...");
         setTimeout(() => {
-          console.log(
-            "[Signup] Redirecting to /admin with full page reload..."
-          );
-          window.location.href = "/admin";
+          window.location.href = "/signup/success";
         }, 500);
       }
     } catch (err) {
@@ -149,286 +147,471 @@ export default function TenantSignup() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(100,100,120,0.15),rgba(0,0,0,0))]" />
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50">
+      {/* Animated gradient orbs */}
+      <motion.div
+        animate={{
+          x: [0, 100, 0],
+          y: [0, -100, 0],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-violet-400/20 to-fuchsia-400/20 rounded-full blur-3xl"
+      />
+      <motion.div
+        animate={{
+          x: [0, -100, 0],
+          y: [0, 100, 0],
+          scale: [1.2, 1, 1.2],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-cyan-400/20 to-blue-400/20 rounded-full blur-3xl"
+      />
 
-      {/* Gradient orbs */}
-      <div className="absolute top-0 -left-4 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob" />
-      <div className="absolute top-0 -right-4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000" />
-      <div className="absolute -bottom-8 left-20 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000" />
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]" />
 
-      <div className="relative bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl max-w-2xl w-full p-6 sm:p-10">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Create Your Business Account
-          </h1>
-          <p className="text-gray-300">
-            Join our platform and start managing your business online
-          </p>
-          <div className="mt-4 flex items-center justify-center space-x-2">
-            <div
-              className={`h-2 w-16 rounded ${
-                step >= 1 ? "bg-brand-400" : "bg-white/20"
-              }`}
-            />
-            <div
-              className={`h-2 w-16 rounded ${
-                step >= 2 ? "bg-brand-400" : "bg-white/20"
-              }`}
-            />
-          </div>
-          <p className="text-sm text-gray-300 mt-2">Step {step} of 2</p>
-        </div>
+      <div className="relative min-h-screen flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-white rounded-3xl shadow-2xl border border-gray-200 max-w-2xl w-full p-8 sm:p-12"
+        >
+          {/* Header */}
+          <div className="text-center mb-10">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              className="flex justify-center mb-6"
+            >
+              <img src={eliteLogo} alt="Elite Booker" className="h-16 w-auto" />
+            </motion.div>
 
-        {/* Error message */}
-        {error && (
-          <div className="bg-red-500/10 backdrop-blur-sm border border-red-400/30 text-red-200 px-4 py-3 rounded-xl mb-6">
-            {error}
-          </div>
-        )}
+            <motion.h1
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-4xl font-bold bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600 bg-clip-text text-transparent mb-3"
+            >
+              Create Your Account
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-gray-600 text-lg"
+            >
+              Join hundreds of businesses transforming their booking experience
+            </motion.p>
 
-        <form onSubmit={handleSubmit}>
-          {/* Step 1: Business Information */}
-          {step === 1 && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-white mb-4">
-                Business Information
-              </h2>
-
-              <div>
-                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
-                  Business Name *
-                </label>
-                <input
-                  type="text"
-                  name="businessName"
-                  value={formData.businessName}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="e.g., Luxury Beauty Salon"
-                  required
-                />
-                <p className="text-sm text-gray-300 mt-1">
-                  This will be displayed to your customers
-                </p>
+            {/* Progress Steps */}
+            <div className="mt-8 flex items-center justify-center space-x-3">
+              <div className="flex items-center">
+                <div
+                  className={`h-10 w-10 rounded-full flex items-center justify-center font-semibold transition-all ${
+                    step >= 1
+                      ? "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg"
+                      : "bg-gray-200 text-gray-400"
+                  }`}
+                >
+                  1
+                </div>
+                <span
+                  className={`ml-2 text-sm font-medium ${
+                    step >= 1 ? "text-gray-900" : "text-gray-400"
+                  }`}
+                >
+                  Business
+                </span>
               </div>
+              <div
+                className={`h-1 w-16 rounded ${
+                  step >= 2
+                    ? "bg-gradient-to-r from-violet-600 to-fuchsia-600"
+                    : "bg-gray-200"
+                }`}
+              />
+              <div className="flex items-center">
+                <div
+                  className={`h-10 w-10 rounded-full flex items-center justify-center font-semibold transition-all ${
+                    step >= 2
+                      ? "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg"
+                      : "bg-gray-200 text-gray-400"
+                  }`}
+                >
+                  2
+                </div>
+                <span
+                  className={`ml-2 text-sm font-medium ${
+                    step >= 2 ? "text-gray-900" : "text-gray-400"
+                  }`}
+                >
+                  Account
+                </span>
+              </div>
+            </div>
+          </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Error message */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-start gap-3"
+            >
+              <svg
+                className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>{error}</span>
+            </motion.div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            {/* Step 1: Business Information */}
+            {step === 1 && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
+              >
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  Tell us about your business
+                </h2>
+
                 <div>
-                  <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
-                    Business Email *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Business Name *
                   </label>
                   <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    type="text"
+                    name="businessName"
+                    value={formData.businessName}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="info@yoursalon.com"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                    placeholder="e.g., Luxury Beauty Salon"
+                    required
+                  />
+                  <p className="text-sm text-gray-500 mt-1.5">
+                    This will be displayed to your customers
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Business Email *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                      placeholder="info@yoursalon.com"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                      placeholder="+44 1234 567890"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Street Address
+                  </label>
+                  <input
+                    type="text"
+                    name="street"
+                    value={formData.street}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                    placeholder="123 High Street"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                      placeholder="London"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Postal Code
+                    </label>
+                    <input
+                      type="text"
+                      name="postalCode"
+                      value={formData.postalCode}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                      placeholder="SW1A 1AA"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Country
+                    </label>
+                    <select
+                      name="country"
+                      value={formData.country}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                    >
+                      <option value="United Kingdom">United Kingdom</option>
+                      <option value="Ireland">Ireland</option>
+                      <option value="United States">United States</option>
+                    </select>
+                  </div>
+                </div>
+
+                <motion.button
+                  type="button"
+                  onClick={handleNext}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-semibold shadow-lg shadow-violet-500/50 hover:shadow-xl hover:shadow-violet-500/60 transition-all flex items-center justify-center gap-2"
+                >
+                  Continue
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </motion.button>
+              </motion.div>
+            )}
+
+            {/* Step 2: Admin Account */}
+            {step === 2 && (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
+              >
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  Create your admin account
+                </h2>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Your Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="adminName"
+                    value={formData.adminName}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                    placeholder="John Smith"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
-                    Phone Number
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Email Address *
                   </label>
                   <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
+                    type="email"
+                    name="adminEmail"
+                    value={formData.adminEmail}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="+44 1234 567890"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                    placeholder="john@yoursalon.com"
+                    required
                   />
+                  <p className="text-sm text-gray-500 mt-1.5">
+                    You'll use this to log in
+                  </p>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
-                  Street Address
-                </label>
-                <input
-                  type="text"
-                  name="street"
-                  value={formData.street}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="123 High Street"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
-                    City
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Password *
                   </label>
                   <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
+                    type="password"
+                    name="adminPassword"
+                    value={formData.adminPassword}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="London"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                    placeholder="Minimum 8 characters"
+                    required
+                    minLength={8}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
-                    Postal Code
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Confirm Password *
                   </label>
                   <input
-                    type="text"
-                    name="postalCode"
-                    value={formData.postalCode}
+                    type="password"
+                    name="adminPasswordConfirm"
+                    value={formData.adminPasswordConfirm}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="SW1A 1AA"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                    placeholder="Re-enter password"
+                    required
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
-                    Country
-                  </label>
-                  <select
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <div className="bg-gradient-to-br from-violet-50 to-fuchsia-50 border border-violet-200 rounded-2xl p-6">
+                  <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <span className="text-2xl">🎉</span>
+                    What happens next?
+                  </h3>
+                  <ul className="space-y-2.5 text-sm text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500 font-bold mt-0.5">✓</span>
+                      <span>It's always free - no credit card required</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500 font-bold mt-0.5">✓</span>
+                      <span>Full access to all booking features</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500 font-bold mt-0.5">✓</span>
+                      <span>Add your team and services instantly</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500 font-bold mt-0.5">✓</span>
+                      <span>Start accepting online bookings 24/7</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex gap-4">
+                  <motion.button
+                    type="button"
+                    onClick={handleBack}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 bg-gray-100 text-gray-700 py-4 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
                   >
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="Ireland">Ireland</option>
-                    <option value="United States">United States</option>
-                  </select>
+                    Back
+                  </motion.button>
+                  <motion.button
+                    type="submit"
+                    disabled={loading}
+                    whileHover={{ scale: loading ? 1 : 1.02 }}
+                    whileTap={{ scale: loading ? 1 : 0.98 }}
+                    className="flex-1 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-semibold shadow-lg shadow-violet-500/50 hover:shadow-xl hover:shadow-violet-500/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <svg
+                          className="animate-spin h-5 w-5"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
+                        </svg>
+                        Creating Account...
+                      </>
+                    ) : (
+                      <>
+                        Create Account
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                          />
+                        </svg>
+                      </>
+                    )}
+                  </motion.button>
                 </div>
-              </div>
+              </motion.div>
+            )}
+          </form>
 
-              <button
-                type="button"
-                onClick={handleNext}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-              >
-                Continue
-              </button>
-            </div>
-          )}
-
-          {/* Step 2: Admin Account */}
-          {step === 2 && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-white mb-4">
-                Create Admin Account
-              </h2>
-
-              <div>
-                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
-                  Your Name *
-                </label>
-                <input
-                  type="text"
-                  name="adminName"
-                  value={formData.adminName}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="John Smith"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  name="adminEmail"
-                  value={formData.adminEmail}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="john@yoursalon.com"
-                  required
-                />
-                <p className="text-sm text-gray-300 mt-1">
-                  You'll use this to log in
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
-                  Password *
-                </label>
-                <input
-                  type="password"
-                  name="adminPassword"
-                  value={formData.adminPassword}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Minimum 8 characters"
-                  required
-                  minLength={8}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-white drop-shadow-lg mb-2">
-                  Confirm Password *
-                </label>
-                <input
-                  type="password"
-                  name="adminPasswordConfirm"
-                  value={formData.adminPasswordConfirm}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Re-enter password"
-                  required
-                />
-              </div>
-
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h3 className="font-medium text-blue-900 mb-2">
-                  🎉 What happens next?
-                </h3>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li>✅ 14-day free trial (no credit card required)</li>
-                  <li>✅ Full access to all features</li>
-                  <li>✅ Add your team and services</li>
-                  <li>✅ Start accepting online bookings</li>
-                </ul>
-              </div>
-
-              <div className="flex gap-4">
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
-                >
-                  {loading ? "Creating Account..." : "Create Account"}
-                </button>
-              </div>
-            </div>
-          )}
-        </form>
-
-        {/* Footer */}
-        <div className="mt-8 text-center text-sm text-gray-300">
-          Already have an account?{" "}
-          <a
-            href="/admin/login"
-            className="text-brand-400 hover:text-brand-300 underline transition-colors"
+          {/* Footer */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="mt-8 text-center text-sm text-gray-600"
           >
-            Log in
-          </a>
-        </div>
+            Already have an account?{" "}
+            <a
+              href="/admin/login"
+              className="font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+            >
+              Log in
+            </a>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );

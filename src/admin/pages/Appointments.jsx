@@ -1775,7 +1775,7 @@ function CancelModal({
   const refund = (Number(preview?.refundAmount || 0) / 100).toFixed(2);
   const status = String(preview?.status || "").replaceAll("_", " ");
   return (
-    <Modal open={open} onClose={onClose} title="Cancel appointment">
+    <Modal open={open} onClose={onClose} title="Cancel appointment" variant="dashboard">
       {preview ? (
         <>
           <div className="text-sm text-gray-700">
@@ -1838,7 +1838,7 @@ function EditModal({
   const variants = selectedService?.variants || [];
 
   return (
-    <Modal open={open} onClose={onClose} title="Edit Appointment">
+    <Modal open={open} onClose={onClose} title="Edit Appointment" variant="dashboard">
       <div className="space-y-4">
         {/* Client Information */}
         <div className="space-y-3">
@@ -2184,7 +2184,7 @@ function CreateModal({
   };
 
   return (
-    <Modal open={open} onClose={onClose} title="Create Appointment">
+    <Modal open={open} onClose={onClose} title="Create Appointment" variant="dashboard">
       <div className="space-y-6">
         {/* Client Information */}
         <div className="space-y-3 sm:space-y-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-100">
