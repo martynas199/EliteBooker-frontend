@@ -250,7 +250,7 @@ export default function HeroSections() {
             {/* Center Section - Image */}
             <div className="mb-6 pb-6 border-b">
               <h3 className="text-lg font-semibold mb-4 text-gray-900">
-                Center Section - Beautician Image
+                Center Section - Specialist Image
               </h3>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">

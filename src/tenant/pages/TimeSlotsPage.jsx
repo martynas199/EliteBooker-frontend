@@ -18,7 +18,7 @@ export default function TimeSlots() {
     useSelector((s) => s.booking);
   const serviceId = bookingService?.serviceId;
   const variantName = bookingService?.variantName;
-  const beauticianId = bookingSpecialist?.beauticianId; // Backend field name preserved
+  const specialistId = bookingSpecialist?.specialistId; // Backend field name preserved
   const any = bookingSpecialist?.any;
 
   const [specialist, setSpecialist] = useState(null);
@@ -31,7 +31,7 @@ export default function TimeSlots() {
 
   // Restore booking state from URL parameters if Redux state is empty
   useEffect(() => {
-    if (!serviceId || !beauticianId) {
+    if (!serviceId || !specialistId) {
       const serviceParam = searchParams.get("service");
       const variantParam = searchParams.get("variant");
       const specialistParam = searchParams.get("specialist"); // URL param name unchanged
@@ -68,7 +68,7 @@ export default function TimeSlots() {
           .then((res) => {
             dispatch(
               setSpecialistInState({
-                beauticianId: res.data._id,
+                specialistId: res.data._id,
                 any: false,
                 inSalonPayment: res.data.inSalonPayment || false,
               })
@@ -77,7 +77,7 @@ export default function TimeSlots() {
           .catch((err) => console.error("Failed to restore specialist:", err));
       }
     }
-  }, [serviceId, beauticianId, searchParams, dispatch]);
+  }, [serviceId, specialistId, searchParams, dispatch]);
 
   // Fetch service and specialist details
   useEffect(() => {
@@ -106,11 +106,11 @@ export default function TimeSlots() {
         // Determine which specialist to use
         // Note: primaryBeauticianId might be populated (object) or just an ID (string)
         const primaryBeautician = serviceResponse.data.primaryBeauticianId;
-        const legacyBeautician = serviceResponse.data.beauticianId;
+        const legacyBeautician = serviceResponse.data.specialistId;
         const legacyBeauticianArray = serviceResponse.data.beauticianIds?.[0];
 
         const targetBeauticianId =
-          beauticianId ||
+          specialistId ||
           (typeof primaryBeautician === "object"
             ? primaryBeautician._id
             : primaryBeautician) ||
@@ -140,7 +140,7 @@ export default function TimeSlots() {
         // Store specialist ID AND inSalonPayment flag in Redux state for checkout
         dispatch(
           setSpecialistInState({
-            beauticianId: specialistData._id,
+            specialistId: specialistData._id,
             any: false,
             inSalonPayment: specialistData.inSalonPayment || false,
           })
@@ -208,7 +208,7 @@ export default function TimeSlots() {
       isCancelled = true;
       abortController.abort();
     };
-  }, [serviceId, beauticianId]);
+  }, [serviceId, specialistId]);
 
   const handleSlotSelect = (slot) => {
     // Store the selected slot's start time
@@ -382,7 +382,7 @@ export default function TimeSlots() {
             </div>
           ) : specialist ? (
             <DateTimePicker
-              beauticianId={specialist._id}
+              specialistId={specialist._id}
               serviceId={serviceId}
               variantName={variantName}
               salonTz="Europe/London"

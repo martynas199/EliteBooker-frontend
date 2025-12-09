@@ -8,9 +8,9 @@ export const StripeConnectAPI = {
   /**
    * Create onboarding link for a specialist
    */
-  createOnboardingLink: async (beauticianId, email) => {
+  createOnboardingLink: async (specialistId, email) => {
     const response = await api.post("/connect/onboard", {
-      beauticianId,
+      specialistId,
       email,
     });
     return response.data;
@@ -19,37 +19,37 @@ export const StripeConnectAPI = {
   /**
    * Get Stripe Connect account status for a specialist
    */
-  getAccountStatus: async (beauticianId) => {
-    const response = await api.get(`/connect/status/${beauticianId}`);
+  getAccountStatus: async (specialistId) => {
+    const response = await api.get(`/connect/status/${specialistId}`);
     return response.data;
   },
 
   /**
    * Generate Stripe Express dashboard login link
    */
-  getDashboardLink: async (beauticianId) => {
-    const response = await api.post(`/connect/dashboard-link/${beauticianId}`);
+  getDashboardLink: async (specialistId) => {
+    const response = await api.post(`/connect/dashboard-link/${specialistId}`);
     return response.data;
   },
 
   /**
    * Disconnect Stripe account (admin only)
    */
-  disconnectAccount: async (beauticianId) => {
-    const response = await api.delete(`/connect/disconnect/${beauticianId}`);
+  disconnectAccount: async (specialistId) => {
+    const response = await api.delete(`/connect/disconnect/${specialistId}`);
     return response.data;
   },
 
   /**
    * Get specialist earnings
    */
-  getEarnings: async (beauticianId, startDate = null, endDate = null) => {
+  getEarnings: async (specialistId, startDate = null, endDate = null) => {
     const params = new URLSearchParams();
     if (startDate) params.append("startDate", startDate);
     if (endDate) params.append("endDate", endDate);
 
     const response = await api.get(
-      `/reports/specialist-earnings/${beauticianId}?${params}`
+      `/reports/specialist-earnings/${specialistId}?${params}`
     );
     return response.data;
   },
@@ -60,12 +60,12 @@ export const StripeConnectAPI = {
   getPlatformRevenue: async (
     startDate = null,
     endDate = null,
-    beauticianId = null
+    specialistId = null
   ) => {
     const params = new URLSearchParams();
     if (startDate) params.append("startDate", startDate);
     if (endDate) params.append("endDate", endDate);
-    if (beauticianId) params.append("beauticianId", beauticianId);
+    if (specialistId) params.append("specialistId", specialistId);
 
     const response = await api.get(`/reports/revenue?${params}`);
     return response.data;

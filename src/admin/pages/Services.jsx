@@ -45,8 +45,8 @@ export default function Services() {
     [admin?.role]
   );
   const isBeautician = useMemo(
-    () => admin?.role === "admin" && admin?.beauticianId,
-    [admin?.role, admin?.beauticianId]
+    () => admin?.role === "admin" && admin?.specialistId,
+    [admin?.role, admin?.specialistId]
   );
 
   // Derived state

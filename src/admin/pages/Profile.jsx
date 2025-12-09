@@ -46,8 +46,8 @@ export default function Profile() {
       setName(admin.name || "");
       setEmail(admin.email || "");
 
-      // Fetch specialist data if admin has beauticianId (legacy field name)
-      if (admin.beauticianId) {
+      // Fetch specialist data if admin has specialistId (legacy field name)
+      if (admin.specialistId) {
         fetchSpecialistData();
       }
     }
@@ -55,7 +55,7 @@ export default function Profile() {
 
   const fetchSpecialistData = async () => {
     try {
-      const response = await api.get(`/specialists/${admin.beauticianId}`);
+      const response = await api.get(`/specialists/${admin.specialistId}`);
       setSpecialist(response.data);
       setWorkingHours(response.data.workingHours || []);
       setInSalonPayment(response.data.inSalonPayment || false);
@@ -159,7 +159,7 @@ export default function Profile() {
       toast.success("Working hours updated successfully");
 
       // Refresh specialist data
-      if (admin.beauticianId) {
+      if (admin.specialistId) {
         await fetchSpecialistData();
       }
     } catch (err) {
@@ -176,7 +176,7 @@ export default function Profile() {
       setSavingPaymentSettings(true);
       const loadingToast = toast.loading("Saving payment settings...");
 
-      await api.patch(`/specialists/${admin.beauticianId}`, {
+      await api.patch(`/specialists/${admin.specialistId}`, {
         inSalonPayment,
       });
 
@@ -184,7 +184,7 @@ export default function Profile() {
       toast.success("Payment settings updated successfully");
 
       // Refresh specialist data
-      if (admin.beauticianId) {
+      if (admin.specialistId) {
         await fetchSpecialistData();
       }
     } catch (err) {

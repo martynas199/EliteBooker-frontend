@@ -45,8 +45,8 @@ This document details all SEO improvements made based on the SEO audit feedback.
 
 - **Booking Page**:
 
-  - ❌ "Book Appointment - Select Your Beautician"
-  - ✅ "Book Appointment Wisbech | Expert Beauticians - Noble Elegance"
+  - ❌ "Book Appointment - Select Your Specialist"
+  - ✅ "Book Appointment Wisbech | Expert Specialists - Noble Elegance"
 
 - **Contact Page**:
   - ❌ "Contact Us - Location, Hours & Directions"

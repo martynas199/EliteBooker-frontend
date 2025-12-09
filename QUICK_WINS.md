@@ -28,7 +28,7 @@ export function useDebounce(value, delay = 500) {
 }
 ```
 
-### Apply to Admin Beautician Link Page
+### Apply to Admin Specialist Link Page
 
 **File:** `src/admin/pages/AdminBeauticianLink.jsx` (MODIFY)
 
@@ -147,7 +147,7 @@ useEffect(() => {
     isCancelled = true;
     abortController.abort();
   };
-}, [serviceId, beauticianId]);
+}, [serviceId, specialistId]);
 ```
 
 **Impact:**
@@ -312,11 +312,11 @@ const fetchData = useCallback(async () => {
     let appointments = appointmentsRes.data || [];
     const beauticiansData = beauticiansRes.data || [];
 
-    if (!isSuperAdmin && admin?.beauticianId) {
+    if (!isSuperAdmin && admin?.specialistId) {
       appointments = appointments.filter(
-        (apt) => apt.beauticianId?._id === admin.beauticianId
+        (apt) => apt.specialistId?._id === admin.specialistId
       );
-      setSelectedBeautician(admin.beauticianId);
+      setSelectedBeautician(admin.specialistId);
     }
 
     setAllAppointments(appointments);
@@ -327,7 +327,7 @@ const fetchData = useCallback(async () => {
   } finally {
     setLoading(false);
   }
-}, [admin?.beauticianId, isSuperAdmin]); // Only recreate if these change
+}, [admin?.specialistId, isSuperAdmin]); // Only recreate if these change
 
 useEffect(() => {
   fetchData();
@@ -448,7 +448,7 @@ const filteredAppointments = useMemo(() => {
   // Filter by specialist
   if (isSuperAdmin && selectedSpecialist !== "all") {
     filtered = filtered.filter(
-      (apt) => apt.beauticianId?._id === selectedSpecialist
+      (apt) => apt.specialistId?._id === selectedSpecialist
     );
   }
 

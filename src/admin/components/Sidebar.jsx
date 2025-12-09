@@ -83,8 +83,8 @@ const navigationConfig = [
       { label: "Stripe Connect", path: "/admin/stripe-connect" },
       { label: "Salon Settings", path: "/admin/tenant-settings" },
       { label: "General Settings", path: "/admin/settings" },
+      { label: "Features & Subscriptions", path: "/admin/platform-features" },
       { label: "Admin Links", path: "/admin/admin-links" },
-      { label: "Platform Features", path: "/admin/features" },
     ],
   },
 ];

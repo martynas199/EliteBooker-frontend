@@ -154,13 +154,13 @@ export const useBeauticians = () => {
 /**
  * Hook to fetch single specialist by ID - PERFORMANCE OPTIMIZED
  */
-export const useBeautician = (beauticianId, options = {}) => {
+export const useBeautician = (specialistId, options = {}) => {
   return useQuery({
-    queryKey: queryKeys.specialists.byId(beauticianId),
+    queryKey: queryKeys.specialists.byId(specialistId),
     queryFn: async () => {
-      if (!beauticianId) throw new Error("Beautician ID is required");
+      if (!specialistId) throw new Error("Specialist ID is required");
 
-      const response = await api.get(`/specialists/${beauticianId}`);
+      const response = await api.get(`/specialists/${specialistId}`);
 
       // Handle different response formats (same as single service)
       if (
@@ -178,7 +178,7 @@ export const useBeautician = (beauticianId, options = {}) => {
 
       throw new Error("Invalid specialist response format");
     },
-    enabled: !!beauticianId && options.enabled !== false,
+    enabled: !!specialistId && options.enabled !== false,
     staleTime: 10 * 60 * 1000,
     gcTime: 20 * 60 * 1000,
     retry: 1,
@@ -189,16 +189,16 @@ export const useBeautician = (beauticianId, options = {}) => {
 /**
  * Hook to fetch specialist availability - OPTIMIZED
  */
-export const useBeauticianAvailability = (beauticianId, date, options = {}) => {
+export const useBeauticianAvailability = (specialistId, date, options = {}) => {
   return useQuery({
-    queryKey: queryKeys.specialists.availability(beauticianId, date),
+    queryKey: queryKeys.specialists.availability(specialistId, date),
     queryFn: async () => {
-      if (!beauticianId || !date) {
-        throw new Error("Beautician ID and date are required");
+      if (!specialistId || !date) {
+        throw new Error("Specialist ID and date are required");
       }
 
       const response = await api.get(
-        `/specialists/${beauticianId}/availability`,
+        `/specialists/${specialistId}/availability`,
         {
           params: { date },
         }
@@ -212,7 +212,7 @@ export const useBeauticianAvailability = (beauticianId, date, options = {}) => {
 
       return response.data.data;
     },
-    enabled: !!beauticianId && !!date && options.enabled !== false,
+    enabled: !!specialistId && !!date && options.enabled !== false,
     staleTime: 1 * 60 * 1000, // Availability changes more frequently
     gcTime: 3 * 60 * 1000,
     retry: 1,
@@ -471,8 +471,8 @@ export const useDeleteBeautician = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (beauticianId) => {
-      const response = await api.delete(`/specialists/${beauticianId}`);
+    mutationFn: async (specialistId) => {
+      const response = await api.delete(`/specialists/${specialistId}`);
 
       // Delete returns { ok: true, message: "..." }
       if (response.data?.ok || response.data?.success) {

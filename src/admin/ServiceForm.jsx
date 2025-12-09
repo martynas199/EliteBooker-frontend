@@ -98,15 +98,15 @@ export default function ServiceForm({
                 },
               ],
       });
-    } else if (!isSuperAdmin && admin?.beauticianId) {
+    } else if (!isSuperAdmin && admin?.specialistId) {
       // For non-super admins creating a new service, pre-select their specialist ID
       console.log(
         "Auto-filling specialist for non-super admin:",
-        admin.beauticianId
+        admin.specialistId
       );
       setFormData((prev) => ({
         ...prev,
-        primaryBeauticianId: String(admin.beauticianId),
+        primaryBeauticianId: String(admin.specialistId),
       }));
     }
   }, [service, isSuperAdmin, admin]);
@@ -115,7 +115,7 @@ export default function ServiceForm({
   useEffect(() => {
     console.log("ServiceForm - Admin object:", admin);
     console.log("ServiceForm - isSuperAdmin:", isSuperAdmin);
-    console.log("ServiceForm - Beauticians available:", specialists.length);
+    console.log("ServiceForm - Specialists available:", specialists.length);
   }, [admin, isSuperAdmin, specialists]);
 
   const handleChange = (field, value) => {
@@ -377,7 +377,7 @@ export default function ServiceForm({
             />
           </FormField>
 
-          {/* Primary Beautician */}
+          {/* Primary Specialist */}
           <FormField
             label={t("primaryBeautician", language)}
             error={errors.primaryBeauticianId}
@@ -406,14 +406,14 @@ export default function ServiceForm({
                 </option>
               ))}
             </select>
-            {!isSuperAdmin && !admin?.beauticianId && (
+            {!isSuperAdmin && !admin?.specialistId && (
               <p className="text-sm text-red-600 mt-1 font-medium">
                 ⚠️ Your admin account is not linked to a specialist. Please
                 contact your administrator to link your account before creating
                 services.
               </p>
             )}
-            {!isSuperAdmin && admin?.beauticianId && (
+            {!isSuperAdmin && admin?.specialistId && (
               <p className="text-sm text-gray-500 mt-1">
                 {t("youCanOnlyCreateForYourself", language)}
               </p>

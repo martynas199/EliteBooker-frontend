@@ -1,4 +1,4 @@
-# Beautician Selection Booking Flow
+# Specialist Selection Booking Flow
 
 ## Overview
 
@@ -17,15 +17,15 @@ New booking flow where customers first select a specialist, then see only the se
 - Smooth animations with StaggerContainer
 - Back navigation between steps
 
-### Step 1: Select a Beautician
+### Step 1: Select a Specialist
 
 **Display**:
 
-- Title: "Select a Beautician"
+- Title: "Select a Specialist"
 - Subtitle: "Choose your preferred beauty professional"
 - Grid of specialist cards (3 columns on desktop, 2 on tablet, 1 on mobile)
 
-**Beautician Card Shows**:
+**Specialist Card Shows**:
 
 - Profile image (with fallback placeholder)
 - Name
@@ -42,7 +42,7 @@ New booking flow where customers first select a specialist, then see only the se
 
 - Back button to return to specialist selection
 - Selected specialist's profile picture and name
-- Title: "Services by [Beautician Name]"
+- Title: "Services by [Specialist Name]"
 - Grid of service cards
 
 **Service Card Shows**:
@@ -81,9 +81,9 @@ New booking flow where customers first select a specialist, then see only the se
 
 ### Data Fetching
 
-1. **Beauticians**: Fetches from `/api/specialists`, filters active only
+1. **Specialists**: Fetches from `/api/specialists`, filters active only
 2. **Services**: Filters services where:
-   - `service.beauticianId === specialist._id` OR
+   - `service.specialistId === specialist._id` OR
    - `service.beauticianIds.includes(specialist._id)`
 
 ### Redux State Management
@@ -101,7 +101,7 @@ dispatch(
 
 dispatch(
   setBeautician({
-    beauticianId: specialist._id,
+    specialistId: specialist._id,
     any: false,
   })
 );
@@ -144,7 +144,7 @@ dispatch(
 
 ## API Requirements
 
-### Beauticians Endpoint
+### Specialists Endpoint
 
 **GET** `/api/specialists`
 
@@ -156,7 +156,7 @@ dispatch(
 **GET** `/api/services`
 
 - Returns array of service objects
-- Must include: `_id`, `name`, `beauticianId`, `beauticianIds`, `price`, `duration`, `image`, `description`, `variants`
+- Must include: `_id`, `name`, `specialistId`, `beauticianIds`, `price`, `duration`, `image`, `description`, `variants`
 
 ## Future Enhancements
 
@@ -166,5 +166,5 @@ Possible additions:
 - [ ] Show specialist rating/reviews
 - [ ] Display specialist availability on cards
 - [ ] Add specialist schedule preview
-- [ ] Allow "Any Beautician" option
+- [ ] Allow "Any Specialist" option
 - [ ] Show number of services per specialist

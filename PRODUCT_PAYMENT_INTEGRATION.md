@@ -174,7 +174,7 @@ Key endpoints:
 
 ## Stripe Connect Payment Distribution
 
-### Single-Beautician Orders
+### Single-Specialist Orders
 
 ```javascript
 // Uses destination charges
@@ -187,11 +187,11 @@ payment_intent_data: {
 }
 ```
 
-- Beautician receives payment directly
-- Beautician pays Stripe fees
+- Specialist receives payment directly
+- Specialist pays Stripe fees
 - Platform takes no commission on products
 
-### Multi-Beautician Orders
+### Multi-Specialist Orders
 
 ```javascript
 // Platform receives payment, then transfers
@@ -280,7 +280,7 @@ stripeAmount = Math.round(gbpAmount * 100);
 - [ ] Redirected to order details
 - [ ] Order status is "processing"
 - [ ] Stock reduced correctly
-- [ ] Beautician earnings updated (if applicable)
+- [ ] Specialist earnings updated (if applicable)
 - [ ] Try canceling payment on Stripe
 - [ ] Redirected to cancel page
 - [ ] Cart still has items
@@ -374,22 +374,22 @@ Cart → Checkout Form → Stripe Payment → Payment Fails → Error Screen →
 
 ## Admin Product Management
 
-### Assigning Products to Beauticians
+### Assigning Products to Specialists
 
 When creating or editing a product in the admin panel (`/admin/products`), you can assign ownership:
 
 1. **Product Owner Field**: Select a specialist or leave as "Platform"
-2. **Beautician List**: Shows all active specialists
+2. **Specialist List**: Shows all active specialists
 3. **Stripe Status Indicator**: ✓ indicates specialist is connected to Stripe
 4. **Visual Tags**:
-   - 💰 "Beautician Product" - Owned by specific specialist
+   - 💰 "Specialist Product" - Owned by specific specialist
    - 🏢 "Platform Product" - Owned by platform
    - Owner name displayed below product title
 
 **Important Notes**:
 
 - Only specialists with `stripeStatus: "connected"` can receive payments
-- Beauticians without Stripe accounts will still appear but show "(Not connected to Stripe)"
+- Specialists without Stripe accounts will still appear but show "(Not connected to Stripe)"
 - Platform products (no specialist assigned) go 100% to platform account
 - You can change product ownership at any time
 
@@ -436,7 +436,7 @@ Possible improvements:
 - Check order status is "paid"
 - Review stock update logic in backend
 
-### Beautician not receiving earnings
+### Specialist not receiving earnings
 
 - Verify specialist.stripeStatus === "connected"
 - Check Stripe Connect account status

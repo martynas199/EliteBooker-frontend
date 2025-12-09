@@ -116,13 +116,13 @@ describe("DateTimePicker - Slot Validation", () => {
     const validSlot = {
       startISO: "2025-10-14T09:00:00Z",
       endISO: "2025-10-14T10:00:00Z",
-      beauticianId: "507f1f77bcf86cd799439011",
+      specialistId: "507f1f77bcf86cd799439011",
     };
 
     const invalidSlot = {
       startISO: "invalid-date",
       endISO: "2025-10-14T10:00:00Z",
-      beauticianId: "507f1f77bcf86cd799439011",
+      specialistId: "507f1f77bcf86cd799439011",
     };
 
     const start1 = new Date(validSlot.startISO);

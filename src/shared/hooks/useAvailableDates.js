@@ -2,29 +2,29 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { api } from "../lib/apiClient";
 
 // Cache for fully booked dates
-// Key format: "beauticianId:YYYY-MM"
+// Key format: "specialistId:YYYY-MM"
 const cache = new Map();
 const CACHE_TTL = 60000; // 60 seconds
 
 /**
  * useAvailableDates - Fetch and cache fully booked dates for a specialist/month
  *
- * @param {string} beauticianId - Beautician ID
+ * @param {string} specialistId - Specialist ID
  * @param {number} year - Year (e.g., 2025)
  * @param {number} month - Month (1-12)
  * @returns {object} { fullyBooked: string[], isLoading: boolean, error: string|null, refetch: function }
  */
-export function useAvailableDates(beauticianId, year, month) {
+export function useAvailableDates(specialistId, year, month) {
   const [fullyBooked, setFullyBooked] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const abortControllerRef = useRef(null);
   const debounceTimerRef = useRef(null);
 
-  const cacheKey = `${beauticianId}:${year}-${String(month).padStart(2, "0")}`;
+  const cacheKey = `${specialistId}:${year}-${String(month).padStart(2, "0")}`;
 
   const fetchFullyBooked = useCallback(async () => {
-    if (!beauticianId || !year || !month) {
+    if (!specialistId || !year || !month) {
       setFullyBooked([]);
       setIsLoading(false);
       return;
@@ -51,7 +51,7 @@ export function useAvailableDates(beauticianId, year, month) {
     try {
       const response = await api.get("/slots/fully-booked", {
         params: {
-          beauticianId,
+          specialistId,
           year,
           month,
         },
@@ -61,7 +61,7 @@ export function useAvailableDates(beauticianId, year, month) {
       const dates = response.data.fullyBooked || [];
 
       console.log(
-        `[useAvailableDates] Fully booked response for ${beauticianId} (${year}-${month}):`,
+        `[useAvailableDates] Fully booked response for ${specialistId} (${year}-${month}):`,
         dates
       );
 
@@ -90,7 +90,7 @@ export function useAvailableDates(beauticianId, year, month) {
       setIsLoading(false);
       abortControllerRef.current = null;
     }
-  }, [beauticianId, year, month, cacheKey]);
+  }, [specialistId, year, month, cacheKey]);
 
   // Debounced fetch on month change
   useEffect(() => {
@@ -139,9 +139,9 @@ export function clearAvailableDatesCache() {
 /**
  * Clear cache for specific specialist
  */
-export function clearBeauticianCache(beauticianId) {
+export function clearBeauticianCache(specialistId) {
   for (const key of cache.keys()) {
-    if (key.startsWith(`${beauticianId}:`)) {
+    if (key.startsWith(`${specialistId}:`)) {
       cache.delete(key);
     }
   }

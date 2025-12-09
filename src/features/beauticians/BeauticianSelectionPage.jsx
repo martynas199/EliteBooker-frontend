@@ -82,7 +82,7 @@ export default function BeauticianSelectionPage() {
         if (primaryId === specialist._id) return true;
 
         // Check legacy single specialist field
-        const legacyId = getId(service.beauticianId);
+        const legacyId = getId(service.specialistId);
         if (legacyId === specialist._id) return true;
 
         // Check additional specialists array
@@ -152,7 +152,7 @@ export default function BeauticianSelectionPage() {
 
     dispatch(
       setBeautician({
-        beauticianId: selectedSpecialist._id,
+        specialistId: selectedSpecialist._id,
         any: false,
         inSalonPayment: selectedSpecialist.inSalonPayment || false,
       })
@@ -195,7 +195,7 @@ export default function BeauticianSelectionPage() {
     <PageTransition className="min-h-screen bg-gray-50 py-8 overflow-x-hidden">
       {/* SEO Meta Tags */}
       <SEOHead
-        title="Book Appointment Wisbech | Expert Beauticians - Noble Elegance"
+        title="Book Appointment Wisbech | Expert Specialists - Noble Elegance"
         description="Book your beauty appointment in Wisbech. Expert specialists specializing in permanent makeup, brows, lashes & treatments. Online booking available 24/7!"
         keywords="book beauty appointment Wisbech, beauty booking Cambridgeshire, permanent makeup appointment, book specialist Wisbech, beauty salon booking March, online booking beauty salon, King's Lynn beauty appointments"
         schema={breadcrumbSchema}
@@ -203,7 +203,7 @@ export default function BeauticianSelectionPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
         {!selectedSpecialist ? (
-          // Step 1: Select a Beautician
+          // Step 1: Select a Specialist
           <>
             {/* Hero Section */}
             <div className="relative bg-gradient-to-br from-brand-50 via-white to-brand-50 rounded-3xl overflow-hidden mb-12 shadow-lg border border-brand-100">
@@ -247,7 +247,7 @@ export default function BeauticianSelectionPage() {
                           src={specialist.image.url}
                           alt={`${
                             specialist.name
-                          } - Expert Beautician specializing in ${
+                          } - Expert Specialist specializing in ${
                             specialist.specialties?.slice(0, 2).join(", ") ||
                             "beauty treatments"
                           }`}
@@ -361,10 +361,10 @@ export default function BeauticianSelectionPage() {
               Back to Specialists
             </button>
 
-            {/* Beautician Header Card */}
+            {/* Specialist Header Card */}
             <Card className="mb-10 overflow-hidden bg-gradient-to-br from-brand-50 via-white to-brand-50 border-2 border-brand-100">
               <div className="flex items-start gap-6 p-6">
-                {/* Selected Beautician Image */}
+                {/* Selected Specialist Image */}
                 <div className="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-brand-200 to-brand-300 shadow-lg">
                   {selectedSpecialist.image?.url ? (
                     <img

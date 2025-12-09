@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { StripeConnectAPI } from "./connect.api";
 import Button from "../../../shared/components/ui/Button";
 
-export default function StripeConnectSettings({ beauticianId, email }) {
+export default function StripeConnectSettings({ specialistId, email }) {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,13 +11,13 @@ export default function StripeConnectSettings({ beauticianId, email }) {
 
   useEffect(() => {
     loadStatus();
-  }, [beauticianId]);
+  }, [specialistId]);
 
   const loadStatus = async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await StripeConnectAPI.getAccountStatus(beauticianId);
+      const data = await StripeConnectAPI.getAccountStatus(specialistId);
       console.log("[StripeConnect] Status response:", data);
       console.log("[StripeConnect] Connected:", data.connected);
       console.log("[StripeConnect] Status:", data.status);
@@ -36,7 +36,7 @@ export default function StripeConnectSettings({ beauticianId, email }) {
     setError(null);
     try {
       const { url } = await StripeConnectAPI.createOnboardingLink(
-        beauticianId,
+        specialistId,
         email
       );
       // Redirect to Stripe onboarding
@@ -50,7 +50,7 @@ export default function StripeConnectSettings({ beauticianId, email }) {
   const handleViewDashboard = async () => {
     setError(null);
     try {
-      const { url } = await StripeConnectAPI.getDashboardLink(beauticianId);
+      const { url } = await StripeConnectAPI.getDashboardLink(specialistId);
       window.open(url, "_blank");
     } catch (err) {
       console.error("Failed to get dashboard link:", err);
@@ -61,7 +61,7 @@ export default function StripeConnectSettings({ beauticianId, email }) {
   const handleViewEarnings = async () => {
     setShowEarnings(true);
     try {
-      const data = await StripeConnectAPI.getEarnings(beauticianId);
+      const data = await StripeConnectAPI.getEarnings(specialistId);
       setEarnings(data);
     } catch (err) {
       console.error("Failed to load earnings:", err);
@@ -80,7 +80,7 @@ export default function StripeConnectSettings({ beauticianId, email }) {
 
     setError(null);
     try {
-      await StripeConnectAPI.disconnectAccount(beauticianId);
+      await StripeConnectAPI.disconnectAccount(specialistId);
       // Reload status to show disconnected state
       await loadStatus();
     } catch (err) {

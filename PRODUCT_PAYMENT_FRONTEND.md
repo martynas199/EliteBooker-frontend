@@ -14,7 +14,7 @@ Updated frontend to support **single-specialist product checkouts** with clear u
 const specialists = new Set(
   items
     .map(
-      (item) => item.product?.beauticianId?._id || item.product?.beauticianId
+      (item) => item.product?.specialistId?._id || item.product?.specialistId
     )
     .filter(Boolean)
 );
@@ -58,7 +58,7 @@ const hasMultipleBeauticians = specialists.size > 1;
 2. Cart sidebar shows normal checkout button
 3. User proceeds to checkout
 4. Payment goes directly to specialist
-5. Beautician pays all Stripe fees
+5. Specialist pays all Stripe fees
 6. Platform takes no fees
 
 ### Multi-Seller Path (Blocked)
@@ -78,14 +78,14 @@ const hasMultipleBeauticians = specialists.size > 1;
 
 ## Technical Implementation
 
-### Cart Beautician Detection
+### Cart Specialist Detection
 
 ```javascript
 // Extract unique specialist IDs from cart items
 const specialists = new Set(
   items
     .map(
-      (item) => item.product?.beauticianId?._id || item.product?.beauticianId
+      (item) => item.product?.specialistId?._id || item.product?.specialistId
     )
     .filter(Boolean) // Remove null/undefined
 );
@@ -194,7 +194,7 @@ try {
 - ✅ Better conversion rates (clear user guidance)
 - ✅ Matches backend constraints perfectly
 
-### For Beauticians
+### For Specialists
 
 - ✅ Direct payments work reliably
 - ✅ No payment splitting issues
@@ -209,7 +209,7 @@ try {
 
    ```javascript
    // Group items by specialist
-   const cartsByBeautician = groupBy(items, "product.beauticianId");
+   const cartsByBeautician = groupBy(items, "product.specialistId");
 
    // Show separate carts in UI
    Object.entries(cartsByBeautician).map(([id, items]) => (
@@ -227,7 +227,7 @@ try {
    // Allow filtering products by seller
    const [selectedSeller, setSelectedSeller] = useState(null);
    const filteredProducts = products.filter(
-     (p) => !selectedSeller || p.beauticianId === selectedSeller
+     (p) => !selectedSeller || p.specialistId === selectedSeller
    );
    ```
 
@@ -236,7 +236,7 @@ try {
    ```javascript
    // Warn before adding from different seller
    const addToCart = (product) => {
-     if (cartBeauticianId && product.beauticianId !== cartBeauticianId) {
+     if (cartBeauticianId && product.specialistId !== cartBeauticianId) {
        showModal({
          title: "Different Seller",
          message: "This product is from a different seller. Add anyway?",
@@ -274,7 +274,7 @@ try {
 - [x] Error page has working navigation buttons
 - [x] Toast errors display backend messages
 - [x] Cart count updates correctly
-- [x] Beautician detection handles null values
+- [x] Specialist detection handles null values
 - [x] Works with both populated and unpopulated specialist data
 
 ## Deployment Notes

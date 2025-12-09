@@ -53,7 +53,7 @@ Every page now includes:
 **Pages Updated:**
 
 1. **Homepage (`/`)** - "Noble Elegance Beauty Salon | Huntingdon, Cambridgeshire"
-2. **Booking Page (`/specialists`)** - "Book Appointment - Select Your Beautician"
+2. **Booking Page (`/specialists`)** - "Book Appointment - Select Your Specialist"
 3. **Products Catalog (`/products`)** - "Beauty Products Catalog - Premium Beauty & Skincare"
 4. **About Us (`/about`)** - "About Us - Our Story & Mission"
 5. **Contact (`/salon`)** - "Contact Us - Location, Hours & Directions"
@@ -70,7 +70,7 @@ Every page now includes:
 **Includes:**
 
 - Homepage (priority: 1.0, changefreq: daily)
-- Beauticians/Booking page (priority: 0.9, changefreq: weekly)
+- Specialists/Booking page (priority: 0.9, changefreq: weekly)
 - Products catalog (priority: 0.9, changefreq: weekly)
 - About Us (priority: 0.8, changefreq: monthly)
 - Contact/Salon (priority: 0.8, changefreq: monthly)
@@ -266,7 +266,7 @@ All pages include:
 ALL images now include:
 
 - Descriptive alt text with keywords
-- Example: `"${specialist.name} - Expert Beautician in Huntingdon specializing in ${specialties}"`
+- Example: `"${specialist.name} - Expert Specialist in Huntingdon specializing in ${specialties}"`
 - Lazy loading enabled (except hero images)
 - Proper file naming conventions recommended
 
@@ -454,7 +454,7 @@ Already implemented:
 3. **Blog/Articles:** (Recommended for SEO)
 
    - "Ultimate Guide to Permanent Makeup in Huntingdon"
-   - "How to Choose the Right Beautician"
+   - "How to Choose the Right Specialist"
    - "Brows & Lashes Care Tips"
    - "Beauty Trends 2025 in Cambridgeshire"
 

@@ -35,7 +35,7 @@ export const adminTranslations = {
 
     // User Menu
     superAdmin: "Super Admin",
-    specialist: "Beautician",
+    specialist: "Specialist",
     logout: "Logout",
 
     // Common
@@ -69,7 +69,7 @@ export const adminTranslations = {
     description: "Description",
     descriptionHint:
       "Detailed information about what's included and what customers can expect",
-    primaryBeautician: "Primary Beautician",
+    primaryBeautician: "Primary Specialist",
     primaryBeauticianHint:
       "The main specialist responsible for providing this service",
     selectBeautician: "Select a specialist",
@@ -108,8 +108,8 @@ export const adminTranslations = {
     viewAppointmentsLinkedBeautician:
       "View appointments for your linked specialist",
     noBeauticianLinked: "No specialist linked - contact administrator",
-    filterByBeautician: "Filter by Beautician",
-    allBeauticians: "All Beauticians",
+    filterByBeautician: "Filter by Specialist",
+    allBeauticians: "All Specialists",
     todaysAppointments: "Today's Appointments",
     accountNotLinked: "Account Not Linked",
     contactSuperAdmin:

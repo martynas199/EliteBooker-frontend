@@ -22,7 +22,7 @@ src/
 │       ├── SalonLanding.jsx     # Tenant homepage
 │       ├── SalonDetails.jsx     # Salon info
 │       ├── ServicesPage.jsx     # Services catalog
-│       ├── BeauticiansPage.jsx  # Beautician selection
+│       ├── BeauticiansPage.jsx  # Specialist selection
 │       ├── TimeSlotsPage.jsx    # Availability picker
 │       ├── CheckoutPage.jsx     # Booking checkout
 │       ├── ConfirmationPage.jsx # Booking confirmation

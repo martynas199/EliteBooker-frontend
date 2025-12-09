@@ -68,7 +68,7 @@ Comprehensive SEO meta tags including:
 - ✅ FAQ Page
 - ✅ Blog Pages
 - ✅ Blog Posts
-- ✅ Beauticians Page
+- ✅ Specialists Page
 - ✅ Products Catalog
 - ✅ Login Page (noindex)
 - ✅ Register Page (noindex)
@@ -107,7 +107,7 @@ Enhanced alt attributes on:
 
 - Product images with brand and location keywords
 - Hero section images with service descriptions
-- Beautician profile images
+- Specialist profile images
 - Cart product images
 - Service card images (already had descriptive alt tags)
 

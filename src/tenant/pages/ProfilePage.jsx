@@ -94,7 +94,7 @@ const ProfilePage = () => {
   const handleRebook = (booking) => {
     // Navigate to booking page with pre-filled service and specialist
     navigate(
-      `/booking?serviceId=${booking.serviceId._id}&beauticianId=${booking.beauticianId._id}`
+      `/booking?serviceId=${booking.serviceId._id}&specialistId=${booking.specialistId._id}`
     );
   };
 
@@ -303,7 +303,7 @@ const ProfilePage = () => {
                               👤
                             </span>
                             <span className="break-words">
-                              {booking.beauticianId?.name || "Beautician"}
+                              {booking.specialistId?.name || "Specialist"}
                             </span>
                           </p>
                           <p className="flex items-center">

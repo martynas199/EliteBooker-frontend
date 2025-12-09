@@ -5,20 +5,20 @@
 The beauty salon platform supports **multi-seller product sales** with automatic payment distribution through Stripe Connect. Products can be owned by:
 
 - 🏢 **Platform** (salon business)
-- 💅 **Individual Beauticians** (connected via Stripe Connect)
+- 💅 **Individual Specialists** (connected via Stripe Connect)
 
 ## How It Works
 
 ### Database Structure
 
-Each product has an optional `beauticianId` field:
+Each product has an optional `specialistId` field:
 
 ```javascript
 // Product Model
 {
-  beauticianId: {
+  specialistId: {
     type: Schema.Types.ObjectId,
-    ref: "Beautician",
+    ref: "Specialist",
     default: null  // null = platform-owned
   }
 }
@@ -26,7 +26,7 @@ Each product has an optional `beauticianId` field:
 
 ### Payment Flow by Ownership Type
 
-#### 1. Platform Products (`beauticianId: null`)
+#### 1. Platform Products (`specialistId: null`)
 
 ```
 Customer pays £100
@@ -34,28 +34,28 @@ Customer pays £100
 → No transfers needed
 ```
 
-#### 2. Single Beautician Products
+#### 2. Single Specialist Products
 
 ```
-Customer buys 2 products from Beautician A (£100 total)
+Customer buys 2 products from Specialist A (£100 total)
 → Stripe Checkout with destination charges
-→ Beautician A receives £100 directly
-→ Beautician A pays Stripe fees
+→ Specialist A receives £100 directly
+→ Specialist A pays Stripe fees
 → Platform takes no commission
 ```
 
-#### 3. Multi-Beautician Orders
+#### 3. Multi-Specialist Orders
 
 ```
 Customer buys:
-- Product A from Beautician A (£50)
-- Product B from Beautician B (£30)
+- Product A from Specialist A (£50)
+- Product B from Specialist B (£30)
 - Product C from Platform (£20)
 
 → Platform receives £100 total
 → Platform pays Stripe fees
-→ Platform transfers £50 to Beautician A
-→ Platform transfers £30 to Beautician B
+→ Platform transfers £50 to Specialist A
+→ Platform transfers £30 to Specialist B
 → Platform keeps £20
 ```
 
@@ -75,7 +75,7 @@ Customer buys:
 
    - Find "Product Owner" dropdown (below Category)
    - Options:
-     - "Platform (No Beautician)" - Default, platform-owned
+     - "Platform (No Specialist)" - Default, platform-owned
      - Each active specialist with Stripe status
    - Look for ✓ checkmark indicating Stripe connected
 
@@ -87,7 +87,7 @@ Customer buys:
 
 **In Product List:**
 
-- **Purple Badge**: "💰 Beautician Product"
+- **Purple Badge**: "💰 Specialist Product"
 - **Blue Badge**: "🏢 Platform Product"
 - **Owner Name**: Shows below product title (if specialist-owned)
 
@@ -120,7 +120,7 @@ Customers don't see ownership - they simply shop products. The system automatica
 5. Distributes funds to specialists
 6. Updates earnings tracking
 
-## Beautician Benefits
+## Specialist Benefits
 
 ### Automatic Features
 
@@ -132,7 +132,7 @@ Customers don't see ownership - they simply shop products. The system automatica
 
 ### Viewing Earnings
 
-Beauticians can view their earnings:
+Specialists can view their earnings:
 
 1. Admin → Revenue page
 2. Filter by specialist
@@ -149,13 +149,13 @@ Beauticians can view their earnings:
 // Groups items by specialist
 const itemsByBeautician = new Map();
 for (const item of validatedItems) {
-  const beauticianId = item.beauticianId?.toString() || "platform";
-  itemsByBeautician.set(beauticianId, [...items]);
+  const specialistId = item.specialistId?.toString() || "platform";
+  itemsByBeautician.set(specialistId, [...items]);
 }
 
 // Tracks expected payments
 stripeConnectPayments.push({
-  beauticianId,
+  specialistId,
   beauticianStripeAccount: specialist.stripeAccountId,
   amount: itemsTotal,
   status: "pending",
@@ -176,7 +176,7 @@ for (const payment of order.stripeConnectPayments) {
   });
 
   // Update earnings
-  await Beautician.findByIdAndUpdate(specialist._id, {
+  await Specialist.findByIdAndUpdate(specialist._id, {
     $inc: { totalEarnings: payment.amount },
   });
 }
@@ -192,12 +192,12 @@ for (const payment of order.stripeConnectPayments) {
       title: "Product Name",
       price: 50.00,
       quantity: 1,
-      beauticianId: "abc123"  // ← Tracks ownership
+      specialistId: "abc123"  // ← Tracks ownership
     }
   ],
   stripeConnectPayments: [
     {
-      beauticianId: "abc123",
+      specialistId: "abc123",
       beauticianStripeAccount: "acct_...",
       amount: 50.00,
       status: "succeeded",
@@ -211,7 +211,7 @@ for (const payment of order.stripeConnectPayments) {
 
 ### Product Payment Not Received
 
-**Symptom**: Beautician didn't receive payment for their product
+**Symptom**: Specialist didn't receive payment for their product
 
 **Checklist**:
 
@@ -223,8 +223,8 @@ for (const payment of order.stripeConnectPayments) {
 
 **Common Issues**:
 
-- Beautician not connected → Payment fails, stays in platform account
-- Product `beauticianId` is null → Payment goes to platform (expected)
+- Specialist not connected → Payment fails, stays in platform account
+- Product `specialistId` is null → Payment goes to platform (expected)
 - Stripe Connect account restricted → Transfer fails
 
 ### Changing Product Ownership
@@ -243,7 +243,7 @@ for (const payment of order.stripeConnectPayments) {
 4. Click "Update Product"
 5. New orders will use new ownership
 
-### Platform vs Beautician Products
+### Platform vs Specialist Products
 
 **When to use Platform ownership:**
 
@@ -252,12 +252,12 @@ for (const payment of order.stripeConnectPayments) {
 - Products the salon buys wholesale
 - Shared inventory items
 
-**When to use Beautician ownership:**
+**When to use Specialist ownership:**
 
 - Products specialist sources independently
 - Personal brand products
 - Exclusive items specialist created
-- Beautician wants direct payment
+- Specialist wants direct payment
 
 ## Related Documentation
 

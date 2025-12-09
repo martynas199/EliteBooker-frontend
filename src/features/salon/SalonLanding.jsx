@@ -8,6 +8,7 @@ import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import Card from "../../components/ui/Card";
 import PageTransition from "../../components/ui/PageTransition";
 import SEOHead from "../../components/seo/SEOHead";
+import HeroSectionDisplay from "../../admin/components/heroSections/HeroSectionDisplay";
 
 /**
  * Modern and attractive salon landing page with hero section and dynamic animations
@@ -215,7 +216,10 @@ export default function SalonLanding() {
           </div>
         </div>
 
-        {/* Beauticians Section - Show if multiple specialists */}
+        {/* Hero Sections - Managed by Admin */}
+        <HeroSectionDisplay />
+
+        {/* Specialists Section - Show if multiple specialists */}
         {specialists.length > 1 && (
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -258,7 +262,7 @@ export default function SalonLanding() {
                           src={specialist.image.url}
                           alt={`${
                             specialist.name
-                          } - Expert Beautician specializing in ${
+                          } - Expert Specialist specializing in ${
                             specialist.specialties?.slice(0, 2).join(", ") ||
                             "beauty treatments"
                           }`}
@@ -790,7 +794,7 @@ export default function SalonLanding() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span>Expert Beauticians</span>
+                  <span>Expert Specialists</span>
                 </div>
               </div>
             </div>

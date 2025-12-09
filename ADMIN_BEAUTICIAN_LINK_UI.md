@@ -1,4 +1,4 @@
-# Admin-Beautician Link Management UI
+# Admin-Specialist Link Management UI
 
 ## Overview
 
@@ -6,7 +6,7 @@ A new admin dashboard page that provides a user-friendly interface for linking a
 
 ## Purpose
 
-The Admin-Beautician link allows administrators to manage Stripe Connect settings for specific specialists. When an admin is linked to a specialist:
+The Admin-Specialist link allows administrators to manage Stripe Connect settings for specific specialists. When an admin is linked to a specialist:
 
 - The admin can access and manage the specialist's Stripe Connect account
 - The admin can view earnings reports for that specialist
@@ -17,7 +17,7 @@ The Admin-Beautician link allows administrators to manage Stripe Connect setting
 ### 1. Visual Link Creation
 
 - **Searchable Admin List**: Filter admins by name or email
-- **Searchable Beautician List**: Filter specialists by name or email
+- **Searchable Specialist List**: Filter specialists by name or email
 - **Visual Selection**: Click to select from scrollable lists
 - **Link Status**: Shows if an admin is already linked to another specialist
 - **Confirmation**: Displays preview of the link before creating
@@ -54,7 +54,7 @@ The Admin-Beautician link allows administrators to manage Stripe Connect setting
 - **Body**:
   ```json
   {
-    "beauticianId": "beautician_id_here" // or null to unlink
+    "specialistId": "beautician_id_here" // or null to unlink
   }
   ```
 - **Response**:
@@ -103,7 +103,7 @@ beauty-salon-backend/
 ### Accessing the Page
 
 1. Log in to the admin dashboard
-2. Navigate to "Admin-Beautician Links" in the sidebar (🔗 icon)
+2. Navigate to "Admin-Specialist Links" in the sidebar (🔗 icon)
 3. The page displays in the main content area
 
 ### Creating a Link
@@ -111,8 +111,8 @@ beauty-salon-backend/
 1. In the "Create New Link" section:
    - Search for and select an admin from the left column
    - Search for and select a specialist from the right column
-2. Review the preview showing: "Admin Name → Beautician Name"
-3. Click "Link Admin to Beautician" button
+2. Review the preview showing: "Admin Name → Specialist Name"
+3. Click "Link Admin to Specialist" button
 4. Success toast appears confirming the link
 5. The link appears in the "Current Links" table below
 
@@ -129,7 +129,7 @@ beauty-salon-backend/
 - **Re-login Required**: After linking/unlinking, the admin must log out and log back in to see Stripe Connect settings
 - **Single Link**: Each admin can only be linked to one specialist at a time
 - **Overwriting**: Linking an already-linked admin to a new specialist will overwrite the previous link
-- **Beautician Email**: Some specialists may not have email addresses (shows "No email")
+- **Specialist Email**: Some specialists may not have email addresses (shows "No email")
 
 ## UI Components Used
 

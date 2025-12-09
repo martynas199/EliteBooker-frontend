@@ -90,7 +90,7 @@ export default function SpecialistSelectionPage() {
         .then((res) => {
           dispatch(
             setSpecialist({
-              beauticianId: res.data._id,
+              specialistId: res.data._id,
               any: false,
               inSalonPayment: res.data.inSalonPayment || false,
             })
@@ -140,7 +140,7 @@ export default function SpecialistSelectionPage() {
         if (primaryId === specialist._id) return true;
 
         // Check legacy single specialist field
-        const legacyId = getId(service.beauticianId);
+        const legacyId = getId(service.specialistId);
         if (legacyId === specialist._id) return true;
 
         // Check additional specialists array
@@ -211,7 +211,7 @@ export default function SpecialistSelectionPage() {
 
     dispatch(
       setSpecialist({
-        beauticianId: selectedSpecialist._id,
+        specialistId: selectedSpecialist._id,
         any: false,
         inSalonPayment: selectedSpecialist.inSalonPayment || false,
       })
@@ -467,14 +467,14 @@ export default function SpecialistSelectionPage() {
                 Back to Specialists
               </motion.button>
 
-              {/* Beautician Header Card - Dark Style */}
+              {/* Specialist Header Card - Dark Style */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-8 sm:mb-10 overflow-hidden bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl"
               >
                 <div className="flex items-start gap-4 sm:gap-6 p-4 sm:p-8">
-                  {/* Selected Beautician Image */}
+                  {/* Selected Specialist Image */}
                   <div className="flex-shrink-0 w-20 h-20 sm:w-32 sm:h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 shadow-2xl ring-2 sm:ring-4 ring-white/10">
                     {selectedSpecialist.image?.url ? (
                       <img

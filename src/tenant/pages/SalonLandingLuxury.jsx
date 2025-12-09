@@ -9,95 +9,66 @@ import { setService, setSpecialist } from "../state/bookingSlice";
 import SEOHead from "../../shared/components/seo/SEOHead";
 
 /**
- * SPOTIFY-STYLE TOGGLE SWITCH
- * Large, bold toggle that triggers background color shift
+ * Professional Toggle Switch
  */
-function SpotifyToggle({ value, onChange }) {
+function ProfessionalToggle({ value, onChange }) {
   return (
-    <div className="flex items-center justify-center gap-0 bg-black/40 backdrop-blur-md rounded-full p-2 border border-white/10">
-      <motion.button
+    <div className="inline-flex items-center bg-gray-100 rounded-xl p-1.5 shadow-inner">
+      <button
         onClick={() => onChange("services")}
-        className={`relative px-12 py-4 text-xl font-black uppercase tracking-wide rounded-full transition-all duration-300 ${
+        className={`px-8 py-3 rounded-lg font-semibold transition-all duration-200 ${
           value === "services"
-            ? "text-black"
-            : "text-white/60 hover:text-white/80"
+            ? "bg-white text-brand-600 shadow-md"
+            : "text-gray-600 hover:text-gray-900"
         }`}
-        whileHover={{ scale: value === "services" ? 1 : 1.05 }}
-        whileTap={{ scale: 0.95 }}
       >
-        {value === "services" && (
-          <motion.div
-            layoutId="activeTab"
-            className="absolute inset-0 bg-white rounded-full shadow-2xl"
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          />
-        )}
-        <span className="relative z-10">Services</span>
-      </motion.button>
-
-      <motion.button
+        Services
+      </button>
+      <button
         onClick={() => onChange("specialists")}
-        className={`relative px-12 py-4 text-xl font-black uppercase tracking-wide rounded-full transition-all duration-300 ${
+        className={`px-8 py-3 rounded-lg font-semibold transition-all duration-200 ${
           value === "specialists"
-            ? "text-black"
-            : "text-white/60 hover:text-white/80"
+            ? "bg-white text-brand-600 shadow-md"
+            : "text-gray-600 hover:text-gray-900"
         }`}
-        whileHover={{ scale: value === "specialists" ? 1 : 1.05 }}
-        whileTap={{ scale: 0.95 }}
       >
-        {value === "specialists" && (
-          <motion.div
-            layoutId="activeTab"
-            className="absolute inset-0 bg-white rounded-full shadow-2xl"
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          />
-        )}
-        <span className="relative z-10">Specialists</span>
-      </motion.button>
+        Specialists
+      </button>
     </div>
   );
 }
 
 /**
- * STEP 2: SKELETON LOADER
- * Beautiful loading state while fetching data
+ * Loading State
  */
 function SkeletonCard() {
   return (
-    <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-6 border border-gray-200/50">
-      {/* Image Skeleton */}
-      <div className="w-full aspect-[4/3] bg-gray-200/80 rounded-2xl mb-6 animate-pulse" />
-
-      {/* Text Skeletons */}
-      <div className="h-6 bg-gray-200/80 rounded-lg mb-3 w-3/4 animate-pulse" />
-      <div className="h-4 bg-gray-200/60 rounded-lg mb-2 w-full animate-pulse" />
-      <div className="h-4 bg-gray-200/60 rounded-lg mb-6 w-5/6 animate-pulse" />
-
-      {/* Footer Skeleton */}
-      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-        <div className="h-8 bg-gray-200/80 rounded-lg w-24 animate-pulse" />
-        <div className="h-10 bg-gray-200/80 rounded-xl w-28 animate-pulse" />
+    <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+      <div className="w-full aspect-[4/3] bg-gray-200 rounded-xl mb-4 animate-pulse" />
+      <div className="h-5 bg-gray-200 rounded mb-3 w-3/4 animate-pulse" />
+      <div className="h-4 bg-gray-200 rounded mb-2 w-full animate-pulse" />
+      <div className="h-4 bg-gray-200 rounded mb-4 w-5/6 animate-pulse" />
+      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+        <div className="h-8 bg-gray-200 rounded w-24 animate-pulse" />
+        <div className="h-10 bg-gray-200 rounded-xl w-28 animate-pulse" />
       </div>
     </div>
   );
 }
 
 /**
- * SPOTIFY-STYLE EMPTY STATE
- * Dark mode with bold messaging
+ * Empty State
  */
 function EmptyState({ type }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="col-span-full flex flex-col items-center justify-center py-32 px-4"
+      className="col-span-full flex flex-col items-center justify-center py-20 px-4"
     >
-      {/* Animated Icon */}
       <motion.div
         animate={{
-          scale: [1, 1.1, 1],
-          rotate: [0, 5, -5, 0],
+          scale: [1, 1.05, 1],
         }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         className="mb-12"
@@ -135,11 +106,10 @@ function EmptyState({ type }) {
         </div>
       </motion.div>
 
-      {/* Bold Text */}
-      <h3 className="text-5xl font-black text-white mb-4 text-center">
+      <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
         {type === "services" ? "No Services Yet" : "No Specialists Yet"}
       </h3>
-      <p className="text-xl text-white/50 text-center max-w-md font-light">
+      <p className="text-gray-600 text-center max-w-md">
         {type === "services"
           ? "Check back soon for our curated service collection"
           : "Our talented team will be here soon"}
@@ -150,7 +120,6 @@ function EmptyState({ type }) {
 
 /**
  * SERVICE CARD COMPONENT
- * Clean card design with image and hover effects
  */
 function ServiceCard({ service, onClick, formatPrice, index }) {
   return (
@@ -162,7 +131,7 @@ function ServiceCard({ service, onClick, formatPrice, index }) {
       className="group h-full cursor-pointer"
       onClick={onClick}
     >
-      <div className="h-full bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-white/20 hover:-translate-y-2">
+      <div className="h-full bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 hover:border-brand-300 hover:-translate-y-1">
         {/* Service Image */}
         {service.image?.url && (
           <div className="relative h-48 overflow-hidden">
@@ -185,56 +154,49 @@ function ServiceCard({ service, onClick, formatPrice, index }) {
         )}
 
         <div className="p-6">
-          {/* Service Name */}
-          <h3 className="text-xl font-bold text-white mb-2 group-hover:text-green-400 transition-colors">
+          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-brand-600 transition-colors">
             {service.name}
           </h3>
 
-          {/* Description */}
           {service.description && (
-            <p className="text-sm text-white/60 mb-4 line-clamp-2 leading-relaxed">
+            <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
               {service.description}
             </p>
           )}
 
-          {/* Price & Duration */}
-          <div className="flex items-center justify-between pt-4 border-t border-white/10">
+          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
             <div>
-              <div className="text-sm text-white/50 font-medium mb-1">
+              <div className="text-xs text-gray-500 font-medium mb-1">
                 Price
               </div>
-              <div className="text-2xl font-black text-white">
+              <div className="text-2xl font-bold text-brand-600">
                 {formatPrice(service.price)}
               </div>
             </div>
 
             {service.durationMin && (
-              <div className="text-right">
-                <div className="text-sm text-white/50 font-medium mb-1">
-                  Duration
-                </div>
-                <div className="flex items-center gap-1.5 text-white/80 font-semibold">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full">
+                <svg
+                  className="w-4 h-4 text-gray-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span className="text-sm font-semibold text-gray-700">
                   {service.durationMin} min
-                </div>
+                </span>
               </div>
             )}
           </div>
 
-          {/* Book Button */}
-          <button className="w-full mt-6 px-6 py-3 bg-white text-gray-900 font-bold rounded-xl hover:bg-green-400 transition-all duration-300 shadow-lg group-hover:shadow-xl group-hover:scale-105">
+          <button className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-bold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 shadow-md hover:shadow-lg">
             Book Now
           </button>
         </div>
@@ -412,7 +374,7 @@ export default function SalonLandingLuxury() {
     if (specialists.length === 1) {
       dispatch(
         setSpecialist({
-          beauticianId: specialists[0]._id, // Backend field name preserved for API compatibility
+          specialistId: specialists[0]._id, // Backend field name preserved for API compatibility
           any: false,
           inSalonPayment: false,
         })
@@ -480,162 +442,194 @@ export default function SalonLandingLuxury() {
   return (
     <>
       <SEOHead
-        title={`${salonName} - Premium Beauty & Wellness`}
+        title={`${salonName} - Premium Beauty Services`}
         description={salonDescription}
       />
 
-      {/* Dynamic Background with Color Shift */}
-      <motion.div
-        className="fixed inset-0 -z-10"
-        animate={{
-          background:
-            viewMode === "services"
-              ? "linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a)"
-              : "linear-gradient(to bottom right, #172554, #312e81, #4c1d95)",
-        }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
-      >
-        {/* Animated Noise Texture */}
-        <div className="absolute inset-0 opacity-20 mix-blend-overlay">
-          <motion.div
-            animate={{
-              backgroundPosition: ["0% 0%", "100% 100%"],
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="w-full h-full"
-            style={{
-              backgroundImage:
-                "url('data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E')",
-              backgroundSize: "200px 200px",
-            }}
-          />
-        </div>
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Hero Section - Clean and Professional */}
+          <div className="relative bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 rounded-3xl overflow-hidden mb-12 shadow-2xl">
+            {/* Hero Image Background */}
+            {(heroSection?.centerImage?.url || settings?.heroImage?.url) && (
+              <>
+                <div className="absolute inset-0">
+                  <img
+                    src={
+                      heroSection?.centerImage?.url || settings?.heroImage?.url
+                    }
+                    alt={
+                      heroSection?.title ||
+                      settings?.heroImage?.alt ||
+                      `${salonName} hero`
+                    }
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.error("Hero image failed to load:", e.target.src);
+                      e.target.style.display = "none";
+                    }}
+                  />
+                </div>
+              </>
+            )}
 
-        {/* Gradient Orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            x: [0, 100, 0],
-            y: [0, -50, 0],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1.2, 1, 1.2],
-            x: [0, -100, 0],
-            y: [0, 50, 0],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"
-        />
-      </motion.div>
-
-      {/* Header Section */}
-      <section className="relative pt-20 pb-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          {/* Salon Name - Massive Typography */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h1 className="text-7xl md:text-9xl font-black text-white mb-6 leading-none tracking-tight">
-              {salonName}
-            </h1>
-            <p className="text-2xl text-white/60 font-light max-w-2xl mx-auto">
-              {salonDescription}
-            </p>
-          </motion.div>
-
-          {/* Spotify-Style Toggle - Only show if multiple specialists */}
-          {hasMultipleSpecialists && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex justify-center mb-20"
-            >
-              <SpotifyToggle value={viewMode} onChange={setViewMode} />
-            </motion.div>
-          )}
-        </div>
-      </section>
-
-      {/* Main Content - Masonry Layout */}
-      <section className="relative px-4 pb-20">
-        <div className="max-w-7xl mx-auto">
-          <AnimatePresence mode="wait">
-            {viewMode === "services" ? (
+            <div className="relative z-10 px-6 md:px-12 py-20 md:py-28">
               <motion.div
-                key="services"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="max-w-4xl mx-auto text-center"
               >
-                {/* Services Title - Only show when there's a single specialist */}
-                {!hasMultipleSpecialists && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="text-center mb-12"
+                {/* Professional Availability Badge */}
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="inline-flex items-center gap-3 px-6 py-3 bg-white/95 backdrop-blur-md rounded-full shadow-xl mb-8 border border-white/20"
+                >
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-gray-700 font-medium text-sm">
+                    Available for booking now
+                  </span>
+                </motion.div>
+
+                {/* Clean Professional Heading */}
+                <motion.h1
+                  className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight leading-tight"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  {salonName}
+                </motion.h1>
+
+                {/* Clear Value Proposition */}
+                <motion.p
+                  className="text-lg sm:text-xl text-white/90 mb-12 max-w-2xl mx-auto leading-relaxed px-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                  {salonDescription}
+                </motion.p>
+
+                {/* Primary CTA - Focused on Booking */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                  className="flex justify-center px-4"
+                >
+                  <motion.button
+                    onClick={() =>
+                      setViewMode(
+                        hasMultipleSpecialists ? viewMode : "services"
+                      )
+                    }
+                    className="px-10 py-5 bg-white text-brand-600 font-bold text-lg rounded-xl shadow-2xl flex items-center justify-center gap-3"
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                      Services
-                    </h2>
-                    <p className="text-white/60 text-lg">
-                      Choose from our selection of premium services
-                    </p>
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                    Book Your Appointment
+                  </motion.button>
+                </motion.div>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Toggle - Only show if multiple specialists */}
+          {hasMultipleSpecialists && (
+            <div className="flex justify-center mb-12">
+              <ProfessionalToggle value={viewMode} onChange={setViewMode} />
+            </div>
+          )}
+
+          {/* Main Content */}
+          <section className="px-4 pb-20">
+            <div className="max-w-7xl mx-auto">
+              <AnimatePresence mode="wait">
+                {viewMode === "services" ? (
+                  <motion.div
+                    key="services"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    {!hasMultipleSpecialists && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="text-center mb-12"
+                      >
+                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                          Our Services
+                        </h2>
+                        <p className="text-gray-600 text-lg">
+                          Choose from our selection of premium services
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {services.length === 0 ? (
+                      <EmptyState type="services" />
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {services.map((service, index) => (
+                          <ServiceCard
+                            key={service._id}
+                            service={service}
+                            onClick={() => handleServiceClick(service)}
+                            formatPrice={formatPrice}
+                            index={index}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="specialists"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    {specialists.length === 0 ? (
+                      <EmptyState type="specialists" />
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {specialists.map((specialist, index) => (
+                          <SpecialistCard
+                            key={specialist._id}
+                            specialist={specialist}
+                            onClick={() => handleSpecialistClick(specialist)}
+                            index={index}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </motion.div>
                 )}
-
-                {services.length === 0 ? (
-                  <EmptyState type="services" />
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services.map((service, index) => (
-                      <ServiceCard
-                        key={service._id}
-                        service={service}
-                        onClick={() => handleServiceClick(service)}
-                        formatPrice={formatPrice}
-                        index={index}
-                      />
-                    ))}
-                  </div>
-                )}
-              </motion.div>
-            ) : (
-              <motion.div
-                key="specialists"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                {specialists.length === 0 ? (
-                  <EmptyState type="specialists" />
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {specialists.map((specialist, index) => (
-                      <SpecialistCard
-                        key={specialist._id}
-                        specialist={specialist}
-                        onClick={() => handleSpecialistClick(specialist)}
-                        index={index}
-                      />
-                    ))}
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </AnimatePresence>
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
     </>
   );
 }

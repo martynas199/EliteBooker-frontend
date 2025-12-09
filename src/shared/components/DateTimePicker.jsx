@@ -15,7 +15,7 @@ dayjs.extend(timezone);
  * DateTimePicker - Production-ready date and time slot picker
  *
  * @param {object} props
- * @param {string} props.beauticianId - ID of the specialist
+ * @param {string} props.specialistId - ID of the specialist
  * @param {string} props.serviceId - ID of the selected service
  * @param {string} props.variantName - Name of the selected variant
  * @param {string} props.salonTz - Timezone (e.g., "Europe/London")
@@ -25,7 +25,7 @@ dayjs.extend(timezone);
  * @param {object} props.customSchedule - Custom schedule overrides: { "YYYY-MM-DD": [{ start, end }] }
  */
 export default function DateTimePicker({
-  beauticianId,
+  specialistId,
   serviceId,
   variantName,
   salonTz = "Europe/London",
@@ -54,7 +54,7 @@ export default function DateTimePicker({
     error: availableDatesError,
     refetch: refetchAvailableDates,
   } = useAvailableDates(
-    beauticianId,
+    specialistId,
     currentMonth.getFullYear(),
     currentMonth.getMonth() + 1
   );
@@ -193,7 +193,7 @@ export default function DateTimePicker({
         const dateStr = dayjs(selectedDate).format("YYYY-MM-DD");
         const response = await api.get("/slots", {
           params: {
-            beauticianId,
+            specialistId,
             serviceId,
             variantName,
             date: dateStr,
@@ -264,7 +264,7 @@ export default function DateTimePicker({
     };
 
     fetchSlots();
-  }, [selectedDate, beauticianId, serviceId, variantName, salonTz]);
+  }, [selectedDate, specialistId, serviceId, variantName, salonTz]);
 
   const handleDateSelect = (date) => {
     if (!date || isDateDisabled(date)) return;

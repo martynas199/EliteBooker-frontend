@@ -20,8 +20,8 @@ export const TimeOffAPI = {
   /**
    * Delete a time-off period
    */
-  async delete(beauticianId, timeOffId) {
-    const response = await api.delete(`/timeoff/${beauticianId}/${timeOffId}`);
+  async delete(specialistId, timeOffId) {
+    const response = await api.delete(`/timeoff/${specialistId}/${timeOffId}`);
     return response.data;
   },
 };

@@ -17,15 +17,15 @@ export default function OnboardingComplete() {
 
   const checkAccountStatus = async () => {
     try {
-      if (!admin?.beauticianId) {
-        setError("Beautician ID not found. Please log in again.");
+      if (!admin?.specialistId) {
+        setError("Specialist ID not found. Please log in again.");
         setStatus("error");
         return;
       }
 
       // Check the account status
       const result = await StripeConnectAPI.getAccountStatus(
-        admin.beauticianId
+        admin.specialistId
       );
       setAccountStatus(result);
 

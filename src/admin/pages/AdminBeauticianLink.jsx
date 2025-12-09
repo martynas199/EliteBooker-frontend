@@ -32,7 +32,7 @@ export default function AdminBeauticianLink() {
     email: "",
     password: "",
     role: "admin",
-    beauticianId: "",
+    specialistId: "",
   });
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export default function AdminBeauticianLink() {
     setLinking(true);
     try {
       await api.patch(`/admin/admins/${selectedAdmin}/link-specialist`, {
-        beauticianId: selectedSpecialist,
+        specialistId: selectedSpecialist,
       });
 
       toast.success("Successfully linked admin to specialist!");
@@ -125,7 +125,7 @@ export default function AdminBeauticianLink() {
   const performUnlink = async (adminId) => {
     try {
       await api.patch(`/admin/admins/${adminId}/link-specialist`, {
-        beauticianId: null,
+        specialistId: null,
       });
 
       toast.success("Successfully unlinked admin from specialist");
@@ -352,7 +352,7 @@ export default function AdminBeauticianLink() {
         email: newAdmin.email,
         password: newAdmin.password,
         role: newAdmin.role,
-        beauticianId: newAdmin.beauticianId || null,
+        specialistId: newAdmin.specialistId || null,
       });
 
       toast.success("Admin created successfully!");
@@ -362,7 +362,7 @@ export default function AdminBeauticianLink() {
         email: "",
         password: "",
         role: "admin",
-        beauticianId: "",
+        specialistId: "",
       });
       loadData(); // Reload admins list
     } catch (error) {
@@ -373,8 +373,8 @@ export default function AdminBeauticianLink() {
     }
   };
 
-  const getSpecialistName = (beauticianId) => {
-    const specialist = specialists.find((b) => b._id === beauticianId);
+  const getSpecialistName = (specialistId) => {
+    const specialist = specialists.find((b) => b._id === specialistId);
     return specialist ? specialist.name : "Unknown";
   };
 
@@ -553,9 +553,9 @@ export default function AdminBeauticianLink() {
                 </label>
                 <select
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                  value={newAdmin.beauticianId}
+                  value={newAdmin.specialistId}
                   onChange={(e) =>
-                    setNewAdmin({ ...newAdmin, beauticianId: e.target.value })
+                    setNewAdmin({ ...newAdmin, specialistId: e.target.value })
                   }
                 >
                   <option value="">None - No specialist link</option>
@@ -593,7 +593,7 @@ export default function AdminBeauticianLink() {
                     email: "",
                     password: "",
                     role: "admin",
-                    beauticianId: "",
+                    specialistId: "",
                   });
                 }}
                 disabled={creating}
@@ -640,10 +640,10 @@ export default function AdminBeauticianLink() {
                   >
                     <div className="font-medium">{admin.name}</div>
                     <div className="text-sm text-gray-600">{admin.email}</div>
-                    {admin.beauticianId && (
+                    {admin.specialistId && (
                       <div className="text-xs text-brand-700 mt-1">
                         Currently linked to:{" "}
-                        {getBeauticianName(admin.beauticianId)}
+                        {getSpecialistName(admin.specialistId)}
                       </div>
                     )}
                   </button>
@@ -721,7 +721,7 @@ export default function AdminBeauticianLink() {
           Current Links
         </h2>
         <div className="space-y-3">
-          {admins.filter((admin) => admin.beauticianId).length === 0 ? (
+          {admins.filter((admin) => admin.specialistId).length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <svg
                 className="w-16 h-16 mx-auto mb-4 text-gray-300"
@@ -765,10 +765,10 @@ export default function AdminBeauticianLink() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {admins
-                    .filter((admin) => admin.beauticianId)
+                    .filter((admin) => admin.specialistId)
                     .map((admin) => {
                       const specialist = specialists.find(
-                        (b) => b._id === admin.beauticianId
+                        (b) => b._id === admin.specialistId
                       );
                       return (
                         <tr key={admin._id} className="hover:bg-gray-50">
@@ -888,16 +888,16 @@ export default function AdminBeauticianLink() {
                             🔒 Locked
                           </span>
                         )}
-                        {admin.beauticianId && (
+                        {admin.specialistId && (
                           <div className="lg:hidden text-xs text-brand-700 mt-1">
-                            Linked: {getBeauticianName(admin.beauticianId)}
+                            Linked: {getSpecialistName(admin.specialistId)}
                           </div>
                         )}
                       </td>
                       <td className="hidden lg:table-cell px-6 py-4">
-                        {admin.beauticianId ? (
+                        {admin.specialistId ? (
                           <div className="text-sm text-brand-700">
-                            {getBeauticianName(admin.beauticianId)}
+                            {getSpecialistName(admin.specialistId)}
                           </div>
                         ) : (
                           <span className="text-sm text-gray-400">

@@ -293,7 +293,7 @@ Total Initial:      ~350 KB  (-32.5 KB, -8.5%)
 ```jsx
 const AdminDashboard = lazy(() => import("./admin/pages/Dashboard"));
 const AdminRevenue = lazy(() => import("./admin/pages/Revenue"));
-const AdminBeauticians = lazy(() => import("./admin/pages/Beauticians"));
+const AdminBeauticians = lazy(() => import("./admin/pages/Specialists"));
 
 // In Router
 <Route

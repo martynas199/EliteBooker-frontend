@@ -103,7 +103,7 @@ export default function TimeOff() {
     try {
       setSubmitting(true);
       const newTimeOff = await timeOffAPI.create({
-        beauticianId: formData.specialistId, // Map specialistId to beauticianId for API
+        specialistId: formData.specialistId, // Map specialistId to specialistId for API
         start: formData.start,
         end: formData.end,
         reason: formData.reason,
@@ -134,7 +134,7 @@ export default function TimeOff() {
     }
 
     try {
-      await timeOffAPI.delete(timeOff.beauticianId, timeOff._id);
+      await timeOffAPI.delete(timeOff.specialistId, timeOff._id);
       setTimeOffList(timeOffList.filter((t) => t._id !== timeOff._id));
     } catch (error) {
       console.error("Error deleting time-off:", error);

@@ -396,7 +396,7 @@ Cypress.Commands.add(
     const params = new URLSearchParams({
       serviceId,
       date,
-      ...(staffId && { beauticianId: staffId }),
+      ...(staffId && { specialistId: staffId }),
     });
 
     cy.request({

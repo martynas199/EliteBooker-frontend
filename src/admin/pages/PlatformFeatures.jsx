@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectAdmin } from "../../shared/state/authSlice";
 import { useTenantSettings } from "../../shared/hooks/useTenantSettings";
-import { Check, X } from "lucide-react";
+import { Check, X, Crown } from "lucide-react";
 import toast from "react-hot-toast";
+import { api } from "../../shared/lib/apiClient";
 
 // Toggle Switch Component
 const Toggle = ({ enabled, onChange, disabled = false }) => {
@@ -40,20 +44,24 @@ const FeatureRow = ({
   disabledReason,
 }) => {
   return (
-    <div className="flex items-start justify-between py-5 border-b border-gray-200 last:border-b-0">
-      <div className="flex-1 pr-8">
-        <div className="flex items-center gap-2 mb-1">
-          <h3 className="text-sm font-medium text-gray-900">{title}</h3>
+    <div className="flex items-start justify-between py-3 sm:py-5 border-b border-gray-200 last:border-b-0">
+      <div className="flex-1 pr-3 sm:pr-8">
+        <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
+          <h3 className="text-xs sm:text-sm font-medium text-gray-900">
+            {title}
+          </h3>
           {disabled && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 text-xs text-gray-600">
-              <X className="w-3 h-3" />
+            <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md bg-gray-100 text-xs text-gray-600">
+              <X className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               Disabled
             </span>
           )}
         </div>
-        <p className="text-sm text-gray-500">{description}</p>
+        <p className="text-xs sm:text-sm text-gray-500">{description}</p>
         {disabled && disabledReason && (
-          <p className="mt-1 text-xs text-amber-600">{disabledReason}</p>
+          <p className="mt-0.5 sm:mt-1 text-xs text-amber-600">
+            {disabledReason}
+          </p>
         )}
       </div>
       <div className="flex-shrink-0">
@@ -64,6 +72,9 @@ const FeatureRow = ({
 };
 
 export default function FeaturesPage() {
+  const navigate = useNavigate();
+  const admin = useSelector(selectAdmin);
+  const [searchParams] = useSearchParams();
   const {
     featureFlags,
     updateFeatureFlag,
@@ -81,10 +92,112 @@ export default function FeaturesPage() {
     emailNotifications: featureFlags?.emailNotifications === true,
   });
 
+  // Subscription state
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
+  const [featureStatus, setFeatureStatus] = useState(null);
+  const specialistId = admin?.specialistId;
+
   // Load settings from API on mount
   useEffect(() => {
     loadSettings();
   }, []);
+
+  // Check for subscription success/cancel params
+  useEffect(() => {
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+
+    if (success === "true") {
+      toast.success(
+        "Subscription activated! The booking fee has been removed for all your clients."
+      );
+      navigate("/admin/platform-features", { replace: true });
+    } else if (canceled === "true") {
+      toast.error("Subscription canceled. You can try again anytime.");
+      navigate("/admin/platform-features", { replace: true });
+    }
+  }, [searchParams, navigate]);
+
+  // Load subscription status
+  useEffect(() => {
+    if (specialistId) {
+      fetchFeatureStatus();
+    } else {
+      setSubscriptionLoading(false);
+    }
+  }, [specialistId]);
+
+  const fetchFeatureStatus = async () => {
+    try {
+      setSubscriptionLoading(true);
+      const statusRes = await api.get(`/features/${specialistId}`);
+      setFeatureStatus(statusRes.data);
+    } catch (error) {
+      console.error("Error fetching subscription status:", error);
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
+
+  const handleSubscribe = async () => {
+    console.log("handleSubscribe - specialistId:", specialistId);
+    console.log("handleSubscribe - admin:", admin);
+    console.log("handleSubscribe - admin.specialistId:", admin?.specialistId);
+    console.log("handleSubscribe - admin._id:", admin?._id);
+
+    if (!specialistId) {
+      toast.error(
+        "No specialist linked to your account. Please link your account to a specialist in Admin Management first."
+      );
+      return;
+    }
+    try {
+      setProcessing(true);
+      console.log(
+        "Making API call to:",
+        `/features/${specialistId}/subscribe-no-fee`
+      );
+      const res = await api.post(`/features/${specialistId}/subscribe-no-fee`);
+      if (res.data.checkoutUrl) {
+        window.location.href = res.data.checkoutUrl;
+      }
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+      console.error("Error response:", error.response?.data);
+      toast.error(
+        error.response?.data?.error || "Failed to start subscription"
+      );
+      setProcessing(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!specialistId) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to cancel your subscription? You'll continue to have access until the end of your billing period."
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setProcessing(true);
+      await api.post(`/features/${specialistId}/cancel-no-fee`);
+      toast.success(
+        "Subscription cancelled. It will remain active until the end of your billing period."
+      );
+      fetchFeatureStatus();
+    } catch (error) {
+      console.error("Error cancelling subscription:", error);
+      toast.error(
+        error.response?.data?.error || "Failed to cancel subscription"
+      );
+    } finally {
+      setProcessing(false);
+    }
+  };
 
   // Sync local state when featureFlags change
   useEffect(() => {
@@ -131,96 +244,224 @@ export default function FeaturesPage() {
     );
   }
 
+  const isActive =
+    featureStatus?.noFeeBookings?.enabled &&
+    featureStatus?.noFeeBookings?.status === "active";
+  const isCanceled = featureStatus?.noFeeBookings?.status === "canceled";
+  const periodEnd = featureStatus?.noFeeBookings?.currentPeriodEnd;
+  const hasExpired = periodEnd && new Date(periodEnd) <= new Date();
+  const isFullyCanceled = isCanceled && hasExpired;
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="border-b border-gray-200">
-        <div className="max-w-3xl mx-auto px-6 py-8">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-            Platform Features
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-1 sm:mb-2">
+            Features & Subscriptions
           </h1>
-          <p className="text-sm text-gray-500">
-            Configure which features are enabled for your business. Changes take
-            effect immediately.
+          <p className="text-xs sm:text-sm text-gray-500">
+            Manage premium subscriptions and configure platform features for
+            your business.
           </p>
         </div>
       </div>
 
-      {/* Features List */}
-      <div className="max-w-3xl mx-auto px-6 py-8">
-        <div className="bg-white rounded-lg border border-gray-200">
-          <div className="p-6">
-            {/* SMS Confirmations */}
-            <FeatureRow
-              title="SMS Confirmations"
-              description="Send SMS messages when appointments are created or modified."
-              enabled={localFlags.smsConfirmations}
-              onChange={() => handleToggle("smsConfirmations")}
-              disabled={!smsGatewayConnected}
-              disabledReason={
-                !smsGatewayConnected
-                  ? "SMS gateway not configured. Contact support to enable."
-                  : null
-              }
-            />
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-8 space-y-4 sm:space-y-8">
+        {/* Premium Subscription Section */}
+        {specialistId && !subscriptionLoading && (
+          <div className="bg-gradient-to-br from-white via-brand-50/20 to-purple-50/20 rounded-xl sm:rounded-2xl border border-gray-200 overflow-hidden shadow-lg">
+            <div className="bg-gradient-to-r from-brand-500 via-brand-600 to-brand-700 p-4 sm:p-6 shadow-xl">
+              <div className="flex items-center gap-2 mb-1">
+                <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                <h2 className="text-base sm:text-lg font-bold text-white">
+                  Premium: No Fee Bookings
+                </h2>
+              </div>
+              <p className="text-xs sm:text-sm text-white/90">
+                Remove the £1.00 booking fee for all your clients
+              </p>
+            </div>
 
-            {/* SMS Reminders */}
-            <FeatureRow
-              title="SMS Reminders"
-              description="Automatically send SMS reminders 12 hours before scheduled appointments."
-              enabled={localFlags.smsReminders}
-              onChange={() => handleToggle("smsReminders")}
-              disabled={!smsGatewayConnected}
-              disabledReason={
-                !smsGatewayConnected
-                  ? "SMS gateway not configured. Contact support to enable."
-                  : null
-              }
-            />
+            <div className="p-4 sm:p-6">
+              {/* Status Banner */}
+              {isActive && (
+                <div className="mb-3 sm:mb-4 p-2.5 sm:p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-green-900 font-semibold mb-1 text-xs sm:text-sm">
+                    <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span>Active Subscription</span>
+                  </div>
+                  <p className="text-xs text-green-800">
+                    Your clients can book without paying the £1.00 booking fee!
+                  </p>
+                  {periodEnd && (
+                    <p className="text-xs text-green-700 mt-1">
+                      Next billing:{" "}
+                      {new Date(periodEnd).toLocaleDateString("en-GB")}
+                    </p>
+                  )}
+                </div>
+              )}
 
-            {/* Online Payments */}
-            <FeatureRow
-              title="Online Payments"
-              description="Allow clients to pay deposits and booking fees online via Stripe."
-              enabled={localFlags.onlinePayments}
-              onChange={() => handleToggle("onlinePayments")}
-            />
+              {isCanceled && !hasExpired && (
+                <div className="mb-3 sm:mb-4 p-2.5 sm:p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-orange-800 font-semibold mb-1 text-sm">
+                    <X className="w-4 h-4" />
+                    <span>Subscription Canceling</span>
+                  </div>
+                  <p className="text-xs text-orange-700">
+                    Ends on {new Date(periodEnd).toLocaleDateString("en-GB")}
+                  </p>
+                </div>
+              )}
 
-            {/* E-commerce Module */}
-            <FeatureRow
-              title="E-commerce Module"
-              description="Enable online product sales, inventory management, and store features. When enabled, the Store section will appear in your admin sidebar."
-              enabled={localFlags.ecommerce}
-              onChange={() => handleToggle("ecommerce")}
-            />
+              {/* Benefits */}
+              <div className="mb-3 sm:mb-4">
+                <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1.5 sm:mb-2">
+                  Benefits:
+                </h3>
+                <ul className="space-y-1 sm:space-y-1.5 text-xs sm:text-sm text-gray-700">
+                  <li className="flex items-start gap-1.5 sm:gap-2">
+                    <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-600 mt-0.5 flex-shrink-0" />
+                    <span>No £1.00 booking fee for clients</span>
+                  </li>
+                  <li className="flex items-start gap-1.5 sm:gap-2">
+                    <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-600 mt-0.5 flex-shrink-0" />
+                    <span>Increase bookings by removing barriers</span>
+                  </li>
+                  <li className="flex items-start gap-1.5 sm:gap-2">
+                    <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-600 mt-0.5 flex-shrink-0" />
+                    <span>Better client experience</span>
+                  </li>
+                </ul>
+              </div>
 
-            {/* Email Notifications */}
-            <FeatureRow
-              title="Email Notifications"
-              description="Send email confirmations, reminders, and updates to clients and staff."
-              enabled={localFlags.emailNotifications}
-              onChange={() => handleToggle("emailNotifications")}
-            />
-          </div>
-        </div>
+              {/* Pricing & Action */}
+              <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-200">
+                <div>
+                  <div className="text-xl sm:text-2xl font-bold text-gray-900">
+                    £9.99
+                    <span className="text-xs sm:text-sm text-gray-600 font-normal">
+                      /month
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500">Cancel anytime</p>
+                </div>
+                <div>
+                  {!isActive && !isCanceled && (
+                    <button
+                      onClick={handleSubscribe}
+                      disabled={processing}
+                      className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:from-brand-600 hover:to-brand-700 shadow-lg shadow-brand-500/30 hover:shadow-xl hover:shadow-brand-600/40 transition-all disabled:opacity-50"
+                    >
+                      {processing ? "Processing..." : "Subscribe Now"}
+                    </button>
+                  )}
 
-        {/* Info Card */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <div className="flex gap-3">
-            <div className="flex-shrink-0">
-              <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center">
-                <Check className="w-3 h-3 text-blue-600" />
+                  {isActive && (
+                    <button
+                      onClick={handleCancelSubscription}
+                      disabled={processing}
+                      className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gray-100 text-gray-700 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:bg-gray-200 border border-gray-300 transition-all disabled:opacity-50"
+                    >
+                      {processing ? "Processing..." : "Cancel"}
+                    </button>
+                  )}
+
+                  {isFullyCanceled && (
+                    <button
+                      onClick={handleSubscribe}
+                      disabled={processing}
+                      className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:from-brand-600 hover:to-brand-700 shadow-lg shadow-brand-500/30 hover:shadow-xl hover:shadow-brand-600/40 transition-all disabled:opacity-50"
+                    >
+                      {processing ? "Processing..." : "Resubscribe"}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-            <div>
-              <h4 className="text-sm font-medium text-gray-900 mb-1">
-                Real-time Updates
-              </h4>
-              <p className="text-xs text-gray-600">
-                All feature changes are applied immediately. Your admin sidebar
-                and available functionality will update automatically without
-                requiring a page refresh.
-              </p>
+          </div>
+        )}
+
+        {/* Platform Features Section */}
+        <div>
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
+            Platform Features
+          </h2>
+          <div className="bg-white rounded-xl sm:rounded-lg border border-gray-200">
+            <div className="p-4 sm:p-6">
+              {/* SMS Confirmations */}
+              <FeatureRow
+                title="SMS Confirmations"
+                description="Send SMS messages when appointments are created or modified."
+                enabled={localFlags.smsConfirmations}
+                onChange={() => handleToggle("smsConfirmations")}
+                disabled={!smsGatewayConnected}
+                disabledReason={
+                  !smsGatewayConnected
+                    ? "SMS gateway not configured. Contact support to enable."
+                    : null
+                }
+              />
+
+              {/* SMS Reminders */}
+              <FeatureRow
+                title="SMS Reminders"
+                description="Automatically send SMS reminders 12 hours before scheduled appointments."
+                enabled={localFlags.smsReminders}
+                onChange={() => handleToggle("smsReminders")}
+                disabled={!smsGatewayConnected}
+                disabledReason={
+                  !smsGatewayConnected
+                    ? "SMS gateway not configured. Contact support to enable."
+                    : null
+                }
+              />
+
+              {/* Online Payments */}
+              <FeatureRow
+                title="Online Payments"
+                description="Allow clients to pay deposits and booking fees online via Stripe."
+                enabled={localFlags.onlinePayments}
+                onChange={() => handleToggle("onlinePayments")}
+              />
+
+              {/* E-commerce Module */}
+              <FeatureRow
+                title="E-commerce Module"
+                description="Enable online product sales, inventory management, and store features. When enabled, the Store section will appear in your admin sidebar."
+                enabled={localFlags.ecommerce}
+                onChange={() => handleToggle("ecommerce")}
+              />
+
+              {/* Email Notifications */}
+              <FeatureRow
+                title="Email Notifications"
+                description="Send email confirmations, reminders, and updates to clients and staff."
+                enabled={localFlags.emailNotifications}
+                onChange={() => handleToggle("emailNotifications")}
+              />
+            </div>
+          </div>
+
+          {/* Info Card */}
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="flex gap-3">
+              <div className="flex-shrink-0">
+                <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center">
+                  <Check className="w-3 h-3 text-blue-600" />
+                </div>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-900 mb-1">
+                  Real-time Updates
+                </h4>
+                <p className="text-xs text-gray-600">
+                  All feature changes are applied immediately. Your admin
+                  sidebar and available functionality will update automatically
+                  without requiring a page refresh.
+                </p>
+              </div>
             </div>
           </div>
         </div>

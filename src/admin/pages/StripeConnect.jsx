@@ -17,9 +17,9 @@ export default function StripeConnect() {
         </p>
       </div>
 
-      {admin?.beauticianId && admin?.email ? (
+      {admin?.specialistId && admin?.email ? (
         <StripeConnectSettings
-          beauticianId={admin.beauticianId}
+          specialistId={admin.specialistId}
           email={admin.email}
         />
       ) : (
@@ -53,7 +53,7 @@ export default function StripeConnect() {
                   href="/admin/admin-links"
                   className="underline font-medium hover:text-yellow-900"
                 >
-                  Admin-Beautician Links
+                  Admin-Specialist Links
                 </a>{" "}
                 page.
               </p>

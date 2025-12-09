@@ -12,7 +12,7 @@
 │  1. 🔄 DUPLICATE REQUESTS                                       │
 │     • Appointments fetched 5-8 times per session                │
 │     • Services fetched 4-6 times per session                    │
-│     • Beauticians fetched 6-10 times per session                │
+│     • Specialists fetched 6-10 times per session                │
 │                                                                  │
 │  2. 🐌 NO CACHING                                               │
 │     • Every page mount = new API call                           │

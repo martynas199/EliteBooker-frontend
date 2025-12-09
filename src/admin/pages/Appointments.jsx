@@ -100,14 +100,14 @@ export default function Appointments() {
           "[Appointments] Super admin - showing all appointments:",
           appointments.length
         );
-      } else if (admin?.beauticianId) {
+      } else if (admin?.specialistId) {
         // Regular admin with linked specialist - only show their specialist's appointments
         const originalCount = appointments.length;
         appointments = appointments.filter(
-          (apt) => apt.beauticianId?._id === admin.beauticianId
+          (apt) => apt.specialistId?._id === admin.specialistId
         );
         console.log(
-          `[Appointments] Regular admin with specialist ${admin.beauticianId} - filtered from ${originalCount} to ${appointments.length} appointments`
+          `[Appointments] Regular admin with specialist ${admin.specialistId} - filtered from ${originalCount} to ${appointments.length} appointments`
         );
 
         // Recalculate pagination for filtered results
@@ -224,11 +224,11 @@ export default function Appointments() {
     // Apply specialist filter
     if (selectedSpecialistId) {
       filteredRows = filteredRows.filter((r) => {
-        const beauticianId =
-          typeof r.beauticianId === "object" && r.beauticianId?._id
-            ? r.beauticianId._id
-            : r.beauticianId;
-        return String(beauticianId) === String(selectedSpecialistId);
+        const specialistId =
+          typeof r.specialistId === "object" && r.specialistId?._id
+            ? r.specialistId._id
+            : r.specialistId;
+        return String(specialistId) === String(selectedSpecialistId);
       });
     }
 
@@ -268,8 +268,8 @@ export default function Appointments() {
           bVal = b.client?.name || "";
           break;
         case "staff":
-          aVal = a.specialist?.name || a.beauticianId || "";
-          bVal = b.specialist?.name || b.beauticianId || "";
+          aVal = a.specialist?.name || a.specialistId || "";
+          bVal = b.specialist?.name || b.specialistId || "";
           break;
         case "service":
           aVal = `${a.service?.name || a.serviceId} - ${a.variantName}`;
@@ -371,7 +371,7 @@ export default function Appointments() {
   }
 
   async function handleDeleteAll() {
-    if (!admin?.beauticianId) {
+    if (!admin?.specialistId) {
       toast.error("No specialist linked to this account");
       return;
     }
@@ -386,18 +386,18 @@ export default function Appointments() {
               toast.dismiss(t.id);
               try {
                 const res = await api.delete(
-                  `/appointments/specialist/${admin.beauticianId}`
+                  `/appointments/specialist/${admin.specialistId}`
                 );
 
                 // Remove all appointments for this specialist from the state
                 setRows((old) =>
                   old.filter((apt) => {
-                    const beauticianId =
-                      typeof apt.beauticianId === "object" &&
-                      apt.beauticianId?._id
-                        ? apt.beauticianId._id
-                        : apt.beauticianId;
-                    return String(beauticianId) !== String(admin.beauticianId);
+                    const specialistId =
+                      typeof apt.specialistId === "object" &&
+                      apt.specialistId?._id
+                        ? apt.specialistId._id
+                        : apt.specialistId;
+                    return String(specialistId) !== String(admin.specialistId);
                   })
                 );
 
@@ -476,7 +476,7 @@ export default function Appointments() {
       clientEmail: appointment.client?.email || "",
       clientPhone: appointment.client?.phone || "",
       clientNotes: appointment.client?.notes || "",
-      specialistId: appointment.beauticianId || "", // Map beauticianId from API to specialistId for UI
+      specialistId: appointment.specialistId || "", // Map specialistId from API to specialistId for UI
       serviceId: appointment.serviceId || "",
       variantName: appointment.variantName || "",
       start: appointment.start
@@ -503,7 +503,7 @@ export default function Appointments() {
             phone: editingAppointment.clientPhone,
             notes: editingAppointment.clientNotes,
           },
-          beauticianId: editingAppointment.specialistId, // Map specialistId to beauticianId for API
+          specialistId: editingAppointment.specialistId, // Map specialistId to specialistId for API
           serviceId: editingAppointment.serviceId,
           variantName: editingAppointment.variantName,
           start: editingAppointment.start,
@@ -539,7 +539,7 @@ export default function Appointments() {
       clientEmail: "",
       clientPhone: "",
       clientNotes: "",
-      specialistId: isSuperAdmin ? "" : admin?.beauticianId || "", // Map backend's beauticianId to UI's specialistId
+      specialistId: isSuperAdmin ? "" : admin?.specialistId || "", // Map backend's specialistId to UI's specialistId
       serviceId: "",
       variantName: "",
       start: "",
@@ -581,7 +581,7 @@ export default function Appointments() {
           phone: newAppointment.clientPhone,
           notes: newAppointment.clientNotes,
         },
-        beauticianId: newAppointment.specialistId, // Map specialistId to beauticianId for API
+        specialistId: newAppointment.specialistId, // Map specialistId to specialistId for API
         serviceId: newAppointment.serviceId,
         variantName: newAppointment.variantName,
         startISO: newAppointment.start,
@@ -619,7 +619,7 @@ export default function Appointments() {
           <p className="text-sm sm:text-base text-gray-600">
             {t("viewManageAllAppointmentsFromAllBeauticians", language)}
           </p>
-        ) : admin?.beauticianId ? (
+        ) : admin?.specialistId ? (
           <p className="text-sm sm:text-base text-gray-600">
             {t("viewAppointmentsLinkedBeauticianOnly", language)}
           </p>
@@ -627,7 +627,7 @@ export default function Appointments() {
       </div>
 
       {/* Show warning for regular admins without linked specialist */}
-      {!isSuperAdmin && !admin?.beauticianId && (
+      {!isSuperAdmin && !admin?.specialistId && (
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4 mb-6">
           <div className="flex items-center gap-2 sm:gap-3">
             <svg
@@ -656,7 +656,7 @@ export default function Appointments() {
       )}
 
       {/* Create Appointment Button - only show if admin has access */}
-      {(isSuperAdmin || admin?.beauticianId) && (
+      {(isSuperAdmin || admin?.specialistId) && (
         <div className="mb-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
           <button
             onClick={openCreateModal}
@@ -677,7 +677,7 @@ export default function Appointments() {
             </svg>
             Create Appointment
           </button>
-          {admin?.beauticianId && (
+          {admin?.specialistId && (
             <Button
               variant="danger"
               onClick={() => handleDeleteAll()}
@@ -690,7 +690,7 @@ export default function Appointments() {
       )}
 
       {/* Filters - only show if admin has access */}
-      {(isSuperAdmin || admin?.beauticianId) && (
+      {(isSuperAdmin || admin?.specialistId) && (
         <div className="bg-white border rounded-xl shadow-sm p-3 sm:p-4 mb-4 space-y-3 sm:space-y-4">
           {/* Search Bar */}
           <div className="relative">
@@ -988,7 +988,7 @@ export default function Appointments() {
                   <tr>
                     {[
                       "Client",
-                      "Beautician",
+                      "Specialist",
                       "Service",
                       "Date/Time",
                       "Status",
@@ -1093,12 +1093,12 @@ export default function Appointments() {
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-xs font-semibold">
-                        {(r.specialist?.name || r.beauticianId || "U")
+                        {(r.specialist?.name || r.specialistId || "U")
                           .charAt(0)
                           .toUpperCase()}
                       </div>
                       <span className="text-gray-900">
-                        {r.specialist?.name || r.beauticianId}
+                        {r.specialist?.name || r.specialistId}
                       </span>
                     </div>
                   </td>
@@ -1371,14 +1371,14 @@ export default function Appointments() {
                 {/* Staff */}
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-semibold text-base shadow-sm">
-                    {(r.specialist?.name || r.beauticianId || "?")
+                    {(r.specialist?.name || r.specialistId || "?")
                       .charAt(0)
                       .toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-xs text-gray-500">Staff</div>
                     <div className="font-medium text-sm text-gray-900">
-                      {r.specialist?.name || r.beauticianId}
+                      {r.specialist?.name || r.specialistId}
                     </div>
                   </div>
                 </div>
@@ -1652,7 +1652,7 @@ export default function Appointments() {
                 ? "Try adjusting your filters or search criteria."
                 : "Get started by creating your first appointment."}
             </p>
-            {(isSuperAdmin || admin?.beauticianId) && (
+            {(isSuperAdmin || admin?.specialistId) && (
               <button
                 onClick={openCreateModal}
                 className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
@@ -1898,8 +1898,8 @@ function EditModal({
             <select
               id="specialist-select"
               className="border rounded w-full px-3 py-2"
-              value={appointment.beauticianId}
-              onChange={(e) => updateField("beauticianId", e.target.value)}
+              value={appointment.specialistId}
+              onChange={(e) => updateField("specialistId", e.target.value)}
             >
               <option value="">Select Specialist</option>
               {specialists.map((b) => (
@@ -2138,7 +2138,7 @@ function CreateModal({
   useEffect(() => {
     if (showTimePicker) {
       console.log("[CreateModal] DateTimePicker opened with:", {
-        beauticianId: appointment.beauticianId,
+        specialistId: appointment.specialistId,
         beauticianName: selectedSpecialist?.name,
         serviceId: appointment.serviceId,
         serviceName: selectedService?.name,
@@ -2421,7 +2421,7 @@ function CreateModal({
                       </div>
                       <div className="p-6 overflow-y-auto">
                         <DateTimePicker
-                          beauticianId={appointment.specialistId}
+                          specialistId={appointment.specialistId}
                           serviceId={appointment.serviceId}
                           variantName={appointment.variantName}
                           salonTz="Europe/London"

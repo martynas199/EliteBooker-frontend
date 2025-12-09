@@ -19,7 +19,7 @@ export default function ProfitAnalytics() {
     startDate: format(subDays(new Date(), 30), "yyyy-MM-dd"),
     endDate: format(new Date(), "yyyy-MM-dd"),
     productId: "",
-    beauticianId: "",
+    specialistId: "",
   });
   const [products, setProducts] = useState([]);
   const [specialists, setSpecialists] = useState([]);
@@ -86,8 +86,8 @@ export default function ProfitAnalytics() {
       if (filters.startDate) params.append("startDate", filters.startDate);
       if (filters.endDate) params.append("endDate", filters.endDate);
       if (filters.productId) params.append("productId", filters.productId);
-      if (filters.beauticianId)
-        params.append("beauticianId", filters.beauticianId);
+      if (filters.specialistId)
+        params.append("specialistId", filters.specialistId);
 
       const response = await api.get(`/analytics/profit?${params.toString()}`);
       setAnalytics(response.data);
@@ -299,9 +299,9 @@ export default function ProfitAnalytics() {
 
           <FormField label="Specialist">
             <select
-              value={filters.beauticianId}
+              value={filters.specialistId}
               onChange={(e) =>
-                setFilters({ ...filters, beauticianId: e.target.value })
+                setFilters({ ...filters, specialistId: e.target.value })
               }
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
             >
@@ -348,7 +348,7 @@ export default function ProfitAnalytics() {
 
       {/* No Data Message */}
       {summary.totalOrders === 0 &&
-        (filters.productId || filters.beauticianId) && (
+        (filters.productId || filters.specialistId) && (
           <Card className="p-6">
             <div className="text-center py-8">
               <div className="text-gray-400 mb-3">
@@ -372,7 +372,7 @@ export default function ProfitAnalytics() {
               <p className="text-gray-600 mb-4">
                 {filters.productId &&
                   "This product hasn't been sold yet in the selected date range."}
-                {filters.beauticianId &&
+                {filters.specialistId &&
                   !filters.productId &&
                   "This specialist hasn't sold any products yet in the selected date range."}
               </p>
@@ -478,7 +478,7 @@ export default function ProfitAnalytics() {
             { id: "overview", name: "Overview" },
             { id: "products", name: "Products" },
             { id: "categories", name: "Categories" },
-            { id: "specialists", name: "Beauticians" },
+            { id: "specialists", name: "Specialists" },
             { id: "trends", name: "Trends" },
           ].map((tab) => (
             <button
@@ -742,12 +742,12 @@ export default function ProfitAnalytics() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {specialistData.map((specialist) => (
-                    <tr key={specialist.beauticianId || "platform"}>
+                    <tr key={specialist.specialistId || "platform"}>
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         <div className="font-medium text-gray-900 text-xs sm:text-sm">
                           {specialist.beauticianName}
                         </div>
-                        {specialist.beauticianId ? (
+                        {specialist.specialistId ? (
                           <div className="text-xs text-[#2563EB]">
                             Individual Owner
                           </div>

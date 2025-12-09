@@ -29,11 +29,14 @@ export default function StaffList({
 
   // Filter staff
   const filteredStaff = staff.filter((member) => {
+    // Skip null/undefined members
+    if (!member || !member._id) return false;
+
     const matchesSearch =
-      member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.specialties?.some((s) =>
-        s.toLowerCase().includes(searchTerm.toLowerCase())
+        s?.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
     const matchesActive =
@@ -45,18 +48,19 @@ export default function StaffList({
     const matchesService =
       filterService === "all" ||
       services.some((s) => {
-        if (s._id !== filterService) return false;
+        if (!s || !s._id || s._id !== filterService) return false;
 
         // Compare as strings to handle ObjectId comparison
         const primaryId =
           typeof s.primaryBeauticianId === "object"
-            ? s.primaryBeauticianId._id || s.primaryBeauticianId.toString()
+            ? s.primaryBeauticianId?._id || s.primaryBeauticianId?.toString()
             : s.primaryBeauticianId;
 
         const hasAsPrimary = primaryId === member._id;
         const hasAsAdditional = s.additionalBeauticianIds?.some((id) => {
+          if (!id) return false;
           const additionalId =
-            typeof id === "object" ? id._id || id.toString() : id;
+            typeof id === "object" ? id?._id || id?.toString() : id;
           return additionalId === member._id;
         });
 
@@ -69,16 +73,19 @@ export default function StaffList({
   // Get services assigned to a staff member
   const getAssignedServices = (staffId) => {
     return services.filter((s) => {
+      if (!s || !s._id) return false;
+
       // Compare as strings to handle ObjectId comparison
       const primaryId =
         typeof s.primaryBeauticianId === "object"
-          ? s.primaryBeauticianId._id || s.primaryBeauticianId.toString()
+          ? s.primaryBeauticianId?._id || s.primaryBeauticianId?.toString()
           : s.primaryBeauticianId;
       return (
         primaryId === staffId ||
         s.additionalBeauticianIds?.some((id) => {
+          if (!id) return false;
           const additionalId =
-            typeof id === "object" ? id._id || id.toString() : id;
+            typeof id === "object" ? id?._id || id?.toString() : id;
           return additionalId === staffId;
         })
       );

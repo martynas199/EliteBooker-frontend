@@ -44,9 +44,9 @@ export default function WorkingHoursCalendar() {
         console.log("Fetched specialists:", response.data);
         setSpecialists(response.data);
 
-        // Auto-select specialist if not super admin (using legacy beauticianId field)
-        if (!isSuperAdmin && admin?.beauticianId) {
-          setSelectedSpecialistId(admin.beauticianId);
+        // Auto-select specialist if not super admin (using legacy specialistId field)
+        if (!isSuperAdmin && admin?.specialistId) {
+          setSelectedSpecialistId(admin.specialistId);
         }
       } catch (error) {
         console.error("Failed to fetch specialists:", error);
@@ -55,7 +55,7 @@ export default function WorkingHoursCalendar() {
     };
 
     fetchSpecialists();
-  }, [isSuperAdmin, admin?.beauticianId]);
+  }, [isSuperAdmin, admin?.specialistId]);
 
   // Fetch selected specialist details
   useEffect(() => {

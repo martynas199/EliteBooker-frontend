@@ -667,7 +667,7 @@ export default function AppRoutes() {
             }
           />
           <Route
-            path="features"
+            path="platform-features"
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
                 <PlatformFeatures />

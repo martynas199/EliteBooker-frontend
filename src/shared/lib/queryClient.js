@@ -62,7 +62,7 @@ export const queryKeys = {
     byId: (id) => [...queryKeys.services.all, "detail", id],
   },
 
-  // Beauticians
+  // Specialists
   specialists: {
     all: ["specialists"],
     list: () => [...queryKeys.specialists.all, "list"],
@@ -79,10 +79,10 @@ export const queryKeys = {
   appointments: {
     all: ["appointments"],
     byUser: (userId) => [...queryKeys.appointments.all, "user", userId],
-    byBeautician: (beauticianId) => [
+    byBeautician: (specialistId) => [
       ...queryKeys.appointments.all,
       "specialist",
-      beauticianId,
+      specialistId,
     ],
     byDate: (date) => [...queryKeys.appointments.all, "date", date],
   },

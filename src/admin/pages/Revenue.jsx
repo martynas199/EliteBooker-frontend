@@ -49,7 +49,7 @@ export default function Revenue() {
         regularRevenue?.specialists?.length > 0
           ? regularRevenue.specialists
           : (platformRevenue?.specialists || []).map((b) => ({
-              beauticianId: b?.beauticianId || "",
+              specialistId: b?.specialistId || "",
               specialist: b?.beauticianName || "Unknown",
               revenue: b?.bookings?.revenue || 0,
               bookings: b?.bookings?.count || 0,
@@ -123,7 +123,7 @@ export default function Revenue() {
     data?.specialists?.filter((b) =>
       selectedSpecialist === "all"
         ? true
-        : b.beauticianId === selectedSpecialist
+        : b.specialistId === selectedSpecialist
     ) || [];
 
   // Calculate filtered totals
@@ -496,7 +496,7 @@ export default function Revenue() {
                   >
                     <option value="all">All Specialists</option>
                     {data.specialists.map((b) => (
-                      <option key={b.beauticianId} value={b.beauticianId}>
+                      <option key={b.specialistId} value={b.specialistId}>
                         {b.specialist}
                       </option>
                     ))}
@@ -612,7 +612,7 @@ export default function Revenue() {
                   <div className="block md:hidden divide-y divide-gray-200">
                     {filteredSpecialists.map((specialist) => (
                       <div
-                        key={specialist.beauticianId}
+                        key={specialist.specialistId}
                         className="p-4 hover:bg-gray-50 transition-colors"
                       >
                         {/* Specialist Header */}
@@ -710,7 +710,7 @@ export default function Revenue() {
                       <tbody className="bg-white divide-y divide-gray-200">
                         {filteredSpecialists.map((specialist) => (
                           <tr
-                            key={specialist.beauticianId}
+                            key={specialist.specialistId}
                             className="hover:bg-gray-50 transition-colors"
                           >
                             <td className="px-6 py-4 whitespace-nowrap">

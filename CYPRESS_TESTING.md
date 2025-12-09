@@ -340,7 +340,7 @@ cy.getAvailableSlots(serviceId, staffId, "2024-12-01", "salon1");
 cy.createBooking(
   {
     serviceId,
-    beauticianId: staffId,
+    specialistId: staffId,
     start: "2024-12-01T10:00:00Z",
     customerName: "Test User",
     customerEmail: "test@example.com",
@@ -356,7 +356,7 @@ cy.createBooking(
 cy.initiateStripeCheckout(
   {
     serviceId,
-    beauticianId: staffId,
+    specialistId: staffId,
     start: "2024-12-01T10:00:00Z",
     paymentMode: "full",
   },

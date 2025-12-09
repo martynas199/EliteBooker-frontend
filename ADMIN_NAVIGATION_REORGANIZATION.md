@@ -70,7 +70,7 @@ Reorganized the admin dashboard navigation for better UX and logical grouping. S
 - Moved **Stripe Connect** to dedicated item under Configuration
 - Renamed **"Settings"** → **"Salon Settings"** for clarity
 - Renamed **"Profile"** → **"My Profile"** for clarity
-- Renamed **"Admin-Beautician Links"** → **"Admin Links"** (shorter)
+- Renamed **"Admin-Specialist Links"** → **"Admin Links"** (shorter)
 - Better visual hierarchy with uppercase section labels
 
 ### 4. Divider Implementation
@@ -233,7 +233,7 @@ Possible improvements:
 | ------------------------ | ---------------- | --------------------------- |
 | "Settings"               | "Salon Settings" | More specific about content |
 | "Profile"                | "My Profile"     | Clearer personal context    |
-| "Admin-Beautician Links" | "Admin Links"    | Shorter, fits better        |
+| "Admin-Specialist Links" | "Admin Links"    | Shorter, fits better        |
 | N/A                      | "Stripe Connect" | New dedicated page          |
 
 ## Section Groupings

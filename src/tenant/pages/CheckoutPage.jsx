@@ -97,7 +97,7 @@ export default function CheckoutPage() {
           .then((res) => {
             dispatch(
               setSpecialist({
-                beauticianId: res.data._id,
+                specialistId: res.data._id,
                 any: false,
                 inSalonPayment: res.data.inSalonPayment || false,
               })
@@ -163,9 +163,9 @@ export default function CheckoutPage() {
     try {
       // Prepare booking data with userId if user is logged in
       const bookingData = {
-        beauticianId: bookingBeautician?.any
+        specialistId: bookingBeautician?.any
           ? undefined
-          : bookingBeautician?.beauticianId,
+          : bookingBeautician?.specialistId,
         any: bookingBeautician?.any,
         serviceId: bookingService?.serviceId,
         variantName: bookingService?.variantName,

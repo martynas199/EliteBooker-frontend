@@ -161,7 +161,7 @@ describe("Smart Time Slot Generator", () => {
       cy.createBooking(
         {
           serviceId: "test-service-id",
-          beauticianId: "test-staff-id",
+          specialistId: "test-staff-id",
           start: futureDate.toISOString(),
           duration: 60,
           customerName: "Test Booking",
@@ -204,7 +204,7 @@ describe("Smart Time Slot Generator", () => {
       cy.createBooking(
         {
           serviceId: "test-service-id",
-          beauticianId: "test-staff-id",
+          specialistId: "test-staff-id",
           start: futureDate.toISOString(),
           duration: 60,
         },

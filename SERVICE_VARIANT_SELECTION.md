@@ -15,7 +15,7 @@ Added comprehensive service variant selection functionality that allows clients 
 **Features:**
 
 - ✅ **Visual Service Display** - Shows service image, name, category, and description
-- ✅ **Beautician Context** - Displays selected specialist information
+- ✅ **Specialist Context** - Displays selected specialist information
 - ✅ **Variant Selection** - Interactive list of all available service variants
 - ✅ **Detailed Variant Info** - Shows name, price, duration, buffer times for each variant
 - ✅ **Fallback Support** - Handles services without variants gracefully
@@ -45,7 +45,7 @@ Added comprehensive service variant selection functionality that allows clients 
 
 **New Flow:**
 
-1. **Beautician Selection** (unchanged)
+1. **Specialist Selection** (unchanged)
 2. **Service Selection** (enhanced)
    - Single variant → Direct booking
    - Multiple variants → Opens ServiceVariantSelector modal
@@ -94,7 +94,7 @@ const VariantSchema = {
 2. **Service Selection** - Click shows "Choose Option" button
 3. **Variant Modal** - Beautiful modal displays all variants with details:
    - Service image and description
-   - Beautician context ("with Sarah Johnson")
+   - Specialist context ("with Sarah Johnson")
    - Variant cards with name, duration, price, buffer info
    - Radio-style selection with visual feedback
 4. **Confirmation** - "Continue to Time Selection" proceeds to booking
@@ -149,7 +149,7 @@ BeauticianSelectionPage
   durationMin: 60,
   bufferBeforeMin: 5,
   bufferAfterMin: 15,
-  beauticianId: "beautician_id"
+  specialistId: "beautician_id"
 }
 ```
 

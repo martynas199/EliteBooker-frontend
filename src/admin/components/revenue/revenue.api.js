@@ -27,15 +27,15 @@ export const RevenueAPI = {
 
   /**
    * Get specialist earnings from Stripe Connect
-   * @param {string} beauticianId - Beautician ID
+   * @param {string} specialistId - Specialist ID
    * @param {string} startDate - YYYY-MM-DD
    * @param {string} endDate - YYYY-MM-DD
-   * @returns {Promise<Object>} Beautician earnings breakdown
+   * @returns {Promise<Object>} Specialist earnings breakdown
    */
-  async getBeauticianEarnings(beauticianId, startDate, endDate) {
+  async getBeauticianEarnings(specialistId, startDate, endDate) {
     const params = new URLSearchParams({ startDate, endDate });
     const res = await api.get(
-      `/reports/specialist-earnings/${beauticianId}?${params}`
+      `/reports/specialist-earnings/${specialistId}?${params}`
     );
     return res.data;
   },

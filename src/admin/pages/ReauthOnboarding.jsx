@@ -12,7 +12,7 @@ export default function ReauthOnboarding() {
 
   const handleRetryOnboarding = async () => {
     try {
-      if (!admin?.beauticianId || !admin?.email) {
+      if (!admin?.specialistId || !admin?.email) {
         setError("Admin credentials not found. Please log in again.");
         return;
       }
@@ -22,7 +22,7 @@ export default function ReauthOnboarding() {
 
       // Create a new onboarding link
       const result = await StripeConnectAPI.createOnboardingLink(
-        admin.beauticianId,
+        admin.specialistId,
         admin.email
       );
 

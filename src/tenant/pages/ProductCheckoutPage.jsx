@@ -23,7 +23,7 @@ export default function ProductCheckoutPage() {
   const specialists = new Set(
     cartItems
       .map(
-        (item) => item.product?.beauticianId?._id || item.product?.beauticianId
+        (item) => item.product?.specialistId?._id || item.product?.specialistId
       )
       .filter(Boolean)
   );

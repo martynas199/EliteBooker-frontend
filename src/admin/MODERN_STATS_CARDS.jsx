@@ -4,7 +4,7 @@
   /* Stats Cards - Modern Design */
 }
 {
-  (isSuperAdmin || admin?.beauticianId) && (
+  (isSuperAdmin || admin?.specialistId) && (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
       {/* Revenue Card */}
       <div className="group relative bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden">

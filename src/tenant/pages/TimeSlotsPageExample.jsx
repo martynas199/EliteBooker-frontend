@@ -47,7 +47,7 @@ export default function TimeSlotsPageWithLocks() {
         setLoading(true);
         // Your existing slot loading logic here
         const slots = await fetchAvailableSlots({
-          beauticianId: booking.beauticianId,
+          specialistId: booking.specialistId,
           serviceId: booking.serviceId,
           date: booking.date,
         });
@@ -78,7 +78,7 @@ export default function TimeSlotsPageWithLocks() {
     // Acquire lock on new slot
     const result = await acquireLock({
       tenantId: tenant.id,
-      resourceId: booking.beauticianId,
+      resourceId: booking.specialistId,
       date: slot.date,
       startTime: slot.time,
       duration: booking.durationMin,

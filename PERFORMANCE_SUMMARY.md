@@ -135,7 +135,7 @@ const events = useMemo(() => {
   let filtered = allAppointments.filter(
     (apt) =>
       selectedSpecialist === "all" ||
-      apt.beauticianId?._id === selectedSpecialist
+      apt.specialistId?._id === selectedSpecialist
   );
 
   return filtered.map((apt) => ({
@@ -181,7 +181,7 @@ r.get("/", async (req, res) => {
     .skip(skip)
     .limit(limit)
     .populate({ path: "serviceId", select: "name" })
-    .populate({ path: "beauticianId", select: "name" })
+    .populate({ path: "specialistId", select: "name" })
     .lean();
 
   res.json({

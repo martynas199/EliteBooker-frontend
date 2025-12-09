@@ -62,7 +62,7 @@ export default function HeroSectionDisplay() {
               )}
             </div>
 
-            {/* Center Section - Beautician Image */}
+            {/* Center Section - Specialist Image */}
             {section.centerImage?.url && (
               <div className="relative h-[400px] md:h-[500px] overflow-hidden animate-slideInBottom">
                 <img

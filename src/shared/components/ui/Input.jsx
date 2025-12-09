@@ -7,7 +7,7 @@ export function Input({ className = "", ...props }) {
   return (
     <input
       className={[
-        "bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-250 hover:border-white/30 hover:bg-white/15",
+        "bg-white border border-gray-300 rounded-xl px-4 py-3 w-full text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all duration-250 hover:border-gray-400",
         className,
       ]
         .join(" ")
@@ -26,7 +26,7 @@ export function Textarea({ className = "", ...props }) {
   return (
     <textarea
       className={[
-        "bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-250 hover:border-white/30 hover:bg-white/15 resize-vertical min-h-[100px]",
+        "bg-white border border-gray-300 rounded-xl px-4 py-3 w-full text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all duration-250 hover:border-gray-400 resize-vertical min-h-[100px]",
         className,
       ]
         .join(" ")

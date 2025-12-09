@@ -102,7 +102,7 @@ export const appointmentKeys = {
 
 /**
  * Fetch appointments with automatic caching and deduplication
- * @param {Object} params - { page, limit, beauticianId, status }
+ * @param {Object} params - { page, limit, specialistId, status }
  */
 export function useAppointments(params = {}) {
   return useQuery({
@@ -111,7 +111,7 @@ export function useAppointments(params = {}) {
       const queryParams = new URLSearchParams({
         page: params.page || 1,
         limit: params.limit || 50,
-        ...(params.beauticianId && { beauticianId: params.beauticianId }),
+        ...(params.specialistId && { specialistId: params.specialistId }),
         ...(params.status && { status: params.status }),
       });
 
@@ -336,7 +336,7 @@ export default function Appointments() {
     useAppointments({
       page,
       limit: 50,
-      beauticianId:
+      specialistId:
         selectedSpecialist !== "all" ? selectedSpecialist : undefined,
       status: selectedStatus !== "all" ? selectedStatus : undefined,
     });
@@ -537,9 +537,9 @@ useEffect(() => {
 
 ---
 
-## 🏢 Step 6: Beauticians & Services Hooks
+## 🏢 Step 6: Specialists & Services Hooks
 
-### Beauticians Hook
+### Specialists Hook
 
 **File:** `src/features/staff/staff.hooks.js` (CREATE NEW)
 
@@ -573,14 +573,14 @@ export function useBeauticians() {
 /**
  * Fetch single specialist
  */
-export function useBeautician(beauticianId) {
+export function useBeautician(specialistId) {
   return useQuery({
-    queryKey: beauticiansKeys.detail(beauticianId),
+    queryKey: beauticiansKeys.detail(specialistId),
     queryFn: async () => {
-      const response = await api.get(`/specialists/${beauticianId}`);
+      const response = await api.get(`/specialists/${specialistId}`);
       return response.data;
     },
-    enabled: !!beauticianId, // Only fetch if ID exists
+    enabled: !!specialistId, // Only fetch if ID exists
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -598,7 +598,7 @@ export function useCreateBeautician() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: beauticiansKeys.all });
-      toast.success("Beautician created successfully");
+      toast.success("Specialist created successfully");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to create specialist");
@@ -613,16 +613,16 @@ export function useUpdateBeautician() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ beauticianId, data }) => {
-      const response = await api.patch(`/specialists/${beauticianId}`, data);
+    mutationFn: async ({ specialistId, data }) => {
+      const response = await api.patch(`/specialists/${specialistId}`, data);
       return response.data;
     },
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: beauticiansKeys.all });
       queryClient.invalidateQueries({
-        queryKey: beauticiansKeys.detail(variables.beauticianId),
+        queryKey: beauticiansKeys.detail(variables.specialistId),
       });
-      toast.success("Beautician updated successfully");
+      toast.success("Specialist updated successfully");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to update specialist");
@@ -787,7 +787,7 @@ export default function Dashboard() {
     isError: appointmentsError,
   } = useAppointments({
     // Backend can filter by specialist if not super admin
-    beauticianId: !isSuperAdmin && admin?.beauticianId ? admin.beauticianId : undefined,
+    specialistId: !isSuperAdmin && admin?.specialistId ? admin.specialistId : undefined,
   });
 
   // Fetch specialists - automatically cached and deduplicated
@@ -807,7 +807,7 @@ export default function Dashboard() {
     // Client-side filter if super admin selects specific specialist
     if (isSuperAdmin && selectedSpecialist !== "all") {
       filtered = filtered.filter(
-        (apt) => apt.beauticianId?._id === selectedSpecialist
+        (apt) => apt.specialistId?._id === selectedSpecialist
       );
     }
 

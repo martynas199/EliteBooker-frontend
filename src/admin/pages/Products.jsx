@@ -21,7 +21,7 @@ export default function Products() {
     ingredients: "",
     howToApply: "",
     category: "Skincare",
-    beauticianId: "",
+    specialistId: "",
     featured: false,
     active: true,
     order: 0,
@@ -293,7 +293,7 @@ export default function Products() {
       ingredients: product.ingredients || "",
       howToApply: product.howToApply || "",
       category: product.category || "Skincare",
-      beauticianId: product.beauticianId || "",
+      specialistId: product.specialistId || "",
       featured: product.featured || false,
       active: product.active ?? true,
       order: product.order || 0,
@@ -357,7 +357,7 @@ export default function Products() {
       ingredients: "",
       howToApply: "",
       category: "Skincare",
-      beauticianId: "",
+      specialistId: "",
       featured: false,
       active: true,
       order: 0,
@@ -568,14 +568,14 @@ export default function Products() {
               {/* Specialist (Product Owner) */}
               <FormField
                 label="Product Owner"
-                htmlFor="beauticianId"
+                htmlFor="specialistId"
                 help="Leave empty for platform-owned products. Select specialist for Stripe Connect payments."
               >
                 <select
-                  id="beauticianId"
-                  value={formData.beauticianId}
+                  id="specialistId"
+                  value={formData.specialistId}
                   onChange={(e) =>
-                    setFormData({ ...formData, beauticianId: e.target.value })
+                    setFormData({ ...formData, specialistId: e.target.value })
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                 >
@@ -1174,10 +1174,10 @@ export default function Products() {
                     )}
                   </p>
                   {/* Owner Info */}
-                  {product.beauticianId && (
+                  {product.specialistId && (
                     <p className="text-xs text-[#2563EB] font-medium mt-0.5 break-words">
                       👤 Owned by:{" "}
-                      {specialists.find((b) => b._id === product.beauticianId)
+                      {specialists.find((b) => b._id === product.specialistId)
                         ?.name || "Unknown"}
                     </p>
                   )}
@@ -1216,12 +1216,12 @@ export default function Products() {
                         )}
                       </>
                     )}
-                    {product.beauticianId && (
+                    {product.specialistId && (
                       <span className="text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">
-                        💰 Beautician Product
+                        💰 Specialist Product
                       </span>
                     )}
-                    {!product.beauticianId && (
+                    {!product.specialistId && (
                       <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
                         🏢 Platform Product
                       </span>

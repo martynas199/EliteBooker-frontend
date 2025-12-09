@@ -174,16 +174,16 @@ const ReauthOnboarding = lazy(() => import("../admin/pages/ReauthOnboarding"));
 **OnboardingComplete** uses:
 
 ```javascript
-ConnectAPI.getAccountStatus(beauticianId);
+ConnectAPI.getAccountStatus(specialistId);
 ```
 
-- Backend: `GET /api/connect/status/:beauticianId`
+- Backend: `GET /api/connect/status/:specialistId`
 - Returns: connection status, charges enabled, requirements
 
 **ReauthOnboarding** uses:
 
 ```javascript
-ConnectAPI.createOnboardingLink(beauticianId, email);
+ConnectAPI.createOnboardingLink(specialistId, email);
 ```
 
 - Backend: `POST /api/connect/onboard`

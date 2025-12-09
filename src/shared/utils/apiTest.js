@@ -14,7 +14,7 @@ export const testApiConnection = async () => {
 
     console.log("2️⃣ Testing /api/specialists...");
     const beauticiansResponse = await api.get("/specialists");
-    console.log("✅ Beauticians response:", beauticiansResponse);
+    console.log("✅ Specialists response:", beauticiansResponse);
 
     console.log("3️⃣ Testing /api/auth/me...");
     const authResponse = await api.get("/auth/me");

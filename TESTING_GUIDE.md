@@ -26,7 +26,7 @@ This tests the page without going through Stripe onboarding.
 
    - You should see a loading spinner initially
    - Then one of these states:
-     - ❌ **Error state**: "Beautician ID not found" (if not logged in as admin)
+     - ❌ **Error state**: "Specialist ID not found" (if not logged in as admin)
      - 🟡 **Incomplete/Not Connected**: If no Stripe account exists
      - 🟢 **Success**: If Stripe account is already connected
 
@@ -197,7 +197,7 @@ Once connected, test the earnings features:
      - **Platform Revenue (Stripe Connect)** card appears at top
      - Shows 5 metrics:
        - Platform Fees
-       - Beautician Earnings
+       - Specialist Earnings
        - Bookings
        - Products
        - Total Revenue
@@ -208,13 +208,13 @@ Once connected, test the earnings features:
 
 ## 🐛 Common Issues & Solutions
 
-### Issue 1: "Beautician ID not found"
+### Issue 1: "Specialist ID not found"
 
 **Cause**: You're not logged in as an admin with a specialist account  
 **Solution**:
 
 - Log in to admin panel first
-- Ensure your admin account has a `beauticianId` field in the database
+- Ensure your admin account has a `specialistId` field in the database
 
 ### Issue 2: "Failed to create onboarding link"
 

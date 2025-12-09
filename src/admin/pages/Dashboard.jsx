@@ -65,7 +65,7 @@ export default function Dashboard() {
       console.log("[Dashboard] Admin info:", {
         admin: admin,
         isSuperAdmin,
-        beauticianId: admin?.beauticianId,
+        specialistId: admin?.specialistId,
         role: admin?.role,
       });
 
@@ -76,17 +76,17 @@ export default function Dashboard() {
           "[Dashboard] Super admin - showing all appointments:",
           appointments.length
         );
-      } else if (admin?.beauticianId) {
+      } else if (admin?.specialistId) {
         // Regular admin with linked specialist - only show their specialist's appointments
         const originalCount = appointments.length;
         appointments = appointments.filter(
-          (apt) => apt.beauticianId?._id === admin.beauticianId
+          (apt) => apt.specialistId?._id === admin.specialistId
         );
         console.log(
-          `[Dashboard] Regular admin with specialist ${admin.beauticianId} - filtered from ${originalCount} to ${appointments.length} appointments`
+          `[Dashboard] Regular admin with specialist ${admin.specialistId} - filtered from ${originalCount} to ${appointments.length} appointments`
         );
         // Auto-select the specialist's filter
-        setSelectedSpecialist(admin.beauticianId);
+        setSelectedSpecialist(admin.specialistId);
       } else {
         // Regular admin without linked specialist - show no appointments
         console.log(
@@ -103,7 +103,7 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, [admin?.beauticianId, isSuperAdmin]); // Only recreate if these change
+  }, [admin?.specialistId, isSuperAdmin]); // Only recreate if these change
 
   useEffect(() => {
     fetchData();
@@ -130,7 +130,7 @@ export default function Dashboard() {
     // Filter by specialist if selected
     if (selectedSpecialist !== "all") {
       filtered = filtered.filter(
-        (apt) => apt.beauticianId?._id === selectedSpecialist
+        (apt) => apt.specialistId?._id === selectedSpecialist
       );
     }
 
@@ -180,7 +180,7 @@ export default function Dashboard() {
     let filtered = allAppointments;
     if (selectedSpecialist !== "all") {
       filtered = filtered.filter(
-        (apt) => apt.beauticianId?._id === selectedSpecialist
+        (apt) => apt.specialistId?._id === selectedSpecialist
       );
     }
 
@@ -371,7 +371,7 @@ export default function Dashboard() {
           <p className="text-gray-500 mt-2 text-base">
             {isSuperAdmin
               ? t("viewManageAllAppointments", language)
-              : admin?.beauticianId
+              : admin?.specialistId
               ? t("viewAppointmentsLinkedBeautician", language)
               : t("noBeauticianLinked", language)}
           </p>
@@ -404,7 +404,7 @@ export default function Dashboard() {
 
         {/* Show info for salon-admin without linked specialist */}
         {!isSuperAdmin &&
-          !admin?.beauticianId &&
+          !admin?.specialistId &&
           admin?.role === "salon-admin" && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex items-center gap-2">
@@ -435,7 +435,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Cards */}
-      {(isSuperAdmin || admin?.beauticianId) && (
+      {(isSuperAdmin || admin?.specialistId) && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 animate-fade-in">
           {/* Revenue Card */}
           <div className="relative bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden">
@@ -637,7 +637,7 @@ export default function Dashboard() {
       {/* Today's Appointments Widget */}
       {(() => {
         // Don't show today's appointments if regular admin has no linked specialist
-        if (!isSuperAdmin && !admin?.beauticianId) {
+        if (!isSuperAdmin && !admin?.specialistId) {
           return null;
         }
 
@@ -648,7 +648,7 @@ export default function Dashboard() {
             return (
               aptDate.isSame(today) &&
               (selectedSpecialist === "all" ||
-                apt.beauticianId?._id === selectedSpecialist)
+                apt.specialistId?._id === selectedSpecialist)
             );
           })
           .sort((a, b) => new Date(a.start) - new Date(b.start));
@@ -713,7 +713,7 @@ export default function Dashboard() {
                     {apt.serviceId?.name || apt.variantName}
                   </div>
                   <div className="text-xs text-brand-600 font-medium mt-1">
-                    👤 {apt.beauticianId?.name || "No specialist assigned"}
+                    👤 {apt.specialistId?.name || "No specialist assigned"}
                   </div>
                 </div>
               ))}
@@ -1231,7 +1231,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Service & Beautician */}
+              {/* Service & Specialist */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
@@ -1262,7 +1262,7 @@ export default function Dashboard() {
                   )}
                 </div>
 
-                {selectedEvent.resource.beauticianId?.name && (
+                {selectedEvent.resource.specialistId?.name && (
                   <div className="bg-gray-50 rounded-lg p-4">
                     <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
                       <svg
@@ -1278,10 +1278,10 @@ export default function Dashboard() {
                           d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                         />
                       </svg>
-                      Beautician
+                      Specialist
                     </h4>
                     <p className="text-gray-900 font-medium">
-                      {selectedEvent.resource.beauticianId.name}
+                      {selectedEvent.resource.specialistId.name}
                     </p>
                   </div>
                 )}

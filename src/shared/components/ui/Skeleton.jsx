@@ -50,7 +50,7 @@ export function ServiceCardSkeleton() {
 }
 
 /**
- * Beautician card skeleton
+ * Specialist card skeleton
  */
 export function BeauticianCardSkeleton() {
   return (
