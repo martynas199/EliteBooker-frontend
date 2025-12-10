@@ -72,6 +72,7 @@ const navigationConfig = [
     items: [
       { label: "Hero Sections", path: "/admin/hero-sections" },
       { label: "About Us Page", path: "/admin/about-us" },
+      { label: "Contact Page", path: "/admin/settings" },
       { label: "Blog Posts", path: "/admin/blog-posts" },
       { label: "Branding", path: "/admin/branding" },
     ],
@@ -81,8 +82,6 @@ const navigationConfig = [
     icon: "Sliders",
     items: [
       { label: "Stripe Connect", path: "/admin/stripe-connect" },
-      { label: "Salon Settings", path: "/admin/tenant-settings" },
-      { label: "General Settings", path: "/admin/settings" },
       { label: "Features & Subscriptions", path: "/admin/platform-features" },
       { label: "Admin Links", path: "/admin/admin-links" },
     ],

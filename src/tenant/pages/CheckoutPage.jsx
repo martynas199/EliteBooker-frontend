@@ -206,44 +206,7 @@ export default function CheckoutPage() {
         noindex={true}
       />
       {/* Fixed background layer */}
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 -z-10">
-        {/* Animated gradient orbs */}
-        <motion.div
-          animate={{
-            x: [0, 100, 0],
-            y: [0, -100, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            x: [0, -100, 0],
-            y: [0, 100, 0],
-            scale: [1, 1.3, 1],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"
-        />
-
-        {/* Noise texture overlay */}
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
-          }}
-        />
-      </div>
+      <div className="fixed inset-0 bg-white -z-10"></div>
 
       <div className="min-h-screen relative">
         <div className="max-w-6xl mx-auto px-4 py-10 space-y-8">
@@ -254,8 +217,8 @@ export default function CheckoutPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl p-8 space-y-8">
-              <h1 className="text-4xl md:text-5xl font-bold text-center mb-2 tracking-tight text-white">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-8 space-y-8">
+              <h1 className="text-4xl md:text-5xl font-bold text-center mb-2 tracking-tight text-gray-900">
                 Checkout
               </h1>
 
@@ -265,10 +228,10 @@ export default function CheckoutPage() {
                   <div className="flex items-start gap-3">
                     <span className="text-2xl">💳</span>
                     <div>
-                      <div className="font-semibold text-green-400 mb-1">
+                      <div className="font-semibold text-gray-900 mb-1">
                         Pay in Salon
                       </div>
-                      <div className="text-sm text-white/80">
+                      <div className="text-sm text-gray-700">
                         You'll only pay a £{bookingFee.toFixed(2)} booking fee
                         now. The full service amount of{" "}
                         {formatPrice(servicePrice)} will be paid directly at the
@@ -281,7 +244,7 @@ export default function CheckoutPage() {
 
               <div className="grid gap-8 lg:grid-cols-2">
                 <div className="space-y-6">
-                  <div className="font-bold text-xl mb-2 text-white">
+                  <div className="font-bold text-xl mb-2 text-gray-900">
                     Your Details
                   </div>
                   <FormField
@@ -339,15 +302,15 @@ export default function CheckoutPage() {
 
                   {/* Sign-in prompt for guests */}
                   {!user && (
-                    <div className="p-4 bg-white/5 border border-white/20 rounded-xl text-sm backdrop-blur-sm">
+                    <div className="p-4 border border-gray-200 rounded-xl text-sm">
                       <div className="flex items-start gap-2">
-                        <span className="text-green-400 mt-0.5">ℹ️</span>
+                        <span className="mt-0.5">ℹ️</span>
                         <div>
-                          <span className="text-white/80">
+                          <span className="text-gray-700">
                             <Link
                               to="/login"
                               state={{ from: location.pathname }}
-                              className="text-green-400 hover:text-green-300 font-semibold underline"
+                              className="text-gray-900 hover:text-black font-semibold underline"
                             >
                               Sign in
                             </Link>{" "}
@@ -355,7 +318,7 @@ export default function CheckoutPage() {
                             <Link
                               to="/register"
                               state={{ from: location.pathname }}
-                              className="text-green-400 hover:text-green-300 font-semibold underline"
+                              className="text-gray-900 hover:text-black font-semibold underline"
                             >
                               create an account
                             </Link>{" "}
@@ -368,14 +331,14 @@ export default function CheckoutPage() {
                   )}
 
                   {/* Cancellation Policy Link */}
-                  <div className="text-sm text-white/60 flex items-center gap-1.5">
+                  <div className="text-sm text-gray-600 flex items-center gap-1.5">
                     <span>📋</span>
                     <span>Review our</span>
                     <Link
                       to="/faq"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-green-400 hover:text-green-300 underline font-semibold"
+                      className="text-gray-900 hover:text-black underline font-semibold"
                     >
                       cancellation policy
                     </Link>
@@ -414,12 +377,12 @@ export default function CheckoutPage() {
                   </div>
                 </div>
                 <div className="lg:sticky lg:top-8">
-                  <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
-                    <div className="font-bold mb-4 text-xl text-white">
+                  <div className="p-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
+                    <div className="font-bold mb-4 text-xl text-gray-900">
                       Summary
                     </div>
-                    <div className="text-sm text-white/60 mb-1">Service</div>
-                    <div className="flex items-center justify-between mb-4 text-white">
+                    <div className="text-sm text-gray-600 mb-1">Service</div>
+                    <div className="flex items-center justify-between mb-4 text-gray-900">
                       <div className="font-medium">
                         {bookingService?.serviceName} —{" "}
                         {bookingService?.variantName}
@@ -428,30 +391,32 @@ export default function CheckoutPage() {
                         {formatPrice(servicePrice)}
                       </div>
                     </div>
-                    <div className="flex items-center justify-between mb-4 pt-3 border-t border-white/10">
-                      <div className="text-sm text-white/60">Booking Fee</div>
-                      <div className="text-sm font-semibold text-white">
+                    <div className="flex items-center justify-between mb-4 pt-3 border-t border-gray-200">
+                      <div className="text-sm text-gray-600">Booking Fee</div>
+                      <div className="text-sm font-semibold text-gray-900">
                         {formatPrice(bookingFee)}
                       </div>
                     </div>
-                    <div className="flex items-center justify-between mb-4 pt-3 border-t border-white/20">
-                      <div className="font-bold text-lg text-white">Total</div>
-                      <div className="font-bold text-2xl text-green-400">
+                    <div className="flex items-center justify-between mb-4 pt-3 border-t border-gray-300">
+                      <div className="font-bold text-lg text-gray-900">
+                        Total
+                      </div>
+                      <div className="font-bold text-2xl text-gray-900">
                         {formatPrice(totalAmount)}
                       </div>
                     </div>
                     {bookingBeautician?.inSalonPayment && (
-                      <div className="text-sm text-white/70 mb-3 p-3 bg-white/5 rounded-lg">
+                      <div className="text-sm text-gray-700 mb-3 p-3 rounded-lg">
                         Full service amount {formatPrice(servicePrice)} payable
                         in salon.
                       </div>
                     )}
                     {time && (
-                      <div className="mt-4 p-3 bg-white/5 rounded-lg">
-                        <div className="text-sm text-white/60 mb-1">
+                      <div className="mt-4 p-3 rounded-lg">
+                        <div className="text-sm text-gray-600 mb-1">
                           Appointment Time
                         </div>
-                        <div className="text-white font-semibold">
+                        <div className="text-gray-900 font-semibold">
                           {new Date(time).toLocaleString()}
                         </div>
                       </div>

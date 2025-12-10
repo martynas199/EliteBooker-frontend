@@ -9,13 +9,15 @@ export default function Settings() {
   const [formData, setFormData] = useState({
     salonName: "",
     salonDescription: "",
-    salonAddress: "",
+    salonAddress: {
+      street: "",
+      city: "",
+      postalCode: "",
+      country: "",
+    },
     salonPhone: "",
     salonEmail: "",
-    heroImage: null,
   });
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -39,14 +41,15 @@ export default function Settings() {
       setFormData({
         salonName: settings.salonName || "",
         salonDescription: settings.salonDescription || "",
-        salonAddress: settings.salonAddress || "",
+        salonAddress: settings.salonAddress || {
+          street: "",
+          city: "",
+          postalCode: "",
+          country: "",
+        },
         salonPhone: settings.salonPhone || "",
         salonEmail: settings.salonEmail || "",
-        heroImage: settings.heroImage || null,
       });
-      if (settings.heroImage?.url) {
-        setImagePreview(settings.heroImage.url);
-      }
 
       // Load working hours from settings
       if (settings.workingHours) {
@@ -227,51 +230,18 @@ export default function Settings() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSave = async () => {
     setSaving(true);
     setMessage({ type: "", text: "" });
 
     try {
-      // 1. Upload image if a new one was selected
-      let heroImageData = formData.heroImage;
-
-      if (imageFile) {
-        const imageFormData = new FormData();
-        imageFormData.append("image", imageFile);
-
-        const imageResponse = await api.post(
-          "/settings/upload-hero",
-          imageFormData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        heroImageData = imageResponse.data.heroImage;
-      }
-
-      // 2. Update settings
+      // Update settings
       await api.patch("/settings", {
         salonName: formData.salonName,
         salonDescription: formData.salonDescription,
         salonAddress: formData.salonAddress,
         salonPhone: formData.salonPhone,
         salonEmail: formData.salonEmail,
-        heroImage: heroImageData,
       });
 
       setMessage({
@@ -281,7 +251,6 @@ export default function Settings() {
 
       // Reload settings to get the updated data
       await loadSettings();
-      setImageFile(null);
 
       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
     } catch (error) {
@@ -298,10 +267,11 @@ export default function Settings() {
     <div className="max-w-4xl">
       <div className="mb-6">
         <h1 className="text-2xl font-serif font-bold text-gray-900 tracking-wide mb-2">
-          Business Settings
+          Contact Page / Business Details
         </h1>
         <p className="text-gray-600 font-light leading-relaxed">
-          Manage your business information, description, and hero image.
+          Manage your business contact information, opening hours, and details
+          shown on the contact page.
         </p>
       </div>
 
@@ -309,7 +279,7 @@ export default function Settings() {
         <div className="text-center py-8 text-gray-500">Loading...</div>
       ) : (
         <div className="space-y-6">
-          {/* Salon Information Form */}
+          {/* Contact Information Form */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <svg
@@ -322,11 +292,15 @@ export default function Settings() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                 />
               </svg>
-              <span>Business Information</span>
+              <span>Contact Information</span>
             </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              This information is displayed on your public contact page and
+              throughout your website.
+            </p>
 
             <div className="space-y-4">
               {/* Salon Name */}
@@ -343,38 +317,75 @@ export default function Settings() {
                 />
               </div>
 
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
-                <textarea
-                  value={formData.salonDescription}
-                  onChange={(e) =>
-                    handleChange("salonDescription", e.target.value)
-                  }
-                  placeholder="e.g., Specialising in Hair Extensions, Cellulite Treatments, Brow & Lash - luxury beauty rituals."
-                  rows={4}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  This description appears on the booking page and salon details
-                  page.
-                </p>
-              </div>
-
               {/* Address */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
                   Address
                 </label>
-                <input
-                  type="text"
-                  value={formData.salonAddress}
-                  onChange={(e) => handleChange("salonAddress", e.target.value)}
-                  placeholder="e.g., 123 Main Street, London, SW1A 1AA"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                />
+                <div className="space-y-3">
+                  <input
+                    type="text"
+                    value={formData.salonAddress.street}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        salonAddress: {
+                          ...prev.salonAddress,
+                          street: e.target.value,
+                        },
+                      }))
+                    }
+                    placeholder="Street Address"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      type="text"
+                      value={formData.salonAddress.city}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          salonAddress: {
+                            ...prev.salonAddress,
+                            city: e.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="City"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                    />
+                    <input
+                      type="text"
+                      value={formData.salonAddress.postalCode}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          salonAddress: {
+                            ...prev.salonAddress,
+                            postalCode: e.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="Postal Code"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.salonAddress.country}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        salonAddress: {
+                          ...prev.salonAddress,
+                          country: e.target.value,
+                        },
+                      }))
+                    }
+                    placeholder="Country"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                  />
+                </div>
               </div>
 
               {/* Phone & Email */}
@@ -478,81 +489,6 @@ export default function Settings() {
                   </div>
                 );
               })}
-            </div>
-          </div>
-
-          {/* Hero Image */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-gray-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              <span>Hero Image</span>
-            </h2>
-
-            <div className="space-y-4">
-              <p className="text-sm text-gray-600">
-                Upload a banner image for your business. This appears at the top
-                of the booking page. Recommended size: 1200x400px
-              </p>
-
-              {/* Image Preview */}
-              {imagePreview && (
-                <div className="relative rounded-lg overflow-hidden border border-gray-300">
-                  <img
-                    src={imagePreview}
-                    alt="Hero preview"
-                    className="w-full h-48 object-cover"
-                  />
-                </div>
-              )}
-
-              {/* Upload Button */}
-              <div>
-                <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                  <svg
-                    className="w-5 h-5 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span className="text-sm font-medium text-gray-700">
-                    {imageFile
-                      ? "Change Image"
-                      : imagePreview
-                      ? "Replace Image"
-                      : "Upload Image"}
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
-                </label>
-                {imageFile && (
-                  <p className="text-sm text-green-600 mt-2">
-                    ✓ New image selected: {imageFile.name}
-                  </p>
-                )}
-              </div>
             </div>
           </div>
 

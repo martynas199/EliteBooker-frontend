@@ -7,6 +7,8 @@ import { useTenant } from "../../shared/contexts/TenantContext";
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
 import { setService, setSpecialist } from "../state/bookingSlice";
 import SEOHead from "../../shared/components/seo/SEOHead";
+import ServiceCard from "../components/ServiceCard";
+import SpecialistCard from "../components/SpecialistCard";
 
 /**
  * Professional Toggle Switch
@@ -119,195 +121,6 @@ function EmptyState({ type }) {
 }
 
 /**
- * SERVICE CARD COMPONENT
- */
-function ServiceCard({ service, onClick, formatPrice, index }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group h-full cursor-pointer"
-      onClick={onClick}
-    >
-      <div className="h-full bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 hover:border-brand-300 hover:-translate-y-1">
-        {/* Service Image */}
-        {service.image?.url && (
-          <div className="relative h-48 overflow-hidden">
-            <img
-              src={service.image.url}
-              alt={service.image.alt || service.name}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-            {/* Category Badge */}
-            {service.category && (
-              <div className="absolute top-4 left-4">
-                <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-bold rounded-full shadow-lg">
-                  {service.category}
-                </span>
-              </div>
-            )}
-          </div>
-        )}
-
-        <div className="p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-brand-600 transition-colors">
-            {service.name}
-          </h3>
-
-          {service.description && (
-            <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
-              {service.description}
-            </p>
-          )}
-
-          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-            <div>
-              <div className="text-xs text-gray-500 font-medium mb-1">
-                Price
-              </div>
-              <div className="text-2xl font-bold text-brand-600">
-                {formatPrice(service.price)}
-              </div>
-            </div>
-
-            {service.durationMin && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full">
-                <svg
-                  className="w-4 h-4 text-gray-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span className="text-sm font-semibold text-gray-700">
-                  {service.durationMin} min
-                </span>
-              </div>
-            )}
-          </div>
-
-          <button className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-bold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 shadow-md hover:shadow-lg">
-            Book Now
-          </button>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-/**
- * SPECIALIST CARD COMPONENT
- * Matches the original SpecialistPage card design
- */
-function SpecialistCard({ specialist, onClick, index }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group h-full cursor-pointer"
-      onClick={onClick}
-    >
-      <div className="group cursor-pointer overflow-hidden p-0 h-[480px] rounded-2xl border-2 border-white/10 hover:border-brand-200 transition-all duration-300 hover:shadow-2xl">
-        {/* Full Card Image with Name Overlay */}
-        <div className="relative h-full w-full bg-gradient-to-br from-gray-100 to-gray-200">
-          {specialist.image?.url ? (
-            <img
-              src={specialist.image.url}
-              alt={specialist.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
-              <svg
-                className="w-24 h-24"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </div>
-          )}
-
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent group-hover:from-brand-900/90 transition-colors duration-300"></div>
-
-          {/* Content */}
-          <div className="absolute inset-0 flex flex-col justify-end p-6">
-            {/* Specialties badges at top */}
-            {specialist.specialties && specialist.specialties.length > 0 && (
-              <div className="flex-1 flex flex-wrap gap-2 content-start mb-4">
-                {specialist.specialties.slice(0, 3).map((specialty, idx) => (
-                  <span
-                    key={idx}
-                    className="px-3 py-1 bg-white/90 backdrop-blur-sm text-brand-700 text-xs font-bold rounded-full shadow-lg"
-                  >
-                    {specialty}
-                  </span>
-                ))}
-                {specialist.specialties.length > 3 && (
-                  <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-bold rounded-full shadow-lg">
-                    +{specialist.specialties.length - 3} more
-                  </span>
-                )}
-              </div>
-            )}
-
-            {/* Name & Bio */}
-            <div className="space-y-3">
-              <h3 className="text-3xl font-black text-white group-hover:text-brand-300 transition-colors">
-                {specialist.name}
-              </h3>
-
-              {specialist.bio && (
-                <p className="text-white/90 text-sm leading-relaxed line-clamp-2">
-                  {specialist.bio}
-                </p>
-              )}
-
-              {/* Call to Action */}
-              <div className="flex items-center gap-2 text-white/90 group-hover:text-brand-300 font-semibold text-sm transition-colors">
-                <span>View Services</span>
-                <svg
-                  className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-/**
  * STEP 6: MAIN LANDING PAGE COMPONENT
  */
 export default function SalonLandingLuxury() {
@@ -381,12 +194,12 @@ export default function SalonLandingLuxury() {
       );
       navigate(`/salon/${tenant?.slug}/times`);
     } else {
-      navigate("specialists");
+      navigate(`/salon/${tenant?.slug}/specialists`);
     }
   };
 
   const handleSpecialistClick = (specialist) => {
-    navigate(`specialists?selected=${specialist._id}`);
+    navigate(`/salon/${tenant?.slug}/specialists?selected=${specialist._id}`);
   };
 
   // Data
@@ -418,7 +231,7 @@ export default function SalonLandingLuxury() {
   if (loading) {
     return (
       <motion.div
-        className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
+        className="min-h-screen bg-white"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
@@ -446,7 +259,7 @@ export default function SalonLandingLuxury() {
         description={salonDescription}
       />
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Hero Section - Clean and Professional */}
           <div className="relative bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 rounded-3xl overflow-hidden mb-12 shadow-2xl">
@@ -467,6 +280,14 @@ export default function SalonLandingLuxury() {
                     onError={(e) => {
                       console.error("Hero image failed to load:", e.target.src);
                       e.target.style.display = "none";
+                    }}
+                  />
+                  {/* Configurable Overlay */}
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      backgroundColor: heroSection?.overlayColor || "#000000",
+                      opacity: heroSection?.overlayOpacity ?? 0.3,
                     }}
                   />
                 </div>
@@ -500,7 +321,7 @@ export default function SalonLandingLuxury() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
                 >
-                  {salonName}
+                  {heroSection?.title || salonName}
                 </motion.h1>
 
                 {/* Clear Value Proposition */}
@@ -510,42 +331,69 @@ export default function SalonLandingLuxury() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
                 >
-                  {salonDescription}
+                  {heroSection?.subtitle || salonDescription}
                 </motion.p>
 
                 {/* Primary CTA - Focused on Booking */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.8 }}
-                  className="flex justify-center px-4"
-                >
-                  <motion.button
-                    onClick={() =>
-                      setViewMode(
-                        hasMultipleSpecialists ? viewMode : "services"
-                      )
-                    }
-                    className="px-10 py-5 bg-white text-brand-600 font-bold text-lg rounded-xl shadow-2xl flex items-center justify-center gap-3"
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
+                {heroSection?.showCta !== false && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                    className="flex justify-center px-4"
                   >
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                    <motion.button
+                      onClick={() => {
+                        if (
+                          heroSection?.ctaLink &&
+                          heroSection.ctaLink !== "#services"
+                        ) {
+                          // Handle external links
+                          if (heroSection.ctaLink.startsWith("http")) {
+                            window.open(
+                              heroSection.ctaLink,
+                              "_blank",
+                              "noopener,noreferrer"
+                            );
+                          }
+                          // Handle internal tenant paths (e.g., "specialists", "products")
+                          else if (!heroSection.ctaLink.startsWith("/")) {
+                            navigate(
+                              `/salon/${tenant?.slug}/${heroSection.ctaLink}`
+                            );
+                          }
+                          // Handle absolute paths
+                          else {
+                            navigate(heroSection.ctaLink);
+                          }
+                        } else {
+                          // Default behavior - show services view
+                          setViewMode(
+                            hasMultipleSpecialists ? viewMode : "services"
+                          );
+                        }
+                      }}
+                      className="px-10 py-5 bg-white text-brand-600 font-bold text-lg rounded-xl shadow-2xl flex items-center justify-center gap-3"
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    Book Your Appointment
-                  </motion.button>
-                </motion.div>
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      {heroSection?.ctaText || "Book Your Appointment"}
+                    </motion.button>
+                  </motion.div>
+                )}
               </motion.div>
             </div>
           </div>
@@ -588,15 +436,17 @@ export default function SalonLandingLuxury() {
                     {services.length === 0 ? (
                       <EmptyState type="services" />
                     ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {services.map((service, index) => (
-                          <ServiceCard
+                      <div className="grid gap-6 sm:grid-cols-2 overflow-x-hidden w-full">
+                        {services.map((service) => (
+                          <div
                             key={service._id}
-                            service={service}
-                            onClick={() => handleServiceClick(service)}
-                            formatPrice={formatPrice}
-                            index={index}
-                          />
+                            className="w-full overflow-x-hidden"
+                          >
+                            <ServiceCard
+                              service={service}
+                              onClick={() => handleServiceClick(service)}
+                            />
+                          </div>
                         ))}
                       </div>
                     )}

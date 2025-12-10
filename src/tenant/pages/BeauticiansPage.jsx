@@ -9,8 +9,9 @@ import PageTransition, {
   StaggerContainer,
   StaggerItem,
 } from "../../shared/components/ui/PageTransition";
-import Card from "../../shared/components/ui/Card";
 import ServiceCard from "../components/ServiceCard";
+import SpecialistHeader from "../components/SpecialistHeader";
+import SpecialistCard from "../components/SpecialistCard";
 import ServiceVariantSelector from "../../shared/components/ServiceVariantSelector";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import { generateBreadcrumbSchema } from "../../shared/utils/schemaGenerator";
@@ -243,8 +244,8 @@ export default function SpecialistSelectionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600"></div>
       </div>
     );
   }
@@ -257,40 +258,7 @@ export default function SpecialistSelectionPage() {
 
   return (
     <>
-      {/* Dynamic Background with Spotify-style Dark Gradient */}
-      <motion.div
-        className="fixed inset-0 -z-10"
-        animate={{
-          background: selectedSpecialist
-            ? "linear-gradient(to bottom right, #172554, #312e81, #4c1d95)"
-            : "linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a)",
-        }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
-      />
-
-      {/* Noise Texture Overlay */}
-      <div
-        className="fixed inset-0 -z-10 opacity-[0.015] pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.5' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
-        }}
-      />
-
-      {/* Gradient Orbs */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
-          animate={{ y: [0, 100, 0], x: [0, 50, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
-          animate={{ y: [0, -100, 0], x: [0, -50, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </div>
-
-      <PageTransition className="min-h-screen py-8 relative z-0">
+      <PageTransition className="min-h-screen py-8">
         {/* SEO Meta Tags */}
         <SEOHead
           title="Book Appointment Wisbech | Expert Specialists - Noble Elegance"
@@ -310,10 +278,10 @@ export default function SpecialistSelectionPage() {
                 transition={{ duration: 0.6 }}
                 className="relative mb-16 sm:mb-20 text-center"
               >
-                <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-4 sm:mb-6 tracking-tight px-4">
+                <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-gray-900 mb-4 sm:mb-6 tracking-tight px-4">
                   Choose Your Specialist
                 </h1>
-                <p className="text-lg sm:text-2xl text-white/70 max-w-2xl mx-auto leading-relaxed font-light px-4">
+                <p className="text-lg sm:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-light px-4">
                   Select your preferred beauty professional to begin your
                   journey
                 </p>
@@ -325,11 +293,11 @@ export default function SpecialistSelectionPage() {
                   transition={{ duration: 0.6, delay: 0.2 }}
                   className="flex justify-center gap-4 sm:gap-8 mt-8 sm:mt-12 px-4"
                 >
-                  <div className="text-center px-6 sm:px-8 py-3 sm:py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
-                    <div className="text-3xl sm:text-4xl font-black text-white mb-1">
+                  <div className="text-center px-6 sm:px-8 py-3 sm:py-4 bg-white rounded-2xl border border-gray-200 shadow-sm">
+                    <div className="text-3xl sm:text-4xl font-black text-gray-900 mb-1">
                       {specialists.length}
                     </div>
-                    <div className="text-xs sm:text-sm text-white/60 font-semibold uppercase tracking-wider">
+                    <div className="text-xs sm:text-sm text-gray-600 font-semibold uppercase tracking-wider">
                       Specialists
                     </div>
                   </div>
@@ -337,107 +305,13 @@ export default function SpecialistSelectionPage() {
               </motion.div>
 
               <StaggerContainer className="grid gap-6 sm:gap-10 sm:grid-cols-2 lg:grid-cols-3 pt-12 pb-8">
-                {specialists.map((specialist) => (
+                {specialists.map((specialist, index) => (
                   <StaggerItem key={specialist._id} className="mt-4">
-                    <motion.div
-                      whileHover={{ y: -8, scale: 1.02 }}
-                      className="group cursor-pointer overflow-hidden p-0 h-[400px] sm:h-[480px] rounded-2xl border-2 border-white/10 hover:border-white/20 transition-all duration-300 shadow-2xl hover:shadow-white/5"
+                    <SpecialistCard
+                      specialist={specialist}
                       onClick={() => handleSpecialistSelect(specialist)}
-                    >
-                      {/* Full Card Image with Name Overlay */}
-                      <div className="relative h-full w-full bg-gradient-to-br from-gray-100 to-gray-200">
-                        {specialist.image?.url ? (
-                          <img
-                            src={specialist.image.url}
-                            alt={`${
-                              specialist.name
-                            } - Expert Specialist specializing in ${
-                              specialist.specialties?.slice(0, 2).join(", ") ||
-                              "beauty treatments"
-                            }`}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400">
-                            <svg
-                              className="w-24 h-24"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                              />
-                            </svg>
-                          </div>
-                        )}
-
-                        {/* Gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent group-hover:from-purple-900/90 transition-colors duration-300"></div>
-
-                        {/* Content */}
-                        <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-6">
-                          {/* Specialties badges at top */}
-                          {specialist.specialties &&
-                            specialist.specialties.length > 0 && (
-                              <div className="flex-1 flex flex-wrap gap-1.5 sm:gap-2 content-start mb-3 sm:mb-4">
-                                {specialist.specialties
-                                  .slice(0, 3)
-                                  .map((specialty, idx) => (
-                                    <span
-                                      key={idx}
-                                      className="px-3 py-1 bg-white/90 backdrop-blur-sm text-brand-700 text-xs font-bold rounded-full shadow-lg"
-                                    >
-                                      {specialty}
-                                    </span>
-                                  ))}
-                                {specialist.specialties.length > 3 && (
-                                  <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-bold rounded-full shadow-lg">
-                                    +{specialist.specialties.length - 3} more
-                                  </span>
-                                )}
-                              </div>
-                            )}
-
-                          {/* Name and CTA */}
-                          <div>
-                            <h3 className="text-2xl sm:text-3xl font-black text-white mb-2 sm:mb-3 group-hover:text-green-400 transition-colors">
-                              {specialist.name}
-                            </h3>
-
-                            {specialist.bio && (
-                              <p className="text-white/90 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 leading-relaxed">
-                                {specialist.bio}
-                              </p>
-                            )}
-
-                            {/* View Services Button */}
-                            <div className="flex items-center justify-between pt-4 border-t border-white/20">
-                              <span className="text-white/90 text-sm font-medium">
-                                View Services
-                              </span>
-                              <svg
-                                className="w-6 h-6 text-white group-hover:translate-x-2 transition-transform duration-300"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
+                      index={index}
+                    />
                   </StaggerItem>
                 ))}
               </StaggerContainer>
@@ -449,7 +323,7 @@ export default function SpecialistSelectionPage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 onClick={handleBack}
-                className="flex items-center gap-2 text-white/70 hover:text-white mb-6 sm:mb-8 transition-colors font-semibold group text-sm sm:text-base"
+                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 sm:mb-8 transition-colors font-semibold group text-sm sm:text-base"
               >
                 <svg
                   className="w-5 h-5 group-hover:-translate-x-1 transition-transform"
@@ -467,114 +341,12 @@ export default function SpecialistSelectionPage() {
                 Back to Specialists
               </motion.button>
 
-              {/* Specialist Header Card - Dark Style */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-8 sm:mb-10 overflow-hidden bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl"
-              >
-                <div className="flex items-start gap-4 sm:gap-6 p-4 sm:p-8">
-                  {/* Selected Specialist Image */}
-                  <div className="flex-shrink-0 w-20 h-20 sm:w-32 sm:h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 shadow-2xl ring-2 sm:ring-4 ring-white/10">
-                    {selectedSpecialist.image?.url ? (
-                      <img
-                        src={selectedSpecialist.image.url}
-                        alt={selectedSpecialist.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-white">
-                        <svg
-                          className="w-12 h-12"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                      <h1 className="text-2xl sm:text-4xl font-black text-white">
-                        {selectedSpecialist.name}
-                      </h1>
-                      <svg
-                        className="w-5 h-5 sm:w-7 sm:h-7 text-green-400 flex-shrink-0"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-
-                    {/* Specialties */}
-                    {selectedSpecialist.specialties &&
-                      selectedSpecialist.specialties.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-                          {selectedSpecialist.specialties.map(
-                            (specialty, idx) => (
-                              <span
-                                key={idx}
-                                className="px-2 sm:px-3 py-1 sm:py-1.5 bg-white/10 text-white/90 text-xs font-bold rounded-full border border-white/20"
-                              >
-                                {specialty}
-                              </span>
-                            )
-                          )}
-                        </div>
-                      )}
-
-                    {selectedSpecialist.bio && (
-                      <div>
-                        <p
-                          className={`text-white/80 leading-relaxed text-sm sm:text-base ${
-                            isBioExpanded ? "" : "line-clamp-2"
-                          }`}
-                        >
-                          {selectedSpecialist.bio}
-                        </p>
-                        {selectedSpecialist.bio.length > 120 && (
-                          <button
-                            onClick={() => setIsBioExpanded(!isBioExpanded)}
-                            className="flex items-center gap-1 text-green-400 hover:text-green-300 transition-colors mt-3 text-sm font-bold"
-                          >
-                            <span>
-                              {isBioExpanded ? "Show less" : "Read more"}
-                            </span>
-                            <svg
-                              className={`w-4 h-4 transition-transform ${
-                                isBioExpanded ? "rotate-180" : ""
-                              }`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 9l-7 7-7-7"
-                              />
-                            </svg>
-                          </button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
+              {/* Specialist Header Card */}
+              <SpecialistHeader
+                specialist={selectedSpecialist}
+                isBioExpanded={isBioExpanded}
+                onToggleBio={() => setIsBioExpanded(!isBioExpanded)}
+              />
 
               {/* Services Header */}
               <motion.div
@@ -583,17 +355,17 @@ export default function SpecialistSelectionPage() {
                 transition={{ delay: 0.2 }}
                 className="mb-8 sm:mb-10"
               >
-                <h2 className="text-3xl sm:text-4xl font-black text-white mb-2 sm:mb-3">
+                <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-2 sm:mb-3">
                   Available Services
                 </h2>
-                <p className="text-white/60 text-base sm:text-lg">
+                <p className="text-gray-600 text-base sm:text-lg">
                   Select the service you'd like to book
                 </p>
               </motion.div>
 
               {servicesLoading ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600"></div>
                 </div>
               ) : services.length === 0 ? (
                 <motion.div
@@ -617,10 +389,10 @@ export default function SpecialistSelectionPage() {
                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                       />
                     </motion.svg>
-                    <h3 className="text-xl sm:text-2xl font-black text-white mb-2 sm:mb-3">
+                    <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-2 sm:mb-3">
                       Coming Soon!
                     </h3>
-                    <p className="text-sm sm:text-base text-white/70 leading-relaxed">
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                       This specialist is preparing their service menu. In the
                       meantime, feel free to explore our other talented
                       professionals!

@@ -51,7 +51,7 @@ export default function BlogPage() {
   };
 
   return (
-    <PageTransition className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <PageTransition className="min-h-screen bg-gray-50">
       <SEOHead
         title="Let's Talk About Beauty - Blog & Beauty Tips"
         description="Discover the latest beauty trends, tips, and expert advice from Noble Elegance Beauty Salon in Wisbech. Learn about aesthetic treatments, skincare, permanent makeup, and beauty secrets from our professional team."

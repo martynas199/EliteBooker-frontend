@@ -384,7 +384,7 @@ export default function ProductsPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen">
       {/* SEO Meta Tags */}
       <SEOHead
         title="Beauty Products Wisbech | Premium Skincare & Cosmetics - Noble Elegance"

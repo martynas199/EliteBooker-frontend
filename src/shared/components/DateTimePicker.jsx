@@ -345,12 +345,14 @@ export default function DateTimePicker({
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Calendar Section */}
-        <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
-          <h3 className="text-xl font-bold text-white mb-6">Select a Date</h3>
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-6">
+            Select a Date
+          </h3>
 
           {/* Mobile: Compact date button */}
           <button
-            className="lg:hidden w-full px-3 py-3 rounded-lg text-left flex items-center justify-between mb-4 text-white hover:bg-white/10 transition-all"
+            className="lg:hidden w-full px-3 py-3 rounded-lg text-left flex items-center justify-between mb-4 text-gray-900 hover:bg-gray-100 transition-all"
             onClick={() => setMobileCalendarOpen(!mobileCalendarOpen)}
             aria-expanded={mobileCalendarOpen}
             aria-label="Open calendar"
@@ -403,7 +405,7 @@ export default function DateTimePicker({
             <div className="relative">
               {loadingAvailableDates && (
                 <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
-                  <div className="text-white font-semibold">
+                  <div className="text-gray-900 font-semibold">
                     Loading calendar...
                   </div>
                 </div>
@@ -461,15 +463,16 @@ export default function DateTimePicker({
           <style
             dangerouslySetInnerHTML={{
               __html: `
-            /* Calendar custom styles - Dark Theme */
-            .rdp-selected-custom {
-              background-color: #10b981 !important;
-              color: #000000 !important;
+            /* Calendar custom styles - Light Theme */
+            .rdp-selected-custom,
+            .rdp-selected-custom button {
+              background-color: #000000 !important;
+              color: #ffffff !important;
               font-weight: 700;
-              box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+              box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             }
             .rdp-disabled-custom {
-              background-color: rgba(254, 226, 226, 0.1) !important;
+              background-color: #fee !important;
               color: #fca5a5 !important;
               cursor: not-allowed !important;
               text-decoration: line-through;
@@ -491,14 +494,14 @@ export default function DateTimePicker({
             }
             .rdp-today-custom {
               font-weight: 700;
-              border: 2px solid #10b981 !important;
-              color: #10b981 !important;
+              border: 2px solid #000000 !important;
+              color: #000000 !important;
             }
             
             /* Fix weekday headers */
             .rdp-root {
-              --rdp-accent-color: #10b981;
-              --rdp-background-color: rgba(255, 255, 255, 0.05);
+              --rdp-accent-color: #000000;
+              --rdp-background-color: #f9fafb;
             }
             .rdp-month {
               width: 100%;
@@ -511,7 +514,7 @@ export default function DateTimePicker({
               margin-bottom: 1rem;
             }
             .rdp-caption_label {
-              color: #ffffff;
+              color: #111827;
               font-weight: 700;
               font-size: 1rem;
             }
@@ -526,14 +529,14 @@ export default function DateTimePicker({
               display: flex;
               align-items: center;
               justify-content: center;
-              color: #ffffff;
-              background-color: rgba(255, 255, 255, 0.05);
-              border: 1px solid rgba(255, 255, 255, 0.1);
+              color: #111827;
+              background-color: #f9fafb;
+              border: 1px solid #e5e7eb;
               transition: all 0.2s;
             }
             .rdp-nav button:hover {
-              background-color: rgba(255, 255, 255, 0.1);
-              border-color: rgba(16, 185, 129, 0.5);
+              background-color: #f3f4f6;
+              border-color: #9ca3af;
             }
             .rdp-nav button svg {
               width: 1rem;
@@ -542,17 +545,17 @@ export default function DateTimePicker({
             .rdp-weekdays {
               display: flex;
               margin-bottom: 0.75rem;
-              background-color: rgba(255, 255, 255, 0.05);
+              background-color: #f9fafb;
               border-radius: 0.5rem;
               padding: 0.5rem 0;
-              border: 1px solid rgba(255, 255, 255, 0.1);
+              border: 1px solid #e5e7eb;
             }
             .rdp-weekday {
               flex: 1;
               text-align: center;
               font-size: 0.875rem;
               font-weight: 700;
-              color: rgba(255, 255, 255, 0.8);
+              color: #6b7280;
               padding: 0.25rem 0;
               text-transform: uppercase;
               letter-spacing: 0.05em;
@@ -576,14 +579,14 @@ export default function DateTimePicker({
               justify-content: center;
               cursor: pointer;
               transition: all 0.2s;
-              color: #ffffff;
+              color: #111827;
               font-weight: 500;
               border: 1px solid transparent;
             }
             .rdp-day button:hover:not(:disabled) {
-              background-color: rgba(255, 255, 255, 0.1);
-              border-color: rgba(16, 185, 129, 0.3);
-              color: #10b981;
+              background-color: #f3f4f6;
+              border-color: #9ca3af;
+              color: #000000;
             }
             .rdp-day button:disabled {
               cursor: not-allowed;
@@ -595,15 +598,15 @@ export default function DateTimePicker({
         </div>
 
         {/* Time Slots Section */}
-        <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
-          <h3 className="text-xl font-bold text-white mb-6">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-6">
             {selectedDate ? "Available Times" : "Select a date first"}
           </h3>
 
           {!selectedDate && (
-            <div className="text-center py-12 text-white/50">
+            <div className="text-center py-12 text-gray-500">
               <svg
-                className="w-16 h-16 mx-auto mb-4 text-white/30"
+                className="w-16 h-16 mx-auto mb-4 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -624,7 +627,7 @@ export default function DateTimePicker({
               {[...Array(8)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-12 bg-white/5 rounded-lg animate-pulse"
+                  className="h-12 bg-gray-100 rounded-lg animate-pulse"
                   role="status"
                   aria-label="Loading time slots"
                 />
@@ -651,9 +654,9 @@ export default function DateTimePicker({
             !loadingSlots &&
             !slotsError &&
             slots.length === 0 && (
-              <div className="text-center py-12 text-white/50">
+              <div className="text-center py-12 text-gray-500">
                 <svg
-                  className="w-16 h-16 mx-auto mb-4 text-white/30"
+                  className="w-16 h-16 mx-auto mb-4 text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -665,7 +668,7 @@ export default function DateTimePicker({
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <p className="font-bold text-white text-lg">
+                <p className="font-bold text-gray-900 text-lg">
                   No available times for this date
                 </p>
                 <p className="text-sm mt-2">Please try another date</p>
@@ -691,7 +694,7 @@ export default function DateTimePicker({
                         ${
                           isSelected
                             ? "bg-green-400 text-black ring-2 ring-green-300 shadow-lg shadow-green-400/30"
-                            : "bg-white/10 text-white hover:bg-white/20 hover:text-green-400 border border-white/20 hover:border-green-400/50"
+                            : "bg-white text-gray-900 hover:bg-gray-100 border border-gray-300 hover:border-gray-400"
                         }
                         disabled:cursor-not-allowed
                         focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-transparent

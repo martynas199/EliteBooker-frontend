@@ -30,17 +30,20 @@ export default function TenantFooter() {
   const salonPhone = settings?.salonPhone;
   const salonEmail = settings?.salonEmail;
 
+  // Format address for display
+  const formattedAddress = salonAddress
+    ? [
+        salonAddress.street,
+        salonAddress.city,
+        salonAddress.postalCode,
+        salonAddress.country,
+      ]
+        .filter(Boolean)
+        .join(", ")
+    : "";
+
   return (
-    <footer className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 overflow-hidden mt-20">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-600 rounded-full blur-3xl"></div>
-      </div>
-
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
-
+    <footer className="relative bg-gray-50 text-gray-600 overflow-hidden mt-20 border-t border-gray-200">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand Section */}
@@ -51,14 +54,14 @@ export default function TenantFooter() {
                   <img
                     src={tenant.branding.logo.url}
                     alt={salonName}
-                    className="h-12 w-auto object-contain brightness-0 invert"
+                    className="h-12 w-auto object-contain"
                   />
                 ) : (
                   <>
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center text-white font-black text-xl group-hover:scale-110 transition-transform shadow-lg">
+                    <div className="w-12 h-12 rounded-xl bg-black flex items-center justify-center text-white font-black text-xl group-hover:scale-105 transition-transform">
                       {salonName?.[0]?.toUpperCase() || "B"}
                     </div>
-                    <span className="text-2xl font-black bg-gradient-to-r from-brand-400 to-brand-500 bg-clip-text text-transparent">
+                    <span className="text-2xl font-black text-gray-900">
                       {salonName}
                     </span>
                   </>
@@ -66,17 +69,17 @@ export default function TenantFooter() {
               </div>
             </Link>
 
-            <p className="text-base leading-relaxed mb-8 text-gray-400 max-w-md">
+            <p className="text-base leading-relaxed mb-8 text-gray-600 max-w-md">
               {salonDescription}
             </p>
 
             {/* Contact Info */}
-            {(salonAddress || salonPhone || salonEmail) && (
+            {(formattedAddress || salonPhone || salonEmail) && (
               <div className="space-y-3 mb-8">
-                {salonAddress && (
+                {formattedAddress && (
                   <div className="flex items-start gap-3 text-sm">
                     <svg
-                      className="w-5 h-5 text-brand-400 flex-shrink-0 mt-0.5"
+                      className="w-5 h-5 text-gray-900 flex-shrink-0 mt-0.5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -94,16 +97,16 @@ export default function TenantFooter() {
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    <span className="text-gray-400">{salonAddress}</span>
+                    <span className="text-gray-600">{formattedAddress}</span>
                   </div>
                 )}
                 {salonPhone && (
                   <a
                     href={`tel:${salonPhone}`}
-                    className="flex items-center gap-3 text-sm hover:text-brand-400 transition-colors group"
+                    className="flex items-center gap-3 text-sm hover:text-gray-900 transition-colors group"
                   >
                     <svg
-                      className="w-5 h-5 text-brand-400"
+                      className="w-5 h-5 text-gray-900"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -115,7 +118,7 @@ export default function TenantFooter() {
                         d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                       />
                     </svg>
-                    <span className="text-gray-400 group-hover:text-brand-400">
+                    <span className="text-gray-600 group-hover:text-gray-900">
                       {salonPhone}
                     </span>
                   </a>
@@ -123,10 +126,10 @@ export default function TenantFooter() {
                 {salonEmail && (
                   <a
                     href={`mailto:${salonEmail}`}
-                    className="flex items-center gap-3 text-sm hover:text-brand-400 transition-colors group"
+                    className="flex items-center gap-3 text-sm hover:text-gray-900 transition-colors group"
                   >
                     <svg
-                      className="w-5 h-5 text-brand-400"
+                      className="w-5 h-5 text-gray-900"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -138,7 +141,7 @@ export default function TenantFooter() {
                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                       />
                     </svg>
-                    <span className="text-gray-400 group-hover:text-brand-400">
+                    <span className="text-gray-600 group-hover:text-gray-900">
                       {salonEmail}
                     </span>
                   </a>
@@ -149,7 +152,7 @@ export default function TenantFooter() {
             {/* Call to Action Button */}
             <Link
               to=""
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold rounded-xl shadow-lg shadow-brand-500/30 hover:shadow-xl hover:shadow-brand-500/40 transform hover:-translate-y-0.5 transition-all duration-300"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-black hover:bg-gray-800 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
             >
               <svg
                 className="w-5 h-5"
@@ -170,8 +173,8 @@ export default function TenantFooter() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
-              <div className="w-1 h-6 bg-gradient-to-b from-brand-400 to-brand-500 rounded-full"></div>
+            <h3 className="text-gray-900 font-bold text-sm mb-4 flex items-center gap-2">
+              <div className="w-1 h-6 bg-black rounded-full"></div>
               Quick Links
             </h3>
             <ul className="space-y-3 text-sm">
@@ -186,9 +189,9 @@ export default function TenantFooter() {
                 <li key={item.label}>
                   <Link
                     to={item.path}
-                    className="text-gray-400 hover:text-brand-400 transition-colors hover:translate-x-1 inline-block transform duration-200 flex items-center gap-2 group"
+                    className="text-gray-600 hover:text-gray-900 transition-colors hover:translate-x-1 inline-block transform duration-200 flex items-center gap-2 group"
                   >
-                    <span className="w-1.5 h-1.5 bg-brand-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    <span className="w-1.5 h-1.5 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
                     {item.label}
                   </Link>
                 </li>
@@ -198,38 +201,42 @@ export default function TenantFooter() {
 
           {/* Business Hours */}
           <div>
-            <h3 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
-              <div className="w-1 h-6 bg-gradient-to-b from-brand-400 to-brand-500 rounded-full"></div>
+            <h3 className="text-gray-900 font-bold text-sm mb-4 flex items-center gap-2">
+              <div className="w-1 h-6 bg-black rounded-full"></div>
               Opening Hours
             </h3>
-            <ul className="space-y-3 text-sm text-gray-400">
+            <ul className="space-y-3 text-sm text-gray-600">
               <li className="flex justify-between gap-4">
                 <span>Monday - Friday</span>
-                <span className="font-semibold text-white">9:00 - 18:00</span>
+                <span className="font-semibold text-gray-900">
+                  9:00 - 18:00
+                </span>
               </li>
               <li className="flex justify-between gap-4">
                 <span>Saturday</span>
-                <span className="font-semibold text-white">10:00 - 16:00</span>
+                <span className="font-semibold text-gray-900">
+                  10:00 - 16:00
+                </span>
               </li>
               <li className="flex justify-between gap-4">
                 <span>Sunday</span>
-                <span className="font-semibold text-white">Closed</span>
+                <span className="font-semibold text-gray-900">Closed</span>
               </li>
             </ul>
 
             {/* Social Media */}
             <div className="mt-8">
-              <h4 className="text-white font-semibold text-sm mb-4">
+              <h4 className="text-gray-900 font-semibold text-sm mb-4">
                 Follow Us
               </h4>
               <div className="flex gap-3">
                 <a
                   href="#"
-                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-brand-500/50 flex items-center justify-center transition-all group"
+                  className="w-10 h-10 rounded-lg bg-white hover:bg-gray-100 border border-gray-300 hover:border-gray-900 flex items-center justify-center transition-all group"
                   aria-label="Facebook"
                 >
                   <svg
-                    className="w-5 h-5 text-gray-400 group-hover:text-brand-400 transition-colors"
+                    className="w-5 h-5 text-gray-600 group-hover:text-gray-900 transition-colors"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -238,11 +245,11 @@ export default function TenantFooter() {
                 </a>
                 <a
                   href="#"
-                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-brand-500/50 flex items-center justify-center transition-all group"
+                  className="w-10 h-10 rounded-lg bg-white hover:bg-gray-100 border border-gray-300 hover:border-gray-900 flex items-center justify-center transition-all group"
                   aria-label="Instagram"
                 >
                   <svg
-                    className="w-5 h-5 text-gray-400 group-hover:text-brand-400 transition-colors"
+                    className="w-5 h-5 text-gray-600 group-hover:text-gray-900 transition-colors"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -251,11 +258,11 @@ export default function TenantFooter() {
                 </a>
                 <a
                   href="#"
-                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-brand-500/50 flex items-center justify-center transition-all group"
+                  className="w-10 h-10 rounded-lg bg-white hover:bg-gray-100 border border-gray-300 hover:border-gray-900 flex items-center justify-center transition-all group"
                   aria-label="Twitter"
                 >
                   <svg
-                    className="w-5 h-5 text-gray-400 group-hover:text-brand-400 transition-colors"
+                    className="w-5 h-5 text-gray-600 group-hover:text-gray-900 transition-colors"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -268,46 +275,45 @@ export default function TenantFooter() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/10 pt-8">
+        <div className="border-t border-gray-200 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 justify-center md:justify-start">
-              <p>
+            {/* Left: Copyright and Links - all on same line */}
+            <div className="flex items-center gap-6 text-sm text-gray-600">
+              <span className="whitespace-nowrap">
                 &copy; {currentYear}{" "}
-                <span className="text-white font-semibold">{salonName}</span>.
-                All rights reserved.
-              </p>
-              <div className="flex gap-6">
-                <Link
-                  to="privacy"
-                  className="hover:text-brand-400 transition-colors"
-                >
-                  Privacy
-                </Link>
-                <Link
-                  to="terms"
-                  className="hover:text-brand-400 transition-colors"
-                >
-                  Terms
-                </Link>
-              </div>
+                <span className="text-gray-900 font-semibold">{salonName}</span>
+                . All rights reserved.
+              </span>
+              <Link
+                to="privacy"
+                className="hover:text-gray-900 transition-colors whitespace-nowrap"
+              >
+                Privacy
+              </Link>
+              <Link
+                to="terms"
+                className="hover:text-gray-900 transition-colors whitespace-nowrap"
+              >
+                Terms
+              </Link>
             </div>
 
-            {/* Trust Badge */}
-            <div className="flex items-center gap-2 text-xs">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-lg border border-white/10">
-                <svg
-                  className="w-4 h-4 text-green-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-gray-400">Secure Booking</span>
-              </div>
+            {/* Right: Trust Badge */}
+            <div className="flex items-center gap-2 px-3 py-1 bg-white rounded-lg border border-gray-200 text-sm">
+              <svg
+                className="w-4 h-4 text-green-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="text-gray-600 whitespace-nowrap">
+                Secure Booking
+              </span>
             </div>
           </div>
         </div>

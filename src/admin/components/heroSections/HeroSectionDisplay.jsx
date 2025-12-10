@@ -8,9 +8,7 @@ export default function HeroSectionDisplay() {
   useEffect(() => {
     HeroSectionsAPI.list()
       .then((data) => {
-        // Filter active sections only
-        const activeSections = data.filter((s) => s.active);
-        setSections(activeSections);
+        setSections(data);
       })
       .catch((err) => {
         console.error("Failed to load hero sections:", err);
@@ -70,7 +68,14 @@ export default function HeroSectionDisplay() {
                   alt={`${section.title} - Professional beauty treatments at Noble Elegance Wisbech Cambridgeshire`}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+                {/* Configurable Overlay */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    backgroundColor: section.overlayColor || "#000000",
+                    opacity: section.overlayOpacity ?? 0.3,
+                  }}
+                />
               </div>
             )}
 

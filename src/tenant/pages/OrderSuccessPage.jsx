@@ -156,7 +156,7 @@ export default function OrderSuccessPage() {
       </div>
 
       {/* Order Number */}
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 sm:p-6 mb-6 text-center">
+      <div className="rounded-xl p-4 sm:p-6 mb-6 text-center">
         <p className="text-sm text-gray-600 mb-1">Order Number</p>
         <p
           className="text-xl sm:text-2xl font-bold tracking-wider break-all"

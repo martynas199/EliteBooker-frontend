@@ -37,7 +37,7 @@ function ServiceCard({ service, onClick }) {
     <>
       <Card
         hoverable
-        className="p-0 overflow-hidden group border-2 border-white/10 hover:border-white/20 bg-white/5 backdrop-blur-sm hover:shadow-2xl transition-all duration-300"
+        className="p-0 overflow-hidden group border border-gray-300 hover:border-gray-900 bg-white hover:shadow-xl transition-all duration-300"
       >
         <div className="flex flex-row overflow-x-hidden w-full min-h-[140px]">
           {imageUrl && (
@@ -54,17 +54,17 @@ function ServiceCard({ service, onClick }) {
           )}
           <div className="flex flex-col flex-1 p-2.5 sm:p-4 min-w-0 overflow-x-hidden">
             <div className="flex flex-col gap-0.5 mb-1 min-w-0 flex-shrink-0">
-              <div className="font-bold text-sm sm:text-lg text-white leading-tight break-words group-hover:text-green-400 transition-colors">
+              <div className="font-bold text-sm sm:text-lg text-gray-900 leading-tight break-words group-hover:text-black transition-colors">
                 {service.name}
               </div>
               {service.category && (
-                <div className="text-green-400 text-[9px] sm:text-xs font-medium uppercase tracking-wide truncate">
+                <div className="text-gray-600 text-[9px] sm:text-xs font-medium uppercase tracking-wide truncate">
                   {service.category}
                 </div>
               )}
               {(service.primaryBeauticianId?.name ||
                 service.specialist?.name) && (
-                <div className="text-[9px] sm:text-xs text-white/60 truncate">
+                <div className="text-[9px] sm:text-xs text-gray-500 truncate">
                   By{" "}
                   {service.primaryBeauticianId?.name ||
                     service.specialist?.name}
@@ -73,7 +73,7 @@ function ServiceCard({ service, onClick }) {
             </div>
             {service.description && (
               <div className="mb-1.5 sm:mb-3 flex-shrink-0">
-                <div className="text-white/60 text-[11px] sm:text-sm line-clamp-2">
+                <div className="text-gray-600 text-[11px] sm:text-sm line-clamp-2">
                   {service.description}
                 </div>
                 <button
@@ -81,7 +81,7 @@ function ServiceCard({ service, onClick }) {
                     e.stopPropagation();
                     setShowDescriptionModal(true);
                   }}
-                  className="text-green-400 hover:text-green-300 text-[10px] sm:text-xs font-medium mt-0.5 underline"
+                  className="text-gray-700 hover:text-black text-[10px] sm:text-xs font-medium mt-0.5 underline"
                 >
                   Read more
                 </button>
@@ -90,7 +90,7 @@ function ServiceCard({ service, onClick }) {
 
             {/* Variants indicator */}
             {service.variants && service.variants.length > 1 && (
-              <div className="flex items-center gap-1 text-[10px] sm:text-xs text-green-400 font-medium mb-1 flex-shrink-0">
+              <div className="flex items-center gap-1 text-[10px] sm:text-xs text-gray-600 font-medium mb-1 flex-shrink-0">
                 <svg
                   className="w-3 h-3 sm:w-4 sm:h-4"
                   fill="none"
@@ -109,13 +109,13 @@ function ServiceCard({ service, onClick }) {
             )}
 
             {/* Price and Action Section */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-auto pt-1.5 sm:pt-2 border-t border-white/10 gap-1.5 sm:gap-2 min-w-0 flex-shrink-0">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-auto pt-1.5 sm:pt-2 border-t border-gray-200 gap-2 sm:gap-3 min-w-0 flex-shrink-0">
               {/* Price and Duration Display */}
-              <div className="flex flex-col gap-0.5 min-w-0 w-full sm:w-auto">
+              <div className="flex flex-col gap-0.5 min-w-0 w-full sm:w-auto flex-1">
                 {minPrice !== null && (
                   <>
                     <div className="flex items-baseline gap-0.5 sm:gap-1 flex-wrap">
-                      <span className="text-[10px] sm:text-xs text-white/50">
+                      <span className="text-[10px] sm:text-xs text-gray-500">
                         {service.priceVaries ? "Up to" : "From"}
                       </span>
                       {hasPromoPrice && minPromoPrice ? (
@@ -142,13 +142,13 @@ function ServiceCard({ service, onClick }) {
                         </>
                       ) : (
                         <>
-                          <span className="text-base sm:text-xl font-bold text-white">
+                          <span className="text-base sm:text-xl font-bold text-gray-900">
                             {formatPrice(
                               service.priceVaries ? maxPrice : minPrice
                             )}
                           </span>
                           {!service.priceVaries && maxPrice > minPrice && (
-                            <span className="text-[10px] sm:text-xs text-white/50">
+                            <span className="text-[10px] sm:text-xs text-gray-400">
                               - {formatPrice(maxPrice)}
                             </span>
                           )}
@@ -189,9 +189,9 @@ function ServiceCard({ service, onClick }) {
                 )}
                 {/* Duration */}
                 {service.variants && service.variants.length > 0 && (
-                  <div className="flex items-center gap-0.5 sm:gap-1 text-white/70 text-[9px] sm:text-xs">
+                  <div className="flex items-center gap-0.5 sm:gap-1 text-gray-600 text-[9px] sm:text-xs">
                     <svg
-                      className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-green-400"
+                      className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -225,7 +225,7 @@ function ServiceCard({ service, onClick }) {
                   e.stopPropagation();
                   onClick?.();
                 }}
-                className="px-2 sm:px-6 py-1 sm:py-2 bg-white hover:bg-green-400 text-gray-900 text-[10px] sm:text-sm font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-250 whitespace-nowrap flex-shrink-0 w-auto"
+                className="px-2 sm:px-6 py-1 sm:py-2 bg-black hover:bg-gray-800 text-white text-[10px] sm:text-sm font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-250 whitespace-nowrap flex-shrink-0 w-auto"
               >
                 {service.variants && service.variants.length > 1
                   ? "Choose Option"
@@ -328,7 +328,7 @@ function ServiceCard({ service, onClick }) {
                   setShowDescriptionModal(false);
                   onClick?.();
                 }}
-                className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-full shadow-md hover:shadow-lg transition-all"
+                className="px-6 py-2.5 bg-black hover:bg-gray-800 text-white text-sm font-semibold rounded-full shadow-md hover:shadow-lg transition-all"
               >
                 {service.variants && service.variants.length > 1
                   ? "Choose Option"

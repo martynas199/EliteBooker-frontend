@@ -180,7 +180,7 @@ export default function BeauticianSelectionPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600"></div>
       </div>
     );
   }
@@ -206,10 +206,8 @@ export default function BeauticianSelectionPage() {
           // Step 1: Select a Specialist
           <>
             {/* Hero Section */}
-            <div className="relative bg-gradient-to-br from-brand-50 via-white to-brand-50 rounded-3xl overflow-hidden mb-12 shadow-lg border border-brand-100">
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDU5LDEzMCwyNDYsMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30"></div>
-
-              <div className="relative px-8 py-16 text-center">
+            <div className="bg-white rounded-3xl overflow-hidden mb-12 shadow-sm border border-gray-200">
+              <div className="px-8 py-16 text-center">
                 <h1 className="text-5xl font-black text-gray-900 mb-4 tracking-tight">
                   Choose Your Specialist
                 </h1>
@@ -221,7 +219,7 @@ export default function BeauticianSelectionPage() {
                 {/* Quick Info */}
                 <div className="flex justify-center gap-8 mt-10">
                   <div className="text-center">
-                    <div className="text-3xl font-black text-brand-600">
+                    <div className="text-3xl font-black text-gray-900">
                       {specialists.length}
                     </div>
                     <div className="text-sm text-gray-600 font-medium">
@@ -237,87 +235,29 @@ export default function BeauticianSelectionPage() {
                 <StaggerItem key={specialist._id}>
                   <Card
                     hoverable
-                    className="group cursor-pointer overflow-hidden p-0 h-[480px] border-2 border-transparent hover:border-brand-200 transition-all duration-300"
+                    className="group cursor-pointer overflow-hidden p-0 h-[480px] border-2 border-gray-200 hover:border-gray-300 transition-all duration-300"
                     onClick={() => handleBeauticianSelect(specialist)}
                   >
-                    {/* Full Card Image with Name Overlay */}
-                    <div className="relative h-full w-full bg-gradient-to-br from-gray-100 to-gray-200">
-                      {specialist.image?.url ? (
-                        <img
-                          src={specialist.image.url}
-                          alt={`${
-                            specialist.name
-                          } - Expert Specialist specializing in ${
-                            specialist.specialties?.slice(0, 2).join(", ") ||
-                            "beauty treatments"
-                          }`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          <svg
-                            className="w-24 h-24"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={1.5}
-                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                            />
-                          </svg>
-                        </div>
-                      )}
-
-                      {/* Gradient overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent group-hover:from-brand-900/90 transition-colors duration-300"></div>
-
-                      {/* Content */}
-                      <div className="absolute inset-0 flex flex-col justify-end p-6">
-                        {/* Specialties badges at top */}
-                        {specialist.specialties &&
-                          specialist.specialties.length > 0 && (
-                            <div className="flex-1 flex flex-wrap gap-2 content-start mb-4">
-                              {specialist.specialties
-                                .slice(0, 3)
-                                .map((specialty, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="px-3 py-1 bg-white/90 backdrop-blur-sm text-brand-700 text-xs font-bold rounded-full shadow-lg"
-                                  >
-                                    {specialty}
-                                  </span>
-                                ))}
-                              {specialist.specialties.length > 3 && (
-                                <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-bold rounded-full shadow-lg">
-                                  +{specialist.specialties.length - 3} more
-                                </span>
-                              )}
-                            </div>
-                          )}
-
-                        {/* Name and CTA */}
-                        <div>
-                          <h3 className="text-3xl font-black text-white mb-3">
-                            {specialist.name}
-                          </h3>
-
-                          {specialist.bio && (
-                            <p className="text-white/90 text-sm mb-4 line-clamp-2 leading-relaxed">
-                              {specialist.bio}
-                            </p>
-                          )}
-
-                          {/* View Services Button */}
-                          <div className="flex items-center justify-between pt-4 border-t border-white/20">
-                            <span className="text-white/90 text-sm font-medium">
-                              View Services
-                            </span>
+                    {/* Card split: Image top, Content bottom */}
+                    <div className="relative h-full w-full flex flex-col bg-white">
+                      {/* Image Section - 60% height */}
+                      <div className="relative h-3/5 overflow-hidden bg-gray-100">
+                        {specialist.image?.url ? (
+                          <img
+                            src={specialist.image.url}
+                            alt={`${
+                              specialist.name
+                            } - Expert Specialist specializing in ${
+                              specialist.specialties?.slice(0, 2).join(", ") ||
+                              "beauty treatments"
+                            }`}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400">
                             <svg
-                              className="w-6 h-6 text-white group-hover:translate-x-2 transition-transform duration-300"
+                              className="w-24 h-24"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -325,11 +265,68 @@ export default function BeauticianSelectionPage() {
                               <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 7l5 5m0 0l-5 5m5-5H6"
+                                strokeWidth={1.5}
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                               />
                             </svg>
                           </div>
+                        )}
+
+                        {/* Specialties badges overlay on image */}
+                        {specialist.specialties &&
+                          specialist.specialties.length > 0 && (
+                            <div className="absolute top-4 left-4 right-4 flex flex-wrap gap-2">
+                              {specialist.specialties
+                                .slice(0, 3)
+                                .map((specialty, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="px-3 py-1 bg-black text-white text-xs font-bold rounded-full shadow-lg"
+                                  >
+                                    {specialty}
+                                  </span>
+                                ))}
+                              {specialist.specialties.length > 3 && (
+                                <span className="px-3 py-1 bg-gray-800 text-white text-xs font-bold rounded-full shadow-lg">
+                                  +{specialist.specialties.length - 3} more
+                                </span>
+                              )}
+                            </div>
+                          )}
+                      </div>
+
+                      {/* Content Section - 40% height, white background */}
+                      <div className="h-2/5 p-6 flex flex-col justify-between bg-white">
+                        <div>
+                          <h3 className="text-2xl font-black text-gray-900 mb-2">
+                            {specialist.name}
+                          </h3>
+
+                          {specialist.bio && (
+                            <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">
+                              {specialist.bio}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* View Services Button */}
+                        <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                          <span className="text-gray-900 text-sm font-semibold">
+                            View Services
+                          </span>
+                          <svg
+                            className="w-5 h-5 text-gray-900 group-hover:translate-x-2 transition-transform duration-300"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 7l5 5m0 0l-5 5m5-5H6"
+                            />
+                          </svg>
                         </div>
                       </div>
                     </div>
@@ -343,7 +340,7 @@ export default function BeauticianSelectionPage() {
           <>
             <button
               onClick={handleBack}
-              className="flex items-center gap-2 text-gray-600 hover:text-brand-600 mb-8 transition-colors font-medium"
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-8 transition-colors font-medium"
             >
               <svg
                 className="w-5 h-5"
@@ -362,10 +359,10 @@ export default function BeauticianSelectionPage() {
             </button>
 
             {/* Specialist Header Card */}
-            <Card className="mb-10 overflow-hidden bg-gradient-to-br from-brand-50 via-white to-brand-50 border-2 border-brand-100">
+            <Card className="mb-10 overflow-hidden bg-white border-2 border-gray-200">
               <div className="flex items-start gap-6 p-6">
                 {/* Selected Specialist Image */}
-                <div className="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-brand-200 to-brand-300 shadow-lg">
+                <div className="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden bg-gray-200 shadow-lg">
                   {selectedSpecialist.image?.url ? (
                     <img
                       src={selectedSpecialist.image.url}
@@ -397,7 +394,7 @@ export default function BeauticianSelectionPage() {
                       {selectedSpecialist.name}
                     </h1>
                     <svg
-                      className="w-6 h-6 text-brand-500"
+                      className="w-6 h-6 text-gray-500"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -417,7 +414,7 @@ export default function BeauticianSelectionPage() {
                           (specialty, idx) => (
                             <span
                               key={idx}
-                              className="px-3 py-1 bg-brand-100 text-brand-700 text-xs font-bold rounded-full"
+                              className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full"
                             >
                               {specialty}
                             </span>
@@ -438,7 +435,7 @@ export default function BeauticianSelectionPage() {
                       {selectedSpecialist.bio.length > 120 && (
                         <button
                           onClick={() => setIsBioExpanded(!isBioExpanded)}
-                          className="flex items-center gap-1 text-brand-600 hover:text-brand-700 transition-colors mt-2 text-sm font-semibold"
+                          className="flex items-center gap-1 text-gray-700 hover:text-gray-900 transition-colors mt-2 text-sm font-semibold"
                         >
                           <span>
                             {isBioExpanded ? "Show less" : "Read more"}
@@ -478,13 +475,13 @@ export default function BeauticianSelectionPage() {
 
             {servicesLoading ? (
               <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600"></div>
               </div>
             ) : services.length === 0 ? (
               <div className="text-center py-12">
                 <div className="max-w-md mx-auto">
                   <svg
-                    className="w-16 h-16 mx-auto mb-4 text-brand-500"
+                    className="w-16 h-16 mx-auto mb-4 text-gray-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

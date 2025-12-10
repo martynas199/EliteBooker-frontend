@@ -235,7 +235,7 @@ export default function TimeSlots() {
           <motion.svg
             animate={{ rotate: [0, 5, -5, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="w-20 h-20 mx-auto mb-6 text-white/40"
+            className="w-20 h-20 mx-auto mb-6 text-gray-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -247,12 +247,12 @@ export default function TimeSlots() {
               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
             />
           </motion.svg>
-          <p className="text-white/70 text-lg mb-6">
+          <p className="text-gray-700 text-lg mb-6">
             Please select a service first.
           </p>
           <button
             onClick={() => navigate("/services")}
-            className="px-8 py-3 bg-white hover:bg-green-400 text-black font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+            className="px-8 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
           >
             Choose Service
           </button>
@@ -287,7 +287,7 @@ export default function TimeSlots() {
           <p className="text-red-400 text-lg mb-6">{error}</p>
           <button
             onClick={() => navigate(-1)}
-            className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-full transition-all duration-300 border border-white/20"
+            className="px-8 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-full transition-all duration-300"
           >
             Go Back
           </button>
@@ -299,29 +299,7 @@ export default function TimeSlots() {
   return (
     <>
       {/* Dynamic Background */}
-      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
-
-      {/* Noise Texture */}
-      <div
-        className="fixed inset-0 -z-10 opacity-[0.015] pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.5' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
-        }}
-      />
-
-      {/* Gradient Orbs */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
-          animate={{ y: [0, 100, 0], x: [0, 50, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
-          animate={{ y: [0, -100, 0], x: [0, -50, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </div>
+      <div className="fixed inset-0 -z-10 bg-white" />
 
       <PageTransition className="min-h-screen relative z-0">
         {/* Back Button */}
@@ -332,7 +310,7 @@ export default function TimeSlots() {
         >
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-white/70 hover:text-white mb-8 transition-colors font-semibold group"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-8 transition-colors font-semibold group"
           >
             <svg
               className="w-5 h-5 group-hover:-translate-x-1 transition-transform"
@@ -358,10 +336,10 @@ export default function TimeSlots() {
           transition={{ delay: 0.1 }}
           className="max-w-4xl mx-auto px-4 mb-12 text-center"
         >
-          <h1 className="text-5xl md:text-6xl font-black text-white mb-4 tracking-tight">
-            Select Date & Time
+          <h1 className="text-5xl md:text-6xl font-black text-gray-900 mb-4 tracking-tight">
+            Select a Time
           </h1>
-          <p className="text-xl text-white/70 font-light">
+          <p className="text-xl text-gray-600 font-light">
             Choose an available date and time for your appointment
           </p>
         </motion.div>
@@ -374,10 +352,10 @@ export default function TimeSlots() {
           className="max-w-4xl mx-auto px-4 pb-12"
         >
           {loading ? (
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-12">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-12">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-                <p className="text-white/60">Loading availability...</p>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading availability...</p>
               </div>
             </div>
           ) : specialist ? (
@@ -393,11 +371,11 @@ export default function TimeSlots() {
               onSelect={handleSlotSelect}
             />
           ) : (
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-12 text-center">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-12 text-center">
               <motion.svg
                 animate={{ rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="w-20 h-20 mx-auto mb-6 text-white/40"
+                className="w-20 h-20 mx-auto mb-6 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -409,7 +387,7 @@ export default function TimeSlots() {
                   d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </motion.svg>
-              <p className="text-white/70 text-lg">
+              <p className="text-gray-700 text-lg">
                 Unable to load availability. Please try again.
               </p>
             </div>

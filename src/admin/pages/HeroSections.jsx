@@ -16,9 +16,7 @@ export default function HeroSections() {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [centerImageFile, setCenterImageFile] = useState(null);
-  const [rightImageFile, setRightImageFile] = useState(null);
   const [centerImagePreview, setCenterImagePreview] = useState(null);
-  const [rightImagePreview, setRightImagePreview] = useState(null);
 
   useEffect(() => {
     loadSections();
@@ -42,26 +40,24 @@ export default function HeroSections() {
       title: "Refined Luxury Awaits",
       subtitle:
         "Where heritage meets artistry, our hair extensions, beauty products and services embodies the essence of timeless elegance.",
+      showCta: true,
       ctaText: "Shop all",
       ctaLink: "#services",
-      active: true,
       order: sections.length,
+      overlayOpacity: 0.3,
+      overlayColor: "#000000",
       tenantId: tenantId,
     });
     setShowForm(true);
     setCenterImageFile(null);
-    setRightImageFile(null);
     setCenterImagePreview(null);
-    setRightImagePreview(null);
   };
 
   const handleEdit = (section) => {
     setEditingSection({ ...section });
     setShowForm(true);
     setCenterImageFile(null);
-    setRightImageFile(null);
     setCenterImagePreview(section.centerImage?.url || null);
-    setRightImagePreview(section.rightImage?.url || null);
   };
 
   const handleCenterImageChange = (e) => {
@@ -70,16 +66,6 @@ export default function HeroSections() {
       setCenterImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => setCenterImagePreview(reader.result);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRightImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setRightImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setRightImagePreview(reader.result);
       reader.readAsDataURL(file);
     }
   };
@@ -99,17 +85,11 @@ export default function HeroSections() {
         savedSection = await HeroSectionsAPI.create(editingSection);
       }
 
-      // Upload images if selected
+      // Upload image if selected
       if (centerImageFile) {
         await HeroSectionsAPI.uploadCenterImage(
           savedSection._id,
           centerImageFile
-        );
-      }
-      if (rightImageFile) {
-        await HeroSectionsAPI.uploadRightImage(
-          savedSection._id,
-          rightImageFile
         );
       }
 
@@ -117,9 +97,7 @@ export default function HeroSections() {
       setShowForm(false);
       setEditingSection(null);
       setCenterImageFile(null);
-      setRightImageFile(null);
       setCenterImagePreview(null);
-      setRightImagePreview(null);
     } catch (error) {
       console.error("Failed to save hero section:", error);
       alert("Failed to save hero section: " + error.message);
@@ -148,9 +126,7 @@ export default function HeroSections() {
     setShowForm(false);
     setEditingSection(null);
     setCenterImageFile(null);
-    setRightImageFile(null);
     setCenterImagePreview(null);
-    setRightImagePreview(null);
   };
 
   if (showForm) {
@@ -158,10 +134,12 @@ export default function HeroSections() {
       <div className="max-w-4xl mx-auto p-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-2">
-            {editingSection._id ? "Edit Hero Section" : "Create Hero Section"}
+            {editingSection._id
+              ? "Edit Landing Page Hero"
+              : "Create Landing Page Hero"}
           </h1>
           <p className="text-gray-600">
-            Manage the luxury showcase section on the services page
+            Manage the hero section content on your landing page
           </p>
         </div>
 
@@ -172,10 +150,10 @@ export default function HeroSections() {
               handleSave();
             }}
           >
-            {/* Left Section - Text Content */}
+            {/* Hero Content */}
             <div className="mb-6">
               <h3 className="text-lg font-semibold mb-4 text-gray-900">
-                Left Section - Text Content
+                Hero Content
               </h3>
               <div className="space-y-4">
                 <div>
@@ -212,49 +190,73 @@ export default function HeroSections() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      CTA Button Text
-                    </label>
-                    <Input
-                      value={editingSection.ctaText || ""}
+                <div className="mb-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editingSection.showCta ?? true}
                       onChange={(e) =>
                         setEditingSection({
                           ...editingSection,
-                          ctaText: e.target.value,
+                          showCta: e.target.checked,
                         })
                       }
-                      placeholder="Shop all"
+                      className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      CTA Link
-                    </label>
-                    <Input
-                      value={editingSection.ctaLink || ""}
-                      onChange={(e) =>
-                        setEditingSection({
-                          ...editingSection,
-                          ctaLink: e.target.value,
-                        })
-                      }
-                      placeholder="#services"
-                    />
-                  </div>
+                    <span className="text-sm font-medium text-gray-700">
+                      Display CTA Button
+                    </span>
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1 ml-6">
+                    Show a call-to-action button in the hero section
+                  </p>
                 </div>
+
+                {editingSection.showCta !== false && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        CTA Button Text
+                      </label>
+                      <Input
+                        value={editingSection.ctaText || ""}
+                        onChange={(e) =>
+                          setEditingSection({
+                            ...editingSection,
+                            ctaText: e.target.value,
+                          })
+                        }
+                        placeholder="Shop all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        CTA Link
+                      </label>
+                      <Input
+                        value={editingSection.ctaLink || ""}
+                        onChange={(e) =>
+                          setEditingSection({
+                            ...editingSection,
+                            ctaLink: e.target.value,
+                          })
+                        }
+                        placeholder="#services"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Center Section - Image */}
+            {/* Hero Background Image */}
             <div className="mb-6 pb-6 border-b">
               <h3 className="text-lg font-semibold mb-4 text-gray-900">
-                Center Section - Specialist Image
+                Hero Background Image
               </h3>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Center Image
+                  Background Image
                 </label>
                 {centerImagePreview && (
                   <div className="mb-3">
@@ -277,79 +279,73 @@ export default function HeroSections() {
               </div>
             </div>
 
-            {/* Right Section - Image 2 */}
-            <div className="mb-6 pb-6 border-b">
-              <h3 className="text-lg font-semibold mb-4 text-gray-900">
-                Right Section - Image 2
-              </h3>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Right Image
-                </label>
-                {rightImagePreview && (
-                  <div className="mb-3">
-                    <img
-                      src={rightImagePreview}
-                      alt="Right preview"
-                      className="w-64 h-48 object-cover rounded-lg border"
-                    />
-                  </div>
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleRightImageChange}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Recommended: 800x600px landscape image
-                </p>
-              </div>
-            </div>
-
             {/* Display Settings */}
             <div className="mb-6">
               <h3 className="text-lg font-semibold mb-4 text-gray-900">
                 Display Settings
               </h3>
               <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    id="active"
-                    checked={editingSection.active || false}
-                    onChange={(e) =>
-                      setEditingSection({
-                        ...editingSection,
-                        active: e.target.checked,
-                      })
-                    }
-                    className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
-                  />
-                  <label
-                    htmlFor="active"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    Active (show on services page)
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Overlay Opacity
                   </label>
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.05"
+                      value={editingSection.overlayOpacity || 0.3}
+                      onChange={(e) =>
+                        setEditingSection({
+                          ...editingSection,
+                          overlayOpacity: parseFloat(e.target.value),
+                        })
+                      }
+                      className="flex-1"
+                    />
+                    <span className="text-sm text-gray-600 min-w-12">
+                      {Math.round((editingSection.overlayOpacity || 0.3) * 100)}
+                      %
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Controls the darkness of the overlay on the hero image
+                  </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Display Order
+                    Overlay Color
                   </label>
-                  <Input
-                    type="number"
-                    value={editingSection.order || 0}
-                    onChange={(e) =>
-                      setEditingSection({
-                        ...editingSection,
-                        order: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    min="0"
-                    className="w-32"
-                  />
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={editingSection.overlayColor || "#000000"}
+                      onChange={(e) =>
+                        setEditingSection({
+                          ...editingSection,
+                          overlayColor: e.target.value,
+                        })
+                      }
+                      className="h-10 w-20 rounded border border-gray-300 cursor-pointer"
+                    />
+                    <Input
+                      type="text"
+                      value={editingSection.overlayColor || "#000000"}
+                      onChange={(e) =>
+                        setEditingSection({
+                          ...editingSection,
+                          overlayColor: e.target.value,
+                        })
+                      }
+                      className="w-32"
+                      placeholder="#000000"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Choose the color of the overlay (default: black)
+                  </p>
                 </div>
               </div>
             </div>
@@ -388,18 +384,22 @@ export default function HeroSections() {
     <div className="p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold mb-2">Hero Sections</h1>
+          <h1 className="text-xl sm:text-2xl font-bold mb-2">
+            Landing Page Hero
+          </h1>
           <p className="text-sm sm:text-base text-gray-600">
-            Manage luxury showcase sections on the services page
+            Manage the hero section content on your landing page
           </p>
         </div>
-        <Button
-          variant="brand"
-          onClick={handleCreate}
-          className="w-full sm:w-auto"
-        >
-          + Add Hero Section
-        </Button>
+        {sections.length === 0 && (
+          <Button
+            variant="brand"
+            onClick={handleCreate}
+            className="w-full sm:w-auto"
+          >
+            + Add Hero Section
+          </Button>
+        )}
       </div>
 
       {loading ? (
@@ -471,15 +471,6 @@ export default function HeroSections() {
                       </p>
                     </div>
                     <div className="flex gap-2 flex-shrink-0">
-                      {section.active ? (
-                        <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">
-                          Active
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded">
-                          Inactive
-                        </span>
-                      )}
                       <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded">
                         Order: {section.order}
                       </span>
