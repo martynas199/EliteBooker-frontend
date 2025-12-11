@@ -16,21 +16,21 @@ export default function AuthSuccessPage() {
       try {
         const userData = JSON.parse(decodeURIComponent(user));
         login(userData, token);
-        // OAuth login is for global clients, redirect to client profile
-        navigate("/client/profile", { replace: true });
+        // OAuth login is for global clients, redirect to home
+        navigate("/", { replace: true });
       } catch (error) {
         console.error("Auth success error:", error);
-        navigate("/login", { replace: true });
+        navigate("/", { replace: true });
       }
     } else if (token) {
       // OAuth flow with token in URL - this shouldn't happen with httpOnly cookies
-      // Redirect to login since proper OAuth sets cookie on backend
+      // Redirect to home since proper OAuth sets cookie on backend
       console.error(
         "Unexpected token in URL - OAuth should use httpOnly cookies"
       );
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     } else {
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [searchParams, login, navigate]);
 

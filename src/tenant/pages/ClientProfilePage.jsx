@@ -63,14 +63,17 @@ export default function ClientProfilePage() {
       setLoading(true);
       setError(null);
       console.log("[Profile] Fetching profile data...");
-      const response = await api.get("/client/profile");
+      
+      const response = await api.get("/client/profile", {
+        timeout: 10000, // 10 second timeout for mobile
+      });
+      
       console.log("[Profile] Response:", response.data);
 
       // Check if we have the expected data structure
       if (!response.data?.profile) {
         console.error("[Profile] Invalid data structure:", response.data);
-        setError("Invalid profile data received");
-        return;
+        throw new Error("Invalid profile data received");
       }
 
       setProfile(response.data.profile);
@@ -81,17 +84,20 @@ export default function ClientProfilePage() {
       setPhone(clientProfile?.phone || "");
       setPreferredLanguage(clientProfile?.preferredLanguage || "en");
       setPreferredCurrency(clientProfile?.preferredCurrency || "GBP");
-      
+
       console.log("[Profile] Profile loaded successfully");
     } catch (error) {
       console.error("[Profile] Failed to fetch:", error);
-      const errorMessage = error.response?.data?.error || error.message || "Failed to load profile";
+      const errorMessage =
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to load profile";
       setError(errorMessage);
-      
-      // If unauthorized, redirect to login
+
+      // If unauthorized, redirect to home
       if (error.response?.status === 401) {
-        console.log("[Profile] Unauthorized - redirecting to login");
-        navigate("/");
+        console.log("[Profile] Unauthorized - redirecting to home");
+        navigate("/", { replace: true });
       }
     } finally {
       setLoading(false);
