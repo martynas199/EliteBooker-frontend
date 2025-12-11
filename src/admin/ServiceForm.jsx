@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useImageUpload } from "../shared/hooks/useImageUpload";
+import { useTenantSettings } from "../shared/hooks/useTenantSettings";
+import { api } from "../shared/lib/apiClient";
 import FormField from "../shared/components/forms/FormField";
 import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
 import Button from "../shared/components/ui/Button";
@@ -30,11 +32,17 @@ export default function ServiceForm({
 }) {
   const isEditMode = Boolean(service);
   const { language } = useLanguage();
+  const { featureFlags } = useTenantSettings();
   const {
     uploadImage,
     isUploading: isUploadingImage,
     progress,
   } = useImageUpload();
+
+  // Multi-location support
+  const [locations, setLocations] = useState([]);
+  const [loadingLocations, setLoadingLocations] = useState(false);
+  const isMultiLocationEnabled = featureFlags?.multiLocation === true;
 
   // Form state
   const [formData, setFormData] = useState({
@@ -43,6 +51,7 @@ export default function ServiceForm({
     description: "",
     primaryBeauticianId: "",
     additionalBeauticianIds: [],
+    availableAt: [], // Location IDs where service is available
     active: true,
     priceVaries: false,
     image: null,
@@ -61,6 +70,26 @@ export default function ServiceForm({
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Load locations if multi-location is enabled
+  useEffect(() => {
+    if (isMultiLocationEnabled) {
+      fetchLocations();
+    }
+  }, [isMultiLocationEnabled]);
+
+  const fetchLocations = async () => {
+    try {
+      setLoadingLocations(true);
+      const response = await api.get("/locations");
+      setLocations(response.data || []);
+    } catch (error) {
+      console.error("Failed to load locations:", error);
+      toast.error("Failed to load locations");
+    } finally {
+      setLoadingLocations(false);
+    }
+  };
 
   // Load existing service data in edit mode
   useEffect(() => {
@@ -81,6 +110,9 @@ export default function ServiceForm({
         primaryBeauticianId: extractId(service.primaryBeauticianId),
         additionalBeauticianIds: service.additionalBeauticianIds
           ? service.additionalBeauticianIds.map(extractId)
+          : [],
+        availableAt: service.availableAt
+          ? service.availableAt.map(extractId)
           : [],
         active: service.active !== undefined ? service.active : true,
         priceVaries: service.priceVaries || false,
@@ -419,6 +451,68 @@ export default function ServiceForm({
               </p>
             )}
           </FormField>
+
+          {/* Locations Multi-Select (only if multi-location is enabled) */}
+          {isMultiLocationEnabled && (
+            <FormField
+              label="Available at Locations"
+              htmlFor="availableAt"
+              hint="Select which locations offer this service. Leave empty for all locations."
+            >
+              {loadingLocations ? (
+                <p className="text-sm text-gray-500">Loading locations...</p>
+              ) : locations.length === 0 ? (
+                <p className="text-sm text-gray-500">
+                  No locations available. Create locations first in the
+                  Locations page.
+                </p>
+              ) : (
+                <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
+                  {locations.map((location) => (
+                    <label
+                      key={location._id}
+                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={formData.availableAt.includes(location._id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            handleChange("availableAt", [
+                              ...formData.availableAt,
+                              location._id,
+                            ]);
+                          } else {
+                            handleChange(
+                              "availableAt",
+                              formData.availableAt.filter(
+                                (id) => id !== location._id
+                              )
+                            );
+                          }
+                        }}
+                        className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
+                      />
+                      <span className="text-sm flex items-center gap-2">
+                        {location.name}
+                        {location.isPrimary && (
+                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                            Primary
+                          </span>
+                        )}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
+              {formData.availableAt.length === 0 && locations.length > 0 && (
+                <p className="text-xs text-amber-600 mt-1">
+                  No locations selected - service will be available at all
+                  locations
+                </p>
+              )}
+            </FormField>
+          )}
 
           {/* Image Upload */}
           <FormField

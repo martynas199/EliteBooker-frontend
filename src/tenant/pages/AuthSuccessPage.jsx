@@ -16,7 +16,18 @@ export default function AuthSuccessPage() {
       try {
         const userData = JSON.parse(decodeURIComponent(user));
         login(userData, token);
-        navigate("/", { replace: true });
+        // OAuth login is for global clients, redirect to client profile
+        navigate("/client/profile", { replace: true });
+      } catch (error) {
+        console.error("Auth success error:", error);
+        navigate("/login", { replace: true });
+      }
+    } else if (token) {
+      // If we only have token (new OAuth flow), store it and redirect to client profile
+      try {
+        localStorage.setItem("token", token);
+        // OAuth login is for global clients, redirect to client profile
+        navigate("/client/profile", { replace: true });
       } catch (error) {
         console.error("Auth success error:", error);
         navigate("/login", { replace: true });

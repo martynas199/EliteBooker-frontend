@@ -24,6 +24,7 @@ import { ServicesAPI } from "./services.api";
 import BackBar from "../../shared/components/ui/BackBar";
 import FormField from "../../shared/components/forms/FormField";
 import { useAuth } from "../../shared/contexts/AuthContext";
+import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
 import PageTransition from "../../shared/components/ui/PageTransition";
 import toast from "react-hot-toast";
@@ -41,6 +42,7 @@ export default function CheckoutPage() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const { client } = useClientAuth();
   const { currency, formatPrice } = useCurrency();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -108,7 +110,7 @@ export default function CheckoutPage() {
     }
   }, [bookingService, bookingBeautician, searchParams, dispatch]);
 
-  // Pre-fill form with user data if logged in
+  // Pre-fill form with user data if logged in (tenant customer or global client)
   useEffect(() => {
     if (user) {
       setForm({
@@ -117,8 +119,15 @@ export default function CheckoutPage() {
         phone: user.phone || "",
         notes: "",
       });
+    } else if (client) {
+      setForm({
+        name: client.name || "",
+        email: client.email || "",
+        phone: client.phone || "",
+        notes: "",
+      });
     }
-  }, [user]);
+  }, [user, client]);
 
   function validateForm() {
     const newErrors = {};
@@ -185,7 +194,18 @@ export default function CheckoutPage() {
         if (res?.url) window.location.href = res.url;
       }
     } catch (e) {
-      toast.error(e.message || "Booking failed. Please try again.");
+      // If slot is no longer available (409 conflict), redirect back to booking
+      if (e.response?.status === 409) {
+        toast.error(
+          "This time slot is no longer available. Please select another time."
+        );
+        // Clear the selected slot and redirect to booking page
+        dispatch(setService(null));
+        dispatch(setSpecialist(null));
+        navigate("/book");
+      } else {
+        toast.error(e.message || "Booking failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }

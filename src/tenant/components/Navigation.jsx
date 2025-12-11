@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../../shared/contexts/AuthContext";
+import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { useTenant } from "../../shared/contexts/TenantContext";
-import { useTenantSettings } from "../../shared/hooks/useTenantSettings";
 
 /**
  * Navigation - Reusable navigation bar component for tenant pages
@@ -10,13 +10,30 @@ import { useTenantSettings } from "../../shared/hooks/useTenantSettings";
  */
 export default function Navigation() {
   const { user, logout } = useAuth();
+  const {
+    client,
+    isAuthenticated: isClientAuthenticated,
+    logout: clientLogout,
+  } = useClientAuth();
   const { tenant } = useTenant();
-  const { ecommerceEnabled } = useTenantSettings();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   const salonName = tenant?.name || "Beauty Salon";
+  const ecommerceEnabled = tenant?.features?.enableProducts || false;
+
+  // Check if user is authenticated as either tenant customer OR global client
+  const isAuthenticated = user || isClientAuthenticated;
+
+  // Handle logout for whichever auth type is active
+  const handleLogout = () => {
+    if (user) {
+      logout();
+    } else if (isClientAuthenticated) {
+      clientLogout();
+    }
+  };
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200">
@@ -78,7 +95,7 @@ export default function Navigation() {
 
           {/* Right Actions - Desktop */}
           <div className="hidden md:flex items-center gap-3">
-            {user ? (
+            {isAuthenticated ? (
               <div
                 className="relative"
                 onMouseEnter={() => setProfileMenuOpen(true)}
@@ -89,9 +106,14 @@ export default function Navigation() {
                   aria-label="Profile"
                 >
                   <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white text-sm font-bold">
-                    {user.name?.[0]?.toUpperCase() || "U"}
+                    {(user
+                      ? user.name?.[0]
+                      : client?.name?.[0]
+                    )?.toUpperCase() || "U"}
                   </div>
-                  <span className="max-w-[100px] truncate">{user.name}</span>
+                  <span className="max-w-[100px] truncate">
+                    {user ? user.name : client?.name}
+                  </span>
                 </button>
 
                 {/* Profile Dropdown */}
@@ -100,14 +122,19 @@ export default function Navigation() {
                     <div className="bg-white rounded-xl shadow-xl border border-gray-200 py-2 overflow-hidden">
                       <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
                         <p className="text-sm font-bold text-gray-900 truncate">
-                          {user.name}
+                          {user ? user.name : client?.name}
                         </p>
                         <p className="text-xs text-gray-500 truncate">
-                          {user.email}
+                          {user ? user.email : client?.email}
                         </p>
                       </div>
                       <Link
-                        to="/profile"
+                        to={user ? "/profile" : "/client/profile"}
+                        state={
+                          !user && tenant?.slug
+                            ? { fromBusiness: tenant.slug }
+                            : undefined
+                        }
                         onClick={() => setProfileMenuOpen(false)}
                         className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all"
                       >
@@ -129,7 +156,7 @@ export default function Navigation() {
                       <button
                         onClick={() => {
                           setProfileMenuOpen(false);
-                          logout();
+                          handleLogout();
                         }}
                         className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-sm font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 transition-all"
                       >
@@ -155,7 +182,7 @@ export default function Navigation() {
             ) : (
               <>
                 <Link
-                  to="/login"
+                  to={`/salon/${tenant?.slug}/login`}
                   className="px-5 py-2 text-sm font-bold text-white bg-black hover:bg-gray-800 rounded-lg transition-all"
                 >
                   Sign In
@@ -239,19 +266,24 @@ export default function Navigation() {
                 </Link>
               )}
               <div className="border-t border-gray-200 my-2"></div>
-              {user ? (
+              {isAuthenticated ? (
                 <>
                   <Link
-                    to="/profile"
+                    to={user ? "/profile" : "/client/profile"}
+                    state={
+                      !user && tenant?.slug
+                        ? { fromBusiness: tenant.slug }
+                        : undefined
+                    }
                     onClick={() => setMobileMenuOpen(false)}
                     className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
                   >
-                    Profile ({user.name})
+                    Profile ({user ? user.name : client?.name})
                   </Link>
                   <button
                     onClick={() => {
                       setMobileMenuOpen(false);
-                      logout();
+                      handleLogout();
                     }}
                     className="px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-all text-left"
                   >
@@ -260,7 +292,7 @@ export default function Navigation() {
                 </>
               ) : (
                 <Link
-                  to="/login"
+                  to={`/salon/${tenant?.slug}/login`}
                   onClick={() => setMobileMenuOpen(false)}
                   className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
                 >

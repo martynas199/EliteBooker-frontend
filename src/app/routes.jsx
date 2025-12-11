@@ -24,6 +24,7 @@ import RegisterPage from "../tenant/pages/RegisterPage";
 import AuthSuccessPage from "../tenant/pages/AuthSuccessPage";
 import ProfilePage from "../tenant/pages/ProfilePage";
 import ProfileEditPage from "../tenant/pages/ProfileEditPage";
+import ClientProfilePage from "../tenant/pages/ClientProfilePage";
 import BeauticianSelectionPage from "../tenant/pages/BeauticiansPage";
 import ServicesPage from "../tenant/pages/ServicesPage";
 import AboutUsPage from "../tenant/pages/AboutUsPage";
@@ -55,6 +56,7 @@ const Dashboard = lazy(() => import("../admin/pages/Dashboard"));
 const AdminAppointments = lazy(() => import("../admin/pages/Appointments"));
 const AdminOrders = lazy(() => import("../admin/pages/Orders"));
 const AdminServices = lazy(() => import("../admin/pages/Services"));
+const AdminLocations = lazy(() => import("../admin/pages/Locations"));
 const AdminStaff = lazy(() => import("../admin/pages/Staff"));
 const WorkingHoursCalendar = lazy(() =>
   import("../admin/pages/WorkingHoursCalendar")
@@ -87,6 +89,8 @@ const BlogPosts = lazy(() => import("../admin/pages/BlogPosts"));
 const BrandingSettings = lazy(() => import("../admin/pages/BrandingSettings"));
 const Tenants = lazy(() => import("../admin/pages/Tenants"));
 const PlatformFeatures = lazy(() => import("../admin/pages/PlatformFeatures"));
+const Clients = lazy(() => import("../admin/pages/ClientsPage"));
+const ClientDetails = lazy(() => import("../admin/pages/ClientDetailsPage"));
 
 function CustomerLayout() {
   const dispatch = useDispatch();
@@ -157,6 +161,9 @@ export default function AppRoutes() {
 
         {/* OAuth Success Page (must be before CustomerLayout catch-all) */}
         <Route path="/auth/success" element={<AuthSuccessPage />} />
+
+        {/* Global Client Profile (cross-business) */}
+        <Route path="/client/profile" element={<ClientProfilePage />} />
 
         {/* Platform marketing/landing page */}
         <Route path="/" element={<LandingPage />} />
@@ -232,6 +239,14 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
                 <AdminServices />
+              </Suspense>
+            }
+          />
+          <Route
+            path="locations"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <AdminLocations />
               </Suspense>
             }
           />
@@ -320,6 +335,22 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
                 <Settings />
+              </Suspense>
+            }
+          />
+          <Route
+            path="clients"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <Clients />
+              </Suspense>
+            }
+          />
+          <Route
+            path="clients/:clientId"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <ClientDetails />
               </Suspense>
             }
           />

@@ -11,6 +11,7 @@ import { store } from "./app/store";
 import AppRoutes from "./app/routes";
 import ErrorBoundary from "./shared/components/ErrorBoundary";
 import { AuthProvider } from "./shared/contexts/AuthContext";
+import { ClientAuthProvider } from "./shared/contexts/ClientAuthContext";
 import { CurrencyProvider } from "./shared/contexts/CurrencyContext";
 import { LanguageProvider } from "./shared/contexts/LanguageContext";
 import { TenantProvider } from "./shared/contexts/TenantContext";
@@ -37,14 +38,16 @@ createRoot(document.getElementById("root")).render(
             <BrowserRouter>
               <TenantProvider>
                 <AuthProvider>
-                  <CurrencyProvider>
-                    <LanguageProvider>
-                      <AppRoutes />
-                      <ToastProvider />
-                      <SpeedInsights />
-                      <Analytics />
-                    </LanguageProvider>
-                  </CurrencyProvider>
+                  <ClientAuthProvider>
+                    <CurrencyProvider>
+                      <LanguageProvider>
+                        <AppRoutes />
+                        <ToastProvider />
+                        <SpeedInsights />
+                        <Analytics />
+                      </LanguageProvider>
+                    </CurrencyProvider>
+                  </ClientAuthProvider>
                 </AuthProvider>
               </TenantProvider>
             </BrowserRouter>

@@ -62,23 +62,22 @@ const LoginPage = () => {
         description="Sign in to your account to manage bookings, track orders, and access your profile."
         noindex={true}
       />
-      <div className="min-h-screen relative overflow-hidden bg-gray-900">
+      <div className="min-h-screen relative overflow-hidden bg-white">
         {/* Animated background */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(100,100,120,0.15),rgba(0,0,0,0))]" />
 
         {/* Gradient orbs */}
 
         <div className="relative min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
-            <h2 className="mt-6 text-center text-3xl sm:text-4xl font-bold text-white tracking-tight">
+            <h2 className="mt-6 text-center text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
               Welcome back
             </h2>
-            <p className="mt-3 text-center text-sm sm:text-base text-gray-300">
+            <p className="mt-3 text-center text-sm sm:text-base text-gray-600">
               Don't have an account?{" "}
               <Link
-                to="/signup"
+                to="../signup"
                 state={{ from }}
-                className="font-semibold text-brand-400 hover:text-brand-300 transition-colors"
+                className="font-semibold text-black hover:text-gray-700 transition-colors"
               >
                 Create one now
               </Link>
@@ -86,10 +85,10 @@ const LoginPage = () => {
           </div>
 
           <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
-            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl p-6 sm:p-10">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 sm:p-10">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {error && (
-                  <div className="bg-red-500/10 backdrop-blur-sm border border-red-400/30 text-red-200 px-4 py-3 rounded-xl">
+                  <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl">
                     {error}
                   </div>
                 )}
@@ -97,7 +96,7 @@ const LoginPage = () => {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-semibold text-white drop-shadow-lg mb-2"
+                    className="block text-sm font-semibold text-gray-900 mb-2"
                   >
                     Email address
                   </label>
@@ -117,7 +116,7 @@ const LoginPage = () => {
                 <div>
                   <label
                     htmlFor="password"
-                    className="block text-sm font-semibold text-white drop-shadow-lg mb-2"
+                    className="block text-sm font-semibold text-gray-900 mb-2"
                   >
                     Password
                   </label>
@@ -136,7 +135,7 @@ const LoginPage = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 focus:outline-none transition-colors"
                       tabIndex={-1}
                     >
                       {showPassword ? (
@@ -182,7 +181,7 @@ const LoginPage = () => {
                   <div className="text-sm">
                     <Link
                       to="/"
-                      className="font-medium text-brand-300 hover:text-brand-200 transition-colors"
+                      className="font-medium text-black hover:text-gray-700 transition-colors"
                     >
                       Continue as guest
                     </Link>
@@ -197,10 +196,10 @@ const LoginPage = () => {
               <div className="mt-6">
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-white/20" />
+                    <div className="w-full border-t border-gray-200" />
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-3 bg-gray-900/50 text-gray-300">
+                    <span className="px-3 bg-white text-gray-600">
                       Or continue with
                     </span>
                   </div>
@@ -213,7 +212,7 @@ const LoginPage = () => {
                 <div className="mt-6 text-center">
                   <Link
                     to="/"
-                    className="text-sm text-gray-300 hover:text-white transition-colors inline-flex items-center gap-1"
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors inline-flex items-center gap-1"
                   >
                     <svg
                       className="w-4 h-4"

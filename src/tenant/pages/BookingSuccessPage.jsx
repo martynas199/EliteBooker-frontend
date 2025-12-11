@@ -73,11 +73,11 @@ export default function SuccessPage() {
   }, [appointmentId, sessionId]);
 
   return (
-    <div className="min-h-screen bg-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Animated background gradient orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-purple-500/20 to-transparent rounded-full blur-3xl"
+          className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-brand-500/20 to-transparent rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -89,7 +89,7 @@ export default function SuccessPage() {
           }}
         />
         <motion.div
-          className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-blue-500/20 to-transparent rounded-full blur-3xl"
+          className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-brand-600/20 to-transparent rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.5, 0.3, 0.5],
@@ -110,17 +110,17 @@ export default function SuccessPage() {
           className="w-full max-w-2xl"
         >
           {status === "confirmed" ? (
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
+            <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 overflow-hidden shadow-2xl">
               {/* Success Icon & Header */}
               <div className="px-4 sm:px-8 py-8 sm:py-12 text-center">
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", duration: 0.6, delay: 0.2 }}
-                  className="bg-green-400/20 border-2 border-green-400 rounded-full w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center mx-auto mb-4 sm:mb-6"
+                  className="bg-green-100 border-2 border-green-600 rounded-full w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center mx-auto mb-4 sm:mb-6"
                 >
                   <svg
-                    className="w-10 h-10 sm:w-12 sm:h-12 text-green-400"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-green-600"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="3"
@@ -137,7 +137,7 @@ export default function SuccessPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="text-2xl sm:text-4xl font-bold text-white mb-2 sm:mb-3"
+                  className="text-2xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-3"
                 >
                   Booking Confirmed!
                 </motion.h1>
@@ -145,7 +145,7 @@ export default function SuccessPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="text-white/80 text-base sm:text-lg"
+                  className="text-gray-600 text-base sm:text-lg"
                 >
                   Your appointment has been successfully booked
                 </motion.p>
@@ -160,21 +160,21 @@ export default function SuccessPage() {
                   className="px-4 sm:px-8 pb-6 sm:pb-8 space-y-4 sm:space-y-6"
                 >
                   {/* Service Info */}
-                  <div className="text-center pb-4 sm:pb-6 border-b border-white/10">
-                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">
+                  <div className="text-center pb-4 sm:pb-6 border-b border-gray-200">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
                       {appt?.service?.name}
                     </h2>
-                    <p className="text-base sm:text-lg text-brand-400 font-semibold">
+                    <p className="text-base sm:text-lg text-black font-semibold">
                       {appt?.variantName}
                     </p>
                   </div>
 
                   {/* Details Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10">
+                    <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-200">
                       <div className="flex items-center gap-2.5 mb-3 sm:mb-4">
                         <svg
-                          className="w-4 h-4 sm:w-5 sm:h-5 text-brand-400 flex-shrink-0"
+                          className="w-4 h-4 sm:w-5 sm:h-5 text-black flex-shrink-0"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -187,19 +187,19 @@ export default function SuccessPage() {
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                           />
                         </svg>
-                        <p className="text-xs sm:text-sm font-semibold text-white/60 uppercase tracking-wide leading-none">
+                        <p className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide leading-none">
                           Specialist
                         </p>
                       </div>
-                      <p className="text-lg sm:text-xl font-bold text-white break-words">
+                      <p className="text-lg sm:text-xl font-bold text-gray-900 break-words">
                         {appt?.specialist?.name || "Any specialist"}
                       </p>
                     </div>
 
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10">
+                    <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-200">
                       <div className="flex items-center gap-2.5 mb-3 sm:mb-4">
                         <svg
-                          className="w-4 h-4 sm:w-5 sm:h-5 text-brand-400 flex-shrink-0"
+                          className="w-4 h-4 sm:w-5 sm:h-5 text-black flex-shrink-0"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -212,11 +212,11 @@ export default function SuccessPage() {
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                           />
                         </svg>
-                        <p className="text-xs sm:text-sm font-semibold text-white/60 uppercase tracking-wide leading-none">
+                        <p className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide leading-none">
                           Date & Time
                         </p>
                       </div>
-                      <p className="text-lg sm:text-xl font-bold text-white leading-tight break-words">
+                      <p className="text-lg sm:text-xl font-bold text-gray-900 leading-tight break-words">
                         {new Date(appt.start).toLocaleString("en-GB", {
                           day: "numeric",
                           month: "short",
@@ -229,12 +229,12 @@ export default function SuccessPage() {
                   </div>
 
                   {/* Price */}
-                  <div className="bg-brand-500/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-brand-400/30">
+                  <div className="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
                     <div className="flex justify-between items-center">
-                      <span className="text-base sm:text-lg font-semibold text-white/90">
+                      <span className="text-base sm:text-lg font-semibold text-gray-700">
                         Service Price
                       </span>
-                      <span className="text-2xl sm:text-3xl font-bold text-white">
+                      <span className="text-2xl sm:text-3xl font-bold text-gray-900">
                         £{Number(appt.price || 0).toFixed(2)}
                       </span>
                     </div>
@@ -244,10 +244,10 @@ export default function SuccessPage() {
                   {appt.payment?.mode === "deposit" &&
                     appt.payment?.amountTotal && (
                       <div className="space-y-3 sm:space-y-4">
-                        <div className="bg-green-500/10 border border-green-400/30 rounded-xl p-4 sm:p-6">
+                        <div className="bg-green-500/10 border border-green-600/30 rounded-xl p-4 sm:p-6">
                           <div className="flex items-center gap-2 mb-3 sm:mb-4">
                             <svg
-                              className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 flex-shrink-0"
+                              className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 flex-shrink-0"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -259,12 +259,12 @@ export default function SuccessPage() {
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                               />
                             </svg>
-                            <h3 className="text-base sm:text-lg font-bold text-white">
+                            <h3 className="text-base sm:text-lg font-bold text-gray-900">
                               Paid Today
                             </h3>
                           </div>
                           <div className="space-y-2">
-                            <div className="flex justify-between text-sm sm:text-base text-white/80">
+                            <div className="flex justify-between text-sm sm:text-base text-gray-600">
                               <span>Deposit</span>
                               <span className="font-semibold">
                                 £
@@ -274,25 +274,25 @@ export default function SuccessPage() {
                                 ).toFixed(2)}
                               </span>
                             </div>
-                            <div className="flex justify-between text-sm sm:text-base text-white/80">
+                            <div className="flex justify-between text-sm sm:text-base text-gray-600">
                               <span>Booking Fee</span>
                               <span className="font-semibold">£0.50</span>
                             </div>
-                            <div className="flex justify-between pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-green-400/30">
-                              <span className="font-bold text-white text-sm sm:text-base">
+                            <div className="flex justify-between pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-green-600/30">
+                              <span className="font-bold text-gray-900 text-sm sm:text-base">
                                 Total
                               </span>
-                              <span className="text-xl sm:text-2xl font-bold text-green-400">
+                              <span className="text-xl sm:text-2xl font-bold text-green-600">
                                 £{(appt.payment.amountTotal / 100).toFixed(2)}
                               </span>
                             </div>
                           </div>
                         </div>
 
-                        <div className="bg-amber-500/10 border border-amber-400/30 rounded-xl p-4 sm:p-6">
+                        <div className="bg-amber-500/10 border border-amber-600/30 rounded-xl p-4 sm:p-6">
                           <div className="flex items-center gap-2 mb-2 sm:mb-3">
                             <svg
-                              className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400 flex-shrink-0"
+                              className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 flex-shrink-0"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -304,11 +304,11 @@ export default function SuccessPage() {
                                 d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                               />
                             </svg>
-                            <h3 className="text-base sm:text-lg font-bold text-white">
+                            <h3 className="text-base sm:text-lg font-bold text-gray-900">
                               Balance Due at Salon
                             </h3>
                           </div>
-                          <div className="text-3xl sm:text-4xl font-bold text-amber-400">
+                          <div className="text-3xl sm:text-4xl font-bold text-amber-600">
                             £
                             {(
                               Number(appt.price || 0) -
@@ -334,35 +334,35 @@ export default function SuccessPage() {
               )}
             </div>
           ) : status === "pending" ? (
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-white/10 overflow-hidden text-center px-4 sm:px-8 py-8 sm:py-12">
-              <div className="bg-yellow-400/20 border-2 border-yellow-400 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                <div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-b-3 border-yellow-400"></div>
+            <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 overflow-hidden text-center px-4 sm:px-8 py-8 sm:py-12">
+              <div className="bg-yellow-100 border-2 border-yellow-600 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-b-3 border-yellow-600"></div>
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">
                 Processing Payment
               </h1>
-              <p className="text-white/80 text-base sm:text-lg">
+              <p className="text-gray-600 text-base sm:text-lg">
                 We received your payment. Your booking will be confirmed
                 shortly.
               </p>
             </div>
           ) : status === "loading" ? (
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-white/10 overflow-hidden text-center px-4 sm:px-8 py-8 sm:py-12">
+            <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 overflow-hidden text-center px-4 sm:px-8 py-8 sm:py-12">
               <div className="bg-white/10 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-b-3 border-white/50"></div>
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">
                 Verifying Payment
               </h1>
-              <p className="text-white/80 text-base sm:text-lg">
+              <p className="text-gray-600 text-base sm:text-lg">
                 Hold on while we verify your payment…
               </p>
             </div>
           ) : (
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-white/10 overflow-hidden text-center px-4 sm:px-8 py-8 sm:py-12">
-              <div className="bg-red-400/20 border-2 border-red-400 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+            <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 overflow-hidden text-center px-4 sm:px-8 py-8 sm:py-12">
+              <div className="bg-red-100 border-2 border-red-600 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <svg
-                  className="w-8 h-8 sm:w-10 sm:h-10 text-red-400"
+                  className="w-8 h-8 sm:w-10 sm:h-10 text-red-600"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2.5"
@@ -375,17 +375,17 @@ export default function SuccessPage() {
                   />
                 </svg>
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">
                 Something Went Wrong
               </h1>
-              <p className="text-white/80 text-base sm:text-lg mb-4 sm:mb-6">
+              <p className="text-gray-600 text-base sm:text-lg mb-4 sm:mb-6">
                 Could not verify your booking. Please contact the salon with
                 your email and time of payment.
               </p>
               <Link to="..">
                 <Button
                   variant="outline"
-                  className="border-white/20 text-white hover:bg-white/10 text-base sm:text-lg"
+                  className="border-gray-300 text-gray-900 hover:bg-gray-100 text-base sm:text-lg"
                 >
                   Back to Home
                 </Button>

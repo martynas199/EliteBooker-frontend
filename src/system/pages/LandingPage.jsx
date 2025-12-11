@@ -888,13 +888,17 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 className="relative"
               >
-                <div className="aspect-video bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20">
-                  <div className="text-center">
-                    <div className="text-6xl mb-4">🎬</div>
-                    <p className="text-lg text-indigo-100">
-                      Interactive Demo Coming Soon
-                    </p>
-                  </div>
+                <div className="aspect-video bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/20">
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src="https://www.youtube.com/embed/qhlbHP2Q5uY?autoplay=1&mute=1&loop=1&playlist=qhlbHP2Q5uY&controls=1&rel=0"
+                    title="Platform Demo"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  ></iframe>
                 </div>
               </motion.div>
             </div>

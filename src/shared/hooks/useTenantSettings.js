@@ -32,6 +32,7 @@ const useTenantSettingsStore = create((set, get) => ({
     onlinePayments: true,
     ecommerce: false,
     emailNotifications: true,
+    multiLocation: false,
   },
 
   // Gateway connections
@@ -155,6 +156,7 @@ const useTenantSettingsStore = create((set, get) => ({
           onlinePayments: features.onlinePayments === true,
           ecommerce: features.enableProducts === true,
           emailNotifications: features.emailNotifications === true,
+          multiLocation: features.multiLocation === true,
         },
         ecommerceEnabled: features.enableProducts === true,
         tenantId: tenant._id,
@@ -167,6 +169,7 @@ const useTenantSettingsStore = create((set, get) => ({
         onlinePayments: features.onlinePayments === true,
         ecommerce: features.enableProducts === true,
         emailNotifications: features.emailNotifications === true,
+        multiLocation: features.multiLocation === true,
       });
     } catch (error) {
       console.error("Failed to load tenant settings:", error);
@@ -186,6 +189,7 @@ const useTenantSettingsStore = create((set, get) => ({
         onlinePayments: true,
         ecommerce: false,
         emailNotifications: true,
+        multiLocation: false,
       },
       smsGatewayConnected: false,
       stripeConnected: true,
@@ -205,6 +209,7 @@ export const useTenantSettings = () => {
     smsGatewayConnected: store.smsGatewayConnected,
     stripeConnected: store.stripeConnected,
     ecommerceEnabled: store.ecommerceEnabled,
+    multiLocation: store.featureFlags.multiLocation,
     loading: store.loading,
     updateFeatureFlag: store.updateFeatureFlag,
     loadSettings: store.loadSettings,

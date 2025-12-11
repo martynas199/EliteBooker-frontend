@@ -90,6 +90,7 @@ export default function FeaturesPage() {
     onlinePayments: featureFlags?.onlinePayments === true,
     ecommerce: ecommerceEnabled === true,
     emailNotifications: featureFlags?.emailNotifications === true,
+    multiLocation: featureFlags?.multiLocation === true,
   });
 
   // Subscription state
@@ -207,11 +208,22 @@ export default function FeaturesPage() {
       onlinePayments: featureFlags?.onlinePayments === true,
       ecommerce: ecommerceEnabled === true,
       emailNotifications: featureFlags?.emailNotifications === true,
+      multiLocation: featureFlags?.multiLocation === true,
     });
   }, [featureFlags, ecommerceEnabled]);
 
   const handleToggle = async (feature) => {
     const newValue = !localFlags[feature];
+
+    // Feature display names
+    const featureNames = {
+      smsConfirmations: "SMS Confirmations",
+      smsReminders: "SMS Reminders",
+      onlinePayments: "Online Payments",
+      ecommerce: "E-commerce",
+      emailNotifications: "Email Notifications",
+      multiLocation: "Multi-Location Support",
+    };
 
     // Optimistically update local state
     setLocalFlags((prev) => ({
@@ -223,7 +235,9 @@ export default function FeaturesPage() {
     try {
       await updateFeatureFlag(feature, newValue);
       toast.success(
-        `${feature} ${newValue ? "enabled" : "disabled"} successfully`
+        `${featureNames[feature] || feature} ${
+          newValue ? "enabled" : "disabled"
+        } successfully`
       );
     } catch (error) {
       console.error(`❌ Failed to update ${feature}:`, error);
@@ -440,6 +454,14 @@ export default function FeaturesPage() {
                 description="Send email confirmations, reminders, and updates to clients and staff."
                 enabled={localFlags.emailNotifications}
                 onChange={() => handleToggle("emailNotifications")}
+              />
+
+              {/* Multi-Location Support */}
+              <FeatureRow
+                title="Multi-Location Support"
+                description="Enable multiple business locations. Services and specialists can be assigned to specific locations, and clients can choose their preferred location when booking."
+                enabled={localFlags.multiLocation}
+                onChange={() => handleToggle("multiLocation")}
               />
             </div>
           </div>

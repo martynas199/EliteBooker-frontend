@@ -9,6 +9,7 @@ import { setService, setSpecialist } from "../state/bookingSlice";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import ServiceCard from "../components/ServiceCard";
 import SpecialistCard from "../components/SpecialistCard";
+import LocationServicesView from "../components/LocationServicesView";
 
 /**
  * Professional Toggle Switch
@@ -136,18 +137,32 @@ export default function SalonLandingLuxury() {
   const [heroSection, setHeroSection] = useState(null);
   const [specialists, setSpecialists] = useState([]);
   const [services, setServices] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+  // Check if multi-location feature is enabled from tenant features
+  const isMultiLocationEnabled = tenant?.features?.multiLocation || false;
 
   // Load data
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [settingsRes, specialistsRes, servicesRes, heroSectionsRes] =
-          await Promise.all([
-            api.get("/settings/display").catch(() => ({ data: null })),
-            api.get("/specialists"), // API endpoint unchanged (backend compatibility)
-            api.get("/services"),
-            api.get("/hero-sections").catch(() => ({ data: [] })),
-          ]);
+        const [
+          settingsRes,
+          specialistsRes,
+          servicesRes,
+          heroSectionsRes,
+          locationsRes,
+        ] = await Promise.all([
+          api.get("/settings").catch(() => ({ data: null })),
+          api.get("/specialists"), // API endpoint unchanged (backend compatibility)
+          api.get("/services"),
+          api.get("/hero-sections").catch(() => ({ data: [] })),
+          api.get("/locations").catch((err) => {
+            console.error("[LANDING] Error fetching locations:", err);
+            return { data: [] };
+          }),
+        ]);
 
         setSettings(settingsRes.data);
 
@@ -161,6 +176,10 @@ export default function SalonLandingLuxury() {
 
         const activeServices = servicesRes.data.filter((s) => s.active);
         setServices(activeServices);
+
+        // Filter active locations
+        const activeLocations = locationsRes.data.filter((l) => l.isActive);
+        setLocations(activeLocations);
       } catch (error) {
         console.error("Failed to load data:", error);
       } finally {
@@ -398,86 +417,299 @@ export default function SalonLandingLuxury() {
             </div>
           </div>
 
-          {/* Toggle - Only show if multiple specialists */}
-          {hasMultipleSpecialists && (
+          {/* Locations Section - Show only if multi-location enabled AND multiple locations exist */}
+          {isMultiLocationEnabled && locations.length > 1 && (
+            <section className="px-4 py-16 bg-gray-50">
+              <div className="max-w-7xl mx-auto">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="text-center mb-12"
+                >
+                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                    Our Locations
+                  </h2>
+                  <p className="text-gray-600 text-lg">
+                    Visit us at any of our convenient locations
+                  </p>
+                </motion.div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 px-4 md:px-0">
+                  {locations.map((location, index) => (
+                    <motion.div
+                      key={location._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all cursor-pointer group"
+                      onClick={() => {
+                        setSelectedLocation(location);
+                        // Scroll to services section
+                        setTimeout(() => {
+                          const servicesSection =
+                            document.getElementById("location-services");
+                          servicesSection?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                          });
+                        }, 100);
+                      }}
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <h3 className="text-xl font-bold text-gray-900">
+                          {location.name}
+                        </h3>
+                        {location.isPrimary && (
+                          <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
+                            Main
+                          </span>
+                        )}
+                      </div>
+
+                      {location.description && (
+                        <p className="text-gray-600 text-sm mb-4">
+                          {location.description}
+                        </p>
+                      )}
+
+                      <div className="space-y-3 text-sm text-gray-700">
+                        {location.address && (
+                          <div className="flex items-start gap-2">
+                            <svg
+                              className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                              />
+                            </svg>
+                            <span>
+                              {location.address.street && (
+                                <>
+                                  {location.address.street}
+                                  <br />
+                                </>
+                              )}
+                              {location.address.city}
+                              {location.address.postalCode &&
+                                `, ${location.address.postalCode}`}
+                            </span>
+                          </div>
+                        )}
+
+                        {location.phone && (
+                          <div className="flex items-center gap-2">
+                            <svg
+                              className="w-5 h-5 text-gray-400 flex-shrink-0"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                              />
+                            </svg>
+                            <a
+                              href={`tel:${location.phone}`}
+                              className="hover:text-blue-600 transition-colors"
+                            >
+                              {location.phone}
+                            </a>
+                          </div>
+                        )}
+
+                        {location.email && (
+                          <div className="flex items-center gap-2">
+                            <svg
+                              className="w-5 h-5 text-gray-400 flex-shrink-0"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                              />
+                            </svg>
+                            <a
+                              href={`mailto:${location.email}`}
+                              className="hover:text-blue-600 transition-colors"
+                            >
+                              {location.email}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+
+                      {location.settings?.amenities &&
+                        location.settings.amenities.length > 0 && (
+                          <div className="mt-4 pt-4 border-t border-gray-200">
+                            <p className="text-xs font-semibold text-gray-700 mb-2">
+                              Amenities:
+                            </p>
+                            <div className="flex flex-wrap gap-1">
+                              {location.settings.amenities.map((amenity) => (
+                                <span
+                                  key={amenity}
+                                  className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
+                                >
+                                  {amenity}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                      {/* View Services Button */}
+                      <button className="mt-6 w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg transition-colors group-hover:shadow-lg">
+                        View Services & Specialists
+                      </button>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Location-Specific Services/Specialists View */}
+          {selectedLocation && (
+            <section
+              id="location-services"
+              className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen"
+            >
+              <div className="max-w-7xl mx-auto px-4 py-16">
+                {/* Back Button */}
+                <motion.button
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  onClick={() => setSelectedLocation(null)}
+                  className="mb-8 flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                  Back to all locations
+                </motion.button>
+
+                <LocationServicesView
+                  location={selectedLocation}
+                  allServices={services}
+                  allSpecialists={specialists}
+                  initialView={viewMode}
+                />
+              </div>
+            </section>
+          )}
+
+          {/* Toggle - Only show if multiple specialists and no location selected */}
+          {hasMultipleSpecialists && !selectedLocation && (
             <div className="flex justify-center mb-12">
               <ProfessionalToggle value={viewMode} onChange={setViewMode} />
             </div>
           )}
 
-          {/* Main Content */}
-          <section className="px-4 pb-20">
-            <div className="max-w-7xl mx-auto">
-              <AnimatePresence mode="wait">
-                {viewMode === "services" ? (
-                  <motion.div
-                    key="services"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    {!hasMultipleSpecialists && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="text-center mb-12"
-                      >
-                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                          Our Services
-                        </h2>
-                        <p className="text-gray-600 text-lg">
-                          Choose from our selection of premium services
-                        </p>
-                      </motion.div>
-                    )}
+          {/* Main Content - Only show if no location is selected */}
+          {!selectedLocation && (
+            <section className="px-4 pb-20">
+              <div className="max-w-7xl mx-auto">
+                <AnimatePresence mode="wait">
+                  {viewMode === "services" ? (
+                    <motion.div
+                      key="services"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      {!hasMultipleSpecialists && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.6 }}
+                          className="text-center mb-12"
+                        >
+                          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                            Our Services
+                          </h2>
+                          <p className="text-gray-600 text-lg">
+                            Choose from our selection of premium services
+                          </p>
+                        </motion.div>
+                      )}
 
-                    {services.length === 0 ? (
-                      <EmptyState type="services" />
-                    ) : (
-                      <div className="grid gap-6 sm:grid-cols-2 overflow-x-hidden w-full">
-                        {services.map((service) => (
-                          <div
-                            key={service._id}
-                            className="w-full overflow-x-hidden"
-                          >
-                            <ServiceCard
-                              service={service}
-                              onClick={() => handleServiceClick(service)}
+                      {services.length === 0 ? (
+                        <EmptyState type="services" />
+                      ) : (
+                        <div className="grid gap-6 sm:grid-cols-2 overflow-x-hidden w-full">
+                          {services.map((service) => (
+                            <div
+                              key={service._id}
+                              className="w-full overflow-x-hidden"
+                            >
+                              <ServiceCard
+                                service={service}
+                                onClick={() => handleServiceClick(service)}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="specialists"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      {specialists.length === 0 ? (
+                        <EmptyState type="specialists" />
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {specialists.map((specialist, index) => (
+                            <SpecialistCard
+                              key={specialist._id}
+                              specialist={specialist}
+                              onClick={() => handleSpecialistClick(specialist)}
+                              index={index}
                             />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="specialists"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    {specialists.length === 0 ? (
-                      <EmptyState type="specialists" />
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {specialists.map((specialist, index) => (
-                          <SpecialistCard
-                            key={specialist._id}
-                            specialist={specialist}
-                            onClick={() => handleSpecialistClick(specialist)}
-                            index={index}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </section>
+                          ))}
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </>

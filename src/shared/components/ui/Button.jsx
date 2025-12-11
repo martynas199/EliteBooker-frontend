@@ -26,7 +26,7 @@ export default function Button({
     default:
       "bg-black text-white hover:bg-gray-900 hover:shadow-lg focus:ring-black",
     brand:
-      "bg-brand-600 text-white hover:bg-brand-700 hover:shadow-lg hover:scale-[1.02] focus:ring-brand-600",
+      "bg-black text-white hover:bg-gray-900 hover:shadow-lg hover:scale-[1.02] focus:ring-black",
     outline:
       "border border-gray-300 text-gray-900 hover:bg-gray-50 hover:border-gray-400 hover:shadow-md focus:ring-gray-500",
     ghost:

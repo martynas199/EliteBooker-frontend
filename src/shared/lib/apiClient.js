@@ -25,6 +25,15 @@ api.interceptors.request.use(
       }
     }
 
+    // Add Authorization header for client routes
+    if (pathname.startsWith("/client") && !config.headers["Authorization"]) {
+      const clientToken = localStorage.getItem("token");
+      if (clientToken) {
+        config.headers["Authorization"] = `Bearer ${clientToken}`;
+        console.log("[API Client] Added client Authorization header");
+      }
+    }
+
     // Add tenant slug header by parsing the current URL
     // This ensures all API calls are scoped to the correct tenant
     if (!config.headers["x-tenant-slug"]) {
@@ -34,6 +43,11 @@ api.interceptors.request.use(
         // No need to send x-tenant-slug or x-tenant-id header - backend handles it via optionalAuth middleware
         console.log(
           "[API Client] Admin route detected, tenantId will be extracted from JWT token"
+        );
+      } else if (pathname.startsWith("/client")) {
+        // For client routes, no tenant context needed (cross-business)
+        console.log(
+          "[API Client] Client route detected, no tenant context needed"
         );
       } else {
         // For tenant customer routes, extract slug from URL

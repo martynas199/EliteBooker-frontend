@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useImageUpload } from "../shared/hooks/useImageUpload";
+import { useTenantSettings } from "../shared/hooks/useTenantSettings";
+import { api } from "../shared/lib/apiClient";
 import FormField from "../shared/components/forms/FormField";
 import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
 import Button from "../shared/components/ui/Button";
@@ -33,11 +35,17 @@ const generateRandomColor = () => {
 
 export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
   const isEditMode = Boolean(staff);
+  const { featureFlags } = useTenantSettings();
   const {
     uploadImage,
     isUploading: isUploadingImage,
     progress,
   } = useImageUpload();
+
+  // Multi-location support
+  const [locations, setLocations] = useState([]);
+  const [loadingLocations, setLoadingLocations] = useState(false);
+  const isMultiLocationEnabled = featureFlags?.multiLocation === true;
 
   // Form state
   const [formData, setFormData] = useState({
@@ -51,6 +59,8 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
     color: generateRandomColor(),
     image: null,
     workingHours: [],
+    locationIds: [], // Locations where specialist works
+    primaryLocationId: "", // Primary location
   });
 
   const [errors, setErrors] = useState({});
@@ -68,9 +78,42 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
     { value: 6, label: "Saturday" },
   ];
 
+  // Load locations if multi-location is enabled
+  useEffect(() => {
+    if (isMultiLocationEnabled) {
+      fetchLocations();
+    }
+  }, [isMultiLocationEnabled]);
+
+  const fetchLocations = async () => {
+    try {
+      setLoadingLocations(true);
+      const response = await api.get("/locations");
+      setLocations(response.data || []);
+    } catch (error) {
+      console.error("Failed to load locations:", error);
+      toast.error("Failed to load locations");
+    } finally {
+      setLoadingLocations(false);
+    }
+  };
+
   // Load existing staff data in edit mode
   useEffect(() => {
     if (staff) {
+      // Extract location IDs - handle both populated and unpopulated
+      const extractedLocationIds = staff.locationIds
+        ? staff.locationIds.map((loc) =>
+            typeof loc === "string" ? loc : loc._id
+          )
+        : [];
+
+      const extractedPrimaryLocationId = staff.primaryLocationId
+        ? typeof staff.primaryLocationId === "string"
+          ? staff.primaryLocationId
+          : staff.primaryLocationId._id
+        : "";
+
       setFormData({
         name: staff.name || "",
         email: staff.email || "",
@@ -82,6 +125,8 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
         color: staff.color || generateRandomColor(),
         image: staff.image || null,
         workingHours: staff.workingHours || [],
+        locationIds: extractedLocationIds,
+        primaryLocationId: extractedPrimaryLocationId,
       });
     }
   }, [staff]);
@@ -189,15 +234,23 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
       // Skip null/undefined entries
       if (!wh) return;
 
-      if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(wh.start || "")) {
+      const startTime = wh.start || "09:00";
+      const endTime = wh.end || "17:00";
+
+      // Validate start time format
+      if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(startTime)) {
         newErrors[`workingHours_${i}_start`] =
           "Please enter start time in HH:mm format (e.g., 09:00)";
       }
-      if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(wh.end || "")) {
+
+      // Validate end time format
+      if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(endTime)) {
         newErrors[`workingHours_${i}_end`] =
           "Please enter end time in HH:mm format (e.g., 17:00)";
       }
-      if ((wh.start || "") >= (wh.end || "")) {
+
+      // Validate time range
+      if (startTime >= endTime) {
         newErrors[`workingHours_${i}_range`] =
           "End time must be after start time";
       }
@@ -223,11 +276,22 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
     setIsSubmitting(true);
 
     try {
-      // Filter out null/undefined working hours entries before saving
+      // Filter out null/undefined working hours entries and ensure all fields are present
       const cleanedData = {
         ...formData,
-        workingHours: formData.workingHours.filter((wh) => wh != null),
+        workingHours: formData.workingHours
+          .filter((wh) => wh != null)
+          .map((wh) => ({
+            dayOfWeek: wh.dayOfWeek ?? 1,
+            start: wh.start || "09:00",
+            end: wh.end || "17:00",
+          })),
       };
+
+      console.log(
+        "Submitting staff data:",
+        JSON.stringify(cleanedData, null, 2)
+      );
       await onSave(cleanedData);
     } catch (err) {
       setErrors((prev) => ({ ...prev, submit: err.message }));
@@ -518,6 +582,124 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
             </div>
           )}
         </div>
+
+        {/* Location Assignment Section - Only show if multi-location is enabled */}
+        {isMultiLocationEnabled && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold border-b pb-2">
+              Location Assignment
+            </h3>
+
+            {loadingLocations ? (
+              <div className="text-center py-4">
+                <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-brand-600"></div>
+                <p className="text-sm text-gray-600 mt-2">
+                  Loading locations...
+                </p>
+              </div>
+            ) : locations.length === 0 ? (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <p className="text-sm text-yellow-800">
+                  No locations found. Please create locations first before
+                  assigning staff.
+                </p>
+              </div>
+            ) : (
+              <>
+                <FormField label="Assigned Locations" required>
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-600">
+                      Select which locations this staff member works at
+                    </p>
+                    <div className="border border-gray-300 rounded-lg p-3 max-h-48 overflow-y-auto bg-white">
+                      {locations.map((location) => (
+                        <label
+                          key={location._id}
+                          className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={formData.locationIds.includes(
+                              location._id
+                            )}
+                            onChange={(e) => {
+                              const newLocationIds = e.target.checked
+                                ? [...formData.locationIds, location._id]
+                                : formData.locationIds.filter(
+                                    (id) => id !== location._id
+                                  );
+
+                              handleChange("locationIds", newLocationIds);
+
+                              // If unchecking the primary location, clear it
+                              if (
+                                !e.target.checked &&
+                                formData.primaryLocationId === location._id
+                              ) {
+                                handleChange("primaryLocationId", "");
+                              }
+                            }}
+                            className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
+                          />
+                          <span className="flex-1 text-sm font-medium text-gray-900">
+                            {location.name}
+                            {location.isPrimary && (
+                              <span className="ml-2 text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">
+                                Primary
+                              </span>
+                            )}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                    {formData.locationIds.length === 0 && (
+                      <p className="text-xs text-amber-600 mt-1">
+                        ⚠️ No locations selected. Staff will be available at all
+                        locations by default.
+                      </p>
+                    )}
+                  </div>
+                </FormField>
+
+                {formData.locationIds.length > 0 && (
+                  <FormField label="Primary Location" required>
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-600">
+                        Select the main location where this staff member is
+                        based
+                      </p>
+                      <select
+                        value={formData.primaryLocationId}
+                        onChange={(e) =>
+                          handleChange("primaryLocationId", e.target.value)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                      >
+                        <option value="">Select primary location...</option>
+                        {locations
+                          .filter((loc) =>
+                            formData.locationIds.includes(loc._id)
+                          )
+                          .map((location) => (
+                            <option key={location._id} value={location._id}>
+                              {location.name}
+                              {location.isPrimary ? " (Business Primary)" : ""}
+                            </option>
+                          ))}
+                      </select>
+                      {!formData.primaryLocationId &&
+                        formData.locationIds.length > 0 && (
+                          <p className="text-xs text-amber-600 mt-1">
+                            ⚠️ Please select a primary location
+                          </p>
+                        )}
+                    </div>
+                  </FormField>
+                )}
+              </>
+            )}
+          </div>
+        )}
 
         {/* Settings Section */}
         <div className="space-y-4">

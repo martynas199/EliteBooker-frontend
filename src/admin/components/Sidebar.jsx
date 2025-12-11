@@ -12,6 +12,7 @@ import {
   ChevronDown,
   Package,
   LogOut,
+  Users,
 } from "lucide-react";
 import { useTenantSettings } from "../../shared/hooks/useTenantSettings";
 
@@ -25,6 +26,7 @@ const iconMap = {
   Layout,
   Sliders,
   Package,
+  Users,
 };
 
 // Navigation configuration
@@ -43,9 +45,19 @@ const navigationConfig = [
     ],
   },
   {
+    label: "Clients",
+    icon: "Users",
+    path: "/admin/clients",
+  },
+  {
     label: "Booking Setup",
     icon: "Settings",
     items: [
+      {
+        label: "Locations",
+        path: "/admin/locations",
+        condition: "multiLocation",
+      },
       { label: "Services", path: "/admin/services" },
       { label: "Staff", path: "/admin/staff" },
       { label: "My Schedule", path: "/admin/schedule" },
@@ -90,11 +102,16 @@ const navigationConfig = [
 
 const SidebarItem = ({ item, isNested = false }) => {
   const location = useLocation();
-  const { ecommerceEnabled } = useTenantSettings();
+  const { ecommerceEnabled, multiLocation } = useTenantSettings();
   const [isExpanded, setIsExpanded] = useState(true);
 
   // Check if section should be hidden based on conditions
   if (item.condition === "ecommerceEnabled" && !ecommerceEnabled) {
+    return null;
+  }
+
+  // Hide items based on multiLocation feature
+  if (item.condition === "multiLocation" && !multiLocation) {
     return null;
   }
 
@@ -138,9 +155,23 @@ const SidebarItem = ({ item, isNested = false }) => {
               className="overflow-hidden"
             >
               <div className="ml-7 mt-1 space-y-0.5 border-l border-gray-200 pl-3">
-                {item.items.map((child, idx) => (
-                  <SidebarItem key={idx} item={child} isNested />
-                ))}
+                {item.items
+                  .filter((child) => {
+                    // Filter out items based on feature flags
+                    if (child.condition === "multiLocation" && !multiLocation) {
+                      return false;
+                    }
+                    if (
+                      child.condition === "ecommerceEnabled" &&
+                      !ecommerceEnabled
+                    ) {
+                      return false;
+                    }
+                    return true;
+                  })
+                  .map((child, idx) => (
+                    <SidebarItem key={idx} item={child} isNested />
+                  ))}
               </div>
             </motion.div>
           )}
