@@ -25,16 +25,10 @@ api.interceptors.request.use(
       }
     }
 
-    // Client routes: Check for localStorage token first (OAuth cross-domain fallback)
-    // Then fall back to httpOnly cookies
-    if (pathname.startsWith("/client") && !config.headers["Authorization"]) {
-      const clientToken = localStorage.getItem("clientToken");
-      if (clientToken) {
-        config.headers["Authorization"] = `Bearer ${clientToken}`;
-        console.log("[API Client] Added client Authorization header from localStorage");
-      } else {
-        console.log("[API Client] Client route - using httpOnly cookie auth");
-      }
+    // Client routes use httpOnly cookies - no Authorization header needed
+    if (pathname.startsWith("/client")) {
+      console.log("[API Client] Client route - using httpOnly cookie auth");
+      // Don't add Authorization header - backend will read from cookie
     }
 
     // Add tenant slug header by parsing the current URL

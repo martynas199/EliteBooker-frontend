@@ -8,28 +8,14 @@ export function ClientAuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Try to fetch profile on mount (cookie-based auth or localStorage token)
+    // Try to fetch profile on mount (cookie-based auth)
     fetchClientProfile();
   }, []);
 
   const fetchClientProfile = async () => {
     try {
       console.log("[ClientAuth] Attempting to fetch client profile...");
-      
-      // Check for token in localStorage (for cross-domain OAuth)
-      const token = localStorage.getItem("clientToken");
-      const config = {};
-      
-      if (token) {
-        console.log("[ClientAuth] Using localStorage token");
-        config.headers = {
-          Authorization: `Bearer ${token}`,
-        };
-      } else {
-        console.log("[ClientAuth] Using cookie-based auth");
-      }
-      
-      const response = await api.get("/client/me", config);
+      const response = await api.get("/client/me");
       console.log(
         "[ClientAuth] Profile fetched successfully:",
         response.data.client
@@ -41,31 +27,18 @@ export function ClientAuthProvider({ children }) {
         "[ClientAuth] Failed to fetch client profile:",
         error.response?.status
       );
-      // If unauthorized, clear client state and localStorage token
+      // If unauthorized, clear client state (don't call logout to avoid recursion)
       if (error.response?.status === 401) {
         console.log("[ClientAuth] Unauthorized - clearing client state");
         setClient(null);
-        localStorage.removeItem("clientToken");
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const login = async (emailOrClient, passwordOrToken) => {
-    // Handle OAuth login (client=null, token provided)
-    if (emailOrClient === null && passwordOrToken) {
-      console.log("[ClientAuth] OAuth login with token");
-      localStorage.setItem("clientToken", passwordOrToken);
-      await fetchClientProfile();
-      return;
-    }
-    
-    // Handle regular email/password login
-    const response = await api.post("/client/login", { 
-      email: emailOrClient, 
-      password: passwordOrToken 
-    });
+  const login = async (email, password) => {
+    const response = await api.post("/client/login", { email, password });
     const { client: clientData } = response.data;
     // Token is set as httpOnly cookie by backend
     setClient(clientData);
@@ -88,9 +61,8 @@ export function ClientAuthProvider({ children }) {
   const logout = async () => {
     console.log("[ClientAuth] Starting logout process...");
 
-    // Clear client state and localStorage token immediately
+    // Clear client state immediately
     setClient(null);
-    localStorage.removeItem("clientToken");
 
     try {
       // Call backend to clear httpOnly cookie
