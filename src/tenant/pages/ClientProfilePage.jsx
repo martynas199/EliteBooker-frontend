@@ -63,11 +63,11 @@ export default function ClientProfilePage() {
       setLoading(true);
       setError(null);
       console.log("[Profile] Fetching profile data...");
-      
+
       const response = await api.get("/client/profile", {
         timeout: 10000, // 10 second timeout for mobile
       });
-      
+
       console.log("[Profile] Response:", response.data);
 
       // Check if we have the expected data structure

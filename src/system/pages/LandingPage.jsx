@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import PageTransition from "../../shared/components/ui/PageTransition";
 import Card from "../../shared/components/ui/Card";
 import MenuDropdown from "../../shared/components/ui/MenuDropdown";
@@ -11,7 +11,8 @@ import eliteLogo from "../../assets/elite.png";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { client, isAuthenticated, logout } = useClientAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { client, isAuthenticated, logout, login } = useClientAuth();
   const [activePlan, setActivePlan] = useState("monthly");
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -24,6 +25,30 @@ export default function LandingPage() {
       console.log("[LandingPage] Client avatar:", client.avatar);
     }
   }, [client]);
+
+  // Handle OAuth callback with token in URL
+  useEffect(() => {
+    const authParam = searchParams.get("auth");
+    const tokenParam = searchParams.get("token");
+
+    if (authParam === "success" && tokenParam) {
+      console.log("[LandingPage] OAuth success - storing token");
+      
+      // Store token in localStorage as a fallback for cross-domain cookie issues
+      localStorage.setItem("clientToken", tokenParam);
+      
+      // Try to log in with the token (will trigger ClientAuthContext to fetch profile)
+      if (login) {
+        login(null, tokenParam); // Pass token to auth context
+      }
+
+      // Clean up URL parameters
+      searchParams.delete("auth");
+      searchParams.delete("token");
+      searchParams.delete("t");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams, login]);
 
   // Handle login - check if already authenticated
   const handleLogin = () => {
