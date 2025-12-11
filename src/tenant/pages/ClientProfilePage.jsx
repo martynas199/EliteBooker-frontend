@@ -62,12 +62,13 @@ export default function ClientProfilePage() {
     try {
       setLoading(true);
       setError(null);
+      console.log("[Profile] Fetching profile data...");
       const response = await api.get("/client/profile");
-      console.log("Profile response:", response.data);
+      console.log("[Profile] Response:", response.data);
 
       // Check if we have the expected data structure
-      if (!response.data?.profile?.profile) {
-        console.error("Invalid profile data structure:", response.data);
+      if (!response.data?.profile) {
+        console.error("[Profile] Invalid data structure:", response.data);
         setError("Invalid profile data received");
         return;
       }
@@ -80,12 +81,17 @@ export default function ClientProfilePage() {
       setPhone(clientProfile?.phone || "");
       setPreferredLanguage(clientProfile?.preferredLanguage || "en");
       setPreferredCurrency(clientProfile?.preferredCurrency || "GBP");
+      
+      console.log("[Profile] Profile loaded successfully");
     } catch (error) {
-      console.error("Failed to fetch profile:", error);
-      setError(error.message || "Failed to load profile");
+      console.error("[Profile] Failed to fetch:", error);
+      const errorMessage = error.response?.data?.error || error.message || "Failed to load profile";
+      setError(errorMessage);
+      
       // If unauthorized, redirect to login
       if (error.response?.status === 401) {
-        navigate("/login");
+        console.log("[Profile] Unauthorized - redirecting to login");
+        navigate("/");
       }
     } finally {
       setLoading(false);
