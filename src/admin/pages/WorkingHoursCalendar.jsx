@@ -8,6 +8,10 @@ import "react-day-picker/dist/style.css";
 import Modal from "../../shared/components/ui/Modal";
 import FormField from "../../shared/components/forms/FormField";
 import Button from "../../shared/components/ui/Button";
+import {
+  SelectDrawer,
+  SelectButton,
+} from "../../shared/components/ui/SelectDrawer";
 import dayjs from "dayjs";
 
 export default function WorkingHoursCalendar() {
@@ -33,6 +37,9 @@ export default function WorkingHoursCalendar() {
   const [editWeeklyModalOpen, setEditWeeklyModalOpen] = useState(false);
   const [editingDayOfWeek, setEditingDayOfWeek] = useState(null);
   const [weeklyDayHours, setWeeklyDayHours] = useState([]);
+
+  // Drawer state for specialist selection
+  const [specialistDrawerOpen, setSpecialistDrawerOpen] = useState(false);
 
   // Fetch specialists
   useEffect(() => {
@@ -441,7 +448,7 @@ export default function WorkingHoursCalendar() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl lg:text-3xl font-bold mb-2">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
           Working Hours Calendar
         </h1>
         <p className="text-gray-600">
@@ -450,24 +457,35 @@ export default function WorkingHoursCalendar() {
       </div>
 
       {/* Specialist Selector */}
-      <div className="bg-white border rounded-lg shadow-sm p-6">
+      <div className="bg-white border rounded-lg shadow-sm p-4 sm:p-6">
         <FormField label="Select Specialist" htmlFor="specialist-select">
-          <select
-            id="specialist-select"
-            className="border border-gray-300 rounded-lg w-full max-w-md px-4 py-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+          <SelectButton
             value={selectedSpecialistId}
-            onChange={(e) => setSelectedSpecialistId(e.target.value)}
+            placeholder="Select a specialist"
             disabled={!isSuperAdmin && !isSalonAdmin}
-          >
-            <option value="">Select a specialist</option>
-            {specialists.map((b) => (
-              <option key={b._id} value={b._id}>
-                {b.name}
-              </option>
-            ))}
-          </select>
+            options={specialists.map((b) => ({
+              value: b._id,
+              label: b.name,
+            }))}
+            onClick={() => setSpecialistDrawerOpen(true)}
+            className="max-w-full sm:max-w-md"
+          />
         </FormField>
       </div>
+
+      {/* Specialist Selection Drawer */}
+      <SelectDrawer
+        open={specialistDrawerOpen}
+        onClose={() => setSpecialistDrawerOpen(false)}
+        title="Select Specialist"
+        options={specialists.map((b) => ({
+          value: b._id,
+          label: b.name,
+        }))}
+        value={selectedSpecialistId}
+        onChange={(value) => setSelectedSpecialistId(value)}
+        placeholder="Select a specialist"
+      />
 
       {/* Calendar */}
       {selectedSpecialist && (
@@ -764,18 +782,19 @@ export default function WorkingHoursCalendar() {
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
         variant="dashboard"
+        size="md"
         title={
           selectedDate
             ? `Schedule - ${dayjs(selectedDate).format("dddd, MMMM D, YYYY")}`
             : "Edit Schedule"
         }
       >
-        <div className="space-y-4">
-          <div className="bg-blue-50 border border-blue-200 rounded p-3">
-            <p className="text-sm text-blue-800">
-              <strong>Custom Date Override:</strong> Setting hours here will
-              only affect{" "}
-              <strong>
+        <div className="space-y-3 sm:space-y-4">
+          <div className="bg-gray-50 border-2 border-orange-400 rounded-lg p-3 sm:p-4">
+            <p className="text-xs sm:text-sm text-gray-900 leading-relaxed font-medium">
+              <strong className="font-bold">Custom Date Override:</strong>{" "}
+              Setting hours here will only affect{" "}
+              <strong className="font-bold">
                 {selectedDate && dayjs(selectedDate).format("MMMM D, YYYY")}
               </strong>
               . Leave empty to use default weekly schedule.
@@ -785,7 +804,7 @@ export default function WorkingHoursCalendar() {
           {dayHours.map((slot, index) => (
             <div
               key={index}
-              className="flex items-end gap-3 pb-3 border-b last:border-b-0"
+              className="flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-3 pb-3 border-b last:border-b-0"
             >
               <FormField
                 label={`Time Slot ${index + 1}`}
@@ -796,17 +815,19 @@ export default function WorkingHoursCalendar() {
                   <input
                     type="time"
                     id={`start-${index}`}
-                    className="border rounded px-3 py-2 w-full"
+                    className="border border-gray-300 rounded-lg px-3 py-2.5 w-full text-sm sm:text-base text-gray-900 focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     value={slot.start}
                     onChange={(e) =>
                       updateTimeSlot(index, "start", e.target.value)
                     }
                   />
-                  <span className="text-gray-500">to</span>
+                  <span className="text-gray-700 text-sm sm:text-base font-medium">
+                    to
+                  </span>
                   <input
                     type="time"
                     id={`end-${index}`}
-                    className="border rounded px-3 py-2 w-full"
+                    className="border border-gray-300 rounded-lg px-3 py-2.5 w-full text-sm sm:text-base text-gray-900 focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     value={slot.end}
                     onChange={(e) =>
                       updateTimeSlot(index, "end", e.target.value)
@@ -818,7 +839,7 @@ export default function WorkingHoursCalendar() {
                 <button
                   type="button"
                   onClick={() => removeTimeSlot(index)}
-                  className="px-2 sm:px-3 py-2 text-xs sm:text-sm text-red-600 hover:bg-red-50 rounded border border-red-200"
+                  className="px-3 sm:px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg border border-red-200 transition-colors w-full sm:w-auto"
                 >
                   Remove
                 </button>
@@ -829,16 +850,16 @@ export default function WorkingHoursCalendar() {
           <button
             type="button"
             onClick={addTimeSlot}
-            className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm text-brand-600 border border-brand-300 rounded hover:bg-brand-50"
+            className="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-brand-600 border-2 border-brand-300 rounded-lg hover:bg-brand-50 transition-colors"
           >
             + Add Another Time Slot
           </button>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-4 border-t">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3 pt-4 border-t">
             <button
               type="button"
               onClick={clearWorkingHours}
-              className="px-3 sm:px-4 py-2 text-red-600 hover:bg-red-50 rounded text-xs sm:text-sm order-2 sm:order-1"
+              className="px-4 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-red-600 hover:bg-red-50 rounded-lg border border-red-200 transition-colors order-2 sm:order-1"
             >
               Clear Custom Hours
             </button>
@@ -846,14 +867,14 @@ export default function WorkingHoursCalendar() {
               <Button
                 variant="outline"
                 onClick={() => setEditModalOpen(false)}
-                className="flex-1 sm:flex-initial text-xs sm:text-sm py-2"
+                className="flex-1 sm:flex-initial text-sm sm:text-base py-2.5 sm:py-3"
               >
                 Cancel
               </Button>
               <Button
                 variant="brand"
                 onClick={saveWorkingHours}
-                className="flex-1 sm:flex-initial text-xs sm:text-sm py-2"
+                className="flex-1 sm:flex-initial text-sm sm:text-base py-2.5 sm:py-3"
               >
                 Save Schedule
               </Button>
@@ -867,6 +888,7 @@ export default function WorkingHoursCalendar() {
         open={editWeeklyModalOpen}
         onClose={() => setEditWeeklyModalOpen(false)}
         variant="dashboard"
+        size="md"
         title={
           editingDayOfWeek !== null
             ? `Edit ${
@@ -883,10 +905,11 @@ export default function WorkingHoursCalendar() {
             : "Edit Schedule"
         }
       >
-        <div className="space-y-4">
-          <div className="bg-blue-50 border border-blue-200 rounded p-3">
-            <p className="text-sm text-blue-800">
-              <strong>Weekly Schedule:</strong> These hours will apply to all{" "}
+        <div className="space-y-3 sm:space-y-4">
+          <div className="bg-gray-50 border-2 border-orange-400 rounded-lg p-3 sm:p-4">
+            <p className="text-xs sm:text-sm text-gray-900 leading-relaxed font-medium">
+              <strong className="font-bold">Weekly Schedule:</strong> These
+              hours will apply to all{" "}
               {editingDayOfWeek !== null &&
                 [
                   "Sundays",
@@ -904,7 +927,7 @@ export default function WorkingHoursCalendar() {
           {weeklyDayHours.map((slot, index) => (
             <div
               key={index}
-              className="flex items-end gap-3 pb-3 border-b last:border-b-0"
+              className="flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-3 pb-3 border-b last:border-b-0"
             >
               <FormField
                 label={`Time Slot ${index + 1}`}
@@ -915,17 +938,19 @@ export default function WorkingHoursCalendar() {
                   <input
                     type="time"
                     id={`weekly-start-${index}`}
-                    className="border rounded px-3 py-2 w-full"
+                    className="border border-gray-300 rounded-lg px-3 py-2.5 w-full text-sm sm:text-base text-gray-900 focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     value={slot.start}
                     onChange={(e) =>
                       updateWeeklyTimeSlot(index, "start", e.target.value)
                     }
                   />
-                  <span className="text-gray-500">to</span>
+                  <span className="text-gray-700 text-sm sm:text-base font-medium">
+                    to
+                  </span>
                   <input
                     type="time"
                     id={`weekly-end-${index}`}
-                    className="border rounded px-3 py-2 w-full"
+                    className="border border-gray-300 rounded-lg px-3 py-2.5 w-full text-sm sm:text-base text-gray-900 focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     value={slot.end}
                     onChange={(e) =>
                       updateWeeklyTimeSlot(index, "end", e.target.value)
@@ -937,7 +962,7 @@ export default function WorkingHoursCalendar() {
                 <button
                   type="button"
                   onClick={() => removeWeeklyTimeSlot(index)}
-                  className="px-2 sm:px-3 py-2 text-xs sm:text-sm text-red-600 hover:bg-red-50 rounded border border-red-200"
+                  className="px-3 sm:px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg border border-red-200 transition-colors w-full sm:w-auto"
                 >
                   Remove
                 </button>
@@ -948,16 +973,16 @@ export default function WorkingHoursCalendar() {
           <button
             type="button"
             onClick={addWeeklyTimeSlot}
-            className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm text-brand-600 border border-brand-300 rounded hover:bg-brand-50"
+            className="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-brand-600 border-2 border-brand-300 rounded-lg hover:bg-brand-50 transition-colors"
           >
             + Add Another Time Slot
           </button>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-4 border-t">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3 pt-4 border-t">
             <button
               type="button"
               onClick={clearWeeklySchedule}
-              className="px-3 sm:px-4 py-2 text-red-600 hover:bg-red-50 rounded text-xs sm:text-sm order-2 sm:order-1"
+              className="px-4 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-red-600 hover:bg-red-50 rounded-lg border border-red-200 transition-colors order-2 sm:order-1"
             >
               Clear Hours
             </button>
@@ -965,14 +990,14 @@ export default function WorkingHoursCalendar() {
               <Button
                 variant="outline"
                 onClick={() => setEditWeeklyModalOpen(false)}
-                className="flex-1 sm:flex-initial text-xs sm:text-sm py-2"
+                className="flex-1 sm:flex-initial text-sm sm:text-base py-2.5 sm:py-3"
               >
                 Cancel
               </Button>
               <Button
                 variant="brand"
                 onClick={saveWeeklySchedule}
-                className="flex-1 sm:flex-initial text-xs sm:text-sm py-2"
+                className="flex-1 sm:flex-initial text-sm sm:text-base py-2.5 sm:py-3"
               >
                 Save Schedule
               </Button>

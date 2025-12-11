@@ -1,16 +1,95 @@
-import { useState, lazy, Suspense } from "react";
+import { useState, lazy, Suspense, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PageTransition from "../../shared/components/ui/PageTransition";
 import Card from "../../shared/components/ui/Card";
+import MenuDropdown from "../../shared/components/ui/MenuDropdown";
+import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SEOHead from "../../shared/components/seo/SEOHead";
+import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import eliteLogo from "../../assets/elite.png";
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { client, isAuthenticated, logout } = useClientAuth();
   const [activePlan, setActivePlan] = useState("monthly");
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showMenuDropdown, setShowMenuDropdown] = useState(false);
+
+  // Debug: Log client data when it changes
+  useEffect(() => {
+    if (client) {
+      console.log("[LandingPage] Client data:", client);
+      console.log("[LandingPage] Client avatar:", client.avatar);
+    }
+  }, [client]);
+
+  // Handle login - check if already authenticated
+  const handleLogin = () => {
+    if (isAuthenticated) {
+      // Already logged in, go to profile
+      navigate("/client/profile");
+    } else {
+      // Not logged in, start OAuth flow
+      window.location.href = `${
+        import.meta.env.VITE_API_URL || "http://localhost:4000"
+      }/api/auth/google`;
+    }
+  };
+
+  // Menu dropdown configuration - changes based on auth status
+  const customerLinks = isAuthenticated
+    ? [
+        // When logged in, show profile-related menu items
+        {
+          label: client?.name || "My Profile",
+          onClick: () => navigate("/client/profile"),
+          primary: true,
+        },
+        {
+          label: "My Bookings",
+          onClick: () => navigate("/client/profile"),
+        },
+        {
+          label: "Settings",
+          onClick: () => navigate("/client/profile"),
+        },
+        {
+          label: "Log out",
+          onClick: async () => {
+            await logout();
+            setShowMenuDropdown(false);
+            window.location.replace("/");
+          },
+        },
+      ]
+    : [
+        {
+          label: "Log in or sign up",
+          onClick: handleLogin,
+          primary: true,
+        },
+        {
+          label: "Find a business",
+          href: "/search",
+        },
+        {
+          label: "Help and support",
+          href: "/help",
+        },
+      ];
+
+  const businessLinks = [
+    {
+      label: "List your business",
+      href: "/signup",
+    },
+    {
+      label: "Business log in",
+      href: "/admin/login",
+    },
+  ];
 
   const features = [
     {
@@ -313,80 +392,174 @@ export default function LandingPage() {
                 />
               </div>
 
-              {/* Navigation Links - Desktop */}
-              <nav className="hidden md:flex items-center gap-8">
-                <a
-                  href="#features"
-                  className="text-gray-600 hover:text-violet-600 font-medium transition-colors"
-                >
-                  Features
-                </a>
-                <a
-                  href="#pricing"
-                  className="text-gray-600 hover:text-violet-600 font-medium transition-colors"
-                >
-                  Pricing
-                </a>
-                <a
-                  href="#testimonials"
-                  className="text-gray-600 hover:text-violet-600 font-medium transition-colors"
-                >
-                  Testimonials
-                </a>
-              </nav>
-
               {/* Right Actions - Desktop */}
-              <div className="hidden md:flex items-center gap-4">
-                <button
-                  onClick={() => navigate("/admin/login")}
-                  className="text-gray-600 hover:text-violet-600 font-medium transition-colors"
-                >
-                  Sign In
-                </button>
-                <button
-                  onClick={() => navigate("/signup")}
-                  className="px-6 py-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all"
-                >
-                  Get Started
-                </button>
+              <div className="hidden md:flex items-center gap-3">
+                {!isAuthenticated && (
+                  /* Not logged in - show log in and list business buttons */
+                  <>
+                    <button
+                      onClick={handleLogin}
+                      className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+                    >
+                      Log in
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/signup")}
+                      className="px-4 py-2 text-sm font-medium border border-gray-300 rounded-full text-gray-900 hover:border-gray-400 transition-all"
+                    >
+                      List your business
+                    </button>
+                  </>
+                )}
+
+                {/* Menu Button - shows user avatar when logged in, or Menu button when not */}
+                <div className="relative">
+                  {isAuthenticated ? (
+                    /* Logged in - show profile picture as menu button */
+                    <button
+                      onClick={() => setShowMenuDropdown(!showMenuDropdown)}
+                      className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white font-semibold hover:shadow-lg transition-all overflow-hidden"
+                      title={client?.name || "Account"}
+                    >
+                      {client?.avatar ? (
+                        <img
+                          src={client.avatar}
+                          alt={client?.name || "User"}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-white font-semibold">
+                          {client?.name?.charAt(0).toUpperCase() || "U"}
+                        </span>
+                      )}
+                    </button>
+                  ) : (
+                    /* Not logged in - show Menu button */
+                    <button
+                      onClick={() => setShowMenuDropdown(!showMenuDropdown)}
+                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-full text-gray-900 hover:border-gray-400 transition-all"
+                    >
+                      Menu
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6h16M4 12h16M4 18h16"
+                        />
+                      </svg>
+                    </button>
+                  )}
+
+                  {/* Menu Dropdown - shows ProfileMenu when logged in, MenuDropdown when not */}
+                  {isAuthenticated ? (
+                    /* Logged in - show profile menu dropdown */
+                    showMenuDropdown && (
+                      <>
+                        <div
+                          className="fixed inset-0 z-[998]"
+                          onClick={() => setShowMenuDropdown(false)}
+                        />
+                        <div
+                          className="absolute right-0 top-full mt-2 bg-white rounded-2xl shadow-2xl overflow-hidden z-[999]"
+                          style={{ minWidth: "320px" }}
+                        >
+                          <ProfileMenu
+                            client={client}
+                            onLogout={logout}
+                            variant="dropdown"
+                            onItemClick={() => setShowMenuDropdown(false)}
+                          />
+                        </div>
+                      </>
+                    )
+                  ) : (
+                    /* Not logged in - show regular menu dropdown */
+                    <MenuDropdown
+                      isOpen={showMenuDropdown}
+                      onClose={() => setShowMenuDropdown(false)}
+                      customerLinks={customerLinks}
+                      businessLinks={businessLinks}
+                      position="right"
+                    />
+                  )}
+                </div>
               </div>
 
               {/* Mobile Menu Button */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 text-gray-600 hover:text-violet-600 transition-colors"
-                aria-label="Toggle menu"
-              >
-                {mobileMenuOpen ? (
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+              <div className="md:hidden flex items-center gap-3 relative">
+                {isAuthenticated ? (
+                  /* Logged in - only show avatar */
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        console.log(
+                          "[Mobile Menu] Avatar clicked, navigating to menu"
+                        );
+                        navigate("/menu");
+                      }}
+                      className="flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white font-semibold hover:shadow-lg transition-all overflow-hidden"
+                      title={client?.name || "Account"}
+                    >
+                      {client?.avatar ? (
+                        <img
+                          src={client.avatar}
+                          alt={client?.name || "User"}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-sm">
+                          {client?.name?.charAt(0).toUpperCase() || "U"}
+                        </span>
+                      )}
+                    </button>
+                  </>
                 ) : (
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  /* Not logged in - show hamburger menu */
+                  <button
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    className="p-2 text-gray-600 hover:text-violet-600 transition-colors"
+                    aria-label="Toggle menu"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
+                    {mobileMenuOpen ? (
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6h16M4 12h16M4 18h16"
+                        />
+                      </svg>
+                    )}
+                  </button>
                 )}
-              </button>
+              </div>
             </div>
           </div>
 
@@ -402,6 +575,7 @@ export default function LandingPage() {
             className="md:hidden overflow-hidden bg-white border-t border-gray-200"
           >
             <nav className="px-4 py-4 space-y-3">
+              {/* Page sections */}
               <a
                 href="#features"
                 onClick={() => setMobileMenuOpen(false)}
@@ -423,25 +597,51 @@ export default function LandingPage() {
               >
                 Testimonials
               </a>
-              <div className="pt-3 space-y-2 border-t border-gray-200">
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    navigate("/admin/login");
-                  }}
-                  className="w-full text-left py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
-                >
-                  Sign In
-                </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    navigate("/signup");
-                  }}
-                  className="w-full px-6 py-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all"
-                >
-                  Get Started
-                </button>
+
+              {/* Customer Links Section */}
+              <div className="pt-3 border-t border-gray-200">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  For Customers
+                </p>
+                {customerLinks.map((link, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      if (link.onClick) {
+                        link.onClick();
+                      } else if (link.href) {
+                        navigate(link.href);
+                      }
+                    }}
+                    className={`w-full text-left py-2 font-medium transition-colors ${
+                      link.primary
+                        ? "text-violet-600 hover:text-violet-700"
+                        : "text-gray-600 hover:text-violet-600"
+                    }`}
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Business Links Section */}
+              <div className="pt-3 border-t border-gray-200">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  For Businesses
+                </p>
+                {businessLinks.map((link, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      navigate(link.href);
+                    }}
+                    className="w-full text-left py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
+                  >
+                    {link.label}
+                  </button>
+                ))}
               </div>
             </nav>
           </motion.div>

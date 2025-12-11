@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { Search, Edit, Trash2, Plus } from "lucide-react";
 import Button from "../shared/components/ui/Button";
 import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
 import { ServiceCardSkeleton } from "../shared/components/ui/Skeleton";
@@ -104,26 +105,53 @@ export default function ServicesList({
   }
 
   return (
-    <div className="space-y-4 overflow-x-hidden">
+    <div className="space-y-6 overflow-x-hidden">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">{t("services", language)}</h2>
-        <Button onClick={onCreate} variant="brand">
-          + {t("addService", language)}
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg">
+            <svg
+              className="w-6 h-6 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
+            </svg>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            {t("services", language)}
+          </h2>
+        </div>
+        <Button
+          onClick={onCreate}
+          variant="brand"
+          className="shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-700 hover:to-purple-700"
+        >
+          <Plus className="w-5 h-5 mr-2 inline-block" />
+          {t("addService", language)}
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-4 space-y-3">
-        <div className="flex flex-col md:flex-row gap-3">
+      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border-2 border-gray-100 p-6 space-y-4">
+        <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
-          <div className="flex-1">
+          <div className="flex-1 relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
             <input
               type="text"
               placeholder={t("searchServices", language)}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+              className="w-full pl-11 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
             />
           </div>
 
@@ -131,7 +159,15 @@ export default function ServicesList({
           <select
             value={filterActive}
             onChange={(e) => setFilterActive(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+            className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors appearance-none bg-white cursor-pointer"
+            style={{
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\")",
+              backgroundPosition: "right 0.5rem center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "1.5em 1.5em",
+              paddingRight: "2.5rem",
+            }}
           >
             <option value="all">{t("allStatus", language)}</option>
             <option value="active">{t("activeOnly", language)}</option>
@@ -142,7 +178,15 @@ export default function ServicesList({
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+            className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors appearance-none bg-white cursor-pointer"
+            style={{
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\")",
+              backgroundPosition: "right 0.5rem center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "1.5em 1.5em",
+              paddingRight: "2.5rem",
+            }}
           >
             {categories.map((cat) => (
               <option key={cat} value={cat}>
@@ -152,7 +196,7 @@ export default function ServicesList({
           </select>
         </div>
 
-        <div className="text-sm text-gray-500">
+        <div className="text-sm font-medium text-gray-600">
           {language === "LT"
             ? `Rodoma ${filteredServices.length} iš ${services.length} paslaugų`
             : `Showing ${filteredServices.length} of ${services.length} services`}
@@ -280,30 +324,30 @@ export default function ServicesList({
           </div>
 
           {/* Desktop Table View */}
-          <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden">
+          <div className="hidden md:block bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-gray-100">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Service
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Category
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Price
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Duration
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Variants
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -313,7 +357,7 @@ export default function ServicesList({
                     <tr
                       key={service._id}
                       data-testid="service-item"
-                      className="hover:bg-gray-50"
+                      className="hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center">
@@ -371,20 +415,24 @@ export default function ServicesList({
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right text-sm">
-                        <button
-                          onClick={() => onEdit(service)}
-                          className="text-brand-600 hover:text-brand-900 mr-3"
-                        >
-                          Edit
-                        </button>
-                        {isSuperAdmin && (
+                        <div className="flex items-center justify-end gap-2">
                           <button
-                            onClick={() => handleDeleteClick(service)}
-                            className="text-red-600 hover:text-red-900"
+                            onClick={() => onEdit(service)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-600 hover:text-white hover:bg-brand-600 border border-brand-600 rounded-lg transition-all"
                           >
-                            Delete
+                            <Edit className="w-4 h-4" />
+                            Edit
                           </button>
-                        )}
+                          {isSuperAdmin && (
+                            <button
+                              onClick={() => handleDeleteClick(service)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded-lg transition-all"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              Delete
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}

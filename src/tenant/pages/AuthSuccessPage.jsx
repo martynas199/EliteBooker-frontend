@@ -23,15 +23,12 @@ export default function AuthSuccessPage() {
         navigate("/login", { replace: true });
       }
     } else if (token) {
-      // If we only have token (new OAuth flow), store it and redirect to client profile
-      try {
-        localStorage.setItem("token", token);
-        // OAuth login is for global clients, redirect to client profile
-        navigate("/client/profile", { replace: true });
-      } catch (error) {
-        console.error("Auth success error:", error);
-        navigate("/login", { replace: true });
-      }
+      // OAuth flow with token in URL - this shouldn't happen with httpOnly cookies
+      // Redirect to login since proper OAuth sets cookie on backend
+      console.error(
+        "Unexpected token in URL - OAuth should use httpOnly cookies"
+      );
+      navigate("/login", { replace: true });
     } else {
       navigate("/login", { replace: true });
     }

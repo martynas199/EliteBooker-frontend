@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { Info, Settings, Image as ImageIcon, Layers } from "lucide-react";
 import { useImageUpload } from "../shared/hooks/useImageUpload";
 import { useTenantSettings } from "../shared/hooks/useTenantSettings";
 import { api } from "../shared/lib/apiClient";
@@ -311,12 +312,12 @@ export default function ServiceForm({
   ).length;
 
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-8">
+    <div className="max-w-5xl mx-auto">
       {errorCount > 0 && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <div className="flex items-start gap-3">
+        <div className="mb-6 p-5 bg-red-50 border-2 border-red-200 rounded-xl">
+          <div className="flex items-start gap-4">
             <svg
-              className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0"
+              className="w-6 h-6 text-red-600 mt-0.5 flex-shrink-0"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -327,14 +328,14 @@ export default function ServiceForm({
               />
             </svg>
             <div>
-              <h3 className="text-sm font-semibold text-red-800">
+              <h3 className="text-base font-bold text-red-900">
                 {t("pleaseFixErrors", language)} {errorCount}{" "}
                 {errorCount !== 1
                   ? t("errors", language)
                   : t("error", language)}
                 :
               </h3>
-              <ul className="mt-2 text-sm text-red-700 list-disc list-inside space-y-1">
+              <ul className="mt-3 text-sm text-red-700 list-disc list-inside space-y-2">
                 {Object.entries(errors)
                   .filter(([key]) => key !== "submit")
                   .map(([key, message]) => (
@@ -346,336 +347,368 @@ export default function ServiceForm({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8">
         {/* Basic Info Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold border-b pb-2">
-            {t("basicInformation", language)}
-          </h3>
+        <div className="bg-white rounded-2xl shadow-lg py-6 space-y-6">
+          <div className="flex items-center gap-3 pb-4 border-b-2 border-gray-100 px-6">
+            <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+              <Info className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">
+              {t("basicInformation", language)}
+            </h3>
+          </div>
 
-          {/* Name */}
-          <FormField
-            label={t("serviceName", language)}
-            error={errors.name}
-            required
-            htmlFor="name"
-            hint={t("serviceNameHint", language)}
-          >
-            <input
-              type="text"
-              id="name"
-              value={formData.name}
-              onChange={(e) => handleChange("name", e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 ${
-                errors.name ? "border-red-500" : "border-gray-300"
-              }`}
-              aria-invalid={!!errors.name}
-            />
-          </FormField>
-
-          {/* Category */}
-          <FormField
-            label={t("category", language)}
-            error={errors.category}
-            required
-            htmlFor="category"
-            hint={t("categoryHint", language)}
-          >
-            <input
-              type="text"
-              id="category"
-              value={formData.category}
-              onChange={(e) => handleChange("category", e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 ${
-                errors.category ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="e.g., Hair, Nails, Spa"
-              aria-invalid={!!errors.category}
-            />
-          </FormField>
-
-          {/* Description */}
-          <FormField
-            label={t("description", language)}
-            htmlFor="description"
-            hint={t("descriptionHint", language)}
-          >
-            <textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleChange("description", e.target.value)}
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
-            />
-          </FormField>
-
-          {/* Primary Specialist */}
-          <FormField
-            label={t("primaryBeautician", language)}
-            error={errors.primaryBeauticianId}
-            required
-            htmlFor="primaryBeauticianId"
-            hint={t("primaryBeauticianHint", language)}
-          >
-            <select
-              id="primaryBeauticianId"
-              value={formData.primaryBeauticianId}
-              onChange={(e) =>
-                handleChange("primaryBeauticianId", e.target.value)
-              }
-              disabled={!isSuperAdmin}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 ${
-                errors.primaryBeauticianId
-                  ? "border-red-500"
-                  : "border-gray-300"
-              } ${!isSuperAdmin ? "bg-gray-100 cursor-not-allowed" : ""}`}
-              aria-invalid={!!errors.primaryBeauticianId}
-            >
-              <option value="">{t("selectBeautician", language)}</option>
-              {specialists.map((b) => (
-                <option key={b._id} value={b._id}>
-                  {b.name}
-                </option>
-              ))}
-            </select>
-            {!isSuperAdmin && !admin?.specialistId && (
-              <p className="text-sm text-red-600 mt-1 font-medium">
-                ⚠️ Your admin account is not linked to a specialist. Please
-                contact your administrator to link your account before creating
-                services.
-              </p>
-            )}
-            {!isSuperAdmin && admin?.specialistId && (
-              <p className="text-sm text-gray-500 mt-1">
-                {t("youCanOnlyCreateForYourself", language)}
-              </p>
-            )}
-          </FormField>
-
-          {/* Locations Multi-Select (only if multi-location is enabled) */}
-          {isMultiLocationEnabled && (
+          <div className="px-6 space-y-6">
+            {/* Name */}
             <FormField
-              label="Available at Locations"
-              htmlFor="availableAt"
-              hint="Select which locations offer this service. Leave empty for all locations."
+              label={t("serviceName", language)}
+              error={errors.name}
+              required
+              htmlFor="name"
+              hint={t("serviceNameHint", language)}
             >
-              {loadingLocations ? (
-                <p className="text-sm text-gray-500">Loading locations...</p>
-              ) : locations.length === 0 ? (
-                <p className="text-sm text-gray-500">
-                  No locations available. Create locations first in the
-                  Locations page.
+              <input
+                type="text"
+                id="name"
+                value={formData.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+                className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                  errors.name ? "border-red-500" : "border-gray-300"
+                }`}
+                aria-invalid={!!errors.name}
+              />
+            </FormField>
+
+            {/* Category */}
+            <FormField
+              label={t("category", language)}
+              error={errors.category}
+              required
+              htmlFor="category"
+              hint={t("categoryHint", language)}
+            >
+              <input
+                type="text"
+                id="category"
+                value={formData.category}
+                onChange={(e) => handleChange("category", e.target.value)}
+                className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                  errors.category ? "border-red-500" : "border-gray-300"
+                }`}
+                placeholder="e.g., Hair, Nails, Spa"
+                aria-invalid={!!errors.category}
+              />
+            </FormField>
+
+            {/* Description */}
+            <FormField
+              label={t("description", language)}
+              htmlFor="description"
+              hint={t("descriptionHint", language)}
+            >
+              <textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => handleChange("description", e.target.value)}
+                rows={4}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors resize-none"
+              />
+            </FormField>
+
+            {/* Primary Specialist */}
+            <FormField
+              label={t("primaryBeautician", language)}
+              error={errors.primaryBeauticianId}
+              required
+              htmlFor="primaryBeauticianId"
+              hint={t("primaryBeauticianHint", language)}
+            >
+              <select
+                id="primaryBeauticianId"
+                value={formData.primaryBeauticianId}
+                onChange={(e) =>
+                  handleChange("primaryBeauticianId", e.target.value)
+                }
+                disabled={!isSuperAdmin}
+                className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors appearance-none bg-white cursor-pointer ${
+                  errors.primaryBeauticianId
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } ${!isSuperAdmin ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                style={{
+                  backgroundImage:
+                    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\")",
+                  backgroundPosition: "right 0.5rem center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "1.5em 1.5em",
+                  paddingRight: "2.5rem",
+                }}
+                aria-invalid={!!errors.primaryBeauticianId}
+              >
+                <option value="">{t("selectBeautician", language)}</option>
+                {specialists.map((b) => (
+                  <option key={b._id} value={b._id}>
+                    {b.name}
+                  </option>
+                ))}
+              </select>
+              {!isSuperAdmin && !admin?.specialistId && (
+                <p className="text-sm text-red-600 mt-1 font-medium">
+                  ⚠️ Your admin account is not linked to a specialist. Please
+                  contact your administrator to link your account before
+                  creating services.
                 </p>
-              ) : (
-                <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
-                  {locations.map((location) => (
-                    <label
-                      key={location._id}
-                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.availableAt.includes(location._id)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            handleChange("availableAt", [
-                              ...formData.availableAt,
-                              location._id,
-                            ]);
-                          } else {
-                            handleChange(
-                              "availableAt",
-                              formData.availableAt.filter(
-                                (id) => id !== location._id
-                              )
-                            );
-                          }
-                        }}
-                        className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
-                      />
-                      <span className="text-sm flex items-center gap-2">
-                        {location.name}
-                        {location.isPrimary && (
-                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                            Primary
-                          </span>
-                        )}
-                      </span>
-                    </label>
-                  ))}
-                </div>
               )}
-              {formData.availableAt.length === 0 && locations.length > 0 && (
-                <p className="text-xs text-amber-600 mt-1">
-                  No locations selected - service will be available at all
-                  locations
+              {!isSuperAdmin && admin?.specialistId && (
+                <p className="text-sm text-gray-500 mt-1">
+                  {t("youCanOnlyCreateForYourself", language)}
                 </p>
               )}
             </FormField>
-          )}
 
-          {/* Image Upload */}
-          <FormField
-            label={t("serviceImage", language)}
-            error={errors.image}
-            htmlFor="image"
-            hint={
-              isUploadingImage
-                ? t("uploading", language)
-                : t("serviceImageHint", language)
-            }
-          >
-            <input
-              type="file"
-              id="image"
-              accept="image/*"
-              onChange={handleImageChange}
-              disabled={isUploadingImage}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
-            />
-
-            {/* Upload Progress Bar */}
-            {isUploadingImage && progress > 0 && (
-              <div className="mt-2">
-                <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                  <div
-                    className="bg-brand-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <p className="text-sm text-gray-600 mt-1">
-                  {progress}% uploaded
-                </p>
-              </div>
-            )}
-
-            {/* Image Preview */}
-            {formData.image && !isUploadingImage && (
-              <div className="mt-3 relative inline-block">
-                <img
-                  src={formData.image.url}
-                  alt={formData.image.alt || "Service image"}
-                  className="w-48 h-32 object-cover rounded-xl shadow-md"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    toast(
-                      (t) => (
-                        <span className="flex items-center gap-3">
-                          <span>Remove this image?</span>
-                          <button
-                            className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                            onClick={() => {
-                              setFormData((prev) => ({ ...prev, image: null }));
-                              toast.dismiss(t.id);
-                              toast.success("Image removed");
-                            }}
-                          >
-                            Remove
-                          </button>
-                          <button
-                            className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300"
-                            onClick={() => toast.dismiss(t.id)}
-                          >
-                            Cancel
-                          </button>
+            {/* Locations Multi-Select (only if multi-location is enabled) */}
+            {isMultiLocationEnabled && (
+              <FormField
+                label="Available at Locations"
+                htmlFor="availableAt"
+                hint="Select which locations offer this service. Leave empty for all locations."
+              >
+                {loadingLocations ? (
+                  <p className="text-sm text-gray-500">Loading locations...</p>
+                ) : locations.length === 0 ? (
+                  <p className="text-sm text-gray-500">
+                    No locations available. Create locations first in the
+                    Locations page.
+                  </p>
+                ) : (
+                  <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
+                    {locations.map((location) => (
+                      <label
+                        key={location._id}
+                        className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.availableAt.includes(location._id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              handleChange("availableAt", [
+                                ...formData.availableAt,
+                                location._id,
+                              ]);
+                            } else {
+                              handleChange(
+                                "availableAt",
+                                formData.availableAt.filter(
+                                  (id) => id !== location._id
+                                )
+                              );
+                            }
+                          }}
+                          className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
+                        />
+                        <span className="text-sm flex items-center gap-2">
+                          {location.name}
+                          {location.isPrimary && (
+                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                              Primary
+                            </span>
+                          )}
                         </span>
-                      ),
-                      { duration: 6000 }
-                    );
-                  }}
-                  className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 shadow-lg"
-                >
-                  ×
-                </button>
-              </div>
+                      </label>
+                    ))}
+                  </div>
+                )}
+                {formData.availableAt.length === 0 && locations.length > 0 && (
+                  <p className="text-xs text-amber-600 mt-1">
+                    No locations selected - service will be available at all
+                    locations
+                  </p>
+                )}
+              </FormField>
             )}
-          </FormField>
 
-          {/* Active Status */}
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
+            {/* Image Upload */}
+            <FormField
+              label={t("serviceImage", language)}
+              error={errors.image}
+              htmlFor="image"
+              hint={
+                isUploadingImage
+                  ? t("uploading", language)
+                  : t("serviceImageHint", language)
+              }
+            >
               <input
-                type="checkbox"
-                id="active"
-                checked={formData.active}
-                onChange={(e) => handleChange("active", e.target.checked)}
-                className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
+                type="file"
+                id="image"
+                accept="image/*"
+                onChange={handleImageChange}
+                disabled={isUploadingImage}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 file:cursor-pointer"
               />
-              <label htmlFor="active" className="text-sm font-medium">
-                {t("activeVisible", language)}
-              </label>
-            </div>
-            <p className="text-xs text-gray-500 ml-6">
-              {t("activeHint", language)}
-            </p>
-          </div>
 
-          {/* Price Varies */}
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="priceVaries"
-                checked={formData.priceVaries}
-                onChange={(e) => handleChange("priceVaries", e.target.checked)}
-                className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
-              />
-              <label htmlFor="priceVaries" className="text-sm font-medium">
-                Price Varies
-              </label>
+              {/* Upload Progress Bar */}
+              {isUploadingImage && progress > 0 && (
+                <div className="mt-2">
+                  <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                    <div
+                      className="bg-brand-600 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {progress}% uploaded
+                  </p>
+                </div>
+              )}
+
+              {/* Image Preview */}
+              {formData.image && !isUploadingImage && (
+                <div className="mt-3 relative inline-block">
+                  <img
+                    src={formData.image.url}
+                    alt={formData.image.alt || "Service image"}
+                    className="w-48 h-32 object-cover rounded-xl shadow-md"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      toast(
+                        (t) => (
+                          <span className="flex items-center gap-3">
+                            <span>Remove this image?</span>
+                            <button
+                              className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                              onClick={() => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  image: null,
+                                }));
+                                toast.dismiss(t.id);
+                                toast.success("Image removed");
+                              }}
+                            >
+                              Remove
+                            </button>
+                            <button
+                              className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300"
+                              onClick={() => toast.dismiss(t.id)}
+                            >
+                              Cancel
+                            </button>
+                          </span>
+                        ),
+                        { duration: 6000 }
+                      );
+                    }}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 shadow-lg"
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+            </FormField>
+
+            {/* Active Status */}
+            <div className="flex flex-col gap-2 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="active"
+                  checked={formData.active}
+                  onChange={(e) => handleChange("active", e.target.checked)}
+                  className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500 cursor-pointer"
+                />
+                <label
+                  htmlFor="active"
+                  className="text-sm font-semibold text-gray-900 cursor-pointer"
+                >
+                  {t("activeVisible", language)}
+                </label>
+              </div>
+              <p className="text-xs text-gray-600 ml-8">
+                {t("activeHint", language)}
+              </p>
             </div>
-            <p className="text-xs text-gray-500 ml-6">
-              Check this if the service price varies (will show "Up to" instead
-              of "From")
-            </p>
+
+            {/* Price Varies */}
+            <div className="flex flex-col gap-2 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="priceVaries"
+                  checked={formData.priceVaries}
+                  onChange={(e) =>
+                    handleChange("priceVaries", e.target.checked)
+                  }
+                  className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500 cursor-pointer"
+                />
+                <label
+                  htmlFor="priceVaries"
+                  className="text-sm font-semibold text-gray-900 cursor-pointer"
+                >
+                  Price Varies
+                </label>
+              </div>
+              <p className="text-xs text-gray-600 ml-8">
+                Check this if the service price varies (will show "Up to"
+                instead of "From")
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Variants Section */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between border-b pb-2">
-            <div>
-              <h3 className="text-lg font-semibold">
-                {t("serviceVariants", language)}
-              </h3>
-              {errors.variants && (
-                <p className="text-red-500 text-sm mt-1">{errors.variants}</p>
-              )}
+        <div className="bg-white rounded-2xl shadow-lg py-6 space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b-2 border-gray-100 px-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg">
+                <Layers className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">
+                  {t("serviceVariants", language)}
+                </h3>
+                {errors.variants && (
+                  <p className="text-red-500 text-sm mt-1">{errors.variants}</p>
+                )}
+              </div>
             </div>
             <Button
               type="button"
               onClick={addVariant}
               variant="brand"
               size="sm"
+              className="shadow-md hover:shadow-lg transition-shadow"
             >
               + {t("addVariant", language)}
             </Button>
           </div>
 
-          <div className="max-h-96 overflow-y-auto space-y-3">
+          <div className="space-y-4">
             {formData.variants.map((variant, index) => (
               <div
                 key={index}
-                className="p-4 border border-gray-200 rounded-lg space-y-3"
+                className="p-5 border-2 border-gray-200 rounded-xl space-y-4 bg-gradient-to-br from-gray-50 to-white hover:border-gray-300 transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <h4 className="font-medium">
+                  <h4 className="font-bold text-gray-900 text-base">
                     {t("variantName", language)} {index + 1}
                   </h4>
                   {formData.variants.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeVariant(index)}
-                      className="text-red-500 hover:text-red-700 text-sm"
+                      className="px-3 py-1.5 text-sm font-medium text-red-600 hover:text-white hover:bg-red-600 border-2 border-red-600 rounded-lg transition-colors"
                     >
                       {t("remove", language)}
                     </button>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     label={t("variantName", language)}
                     error={errors[`variant_${index}_name`]}
@@ -690,7 +723,7 @@ export default function ServiceForm({
                       onChange={(e) =>
                         handleVariantChange(index, "name", e.target.value)
                       }
-                      className={`w-full px-3 py-2 border rounded-lg ${
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
                         errors[`variant_${index}_name`]
                           ? "border-red-500"
                           : "border-gray-300"
@@ -717,7 +750,7 @@ export default function ServiceForm({
                           parseInt(e.target.value) || 0
                         )
                       }
-                      className={`w-full px-3 py-2 border rounded-lg ${
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
                         errors[`variant_${index}_duration`]
                           ? "border-red-500"
                           : "border-gray-300"
@@ -745,7 +778,7 @@ export default function ServiceForm({
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className={`w-full px-3 py-2 border rounded-lg ${
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
                         errors[`variant_${index}_price`]
                           ? "border-red-500"
                           : "border-gray-300"
@@ -772,7 +805,7 @@ export default function ServiceForm({
                           e.target.value ? parseFloat(e.target.value) : null
                         )
                       }
-                      className={`w-full px-3 py-2 border rounded-lg ${
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
                         errors[`variant_${index}_promoPrice`]
                           ? "border-red-500"
                           : "border-gray-300"
@@ -797,33 +830,31 @@ export default function ServiceForm({
                           parseInt(e.target.value) || 0
                         )
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
                       min="0"
                     />
                   </FormField>
 
-                  <div className="col-span-2">
-                    <FormField
-                      label={t("bufferAfter", language)}
-                      htmlFor={`variant-${index}-buffer-after`}
-                      hint={t("bufferAfterHint", language)}
-                    >
-                      <input
-                        type="number"
-                        id={`variant-${index}-buffer-after`}
-                        value={variant.bufferAfterMin}
-                        onChange={(e) =>
-                          handleVariantChange(
-                            index,
-                            "bufferAfterMin",
-                            parseInt(e.target.value) || 0
-                          )
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                        min="0"
-                      />
-                    </FormField>
-                  </div>
+                  <FormField
+                    label={t("bufferAfter", language)}
+                    htmlFor={`variant-${index}-buffer-after`}
+                    hint={t("bufferAfterHint", language)}
+                  >
+                    <input
+                      type="number"
+                      id={`variant-${index}-buffer-after`}
+                      value={variant.bufferAfterMin}
+                      onChange={(e) =>
+                        handleVariantChange(
+                          index,
+                          "bufferAfterMin",
+                          parseInt(e.target.value) || 0
+                        )
+                      }
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                      min="0"
+                    />
+                  </FormField>
                 </div>
               </div>
             ))}
@@ -835,7 +866,7 @@ export default function ServiceForm({
         </div>
 
         {/* Form Actions */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-6 border-t gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-6">
           <div>
             {isEditMode && onDelete && (
               <Button
@@ -850,7 +881,7 @@ export default function ServiceForm({
             )}
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Button
               type="button"
               onClick={onCancel}
@@ -875,7 +906,7 @@ export default function ServiceForm({
         </div>
 
         {errors.submit && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="mt-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
             <div className="flex items-start gap-3">
               <svg
                 className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0"
@@ -889,7 +920,7 @@ export default function ServiceForm({
                 />
               </svg>
               <div>
-                <h3 className="text-sm font-semibold text-red-800 mb-1">
+                <h3 className="text-sm font-bold text-red-900 mb-1">
                   Error saving service
                 </h3>
                 <p className="text-sm text-red-700">{errors.submit}</p>

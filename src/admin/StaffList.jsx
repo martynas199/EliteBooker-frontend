@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Edit, Trash2, Plus, Search } from "lucide-react";
 import Button from "../shared/components/ui/Button";
 import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
 import { BeauticianCardSkeleton } from "../shared/components/ui/Skeleton";
@@ -122,26 +123,53 @@ export default function StaffList({
   }
 
   return (
-    <div className="space-y-4 overflow-x-hidden">
+    <div className="space-y-6 overflow-x-hidden">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Staff</h2>
-        <Button onClick={onCreate} variant="brand">
-          + Add Staff Member
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg">
+            <svg
+              className="w-6 h-6 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            Staff
+          </h2>
+        </div>
+        <Button
+          onClick={onCreate}
+          variant="brand"
+          className="shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-700 hover:to-purple-700"
+        >
+          <Plus className="w-5 h-5 mr-2 inline-block" />
+          Add Staff Member
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-4 space-y-3">
-        <div className="flex flex-col md:flex-row gap-3">
+      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border-2 border-gray-100 p-6 space-y-4">
+        <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
-          <div className="flex-1">
+          <div className="flex-1 relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
             <input
               type="text"
               placeholder="Search staff by name, email, or specialty..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+              className="w-full pl-11 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
             />
           </div>
 
@@ -149,7 +177,15 @@ export default function StaffList({
           <select
             value={filterActive}
             onChange={(e) => setFilterActive(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+            className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors appearance-none bg-white cursor-pointer"
+            style={{
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\")",
+              backgroundPosition: "right 0.5rem center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "1.5em 1.5em",
+              paddingRight: "2.5rem",
+            }}
           >
             <option value="all">All Status</option>
             <option value="active">Active Only</option>
@@ -160,7 +196,15 @@ export default function StaffList({
           <select
             value={filterService}
             onChange={(e) => setFilterService(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+            className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors appearance-none bg-white cursor-pointer"
+            style={{
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\")",
+              backgroundPosition: "right 0.5rem center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "1.5em 1.5em",
+              paddingRight: "2.5rem",
+            }}
           >
             <option value="all">All Services</option>
             {services.map((service) => (
@@ -171,7 +215,7 @@ export default function StaffList({
           </select>
         </div>
 
-        <div className="text-sm text-gray-500">
+        <div className="text-sm font-medium text-gray-600">
           Showing {filteredStaff.length} of {staff.length} staff members
         </div>
       </div>
@@ -478,18 +522,22 @@ export default function StaffList({
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right text-sm">
-                          <button
-                            onClick={() => onEdit(member)}
-                            className="text-brand-600 hover:text-brand-900 mr-3"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteClick(member)}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            Delete
-                          </button>
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => onEdit(member)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-600 hover:text-white hover:bg-brand-600 border border-brand-600 rounded-lg transition-all"
+                            >
+                              <Edit className="w-4 h-4" />
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteClick(member)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded-lg transition-all"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );

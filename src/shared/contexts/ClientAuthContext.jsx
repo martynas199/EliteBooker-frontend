@@ -14,13 +14,23 @@ export function ClientAuthProvider({ children }) {
 
   const fetchClientProfile = async () => {
     try {
+      console.log("[ClientAuth] Attempting to fetch client profile...");
       const response = await api.get("/client/me");
+      console.log(
+        "[ClientAuth] Profile fetched successfully:",
+        response.data.client
+      );
+      console.log("[ClientAuth] Avatar URL:", response.data.client.avatar);
       setClient(response.data.client);
     } catch (error) {
-      console.error("Failed to fetch client profile:", error);
-      // If unauthorized, clear token
+      console.log(
+        "[ClientAuth] Failed to fetch client profile:",
+        error.response?.status
+      );
+      // If unauthorized, clear client state (don't call logout to avoid recursion)
       if (error.response?.status === 401) {
-        logout();
+        console.log("[ClientAuth] Unauthorized - clearing client state");
+        setClient(null);
       }
     } finally {
       setLoading(false);
@@ -49,12 +59,21 @@ export function ClientAuthProvider({ children }) {
   };
 
   const logout = async () => {
-    try {
-      await api.post("/client/logout");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
+    console.log("[ClientAuth] Starting logout process...");
+
+    // Clear client state immediately
     setClient(null);
+
+    try {
+      // Call backend to clear httpOnly cookie
+      await api.post("/client/logout");
+      console.log("[ClientAuth] Backend logout successful - cookie cleared");
+      return true;
+    } catch (error) {
+      console.error("[ClientAuth] Backend logout error:", error);
+      // Client state already cleared
+      return false;
+    }
   };
 
   const value = {

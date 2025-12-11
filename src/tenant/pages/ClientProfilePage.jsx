@@ -6,7 +6,6 @@ import {
   Phone,
   Calendar,
   TrendingUp,
-  LogOut,
   Download,
   Trash2,
   Pencil,
@@ -14,12 +13,12 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  ArrowLeft,
 } from "lucide-react";
 import { api } from "../../shared/lib/apiClient";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Button from "../../shared/components/ui/Button";
+import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 
 export default function ClientProfilePage() {
   const navigate = useNavigate();
@@ -163,8 +162,20 @@ export default function ClientProfilePage() {
   };
 
   const handleLogout = async () => {
-    await logout();
-    navigate("/");
+    console.log("[Profile] Logout button clicked");
+    try {
+      await logout();
+      console.log("[Profile] Logout successful, forcing full app reload...");
+      // Clear any session/local storage
+      sessionStorage.clear();
+      // Force a complete page reload to reset all React state
+      window.location.replace("/");
+    } catch (error) {
+      console.error("[Profile] Logout failed:", error);
+      // Force reload anyway
+      sessionStorage.clear();
+      window.location.replace("/");
+    }
   };
 
   const formatCurrency = (amount) => {
@@ -260,253 +271,284 @@ export default function ClientProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
-        {fromBusiness ? (
-          <button
-            onClick={() => navigate(`/salon/${fromBusiness}`)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
-          >
-            <ArrowLeft className="h-5 w-5" />
-            Back to {businessName || fromBusiness}
-          </button>
-        ) : (
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
-          >
-            <ArrowLeft className="h-5 w-5" />
-            Back
-          </button>
-        )}
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar Menu - Hidden on mobile */}
+      <div className="hidden md:block">
+        <ProfileMenu
+          client={profile?.profile}
+          onLogout={handleLogout}
+          variant="sidebar"
+        />
+      </div>
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Mobile Header with Back Button */}
+          <div className="md:hidden mb-6">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+            <div className="text-center">
+              <div className="w-20 h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white flex items-center justify-center text-3xl font-bold overflow-hidden">
+                {profile?.profile?.avatar ? (
+                  <img
+                    src={profile.profile.avatar}
+                    alt={profile?.profile?.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span>
+                    {profile?.profile?.name?.charAt(0).toUpperCase() || "?"}
+                  </span>
+                )}
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {profile?.profile?.name}
+              </h1>
+              <p className="text-gray-600 text-sm mt-1">Personal profile</p>
+            </div>
+          </div>
+
+          {/* Desktop Header */}
+          <div className="hidden md:block mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
             <p className="text-gray-600 mt-1">
-              Manage your account and view your bookings
+              Manage your account information
             </p>
           </div>
-          <Button variant="secondary" onClick={handleLogout}>
-            <LogOut className="h-5 w-5" />
-            Logout
-          </Button>
-        </div>
 
-        {/* Profile Card */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className="h-16 w-16 rounded-full bg-gray-900 text-white flex items-center justify-center text-2xl font-bold">
-                {profile?.profile?.name?.charAt(0).toUpperCase() || "?"}
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">
-                  {profile?.profile?.name}
-                </h2>
-                <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    {profile?.profile?.email}
-                  </div>
-                  {profile?.profile?.phone && (
+          {/* Profile Card */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-16 rounded-full bg-gray-900 text-white flex items-center justify-center text-2xl font-bold">
+                  {profile?.profile?.name?.charAt(0).toUpperCase() || "?"}
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    {profile?.profile?.name}
+                  </h2>
+                  <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4" />
-                      {profile?.profile?.phone}
+                      <Mail className="h-4 w-4" />
+                      {profile?.profile?.email}
                     </div>
-                  )}
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    Member since {formatDate(profile.profile.memberSince)}
+                    {profile?.profile?.phone && (
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4" />
+                        {profile?.profile?.phone}
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Member since {formatDate(profile.profile.memberSince)}
+                    </div>
                   </div>
                 </div>
               </div>
+
+              {!editing && (
+                <Button variant="secondary" onClick={() => setEditing(true)}>
+                  <Pencil className="h-5 w-5" />
+                  Edit Profile
+                </Button>
+              )}
             </div>
 
-            {!editing && (
-              <Button variant="secondary" onClick={() => setEditing(true)}>
-                <Pencil className="h-5 w-5" />
-                Edit Profile
-              </Button>
+            {/* Platform Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-sm text-gray-600 mb-1">Total Bookings</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {profile.profile.totalBookings || 0}
+                </p>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-sm text-gray-600 mb-1">Businesses Visited</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {profile.businesses?.length || 0}
+                </p>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-sm text-gray-600 mb-1">Member Since</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {formatDate(profile.profile.memberSince)}
+                </p>
+              </div>
+            </div>
+
+            {/* Edit Form */}
+            {editing && (
+              <div className="border-t border-gray-200 pt-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Edit Information
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone
+                    </label>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Preferred Language
+                      </label>
+                      <select
+                        value={preferredLanguage}
+                        onChange={(e) => setPreferredLanguage(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                      >
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Preferred Currency
+                      </label>
+                      <select
+                        value={preferredCurrency}
+                        onChange={(e) => setPreferredCurrency(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                      >
+                        <option value="GBP">GBP (£)</option>
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 pt-4">
+                    <Button
+                      variant="brand"
+                      onClick={handleSave}
+                      disabled={saving}
+                    >
+                      {saving ? "Saving..." : "Save Changes"}
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => setEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
 
-          {/* Platform Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-600 mb-1">Total Bookings</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {profile.profile.totalBookings || 0}
+          {/* Businesses */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              My Businesses ({profile.businesses.length})
+            </h2>
+
+            {profile.businesses.length === 0 ? (
+              <p className="text-center text-gray-600 py-8">
+                You haven't booked with any businesses yet
               </p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-600 mb-1">Businesses Visited</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {profile.businesses?.length || 0}
-              </p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-600 mb-1">Member Since</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {formatDate(profile.profile.memberSince)}
-              </p>
-            </div>
-          </div>
-
-          {/* Edit Form */}
-          {editing && (
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Edit Information
-              </h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Preferred Language
-                    </label>
-                    <select
-                      value={preferredLanguage}
-                      onChange={(e) => setPreferredLanguage(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-                    >
-                      <option value="en">English</option>
-                      <option value="es">Spanish</option>
-                      <option value="fr">French</option>
-                      <option value="de">German</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Preferred Currency
-                    </label>
-                    <select
-                      value={preferredCurrency}
-                      onChange={(e) => setPreferredCurrency(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-                    >
-                      <option value="GBP">GBP (£)</option>
-                      <option value="USD">USD ($)</option>
-                      <option value="EUR">EUR (€)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="flex gap-2 pt-4">
-                  <Button
-                    variant="brand"
-                    onClick={handleSave}
-                    disabled={saving}
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {profile.businesses.map((business, idx) => (
+                  <div
+                    key={idx}
+                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                   >
-                    {saving ? "Saving..." : "Save Changes"}
-                  </Button>
-                  <Button variant="secondary" onClick={() => setEditing(false)}>
-                    Cancel
-                  </Button>
-                </div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <Store className="h-8 w-8 text-gray-900" />
+                      <h3 className="font-semibold text-gray-900">
+                        {business?.tenant?.name || "Unknown Business"}
+                      </h3>
+                    </div>
+
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Total Spent:</span>
+                        <span className="font-medium text-gray-900">
+                          {formatCurrency(business?.stats?.totalSpent || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Visits:</span>
+                        <span className="font-medium text-gray-900">
+                          {business?.stats?.totalVisits || 0}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Last Visit:</span>
+                        <span className="font-medium text-gray-900">
+                          {business?.stats?.lastVisit
+                            ? formatDate(business.stats.lastVisit)
+                            : "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-          )}
-        </div>
-
-        {/* Businesses */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            My Businesses ({profile.businesses.length})
-          </h2>
-
-          {profile.businesses.length === 0 ? (
-            <p className="text-center text-gray-600 py-8">
-              You haven't booked with any businesses yet
-            </p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {profile.businesses.map((business, idx) => (
-                <div
-                  key={idx}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <Store className="h-8 w-8 text-gray-900" />
-                    <h3 className="font-semibold text-gray-900">
-                      {business?.tenant?.name || "Unknown Business"}
-                    </h3>
-                  </div>
-
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Total Spent:</span>
-                      <span className="font-medium text-gray-900">
-                        {formatCurrency(business?.stats?.totalSpent || 0)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Visits:</span>
-                      <span className="font-medium text-gray-900">
-                        {business?.stats?.totalVisits || 0}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Last Visit:</span>
-                      <span className="font-medium text-gray-900">
-                        {business?.stats?.lastVisit
-                          ? formatDate(business.stats.lastVisit)
-                          : "N/A"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* GDPR Actions */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Data & Privacy
-          </h2>
-          <div className="flex gap-4">
-            <Button variant="secondary" onClick={handleExportData}>
-              <Download className="h-5 w-5" />
-              Export My Data
-            </Button>
-            <Button variant="danger" onClick={handleDeleteAccount}>
-              <Trash2 className="h-5 w-5" />
-              Delete Account
-            </Button>
+            )}
           </div>
-          <p className="text-sm text-gray-600 mt-3">
-            Export all your data in JSON format, or permanently delete your
-            account and all associated data.
-          </p>
+
+          {/* GDPR Actions */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Data & Privacy
+            </h2>
+            <div className="flex gap-4">
+              <Button variant="secondary" onClick={handleExportData}>
+                <Download className="h-5 w-5" />
+                Export My Data
+              </Button>
+              <Button variant="danger" onClick={handleDeleteAccount}>
+                <Trash2 className="h-5 w-5" />
+                Delete Account
+              </Button>
+            </div>
+            <p className="text-sm text-gray-600 mt-3">
+              Export all your data in JSON format, or permanently delete your
+              account and all associated data.
+            </p>
+          </div>
         </div>
       </div>
     </div>

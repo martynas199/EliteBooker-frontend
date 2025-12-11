@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { api } from "../shared/lib/apiClient";
 import logo from "../assets/logo.svg";
 import LandingPage from "../system/pages/LandingPage";
+import HelpPage from "../system/pages/HelpPage";
 import SalonDetails from "../tenant/pages/SalonDetails";
 import TimeSlots from "../tenant/pages/TimeSlotsPage";
 import CheckoutPage from "../tenant/pages/CheckoutPage";
@@ -25,6 +26,8 @@ import AuthSuccessPage from "../tenant/pages/AuthSuccessPage";
 import ProfilePage from "../tenant/pages/ProfilePage";
 import ProfileEditPage from "../tenant/pages/ProfileEditPage";
 import ClientProfilePage from "../tenant/pages/ClientProfilePage";
+import ClientAppointmentsPage from "../tenant/pages/ClientAppointmentsPage";
+import MenuPage from "../system/pages/MenuPage";
 import BeauticianSelectionPage from "../tenant/pages/BeauticiansPage";
 import ServicesPage from "../tenant/pages/ServicesPage";
 import AboutUsPage from "../tenant/pages/AboutUsPage";
@@ -164,9 +167,19 @@ export default function AppRoutes() {
 
         {/* Global Client Profile (cross-business) */}
         <Route path="/client/profile" element={<ClientProfilePage />} />
+        <Route
+          path="/client/appointments"
+          element={<ClientAppointmentsPage />}
+        />
+
+        {/* Mobile Menu */}
+        <Route path="/menu" element={<MenuPage />} />
 
         {/* Platform marketing/landing page */}
         <Route path="/" element={<LandingPage />} />
+
+        {/* Help & Support */}
+        <Route path="/help" element={<HelpPage />} />
 
         {/* Tenant-specific routes with slug parameter */}
         <Route

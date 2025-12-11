@@ -8,9 +8,15 @@ import {
   AlertTriangle,
   Sparkles,
   CheckCircle,
+  Info,
+  X,
+  Mail,
+  Phone,
+  Calendar,
 } from "lucide-react";
 import { api } from "../../shared/lib/apiClient";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
+import Modal from "../../shared/components/ui/Modal";
 
 export default function ClientsPage() {
   const navigate = useNavigate();
@@ -24,6 +30,12 @@ export default function ClientsPage() {
   const [hasMore, setHasMore] = useState(false);
   const [total, setTotal] = useState(0);
   const [segments, setSegments] = useState(null);
+
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [clientDetails, setClientDetails] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   const limit = 20;
 
@@ -66,6 +78,33 @@ export default function ClientsPage() {
     }
   };
 
+  const fetchClientDetails = async (clientId) => {
+    try {
+      setLoadingDetails(true);
+      const response = await api.get(`/admin/clients/${clientId}`);
+      setClientDetails(response.data);
+    } catch (error) {
+      console.error("Failed to fetch client details:", error);
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
+  const handleClientClick = async (client) => {
+    console.log("Client clicked:", client);
+    setSelectedClient(client);
+    setShowModal(true);
+    console.log("Modal should be open, showModal:", true);
+    await fetchClientDetails(client.id);
+  };
+
+  const closeModal = () => {
+    console.log("Closing modal");
+    setShowModal(false);
+    setSelectedClient(null);
+    setClientDetails(null);
+  };
+
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-GB", {
       style: "currency",
@@ -77,8 +116,18 @@ export default function ClientsPage() {
     if (!date) return "Never";
     const now = new Date();
     const visitDate = new Date(date);
-    const diffInDays = Math.floor((now - visitDate) / (1000 * 60 * 60 * 24));
+    const diffInMs = now - visitDate;
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
+    // Handle future dates (appointments scheduled for later)
+    if (diffInMs < 0) {
+      const futureDays = Math.abs(diffInDays);
+      if (futureDays === 0) return "Today";
+      if (futureDays === 1) return "Tomorrow";
+      return `In ${futureDays} days`;
+    }
+
+    // Handle past dates
     if (diffInDays === 0) return "Today";
     if (diffInDays === 1) return "Yesterday";
     if (diffInDays < 7) return `${diffInDays} days ago`;
@@ -139,51 +188,61 @@ export default function ClientsPage() {
         {segments && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-2">
                 <div>
-                  <p className="text-sm text-gray-600">VIP Clients</p>
-                  <p className="text-2xl font-bold text-purple-600">
-                    {segments.vip?.count || 0}
+                  <p className="text-sm text-gray-600 mb-0.5">VIP Clients</p>
+                  <p className="text-xs text-gray-500">
+                    £500+ spent, 10+ visits
                   </p>
                 </div>
                 <Star className="h-8 w-8 text-purple-600" />
               </div>
+              <p className="text-2xl font-bold text-purple-600">
+                {segments.vip?.count || 0}
+              </p>
             </div>
 
             <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-2">
                 <div>
-                  <p className="text-sm text-gray-600">At Risk</p>
-                  <p className="text-2xl font-bold text-amber-600">
-                    {segments.atRisk?.count || 0}
+                  <p className="text-sm text-gray-600 mb-0.5">At Risk</p>
+                  <p className="text-xs text-gray-500">
+                    90+ days inactive, 3+ visits
                   </p>
                 </div>
                 <AlertTriangle className="h-8 w-8 text-amber-600" />
               </div>
+              <p className="text-2xl font-bold text-amber-600">
+                {segments.atRisk?.count || 0}
+              </p>
             </div>
 
             <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-2">
                 <div>
-                  <p className="text-sm text-gray-600">New Clients</p>
-                  <p className="text-2xl font-bold text-green-600">
-                    {segments.new?.count || 0}
-                  </p>
+                  <p className="text-sm text-gray-600 mb-0.5">New Clients</p>
+                  <p className="text-xs text-gray-500">1 visit or less</p>
                 </div>
                 <Sparkles className="h-8 w-8 text-green-600" />
               </div>
+              <p className="text-2xl font-bold text-green-600">
+                {segments.new?.count || 0}
+              </p>
             </div>
 
             <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-2">
                 <div>
-                  <p className="text-sm text-gray-600">Active</p>
-                  <p className="text-2xl font-bold text-blue-600">
-                    {segments.active?.count || 0}
+                  <p className="text-sm text-gray-600 mb-0.5">Active</p>
+                  <p className="text-xs text-gray-500">
+                    Visited in last 90 days
                   </p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-blue-600" />
               </div>
+              <p className="text-2xl font-bold text-blue-600">
+                {segments.active?.count || 0}
+              </p>
             </div>
           </div>
         )}
@@ -265,26 +324,22 @@ export default function ClientsPage() {
           <div className="space-y-4">
             {clients.map((client) => (
               <div
-                key={client._id}
-                onClick={() =>
-                  navigate(`/admin/clients/${client.clientId._id}`)
-                }
+                key={client.id}
+                onClick={() => handleClientClick(client)}
                 className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="h-10 w-10 rounded-full bg-gray-900 text-white flex items-center justify-center font-semibold">
-                        {client.clientId?.name?.charAt(0).toUpperCase() || "?"}
+                        {client.name?.charAt(0).toUpperCase() || "?"}
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900">
-                          {client.displayName ||
-                            client.clientId?.name ||
-                            "Unknown"}
+                          {client.name || "Unknown"}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          {client.clientId?.email || "No email"}
+                          {client.email || "No email"}
                         </p>
                       </div>
                     </div>
@@ -306,7 +361,12 @@ export default function ClientsPage() {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <span className="text-gray-600">Last visit:</span>
+                        <span className="text-gray-600">
+                          {client.lastVisit &&
+                          new Date(client.lastVisit) > new Date()
+                            ? "Next visit:"
+                            : "Last visit:"}
+                        </span>
                         <span className="text-gray-900 font-medium">
                           {formatDate(client.lastVisit)}
                         </span>
@@ -345,6 +405,200 @@ export default function ClientsPage() {
           </div>
         )}
       </div>
+
+      {/* Client Details Modal */}
+      {console.log(
+        "Rendering modal, showModal:",
+        showModal,
+        "selectedClient:",
+        selectedClient
+      )}
+      <Modal
+        open={showModal}
+        onClose={closeModal}
+        title={selectedClient?.name || "Client Details"}
+      >
+        {console.log(
+          "Inside Modal children, loadingDetails:",
+          loadingDetails,
+          "clientDetails:",
+          clientDetails
+        )}
+        {loadingDetails ? (
+          <div className="flex justify-center py-12">
+            <LoadingSpinner />
+          </div>
+        ) : clientDetails ? (
+          <div className="space-y-6">
+            {/* Contact Information */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Contact Information
+              </h3>
+              <div className="space-y-2">
+                {clientDetails.client.email && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Mail className="h-4 w-4 text-gray-400" />
+                    <span>{clientDetails.client.email}</span>
+                  </div>
+                )}
+                {clientDetails.client.phone && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Phone className="h-4 w-4 text-gray-400" />
+                    <span>{clientDetails.client.phone}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2 text-sm">
+                  <Calendar className="h-4 w-4 text-gray-400" />
+                  <span>
+                    Member since{" "}
+                    {new Date(
+                      clientDetails.client.memberSince
+                    ).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <p className="text-sm text-gray-600 mb-1">Total Spent</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {formatCurrency(clientDetails.relationship?.totalSpend || 0)}
+                </p>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <p className="text-sm text-gray-600 mb-1">Total Visits</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {clientDetails.relationship?.totalVisits || 0}
+                </p>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <p className="text-sm text-gray-600 mb-1">Average Spend</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {formatCurrency(
+                    clientDetails.relationship?.averageSpend || 0
+                  )}
+                </p>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <p className="text-sm text-gray-600 mb-1">Last Visit</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {clientDetails.relationship?.lastVisit
+                    ? new Date(
+                        clientDetails.relationship.lastVisit
+                      ).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                      })
+                    : "Never"}
+                </p>
+              </div>
+            </div>
+
+            {/* Tags */}
+            {clientDetails.relationship?.tags &&
+              clientDetails.relationship.tags.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    Tags
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {clientDetails.relationship.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            {/* Internal Notes */}
+            {clientDetails.relationship?.internalNotes && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Internal Notes
+                </h3>
+                <p className="text-sm text-gray-700 bg-gray-50 rounded-lg p-4">
+                  {clientDetails.relationship.internalNotes}
+                </p>
+              </div>
+            )}
+
+            {/* Recent Bookings */}
+            {clientDetails.bookings && clientDetails.bookings.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Recent Bookings
+                </h3>
+                <div className="space-y-2">
+                  {clientDetails.bookings.slice(0, 5).map((booking) => (
+                    <div
+                      key={booking._id}
+                      className="flex justify-between items-center p-3 bg-gray-50 rounded-lg text-sm"
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">
+                          {booking.serviceId?.name ||
+                            booking.service?.name ||
+                            "Service"}
+                        </p>
+                        {(booking.specialistId?.name ||
+                          booking.specialist?.name) && (
+                          <p className="text-gray-500 text-xs mt-0.5">
+                            with{" "}
+                            {booking.specialistId?.name ||
+                              booking.specialist?.name}
+                          </p>
+                        )}
+                        <p className="text-gray-600 text-xs mt-1">
+                          {new Date(booking.start).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
+                      <div className="text-right ml-4">
+                        <p className="font-semibold text-gray-900">
+                          {formatCurrency(booking.price || 0)}
+                        </p>
+                        <p
+                          className={`text-xs mt-0.5 ${
+                            booking.status === "confirmed"
+                              ? "text-green-600"
+                              : booking.status === "cancelled"
+                              ? "text-red-600"
+                              : "text-gray-600"
+                          }`}
+                        >
+                          {booking.status}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Close Button */}
+            <button
+              onClick={closeModal}
+              className="w-full py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        ) : null}
+      </Modal>
     </div>
   );
 }

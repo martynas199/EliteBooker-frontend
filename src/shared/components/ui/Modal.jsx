@@ -72,9 +72,8 @@ export default function Modal({
         "bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600",
     },
     dashboard: {
-      headerBg: "bg-gradient-to-r from-brand-50 to-blue-50",
-      titleGradient:
-        "bg-gradient-to-r from-brand-600 via-brand-500 to-blue-600",
+      headerBg: "bg-white",
+      titleColor: "text-gray-900",
     },
   };
 
@@ -101,26 +100,30 @@ export default function Modal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`relative bg-white md:rounded-2xl shadow-2xl w-full ${sizeClasses[size]} mx-auto overflow-hidden h-full md:h-auto md:max-h-[90vh] flex flex-col`}
+            className={`relative bg-white md:rounded-2xl shadow-2xl w-full ${sizeClasses[size]} mx-auto overflow-hidden h-[100dvh] md:h-auto md:max-h-[90vh] flex flex-col`}
+            style={{ paddingTop: "env(safe-area-inset-top)" }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div
-              className={`flex items-center justify-between px-6 py-4 border-b border-gray-200 ${currentVariant.headerBg} flex-shrink-0`}
+              className={`flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200 ${currentVariant.headerBg} flex-shrink-0`}
             >
               <h2
-                className={`text-xl sm:text-2xl font-bold ${currentVariant.titleGradient} bg-clip-text text-transparent`}
+                className={`text-base sm:text-lg md:text-xl font-semibold ${
+                  currentVariant.titleColor ||
+                  `${currentVariant.titleGradient} bg-clip-text text-transparent`
+                } line-clamp-2 pr-2`}
               >
                 {title}
               </h2>
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-white/80 rounded-lg transition-colors group"
+                  className="p-2 hover:bg-white/80 rounded-lg transition-colors group flex-shrink-0"
                   aria-label="Close modal"
                 >
                   <svg
-                    className="w-5 h-5 text-gray-500 group-hover:text-gray-700"
+                    className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 group-hover:text-gray-700"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -137,7 +140,9 @@ export default function Modal({
             </div>
 
             {/* Content */}
-            <div className="px-6 py-6 overflow-y-auto flex-1">{children}</div>
+            <div className="px-4 sm:px-6 py-4 sm:py-6 overflow-y-auto flex-1">
+              {children}
+            </div>
 
             {/* Footer */}
             {footer && (

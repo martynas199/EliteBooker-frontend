@@ -609,18 +609,35 @@ export default function Appointments() {
       <SlowRequestWarning isLoading={loading} threshold={2000} />
 
       {/* Header Section */}
-      <div className="mb-4 lg:mb-6">
-        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-          {t("appointments", language)}
-        </h1>
+      <div className="mb-6 lg:mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2.5 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl shadow-lg">
+            <svg
+              className="w-6 h-6 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">
+            {t("appointments", language)}
+          </h1>
+        </div>
 
         {/* Show subtitle for different admin types */}
         {isSuperAdmin ? (
-          <p className="text-sm sm:text-base text-gray-600">
-            {t("viewManageAllAppointmentsFromAllBeauticians", language)}
+          <p className="text-sm sm:text-base text-gray-600 ml-[52px]">
+            View and manage all appointments from all specialists
           </p>
         ) : admin?.specialistId ? (
-          <p className="text-sm sm:text-base text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600 ml-[52px]">
             {t("viewAppointmentsLinkedBeauticianOnly", language)}
           </p>
         ) : null}
@@ -655,12 +672,12 @@ export default function Appointments() {
         </div>
       )}
 
-      {/* Create Appointment Button - only show if admin has access */}
+      {/* Action Buttons - only show if admin has access */}
       {(isSuperAdmin || admin?.specialistId) && (
-        <div className="mb-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
+        <div className="mb-6 flex flex-col sm:flex-row gap-3">
           <button
             onClick={openCreateModal}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-sm sm:text-base group"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-5 py-3 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-sm group"
           >
             <svg
               className="w-5 h-5 transition-transform group-hover:rotate-90 duration-300"
@@ -675,28 +692,40 @@ export default function Appointments() {
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            Create Appointment
+            <span>Create Appointment</span>
           </button>
           {admin?.specialistId && (
-            <Button
-              variant="danger"
+            <button
               onClick={() => handleDeleteAll()}
-              className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white text-sm sm:text-base py-2.5 sm:py-2"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-5 py-3 bg-white hover:bg-red-50 border-2 border-red-200 hover:border-red-300 text-red-600 hover:text-red-700 font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 text-sm group"
             >
-              Delete All My Appointments
-            </Button>
+              <svg
+                className="w-5 h-5 transition-transform group-hover:scale-110 duration-200"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+              <span>Delete All My Appointments</span>
+            </button>
           )}
         </div>
       )}
 
       {/* Filters - only show if admin has access */}
       {(isSuperAdmin || admin?.specialistId) && (
-        <div className="bg-white border rounded-xl shadow-sm p-3 sm:p-4 mb-4 space-y-3 sm:space-y-4">
+        <div className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl shadow-md p-4 sm:p-5 mb-6 space-y-4">
           {/* Search Bar */}
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 sm:pl-3.5 flex items-center pointer-events-none">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
               <svg
-                className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400"
+                className="h-5 w-5 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -712,7 +741,7 @@ export default function Appointments() {
             <input
               type="text"
               placeholder="Search by name, email, phone, service..."
-              className="w-full pl-9 sm:pl-10 pr-10 sm:pr-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow"
+              className="w-full pl-11 pr-10 py-3 border-2 border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all placeholder:text-gray-400"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -722,7 +751,7 @@ export default function Appointments() {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <svg
-                  className="h-4 w-4 sm:h-5 sm:w-5"
+                  className="h-5 w-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -738,55 +767,93 @@ export default function Appointments() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Specialist Filter */}
-            <FormField
-              label={t("filterByBeautician", language) || "Specialist"}
-              htmlFor="specialist-filter"
-              className="flex-1"
-            >
-              <select
-                id="specialist-filter"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow"
-                value={selectedSpecialistId}
-                onChange={(e) => setSelectedSpecialistId(e.target.value)}
+            <div className="space-y-2">
+              <label
+                htmlFor="specialist-filter"
+                className="block text-sm font-semibold text-gray-700"
               >
-                <option value="">
-                  {t("allBeauticians", language) || "All Specialists"}
-                </option>
-                {specialists.map((b) => (
-                  <option key={b._id} value={b._id}>
-                    {b.name}
+                Filter by Specialist
+              </label>
+              <div className="relative">
+                <select
+                  id="specialist-filter"
+                  className="w-full appearance-none border-2 border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all cursor-pointer hover:border-gray-300"
+                  value={selectedSpecialistId}
+                  onChange={(e) => setSelectedSpecialistId(e.target.value)}
+                >
+                  <option value="">
+                    {t("allBeauticians", language) || "All Specialists"}
                   </option>
-                ))}
-              </select>
-            </FormField>
+                  {specialists.map((b) => (
+                    <option key={b._id} value={b._id}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
 
             {/* Date Filter */}
-            <FormField
-              label={t("dateRange", language) || "Date Range"}
-              htmlFor="date-filter"
-              className="flex-1"
-            >
-              <select
-                id="date-filter"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow"
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
+            <div className="space-y-2">
+              <label
+                htmlFor="date-filter"
+                className="block text-sm font-semibold text-gray-700"
               >
-                <option value="all">All Time</option>
-                <option value="day">{t("today", language) || "Today"}</option>
-                <option value="week">
-                  {t("thisWeek", language) || "This Week"}
-                </option>
-                <option value="month">
-                  {t("thisMonth", language) || "This Month"}
-                </option>
-                <option value="custom">
-                  {t("customRange", language) || "Custom Range"}
-                </option>
-              </select>
-            </FormField>
+                Date Range
+              </label>
+              <div className="relative">
+                <select
+                  id="date-filter"
+                  className="w-full appearance-none border-2 border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all cursor-pointer hover:border-gray-300"
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
+                >
+                  <option value="all">All Time</option>
+                  <option value="day">{t("today", language) || "Today"}</option>
+                  <option value="week">
+                    {t("thisWeek", language) || "This Week"}
+                  </option>
+                  <option value="month">
+                    {t("thisMonth", language) || "This Month"}
+                  </option>
+                  <option value="custom">
+                    {t("customRange", language) || "Custom Range"}
+                  </option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Custom Date Range */}
@@ -1135,15 +1202,47 @@ export default function Appointments() {
                         return (
                           <div>
                             <div
-                              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold ${
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold ${
                                 r.payment.type === "deposit"
                                   ? "bg-purple-100 text-purple-800"
                                   : "bg-blue-100 text-blue-800"
                               }`}
                             >
-                              {r.payment.type === "deposit"
-                                ? "💳 Deposit"
-                                : "✅ Full"}
+                              {r.payment.type === "deposit" ? (
+                                <>
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                                    />
+                                  </svg>
+                                  Deposit
+                                </>
+                              ) : (
+                                <>
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                  </svg>
+                                  Full
+                                </>
+                              )}
                             </div>
                             {r.payment.type === "deposit" &&
                               r.payment.depositAmount && (
@@ -1161,19 +1260,68 @@ export default function Appointments() {
                         return (
                           <div>
                             <div
-                              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold ${
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold ${
                                 r.payment.mode === "deposit"
                                   ? "bg-purple-100 text-purple-800"
+                                  : r.payment.mode === "pay_in_salon"
+                                  ? "bg-amber-100 text-amber-800"
                                   : "bg-blue-100 text-blue-800"
                               }`}
                             >
-                              {r.payment.mode === "deposit"
-                                ? "💳 Deposit"
-                                : r.payment.mode === "pay_now"
-                                ? "✅ Full"
-                                : r.payment.mode === "pay_in_salon"
-                                ? "🏪 In Salon"
-                                : r.payment.mode}
+                              {r.payment.mode === "deposit" ? (
+                                <>
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                                    />
+                                  </svg>
+                                  Deposit
+                                </>
+                              ) : r.payment.mode === "pay_now" ? (
+                                <>
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                  </svg>
+                                  Full
+                                </>
+                              ) : r.payment.mode === "pay_in_salon" ? (
+                                <>
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                                    />
+                                  </svg>
+                                  In Salon
+                                </>
+                              ) : (
+                                r.payment.mode
+                              )}
                             </div>
                             {r.payment.mode === "deposit" &&
                               r.payment.amountTotal && (
@@ -1253,24 +1401,50 @@ export default function Appointments() {
                   <td className="px-4 py-4">
                     <div className="flex gap-2">
                       <button
-                        className="px-3 py-1.5 text-xs font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors group"
                         onClick={() => openEditModal(r)}
                         title="Edit Appointment"
                       >
-                        ✏️ Edit
+                        <svg
+                          className="w-3.5 h-3.5 group-hover:scale-110 transition-transform"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                        Edit
                       </button>
                       <button
-                        className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed group"
                         disabled={
                           String(r.status || "").startsWith("cancelled") ||
                           r.status === "no_show"
                         }
                         onClick={() => openCancelModal(r._id)}
+                        title="Cancel Appointment"
                       >
-                        ❌
+                        <svg
+                          className="w-3.5 h-3.5 group-hover:scale-110 transition-transform"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
                       </button>
                       <button
-                        className="px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed group"
                         disabled={
                           String(r.status || "").startsWith("cancelled") ||
                           r.status === "no_show"
@@ -1278,14 +1452,39 @@ export default function Appointments() {
                         onClick={() => markAsNoShow(r._id)}
                         title="Mark as No Show"
                       >
-                        🚫
+                        <svg
+                          className="w-3.5 h-3.5 group-hover:scale-110 transition-transform"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                          />
+                        </svg>
                       </button>
                       {String(r.status || "").startsWith("cancelled") && (
                         <button
-                          className="border rounded px-3 py-1.5 text-sm text-red-700 border-red-300 hover:bg-red-50"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-700 bg-white border-2 border-red-200 hover:border-red-300 hover:bg-red-50 rounded-lg transition-colors group"
                           onClick={() => deleteAppointment(r._id)}
                           title="Delete Canceled Appointment"
                         >
+                          <svg
+                            className="w-3.5 h-3.5 group-hover:scale-110 transition-transform"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
                           Delete
                         </button>
                       )}
@@ -1495,14 +1694,61 @@ export default function Appointments() {
                                 ? "bg-purple-100 text-purple-800"
                                 : isFullPayment || isPayNow
                                 ? "bg-blue-100 text-blue-800"
-                                : "bg-gray-100 text-gray-800"
+                                : "bg-amber-100 text-amber-800"
                             }`}
                           >
-                            {isDeposit
-                              ? "💳 Deposit"
-                              : isFullPayment || isPayNow
-                              ? "✅ Full Payment"
-                              : "🏪 Pay in Salon"}
+                            {isDeposit ? (
+                              <>
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                                  />
+                                </svg>
+                                Deposit
+                              </>
+                            ) : isFullPayment || isPayNow ? (
+                              <>
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                  />
+                                </svg>
+                                Full Payment
+                              </>
+                            ) : (
+                              <>
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                                  />
+                                </svg>
+                                Pay in Salon
+                              </>
+                            )}
                           </span>
                         </div>
                         {isDeposit && r.payment && (
@@ -1584,39 +1830,91 @@ export default function Appointments() {
               {/* Action Buttons */}
               <div className="px-4 pb-4 space-y-2.5">
                 <button
-                  className="w-full px-4 py-3 text-sm font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all active:scale-[0.98]"
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all active:scale-[0.98] group"
                   onClick={() => openEditModal(r)}
                 >
-                  ✏️ Edit Appointment
+                  <svg
+                    className="w-4 h-4 group-hover:scale-110 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                  Edit Appointment
                 </button>
                 <div className="grid grid-cols-2 gap-2.5">
                   <button
-                    className="px-4 py-3 text-sm font-semibold text-red-700 bg-red-50 hover:bg-red-100 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-3 text-sm font-semibold text-red-700 bg-red-50 hover:bg-red-100 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] group"
                     disabled={
                       String(r.status || "").startsWith("cancelled") ||
                       r.status === "no_show"
                     }
                     onClick={() => openCancelModal(r._id)}
                   >
-                    ❌ Cancel
+                    <svg
+                      className="w-4 h-4 group-hover:scale-110 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                    Cancel
                   </button>
                   <button
-                    className="px-4 py-3 text-sm font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-3 text-sm font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] group"
                     disabled={
                       String(r.status || "").startsWith("cancelled") ||
                       r.status === "no_show"
                     }
                     onClick={() => markAsNoShow(r._id)}
                   >
-                    🚫 No Show
+                    <svg
+                      className="w-4 h-4 group-hover:scale-110 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                      />
+                    </svg>
+                    No Show
                   </button>
                 </div>
                 {String(r.status || "").startsWith("cancelled") && (
                   <button
-                    className="w-full px-4 py-3 text-sm font-semibold text-red-700 bg-red-50 hover:bg-red-100 rounded-xl transition-all active:scale-[0.98]"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-red-700 bg-white border-2 border-red-200 hover:border-red-300 hover:bg-red-50 rounded-xl transition-all active:scale-[0.98] group"
                     onClick={() => deleteAppointment(r._id)}
                   >
-                    🗑️ Delete
+                    <svg
+                      className="w-4 h-4 group-hover:scale-110 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                    Delete
                   </button>
                 )}
               </div>
