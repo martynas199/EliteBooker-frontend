@@ -27,65 +27,43 @@ export function ClientAuthProvider({ children }) {
     return () => clearTimeout(timeoutId);
   }, []);
 
-  // Detect OAuth redirect and refresh profile
+  // Detect OAuth redirect and handle token
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const authSuccess = params.get("auth");
     const tokenFromUrl = params.get("token");
 
-    if (authSuccess === "success") {
-      alert("[ClientAuth] OAuth redirect detected");
-
-      // If we have a token in URL (fallback), use it
-      if (tokenFromUrl) {
-        alert("[ClientAuth] Token found in URL, storing...");
-        // Set the token in Authorization header for this request
-        api.defaults.headers.common["Authorization"] = `Bearer ${tokenFromUrl}`;
-        
-        // Fetch profile with the token
-        fetchClientProfile().then((success) => {
-          if (success) {
-            alert("[ClientAuth] Profile loaded with URL token");
-            // Clean up URL
-            const newUrl = window.location.pathname;
-            navigate(newUrl, { replace: true });
-            // Remove the Authorization header (rely on cookies from now on)
-            delete api.defaults.headers.common["Authorization"];
-          } else {
-            alert("[ClientAuth] Failed to load profile with URL token");
-          }
-        });
-      } else {
-        // No token in URL, rely on cookie
-        alert("[ClientAuth] No URL token, using cookie");
-        setTimeout(() => {
-          fetchClientProfile().then((success) => {
-            if (success) {
-              alert("[ClientAuth] Profile loaded with cookie");
-              const newUrl = window.location.pathname;
-              navigate(newUrl, { replace: true });
-            } else {
-              alert("[ClientAuth] Failed to load profile with cookie");
-            }
-          });
-        }, 200);
-      }
+    if (authSuccess === "success" && tokenFromUrl) {
+      console.log("[ClientAuth] OAuth success - storing token in localStorage");
+      // Store token in localStorage (like beauty salon app)
+      localStorage.setItem("clientToken", tokenFromUrl);
+      
+      // Fetch profile
+      fetchClientProfile().then((success) => {
+        if (success) {
+          console.log("[ClientAuth] Profile loaded successfully");
+          // Clean up URL
+          const newUrl = window.location.pathname;
+          navigate(newUrl, { replace: true });
+        }
+      });
     }
   }, [location.search]);
 
   const fetchClientProfile = async () => {
     try {
-      alert("[ClientAuth] Attempting to fetch client profile...");
+      console.log("[ClientAuth] Attempting to fetch client profile...");
       const response = await api.get("/client/me");
-      alert("[ClientAuth] Profile fetched successfully: " + response.data.client.email);
+      console.log("[ClientAuth] Profile fetched successfully:", response.data.client.email);
       setClient(response.data.client);
       return true;
     } catch (error) {
-      alert("[ClientAuth] Failed to fetch: " + (error.response?.status || error.message));
-      // If unauthorized, clear client state (don't call logout to avoid recursion)
+      console.log("[ClientAuth] Failed to fetch:", error.response?.status || error.message);
+      // If unauthorized, clear client state and localStorage
       if (error.response?.status === 401) {
-        alert("[ClientAuth] Unauthorized - clearing client state");
+        console.log("[ClientAuth] Unauthorized - clearing client state");
         setClient(null);
+        localStorage.removeItem("clientToken");
       } else if (!error.response) {
         // Network error or timeout
         console.log("[ClientAuth] Network error - clearing client state");
@@ -99,8 +77,12 @@ export function ClientAuthProvider({ children }) {
 
   const login = async (email, password) => {
     const response = await api.post("/client/login", { email, password });
-    const { client: clientData } = response.data;
-    // Token is set as httpOnly cookie by backend
+    const { client: clientData, token } = response.data;
+    // Store token in localStorage (like beauty salon app)
+    if (token) {
+      localStorage.setItem("clientToken", token);
+      console.log("[ClientAuth] Token stored in localStorage");
+    }
     setClient(clientData);
     return clientData;
   };
@@ -112,8 +94,12 @@ export function ClientAuthProvider({ children }) {
       name,
       phone,
     });
-    const { client: clientData } = response.data;
-    // Token is set as httpOnly cookie by backend
+    const { client: clientData, token } = response.data;
+    // Store token in localStorage (like beauty salon app)
+    if (token) {
+      localStorage.setItem("clientToken", token);
+      console.log("[ClientAuth] Token stored in localStorage");
+    }
     setClient(clientData);
     return clientData;
   };
@@ -121,17 +107,18 @@ export function ClientAuthProvider({ children }) {
   const logout = async () => {
     console.log("[ClientAuth] Starting logout process...");
 
-    // Clear client state immediately
+    // Clear client state and localStorage immediately
     setClient(null);
+    localStorage.removeItem("clientToken");
 
     try {
-      // Call backend to clear httpOnly cookie
+      // Call backend to clear httpOnly cookie (for backward compatibility)
       await api.post("/client/logout");
-      console.log("[ClientAuth] Backend logout successful - cookie cleared");
+      console.log("[ClientAuth] Backend logout successful");
       return true;
     } catch (error) {
       console.error("[ClientAuth] Backend logout error:", error);
-      // Client state already cleared
+      // Client state and localStorage already cleared
       return false;
     }
   };

@@ -25,10 +25,13 @@ api.interceptors.request.use(
       }
     }
 
-    // Client routes use httpOnly cookies - no Authorization header needed
-    if (pathname.startsWith("/client")) {
-      console.log("[API Client] Client route - using httpOnly cookie auth");
-      // Don't add Authorization header - backend will read from cookie
+    // Add Authorization header for client routes (like beauty salon app)
+    if (pathname.startsWith("/client") && !config.headers["Authorization"]) {
+      const clientToken = localStorage.getItem("clientToken");
+      if (clientToken) {
+        config.headers["Authorization"] = `Bearer ${clientToken}`;
+        console.log("[API Client] Added client Authorization header");
+      }
     }
 
     // Add tenant slug header by parsing the current URL
@@ -105,8 +108,19 @@ api.interceptors.response.use(
       return Promise.reject(networkError);
     }
 
-    // Handle 401 Unauthorized - Try to refresh token
+    // Handle 401 Unauthorized - Try to refresh token or clear client token
     if (error.response.status === 401 && !originalRequest._retry) {
+      const pathname = window.location.pathname;
+      
+      // For client routes, clear localStorage token (like beauty salon app)
+      if (pathname.startsWith("/client")) {
+        console.log("[API Client] 401 on client route - clearing clientToken");
+        localStorage.removeItem("clientToken");
+        // Don't redirect - let ClientAuthContext handle the state
+        return Promise.reject(error);
+      }
+      
+      // For admin routes, try to refresh token
       if (isRefreshing) {
         // If already refreshing, queue this request
         return new Promise((resolve, reject) => {
@@ -137,6 +151,7 @@ api.interceptors.response.use(
         isRefreshing = false;
 
         // Refresh failed, redirect to admin login
+        const currentPath = window.location.pathname;
         if (!currentPath.includes("/admin/login")) {
           window.location.href = "/admin/login";
         }
