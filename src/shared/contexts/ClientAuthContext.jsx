@@ -19,18 +19,31 @@ export function ClientAuthProvider({ children }) {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const authSuccess = params.get("auth");
-    
+
     if (authSuccess === "success") {
-      console.log("[ClientAuth] OAuth redirect detected - refreshing profile...");
-      
+      console.log(
+        "[ClientAuth] OAuth redirect detected - refreshing profile..."
+      );
+
+      // Check if there's a token in sessionStorage (backup from OAuth)
+      const backupToken = sessionStorage.getItem("authToken");
+      if (backupToken) {
+        console.log("[ClientAuth] Found backup token in sessionStorage");
+        // Store in API client for the next request
+        api.defaults.headers.common["Authorization"] = `Bearer ${backupToken}`;
+        sessionStorage.removeItem("authToken"); // Clean up
+      }
+
       // Small delay to ensure cookie is set
       setTimeout(() => {
-        fetchClientProfile().then(() => {
-          // Clean up URL params after successful login
-          const newUrl = window.location.pathname;
-          navigate(newUrl, { replace: true });
+        fetchClientProfile().then((success) => {
+          if (success) {
+            // Clean up URL params after successful login
+            const newUrl = window.location.pathname;
+            navigate(newUrl, { replace: true });
+          }
         });
-      }, 100);
+      }, 200);
     }
   }, [location.search]);
 
@@ -44,6 +57,7 @@ export function ClientAuthProvider({ children }) {
       );
       console.log("[ClientAuth] Avatar URL:", response.data.client.avatar);
       setClient(response.data.client);
+      return true;
     } catch (error) {
       console.log(
         "[ClientAuth] Failed to fetch client profile:",
@@ -54,6 +68,7 @@ export function ClientAuthProvider({ children }) {
         console.log("[ClientAuth] Unauthorized - clearing client state");
         setClient(null);
       }
+      return false;
     } finally {
       setLoading(false);
     }

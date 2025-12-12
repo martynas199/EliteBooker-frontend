@@ -73,7 +73,7 @@ export function TenantProvider({ children }) {
       try {
         setLoading(true);
         setError(null);
-        
+
         const resolved = resolveTenantFromURL();
         setResolution(resolved);
 
