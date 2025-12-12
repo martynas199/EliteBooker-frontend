@@ -26,9 +26,11 @@ api.interceptors.request.use(
     }
 
     // Add Authorization header for client routes (like beauty salon app)
-    if (pathname.startsWith("/client") && !config.headers["Authorization"]) {
-      const clientToken = localStorage.getItem("clientToken");
-      if (clientToken) {
+    // Also add for homepage and other routes if clientToken exists
+    const clientToken = localStorage.getItem("clientToken");
+    if (clientToken && !config.headers["Authorization"]) {
+      // Add for /client routes OR for /api/client endpoints from any page
+      if (pathname.startsWith("/client") || config.url?.includes("/client/")) {
         config.headers["Authorization"] = `Bearer ${clientToken}`;
         console.log("[API Client] Added client Authorization header");
       }
