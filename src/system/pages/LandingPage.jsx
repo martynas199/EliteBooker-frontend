@@ -31,10 +31,8 @@ export default function LandingPage() {
       // Already logged in, go to profile
       navigate("/client/profile");
     } else {
-      // Not logged in, start OAuth flow
-      window.location.href = `${
-        import.meta.env.VITE_API_URL || "http://localhost:4000"
-      }/api/auth/google`;
+      // Not logged in, go to login page
+      navigate("/client/login");
     }
   };
 
