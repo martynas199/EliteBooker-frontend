@@ -11,20 +11,27 @@ export function ClientAuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Try to fetch profile on mount (cookie-based auth)
-    // Add timeout to prevent infinite loading
-    const timeoutId = setTimeout(() => {
-      if (loading) {
-        alert("[ClientAuth] Fetch timeout - setting loading to false");
-        setLoading(false);
-      }
-    }, 5000); // 5 second timeout
+    // Check for existing token on mount
+    const token = localStorage.getItem("clientToken");
+    
+    if (token) {
+      console.log("[ClientAuth] Found existing token, fetching profile");
+      const timeoutId = setTimeout(() => {
+        if (loading) {
+          console.log("[ClientAuth] Fetch timeout - setting loading to false");
+          setLoading(false);
+        }
+      }, 5000);
 
-    fetchClientProfile().finally(() => {
-      clearTimeout(timeoutId);
-    });
+      fetchClientProfile().finally(() => {
+        clearTimeout(timeoutId);
+      });
 
-    return () => clearTimeout(timeoutId);
+      return () => clearTimeout(timeoutId);
+    } else {
+      console.log("[ClientAuth] No token found, skipping profile fetch");
+      setLoading(false);
+    }
   }, []);
 
   // Detect OAuth redirect and handle token

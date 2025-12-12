@@ -57,10 +57,10 @@ export default function ClientRegisterPage() {
     }
   };
 
-  const handleGoogleSignup = () => {
+  const handleGoogleRegister = () => {
     window.location.href = `${
       import.meta.env.VITE_API_URL || "http://localhost:4000"
-    }/api/auth/google`;
+    }/api/oauth/google`;
   };
 
   if (loading) {
