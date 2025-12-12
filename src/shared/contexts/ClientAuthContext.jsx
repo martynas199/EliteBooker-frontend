@@ -12,7 +12,19 @@ export function ClientAuthProvider({ children }) {
 
   useEffect(() => {
     // Try to fetch profile on mount (cookie-based auth)
-    fetchClientProfile();
+    // Add timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      if (loading) {
+        alert("[ClientAuth] Fetch timeout - setting loading to false");
+        setLoading(false);
+      }
+    }, 5000); // 5 second timeout
+
+    fetchClientProfile().finally(() => {
+      clearTimeout(timeoutId);
+    });
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   // Detect OAuth redirect and refresh profile
@@ -21,14 +33,12 @@ export function ClientAuthProvider({ children }) {
     const authSuccess = params.get("auth");
 
     if (authSuccess === "success") {
-      console.log(
-        "[ClientAuth] OAuth redirect detected - refreshing profile..."
-      );
+      alert("[ClientAuth] OAuth redirect detected - refreshing profile...");
 
       // Check if there's a token in sessionStorage (backup from OAuth)
       const backupToken = sessionStorage.getItem("authToken");
       if (backupToken) {
-        console.log("[ClientAuth] Found backup token in sessionStorage");
+        alert("[ClientAuth] Found backup token in sessionStorage");
         // Store in API client for the next request
         api.defaults.headers.common["Authorization"] = `Bearer ${backupToken}`;
         sessionStorage.removeItem("authToken"); // Clean up
@@ -38,9 +48,12 @@ export function ClientAuthProvider({ children }) {
       setTimeout(() => {
         fetchClientProfile().then((success) => {
           if (success) {
+            alert("[ClientAuth] Profile fetched, redirecting...");
             // Clean up URL params after successful login
             const newUrl = window.location.pathname;
             navigate(newUrl, { replace: true });
+          } else {
+            alert("[ClientAuth] Failed to fetch profile after OAuth");
           }
         });
       }, 200);
@@ -49,23 +62,20 @@ export function ClientAuthProvider({ children }) {
 
   const fetchClientProfile = async () => {
     try {
-      console.log("[ClientAuth] Attempting to fetch client profile...");
+      alert("[ClientAuth] Attempting to fetch client profile...");
       const response = await api.get("/client/me");
-      console.log(
-        "[ClientAuth] Profile fetched successfully:",
-        response.data.client
-      );
-      console.log("[ClientAuth] Avatar URL:", response.data.client.avatar);
+      alert("[ClientAuth] Profile fetched successfully: " + response.data.client.email);
       setClient(response.data.client);
       return true;
     } catch (error) {
-      console.log(
-        "[ClientAuth] Failed to fetch client profile:",
-        error.response?.status
-      );
+      alert("[ClientAuth] Failed to fetch: " + (error.response?.status || error.message));
       // If unauthorized, clear client state (don't call logout to avoid recursion)
       if (error.response?.status === 401) {
-        console.log("[ClientAuth] Unauthorized - clearing client state");
+        alert("[ClientAuth] Unauthorized - clearing client state");
+        setClient(null);
+      } else if (!error.response) {
+        // Network error or timeout
+        console.log("[ClientAuth] Network error - clearing client state");
         setClient(null);
       }
       return false;
