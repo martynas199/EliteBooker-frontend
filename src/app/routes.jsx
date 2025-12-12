@@ -29,6 +29,7 @@ import ProfileEditPage from "../tenant/pages/ProfileEditPage";
 import ClientProfilePage from "../tenant/pages/ClientProfilePage";
 import ClientAppointmentsPage from "../tenant/pages/ClientAppointmentsPage";
 import ClientLoginPage from "../client/pages/LoginPage";
+import ClientRegisterPage from "../client/pages/RegisterPage";
 import MenuPage from "../system/pages/MenuPage";
 import BeauticianSelectionPage from "../tenant/pages/BeauticiansPage";
 import ServicesPage from "../tenant/pages/ServicesPage";
@@ -169,6 +170,7 @@ export default function AppRoutes() {
 
         {/* Global Client Auth (cross-business) */}
         <Route path="/client/login" element={<ClientLoginPage />} />
+        <Route path="/client/register" element={<ClientRegisterPage />} />
         <Route path="/client/profile" element={<ClientProfilePage />} />
         <Route
           path="/client/appointments"
