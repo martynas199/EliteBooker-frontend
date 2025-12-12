@@ -31,32 +31,45 @@ export function ClientAuthProvider({ children }) {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const authSuccess = params.get("auth");
+    const tokenFromUrl = params.get("token");
 
     if (authSuccess === "success") {
-      alert("[ClientAuth] OAuth redirect detected - refreshing profile...");
+      alert("[ClientAuth] OAuth redirect detected");
 
-      // Check if there's a token in sessionStorage (backup from OAuth)
-      const backupToken = sessionStorage.getItem("authToken");
-      if (backupToken) {
-        alert("[ClientAuth] Found backup token in sessionStorage");
-        // Store in API client for the next request
-        api.defaults.headers.common["Authorization"] = `Bearer ${backupToken}`;
-        sessionStorage.removeItem("authToken"); // Clean up
-      }
-
-      // Small delay to ensure cookie is set
-      setTimeout(() => {
+      // If we have a token in URL (fallback), use it
+      if (tokenFromUrl) {
+        alert("[ClientAuth] Token found in URL, storing...");
+        // Set the token in Authorization header for this request
+        api.defaults.headers.common["Authorization"] = `Bearer ${tokenFromUrl}`;
+        
+        // Fetch profile with the token
         fetchClientProfile().then((success) => {
           if (success) {
-            alert("[ClientAuth] Profile fetched, redirecting...");
-            // Clean up URL params after successful login
+            alert("[ClientAuth] Profile loaded with URL token");
+            // Clean up URL
             const newUrl = window.location.pathname;
             navigate(newUrl, { replace: true });
+            // Remove the Authorization header (rely on cookies from now on)
+            delete api.defaults.headers.common["Authorization"];
           } else {
-            alert("[ClientAuth] Failed to fetch profile after OAuth");
+            alert("[ClientAuth] Failed to load profile with URL token");
           }
         });
-      }, 200);
+      } else {
+        // No token in URL, rely on cookie
+        alert("[ClientAuth] No URL token, using cookie");
+        setTimeout(() => {
+          fetchClientProfile().then((success) => {
+            if (success) {
+              alert("[ClientAuth] Profile loaded with cookie");
+              const newUrl = window.location.pathname;
+              navigate(newUrl, { replace: true });
+            } else {
+              alert("[ClientAuth] Failed to load profile with cookie");
+            }
+          });
+        }, 200);
+      }
     }
   }, [location.search]);
 
