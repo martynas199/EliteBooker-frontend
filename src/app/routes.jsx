@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { api } from "../shared/lib/apiClient";
 import logo from "../assets/logo.svg";
 import LandingPage from "../system/pages/LandingPage";
+import SearchPage from "../system/pages/SearchPage";
 import HelpPage from "../system/pages/HelpPage";
 import SalonDetails from "../tenant/pages/SalonDetails";
 import TimeSlots from "../tenant/pages/TimeSlotsPage";
@@ -174,6 +175,9 @@ export default function AppRoutes() {
 
         {/* Mobile Menu */}
         <Route path="/menu" element={<MenuPage />} />
+
+        {/* Search Page */}
+        <Route path="/search" element={<SearchPage />} />
 
         {/* Platform marketing/landing page */}
         <Route path="/" element={<LandingPage />} />

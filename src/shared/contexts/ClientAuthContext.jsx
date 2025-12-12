@@ -1,9 +1,12 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { api } from "../lib/apiClient";
 
 const ClientAuthContext = createContext(null);
 
 export function ClientAuthProvider({ children }) {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [client, setClient] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -11,6 +14,25 @@ export function ClientAuthProvider({ children }) {
     // Try to fetch profile on mount (cookie-based auth)
     fetchClientProfile();
   }, []);
+
+  // Detect OAuth redirect and refresh profile
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const authSuccess = params.get("auth");
+    
+    if (authSuccess === "success") {
+      console.log("[ClientAuth] OAuth redirect detected - refreshing profile...");
+      
+      // Small delay to ensure cookie is set
+      setTimeout(() => {
+        fetchClientProfile().then(() => {
+          // Clean up URL params after successful login
+          const newUrl = window.location.pathname;
+          navigate(newUrl, { replace: true });
+        });
+      }, 100);
+    }
+  }, [location.search]);
 
   const fetchClientProfile = async () => {
     try {

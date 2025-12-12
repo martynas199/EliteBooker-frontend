@@ -5,6 +5,7 @@
  */
 
 import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 const TenantContext = createContext(null);
@@ -61,6 +62,7 @@ function resolveTenantFromURL() {
 }
 
 export function TenantProvider({ children }) {
+  const location = useLocation();
   const [tenant, setTenant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -69,11 +71,15 @@ export function TenantProvider({ children }) {
   useEffect(() => {
     async function loadTenant() {
       try {
+        setLoading(true);
+        setError(null);
+        
         const resolved = resolveTenantFromURL();
         setResolution(resolved);
 
         // If no tenant detected, show platform site
         if (!resolved.slug && !resolved.domain) {
+          setTenant(null);
           setLoading(false);
           return;
         }
@@ -96,17 +102,20 @@ export function TenantProvider({ children }) {
 
           // Apply branding
           applyTenantBranding(response.data.tenant);
+        } else {
+          setTenant(null);
         }
       } catch (err) {
         console.error("Failed to load tenant:", err);
         setError(err.message);
+        setTenant(null);
       } finally {
         setLoading(false);
       }
     }
 
     loadTenant();
-  }, []);
+  }, [location.pathname]); // Re-run when pathname changes
 
   /**
    * Apply tenant branding to the page
