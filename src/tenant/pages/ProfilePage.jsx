@@ -3,6 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../shared/contexts/AuthContext";
 import { getUserBookings, getUserOrders, cancelBooking } from "./profile.api";
 import { getWishlist, removeFromWishlist } from "./wishlist.api";
+import {
+  getFavorites,
+  removeFromFavorites,
+} from "../../shared/api/favorites.api";
+import {
+  getPurchasedGiftCards,
+  getReceivedGiftCards,
+} from "../../shared/api/giftCards.api";
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
 import Card from "../../shared/components/ui/Card";
 import Button from "../../shared/components/ui/Button";
@@ -28,9 +36,14 @@ const ProfilePage = () => {
   const [bookings, setBookings] = useState([]);
   const [orders, setOrders] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [purchasedGiftCards, setPurchasedGiftCards] = useState([]);
+  const [receivedGiftCards, setReceivedGiftCards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [loadingWishlist, setLoadingWishlist] = useState(false);
+  const [loadingFavorites, setLoadingFavorites] = useState(false);
+  const [loadingGiftCards, setLoadingGiftCards] = useState(false);
   const [error, setError] = useState("");
   const [dataFetched, setDataFetched] = useState(false);
 
@@ -51,14 +64,27 @@ const ProfilePage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [bookingsData, ordersData, wishlistData] = await Promise.all([
+      const [
+        bookingsData,
+        ordersData,
+        wishlistData,
+        favoritesData,
+        purchasedData,
+        receivedData,
+      ] = await Promise.all([
         getUserBookings(token),
         getUserOrders(token),
         getWishlist(token),
+        getFavorites().catch(() => ({ favorites: [] })),
+        getPurchasedGiftCards().catch(() => ({ giftCards: [] })),
+        getReceivedGiftCards().catch(() => ({ giftCards: [] })),
       ]);
       setBookings(bookingsData.bookings || []);
       setOrders(ordersData.orders || []);
       setWishlist(wishlistData.wishlist || []);
+      setFavorites(favoritesData.favorites || []);
+      setPurchasedGiftCards(purchasedData.giftCards || []);
+      setReceivedGiftCards(receivedData.giftCards || []);
       setDataFetched(true);
     } catch (err) {
       setError(err.message);
@@ -192,14 +218,14 @@ const ProfilePage = () => {
   }
 
   return (
-    <PageTransition className="min-h-screen py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <PageTransition className="min-h-screen py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-serif font-bold text-gray-900 tracking-wide">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 tracking-wide">
             My Profile
           </h1>
-          <p className="mt-2 text-gray-600 font-light">
+          <p className="mt-2 text-sm sm:text-base text-gray-600 font-light">
             Welcome back, {user?.name}! Manage your bookings and account
             settings.
           </p>
@@ -251,6 +277,31 @@ const ProfilePage = () => {
               <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1">
                 <span>Wishlist</span>
                 <span className="text-xs sm:text-sm">({wishlist.length})</span>
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab("favorites")}
+              className={`${
+                activeTab === "favorites"
+                  ? "bg-rose-50 border-rose-500 text-rose-600 sm:bg-transparent sm:border-b-2 sm:border-t-0 sm:border-x-0"
+                  : "bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900 sm:bg-transparent sm:border-transparent sm:border-b-2"
+              } py-3 px-3 sm:px-1 border-2 sm:border-0 sm:border-b-2 rounded-lg sm:rounded-none font-medium text-xs sm:text-sm transition-all sm:-mb-px`}
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1">
+                <span>Favorites</span>
+                <span className="text-xs sm:text-sm">({favorites.length})</span>
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab("gift-cards")}
+              className={`${
+                activeTab === "gift-cards"
+                  ? "bg-rose-50 border-rose-500 text-rose-600 sm:bg-transparent sm:border-b-2 sm:border-t-0 sm:border-x-0"
+                  : "bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900 sm:bg-transparent sm:border-transparent sm:border-b-2"
+              } py-3 px-3 sm:px-1 border-2 sm:border-0 sm:border-b-2 rounded-lg sm:rounded-none font-medium text-xs sm:text-sm transition-all sm:-mb-px`}
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1">
+                <span>Gift Cards</span>
               </div>
             </button>
             <button
@@ -325,7 +376,7 @@ const ProfilePage = () => {
                             <span className="font-medium mr-2 flex-shrink-0">
                               💷
                             </span>
-                            <span>£{booking.price?.toFixed(2)}</span>
+                            <span>{formatPrice(booking.price || 0)}</span>
                           </p>
                         </div>
 
@@ -763,6 +814,301 @@ const ProfilePage = () => {
                   ))}
                 </StaggerContainer>
               )}
+            </div>
+          )}
+
+          {/* Favorites Tab */}
+          {activeTab === "favorites" && (
+            <div className="space-y-4">
+              {favorites.length === 0 ? (
+                <Card className="p-8 text-center">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
+                    <svg
+                      className="w-10 h-10 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-gray-600 mb-4">No favorite salons yet</p>
+                  <Button onClick={() => navigate("/")}>Explore Salons</Button>
+                </Card>
+              ) : (
+                <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {favorites.map((salon) => (
+                    <StaggerItem key={salon._id}>
+                      <Card hoverable className="p-4 group">
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="text-lg font-semibold text-gray-900 flex-1">
+                            {salon.name}
+                          </h3>
+                          <button
+                            onClick={async () => {
+                              try {
+                                await removeFromFavorites(salon._id);
+                                setFavorites((prev) =>
+                                  prev.filter((f) => f._id !== salon._id)
+                                );
+                                toast.success("Removed from favorites");
+                              } catch (error) {
+                                toast.error("Failed to remove from favorites");
+                              }
+                            }}
+                            className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                            </svg>
+                          </button>
+                        </div>
+                        {salon.description && (
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                            {salon.description}
+                          </p>
+                        )}
+                        {salon.address && (
+                          <p className="text-xs text-gray-500 mb-4">
+                            📍 {salon.address.city || salon.address.street}
+                          </p>
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            // Navigate to tenant using slug
+                            if (salon.slug) {
+                              window.location.href = `/${salon.slug}`;
+                            }
+                          }}
+                          className="w-full"
+                        >
+                          Visit Salon
+                        </Button>
+                      </Card>
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+              )}
+            </div>
+          )}
+
+          {/* Gift Cards Tab */}
+          {activeTab === "gift-cards" && (
+            <div>
+              <div className="mb-8">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  Purchased Gift Cards
+                </h3>
+                {loadingGiftCards ? (
+                  <ListSkeleton count={2} />
+                ) : purchasedGiftCards.length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <div className="flex flex-col items-center">
+                      <svg
+                        className="w-16 h-16 text-gray-300 mb-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
+                        />
+                      </svg>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        No Gift Cards Purchased
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        You haven't purchased any gift cards yet
+                      </p>
+                    </div>
+                  </Card>
+                ) : (
+                  <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {purchasedGiftCards.map((giftCard) => (
+                      <StaggerItem key={giftCard._id}>
+                        <Card className="p-6">
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <p className="text-sm text-gray-600 mb-1">
+                                Gift Card Code
+                              </p>
+                              <p className="text-lg font-mono font-bold text-brand-600">
+                                {giftCard.code}
+                              </p>
+                            </div>
+                            <Chip
+                              variant={
+                                giftCard.status === "redeemed"
+                                  ? "success"
+                                  : giftCard.status === "sent"
+                                  ? "info"
+                                  : "warning"
+                              }
+                            >
+                              {giftCard.status}
+                            </Chip>
+                          </div>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Amount:</span>
+                              <span className="font-semibold">
+                                {formatPrice(giftCard.amount)}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Recipient:</span>
+                              <span className="font-semibold">
+                                {giftCard.recipientName}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Email:</span>
+                              <span className="text-xs">
+                                {giftCard.recipientEmail}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Purchased:</span>
+                              <span>
+                                {new Date(
+                                  giftCard.purchaseDate
+                                ).toLocaleDateString()}
+                              </span>
+                            </div>
+                            {giftCard.message && (
+                              <div className="pt-2 border-t border-gray-200">
+                                <p className="text-gray-600 text-xs italic">
+                                  "{giftCard.message}"
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </Card>
+                      </StaggerItem>
+                    ))}
+                  </StaggerContainer>
+                )}
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  Received Gift Cards
+                </h3>
+                {loadingGiftCards ? (
+                  <ListSkeleton count={2} />
+                ) : receivedGiftCards.length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <div className="flex flex-col items-center">
+                      <svg
+                        className="w-16 h-16 text-gray-300 mb-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
+                        />
+                      </svg>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        No Gift Cards Received
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        You haven't received any gift cards yet
+                      </p>
+                    </div>
+                  </Card>
+                ) : (
+                  <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {receivedGiftCards.map((giftCard) => (
+                      <StaggerItem key={giftCard._id}>
+                        <Card className="p-6">
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <p className="text-sm text-gray-600 mb-1">
+                                Gift Card Code
+                              </p>
+                              <p className="text-lg font-mono font-bold text-brand-600">
+                                {giftCard.code}
+                              </p>
+                            </div>
+                            <Chip
+                              variant={
+                                giftCard.status === "redeemed"
+                                  ? "success"
+                                  : giftCard.status === "sent"
+                                  ? "info"
+                                  : "warning"
+                              }
+                            >
+                              {giftCard.status}
+                            </Chip>
+                          </div>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Amount:</span>
+                              <span className="font-semibold">
+                                {formatPrice(giftCard.amount)}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">From:</span>
+                              <span className="font-semibold">
+                                {giftCard.purchaserName}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Expires:</span>
+                              <span>
+                                {new Date(
+                                  giftCard.expiryDate
+                                ).toLocaleDateString()}
+                              </span>
+                            </div>
+                            {giftCard.message && (
+                              <div className="pt-2 border-t border-gray-200">
+                                <p className="text-gray-600 text-xs italic">
+                                  "{giftCard.message}"
+                                </p>
+                              </div>
+                            )}
+                            {giftCard.status === "sent" && (
+                              <div className="pt-3">
+                                <Button
+                                  size="sm"
+                                  className="w-full"
+                                  onClick={() => {
+                                    // Will implement redemption later
+                                    toast("Redemption feature coming soon!");
+                                  }}
+                                >
+                                  Redeem Gift Card
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        </Card>
+                      </StaggerItem>
+                    ))}
+                  </StaggerContainer>
+                )}
+              </div>
             </div>
           )}
 

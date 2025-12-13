@@ -5,11 +5,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../../shared/lib/apiClient";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
+import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { setService, setSpecialist } from "../state/bookingSlice";
+import {
+  getFavorites,
+  addToFavorites,
+  removeFromFavorites,
+} from "../../shared/api/favorites.api";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import ServiceCard from "../components/ServiceCard";
 import SpecialistCard from "../components/SpecialistCard";
 import LocationServicesView from "../components/LocationServicesView";
+import GiftCardModal from "../../shared/components/modals/GiftCardModal";
+import LoginDrawer from "../../shared/components/modals/LoginDrawer";
+import toast from "react-hot-toast";
 
 /**
  * Professional Toggle Switch
@@ -129,6 +138,7 @@ export default function SalonLandingLuxury() {
   const dispatch = useDispatch();
   const { tenant } = useTenant();
   const { formatPrice } = useCurrency();
+  const { client, isAuthenticated } = useClientAuth();
 
   // State
   const [loading, setLoading] = useState(true);
@@ -139,6 +149,11 @@ export default function SalonLandingLuxury() {
   const [services, setServices] = useState([]);
   const [locations, setLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [favorites, setFavorites] = useState([]);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoritesLoading, setFavoritesLoading] = useState(false);
+  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
+  const [showLoginDrawer, setShowLoginDrawer] = useState(false);
 
   // Check if multi-location feature is enabled from tenant features
   const isMultiLocationEnabled = tenant?.features?.multiLocation || false;
@@ -189,6 +204,57 @@ export default function SalonLandingLuxury() {
 
     loadData();
   }, []);
+
+  // Load favorites when user is authenticated
+  useEffect(() => {
+    const loadFavorites = async () => {
+      if (isAuthenticated) {
+        try {
+          const data = await getFavorites();
+          setFavorites(data.favorites || []);
+
+          // Check if current tenant is in favorites
+          if (tenant?._id && data.favorites) {
+            const isInFavorites = data.favorites.some(
+              (fav) => (fav._id || fav) === tenant._id
+            );
+            setIsFavorite(isInFavorites);
+          }
+        } catch (error) {
+          console.error("Failed to load favorites:", error);
+        }
+      }
+    };
+
+    loadFavorites();
+  }, [isAuthenticated, tenant]);
+
+  // Handler for toggling favorites
+  const handleToggleFavorite = async () => {
+    if (!isAuthenticated) {
+      setShowLoginDrawer(true);
+      return;
+    }
+
+    if (!tenant?._id) return;
+
+    setFavoritesLoading(true);
+    try {
+      if (isFavorite) {
+        await removeFromFavorites(tenant._id);
+        setIsFavorite(false);
+        toast.success("Removed from favorites");
+      } else {
+        await addToFavorites(tenant._id);
+        setIsFavorite(true);
+        toast.success("Added to favorites");
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to update favorites");
+    } finally {
+      setFavoritesLoading(false);
+    }
+  };
 
   // Handlers
   const handleServiceClick = (service) => {
@@ -282,6 +348,42 @@ export default function SalonLandingLuxury() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Hero Section - Clean and Professional */}
           <div className="relative bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 rounded-3xl overflow-hidden mb-12 shadow-2xl">
+            {/* Favorite Button - Top Right */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              onClick={handleToggleFavorite}
+              disabled={favoritesLoading}
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 p-3 sm:p-4 bg-white/90 backdrop-blur-md rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 group disabled:opacity-50"
+              aria-label={
+                isFavorite ? "Remove from favorites" : "Add to favorites"
+              }
+            >
+              <motion.svg
+                initial={false}
+                animate={{
+                  scale: isFavorite ? [1, 1.2, 1] : 1,
+                }}
+                transition={{ duration: 0.3 }}
+                className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors duration-300 ${
+                  isFavorite
+                    ? "text-red-500 fill-current"
+                    : "text-gray-400 group-hover:text-red-500"
+                }`}
+                fill={isFavorite ? "currentColor" : "none"}
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                />
+              </motion.svg>
+            </motion.button>
+
             {/* Hero Image Background */}
             {(heroSection?.centerImage?.url || settings?.heroImage?.url) && (
               <>
@@ -359,7 +461,7 @@ export default function SalonLandingLuxury() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.8 }}
-                    className="flex justify-center px-4"
+                    className="flex flex-col sm:flex-row justify-center items-center gap-4 px-4"
                   >
                     <motion.button
                       onClick={() => {
@@ -392,7 +494,7 @@ export default function SalonLandingLuxury() {
                           );
                         }
                       }}
-                      className="px-10 py-5 bg-white text-brand-600 font-bold text-lg rounded-xl shadow-2xl flex items-center justify-center gap-3"
+                      className="px-10 py-5 bg-white text-brand-600 font-bold text-lg rounded-xl shadow-2xl flex items-center justify-center gap-3 w-full sm:w-auto"
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -410,6 +512,33 @@ export default function SalonLandingLuxury() {
                         />
                       </svg>
                       {heroSection?.ctaText || "Book Your Appointment"}
+                    </motion.button>
+
+                    {/* Gift Card Button */}
+                    <motion.button
+                      onClick={() => setShowGiftCardModal(true)}
+                      className="px-8 py-5 bg-white/10 backdrop-blur-md text-white font-semibold text-lg rounded-xl shadow-xl flex items-center justify-center gap-3 border-2 border-white/30 w-full sm:w-auto"
+                      whileHover={{
+                        scale: 1.02,
+                        y: -2,
+                        backgroundColor: "rgba(255, 255, 255, 0.15)",
+                      }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
+                        />
+                      </svg>
+                      Send a Gift Card
                     </motion.button>
                   </motion.div>
                 )}
@@ -711,6 +840,22 @@ export default function SalonLandingLuxury() {
             </section>
           )}
         </div>
+
+        {/* Gift Card Modal */}
+        <GiftCardModal
+          isOpen={showGiftCardModal}
+          onClose={() => setShowGiftCardModal(false)}
+          onSuccess={(giftCard) => {
+            console.log("Gift card created:", giftCard);
+          }}
+        />
+
+        {/* Login Drawer */}
+        <LoginDrawer
+          isOpen={showLoginDrawer}
+          onClose={() => setShowLoginDrawer(false)}
+          message="Please sign in to add this salon to your favorites"
+        />
       </div>
     </>
   );
