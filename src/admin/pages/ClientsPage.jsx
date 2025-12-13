@@ -326,68 +326,69 @@ export default function ClientsPage() {
               <div
                 key={client.id}
                 onClick={() => handleClientClick(client)}
-                className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer"
+                className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer relative"
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="h-10 w-10 rounded-full bg-gray-900 text-white flex items-center justify-center font-semibold">
-                        {client.name?.charAt(0).toUpperCase() || "?"}
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {client.name || "Unknown"}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          {client.email || "No email"}
-                        </p>
-                      </div>
+                {/* Status badge - positioned in top right corner */}
+                <div className="absolute top-4 right-4">
+                  {getStatusBadge(client.status)}
+                </div>
+
+                <div className="pr-20">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-full bg-gray-900 text-white flex items-center justify-center font-semibold flex-shrink-0">
+                      {client.name?.charAt(0).toUpperCase() || "?"}
                     </div>
-
-                    <div className="flex flex-wrap gap-4 mt-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4 text-gray-400" />
-                        <span className="text-gray-900 font-medium">
-                          {formatCurrency(client.totalSpend || 0)}
-                        </span>
-                        <span className="text-gray-600">total spent</span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-900 font-medium">
-                          {client.totalVisits || 0}
-                        </span>
-                        <span className="text-gray-600">visits</span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-600">
-                          {client.lastVisit &&
-                          new Date(client.lastVisit) > new Date()
-                            ? "Next visit:"
-                            : "Last visit:"}
-                        </span>
-                        <span className="text-gray-900 font-medium">
-                          {formatDate(client.lastVisit)}
-                        </span>
-                      </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {client.name || "Unknown"}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {client.email || "No email"}
+                      </p>
                     </div>
-
-                    {client.tags && client.tags.length > 0 && (
-                      <div className="flex gap-2 mt-3">
-                        {client.tags.map((tag, idx) => (
-                          <span
-                            key={idx}
-                            className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-md"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
                   </div>
 
-                  <div className="ml-4">{getStatusBadge(client.status)}</div>
+                  <div className="flex flex-wrap gap-4 mt-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4 text-gray-400" />
+                      <span className="text-gray-900 font-medium">
+                        {formatCurrency(client.totalSpend || 0)}
+                      </span>
+                      <span className="text-gray-600">total spent</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-900 font-medium">
+                        {client.totalVisits || 0}
+                      </span>
+                      <span className="text-gray-600">visits</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-600">
+                        {client.lastVisit &&
+                        new Date(client.lastVisit) > new Date()
+                          ? "Next visit:"
+                          : "Last visit:"}
+                      </span>
+                      <span className="text-gray-900 font-medium">
+                        {formatDate(client.lastVisit)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {client.tags && client.tags.length > 0 && (
+                    <div className="flex gap-2 mt-3">
+                      {client.tags.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-md"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

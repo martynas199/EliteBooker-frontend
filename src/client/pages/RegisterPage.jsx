@@ -48,7 +48,12 @@ export default function ClientRegisterPage() {
     setIsSubmitting(true);
 
     try {
-      await register(formData.email, formData.password, formData.name, formData.phone);
+      await register(
+        formData.email,
+        formData.password,
+        formData.name,
+        formData.phone
+      );
       navigate("/client/profile");
     } catch (err) {
       setError(err.message || "Failed to register. Please try again.");
@@ -57,10 +62,10 @@ export default function ClientRegisterPage() {
     }
   };
 
-  const handleGoogleRegister = () => {
+  const handleGoogleSignup = () => {
     window.location.href = `${
       import.meta.env.VITE_API_URL || "http://localhost:4000"
-    }/api/oauth/google`;
+    }/api/auth/google`;
   };
 
   if (loading) {
@@ -102,7 +107,7 @@ export default function ClientRegisterPage() {
             {/* Google Sign Up Button */}
             <div>
               <button
-                onClick={handleGoogleRegister}
+                onClick={handleGoogleSignup}
                 className="w-full flex justify-center items-center gap-3 py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">

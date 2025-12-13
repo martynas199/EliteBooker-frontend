@@ -10,6 +10,10 @@ import { t } from "../../locales/adminTranslations";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import dayjs from "dayjs";
+import {
+  SelectDrawer,
+  SelectButton,
+} from "../../shared/components/ui/SelectDrawer";
 
 export default function TimeOff() {
   const { language } = useLanguage();
@@ -28,6 +32,9 @@ export default function TimeOff() {
   const [visiblePastCount, setVisiblePastCount] = useState(5);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
+
+  // Drawer state for mobile specialist selection
+  const [showSpecialistDrawer, setShowSpecialistDrawer] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -336,22 +343,18 @@ export default function TimeOff() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Staff Member <span className="text-red-500">*</span>
                 </label>
-                <select
+                <SelectButton
                   value={formData.specialistId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, specialistId: e.target.value })
-                  }
-                  className={`w-full px-4 py-3 border-2 rounded-xl font-medium focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all ${
-                    errors.specialistId ? "border-red-500" : "border-gray-300"
+                  placeholder="Select staff member"
+                  options={specialists.map((specialist) => ({
+                    value: specialist._id,
+                    label: specialist.name,
+                  }))}
+                  onClick={() => setShowSpecialistDrawer(true)}
+                  className={`w-full px-4 py-3 rounded-xl font-medium ${
+                    errors.specialistId ? "border-red-500" : ""
                   }`}
-                >
-                  <option value="">Select staff member</option>
-                  {specialists.map((specialist) => (
-                    <option key={specialist._id} value={specialist._id}>
-                      {specialist.name}
-                    </option>
-                  ))}
-                </select>
+                />
                 {errors.specialistId && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.specialistId}
@@ -865,6 +868,19 @@ export default function TimeOff() {
           </button>
         </Card>
       )}
+
+      {/* Specialist Selection Drawer */}
+      <SelectDrawer
+        open={showSpecialistDrawer}
+        onClose={() => setShowSpecialistDrawer(false)}
+        title="Select Staff Member"
+        options={specialists.map((specialist) => ({
+          value: specialist._id,
+          label: specialist.name,
+        }))}
+        value={formData.specialistId}
+        onChange={(value) => setFormData({ ...formData, specialistId: value })}
+      />
     </div>
   );
 }

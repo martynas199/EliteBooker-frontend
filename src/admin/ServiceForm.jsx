@@ -9,6 +9,10 @@ import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
 import Button from "../shared/components/ui/Button";
 import { useLanguage } from "../shared/contexts/LanguageContext";
 import { t } from "../locales/adminTranslations";
+import {
+  SelectDrawer,
+  SelectButton,
+} from "../shared/components/ui/SelectDrawer";
 
 /**
  * ServiceForm - Create or Edit a service
@@ -71,6 +75,9 @@ export default function ServiceForm({
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Drawer state for mobile specialist selection
+  const [showSpecialistDrawer, setShowSpecialistDrawer] = useState(false);
 
   // Load locations if multi-location is enabled
   useEffect(() => {
@@ -424,35 +431,20 @@ export default function ServiceForm({
               htmlFor="primaryBeauticianId"
               hint={t("primaryBeauticianHint", language)}
             >
-              <select
+              <SelectButton
                 id="primaryBeauticianId"
                 value={formData.primaryBeauticianId}
-                onChange={(e) =>
-                  handleChange("primaryBeauticianId", e.target.value)
-                }
+                placeholder={t("selectBeautician", language)}
+                options={specialists.map((b) => ({
+                  value: b._id,
+                  label: b.name,
+                }))}
+                onClick={() => isSuperAdmin && setShowSpecialistDrawer(true)}
                 disabled={!isSuperAdmin}
-                className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors appearance-none bg-white cursor-pointer ${
-                  errors.primaryBeauticianId
-                    ? "border-red-500"
-                    : "border-gray-300"
+                className={`w-full px-4 py-3 rounded-xl ${
+                  errors.primaryBeauticianId ? "border-red-500" : ""
                 } ${!isSuperAdmin ? "bg-gray-100 cursor-not-allowed" : ""}`}
-                style={{
-                  backgroundImage:
-                    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\")",
-                  backgroundPosition: "right 0.5rem center",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "1.5em 1.5em",
-                  paddingRight: "2.5rem",
-                }}
-                aria-invalid={!!errors.primaryBeauticianId}
-              >
-                <option value="">{t("selectBeautician", language)}</option>
-                {specialists.map((b) => (
-                  <option key={b._id} value={b._id}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
+              />
               {!isSuperAdmin && !admin?.specialistId && (
                 <p className="text-sm text-red-600 mt-1 font-medium">
                   ⚠️ Your admin account is not linked to a specialist. Please
@@ -929,6 +921,19 @@ export default function ServiceForm({
           </div>
         )}
       </form>
+
+      {/* Specialist Selection Drawer */}
+      <SelectDrawer
+        open={showSpecialistDrawer}
+        onClose={() => setShowSpecialistDrawer(false)}
+        title={t("selectBeautician", language) || "Select Specialist"}
+        options={specialists.map((b) => ({
+          value: b._id,
+          label: b.name,
+        }))}
+        value={formData.primaryBeauticianId}
+        onChange={(value) => handleChange("primaryBeauticianId", value)}
+      />
 
       {/* Delete Confirmation Modal */}
       <ConfirmDeleteModal

@@ -27,7 +27,9 @@ export default function ClientLoginPage() {
       await login(email, password);
       navigate("/client/profile");
     } catch (err) {
-      setError(err.message || "Failed to login. Please check your credentials.");
+      setError(
+        err.message || "Failed to login. Please check your credentials."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -36,7 +38,7 @@ export default function ClientLoginPage() {
   const handleGoogleLogin = () => {
     window.location.href = `${
       import.meta.env.VITE_API_URL || "http://localhost:4000"
-    }/api/oauth/google`;
+    }/api/auth/google`;
   };
 
   if (loading) {

@@ -101,31 +101,31 @@ export default function AboutUsPage() {
       )}
 
       {/* Hero Section */}
-      <section className="py-20 md:py-32">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-12 sm:py-16 md:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-center mb-12 sm:mb-16"
           >
-            <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-4 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-gray-900 mb-3 sm:mb-4 tracking-tight">
               About Us
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
               Discover our story and what makes us special
             </p>
           </motion.div>
 
           {/* Featured Image & Quote */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center mb-16 sm:mb-20">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative group"
             >
-              <div className="aspect-[4/3] rounded-3xl overflow-hidden border border-gray-200 shadow-xl group-hover:shadow-2xl transition-all duration-500">
+              <div className="aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden border border-gray-200 shadow-lg sm:shadow-xl group-hover:shadow-2xl transition-all duration-500">
                 <img
                   src={aboutUs.image.url}
                   alt="Our Team"
@@ -139,46 +139,46 @@ export default function AboutUsPage() {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="space-y-6"
+              className="space-y-4 sm:space-y-6"
             >
               <div className="relative">
                 <svg
-                  className="absolute -top-6 -left-6 w-12 h-12 text-gray-200"
+                  className="absolute -top-4 sm:-top-6 -left-4 sm:-left-6 w-10 sm:w-12 h-10 sm:h-12 text-gray-200"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
                   <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                 </svg>
-                <blockquote className="text-2xl md:text-3xl font-light text-gray-700 leading-relaxed italic pl-8">
+                <blockquote className="text-xl sm:text-2xl md:text-3xl font-light text-gray-700 leading-relaxed italic pl-6 sm:pl-8">
                   {aboutUs.quote}
                 </blockquote>
               </div>
-              <div className="h-1 w-24 bg-gradient-to-r from-gray-900 to-transparent rounded-full" />
+              <div className="h-1 w-20 sm:w-24 bg-gradient-to-r from-gray-900 to-transparent rounded-full" />
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* Story Section */}
-      <section className="py-20 md:py-32 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-6">
+      <section className="py-12 sm:py-16 md:py-32 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-center mb-12 sm:mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-4 sm:mb-6 tracking-tight">
               Our Story
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
               Every great journey begins with a vision and passion
             </p>
           </motion.div>
 
           {/* Story Content */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {paragraphs.map((paragraph, index) => (
               <motion.div
                 key={index}
@@ -188,11 +188,11 @@ export default function AboutUsPage() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="group"
               >
-                <div className="relative p-8 md:p-10 rounded-2xl bg-white border border-gray-200 hover:border-gray-900 transition-all duration-300 shadow-sm hover:shadow-lg">
-                  <div className="absolute top-6 left-6 text-6xl font-bold text-gray-100 select-none">
+                <div className="relative p-6 sm:p-8 md:p-10 rounded-xl sm:rounded-2xl bg-white border border-gray-200 hover:border-gray-900 transition-all duration-300 shadow-sm hover:shadow-lg">
+                  <div className="absolute top-4 sm:top-6 left-4 sm:left-6 text-4xl sm:text-6xl font-bold text-gray-100 select-none">
                     {String(index + 1).padStart(2, "0")}
                   </div>
-                  <p className="text-lg md:text-xl leading-relaxed text-gray-700 relative z-10">
+                  <p className="text-base sm:text-lg md:text-xl leading-relaxed text-gray-700 relative z-10">
                     {paragraph}
                   </p>
                 </div>

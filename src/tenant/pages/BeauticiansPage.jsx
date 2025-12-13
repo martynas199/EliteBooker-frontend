@@ -267,7 +267,7 @@ export default function SpecialistSelectionPage() {
           schema={breadcrumbSchema}
         />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           {!selectedSpecialist ? (
             // Step 1: Select a Specialist
             <>
@@ -304,9 +304,9 @@ export default function SpecialistSelectionPage() {
                 </motion.div>
               </motion.div>
 
-              <StaggerContainer className="grid gap-6 sm:gap-10 sm:grid-cols-2 lg:grid-cols-3 pt-12 pb-8">
+              <StaggerContainer className="grid gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 pt-6 pb-4 sm:pt-8 sm:pb-6">
                 {specialists.map((specialist, index) => (
-                  <StaggerItem key={specialist._id} className="mt-4">
+                  <StaggerItem key={specialist._id}>
                     <SpecialistCard
                       specialist={specialist}
                       onClick={() => handleSpecialistSelect(specialist)}

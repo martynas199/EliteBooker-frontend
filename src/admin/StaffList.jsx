@@ -3,6 +3,10 @@ import { Edit, Trash2, Plus, Search } from "lucide-react";
 import Button from "../shared/components/ui/Button";
 import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
 import { BeauticianCardSkeleton } from "../shared/components/ui/Skeleton";
+import {
+  SelectDrawer,
+  SelectButton,
+} from "../shared/components/ui/SelectDrawer";
 
 /**
  * StaffList - Display and manage staff/specialists in admin panel
@@ -27,6 +31,10 @@ export default function StaffList({
   const [filterActive, setFilterActive] = useState("all"); // 'all', 'active', 'inactive'
   const [filterService, setFilterService] = useState("all");
   const [deleteConfirm, setDeleteConfirm] = useState(null); // staff member being deleted
+
+  // Drawer states for mobile
+  const [showActiveDrawer, setShowActiveDrawer] = useState(false);
+  const [showServiceDrawer, setShowServiceDrawer] = useState(false);
 
   // Filter staff
   const filteredStaff = staff.filter((member) => {
@@ -127,7 +135,7 @@ export default function StaffList({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg">
+          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg hidden sm:flex">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -174,45 +182,32 @@ export default function StaffList({
           </div>
 
           {/* Active Filter */}
-          <select
+          <SelectButton
             value={filterActive}
-            onChange={(e) => setFilterActive(e.target.value)}
-            className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors appearance-none bg-white cursor-pointer"
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\")",
-              backgroundPosition: "right 0.5rem center",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "1.5em 1.5em",
-              paddingRight: "2.5rem",
-            }}
-          >
-            <option value="all">All Status</option>
-            <option value="active">Active Only</option>
-            <option value="inactive">Inactive Only</option>
-          </select>
+            placeholder="All Status"
+            options={[
+              { value: "all", label: "All Status" },
+              { value: "active", label: "Active Only" },
+              { value: "inactive", label: "Inactive Only" },
+            ]}
+            onClick={() => setShowActiveDrawer(true)}
+            className="px-4 py-3 rounded-xl"
+          />
 
           {/* Service Filter */}
-          <select
+          <SelectButton
             value={filterService}
-            onChange={(e) => setFilterService(e.target.value)}
-            className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors appearance-none bg-white cursor-pointer"
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\")",
-              backgroundPosition: "right 0.5rem center",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "1.5em 1.5em",
-              paddingRight: "2.5rem",
-            }}
-          >
-            <option value="all">All Services</option>
-            {services.map((service) => (
-              <option key={service._id} value={service._id}>
-                {service.name}
-              </option>
-            ))}
-          </select>
+            placeholder="All Services"
+            options={[
+              { value: "all", label: "All Services" },
+              ...services.map((service) => ({
+                value: service._id,
+                label: service.name,
+              })),
+            ]}
+            onClick={() => setShowServiceDrawer(true)}
+            className="px-4 py-3 rounded-xl"
+          />
         </div>
 
         <div className="text-sm font-medium text-gray-600">
@@ -548,6 +543,36 @@ export default function StaffList({
           </div>
         </>
       )}
+
+      {/* Active Status Filter Drawer */}
+      <SelectDrawer
+        open={showActiveDrawer}
+        onClose={() => setShowActiveDrawer(false)}
+        title="Filter by Status"
+        options={[
+          { value: "all", label: "All Status" },
+          { value: "active", label: "Active Only" },
+          { value: "inactive", label: "Inactive Only" },
+        ]}
+        value={filterActive}
+        onChange={(value) => setFilterActive(value)}
+      />
+
+      {/* Service Filter Drawer */}
+      <SelectDrawer
+        open={showServiceDrawer}
+        onClose={() => setShowServiceDrawer(false)}
+        title="Filter by Service"
+        options={[
+          { value: "all", label: "All Services" },
+          ...services.map((service) => ({
+            value: service._id,
+            label: service.name,
+          })),
+        ]}
+        value={filterService}
+        onChange={(value) => setFilterService(value)}
+      />
 
       {/* Delete Confirmation Modal */}
       <ConfirmDeleteModal

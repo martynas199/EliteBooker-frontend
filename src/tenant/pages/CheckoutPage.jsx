@@ -50,6 +50,7 @@ export default function CheckoutPage() {
     email: "",
     phone: "",
     notes: "",
+    acceptPolicy: false,
   });
   const [errors, setErrors] = useState({});
   const update = (k) => (e) => {
@@ -118,6 +119,7 @@ export default function CheckoutPage() {
         email: user.email || "",
         phone: user.phone || "",
         notes: "",
+        acceptPolicy: false,
       });
     } else if (client) {
       setForm({
@@ -125,6 +127,7 @@ export default function CheckoutPage() {
         email: client.email || "",
         phone: client.phone || "",
         notes: "",
+        acceptPolicy: false,
       });
     }
   }, [user, client]);
@@ -154,6 +157,12 @@ export default function CheckoutPage() {
       form.phone.replace(/\D/g, "").length < 10
     ) {
       newErrors.phone = "Please enter a valid phone number";
+    }
+
+    // Policy acceptance validation
+    if (!form.acceptPolicy) {
+      newErrors.acceptPolicy =
+        "You must accept the cancellation policy and terms to continue";
     }
 
     setErrors(newErrors);
@@ -320,6 +329,38 @@ export default function CheckoutPage() {
                     />
                   </FormField>
 
+                  {/* Cancellation Policy Agreement */}
+                  <div
+                    className={`p-4 border rounded-xl bg-gray-50 ${
+                      errors.acceptPolicy ? "border-red-500" : "border-gray-200"
+                    }`}
+                  >
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={form.acceptPolicy}
+                        onChange={(e) =>
+                          setForm({ ...form, acceptPolicy: e.target.checked })
+                        }
+                        className="mt-1 w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                      />
+                      <span className="text-sm text-gray-700">
+                        I have reviewed and agree to the{" "}
+                        <Link
+                          to="/terms"
+                          className="text-gray-900 hover:text-black font-semibold underline"
+                        >
+                          cancellation policy and terms of service
+                        </Link>
+                      </span>
+                    </label>
+                    {errors.acceptPolicy && (
+                      <p className="text-red-600 text-sm mt-2 ml-7">
+                        {errors.acceptPolicy}
+                      </p>
+                    )}
+                  </div>
+
                   {/* Sign-in prompt for guests */}
                   {!user && (
                     <div className="p-4 border border-gray-200 rounded-xl text-sm">
@@ -380,7 +421,7 @@ export default function CheckoutPage() {
                       <Button
                         disabled={loading}
                         onClick={() => submit("deposit")}
-                        variant="default"
+                        variant="outline"
                         className="w-full"
                       >
                         Pay deposit

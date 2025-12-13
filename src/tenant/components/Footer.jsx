@@ -3,17 +3,28 @@ import { motion } from "framer-motion";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import { useState, useEffect } from "react";
 import { api } from "../../shared/lib/apiClient";
+import { SalonAPI } from "../pages/salon.api";
 
 export default function TenantFooter() {
   const { tenant } = useTenant();
   const [settings, setSettings] = useState(null);
+  const [data, setData] = useState(null);
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     async function loadSettings() {
       try {
-        const response = await api.get("/settings");
-        setSettings(response.data);
+        const [settingsResponse, salonResponse] = await Promise.all([
+          api.get("/settings"),
+          SalonAPI.get().catch(() => null),
+        ]);
+        setSettings(settingsResponse.data);
+        setData(salonResponse);
+        console.log(
+          "Footer settings.businessHours:",
+          settingsResponse.data?.businessHours
+        );
+        console.log("Footer data.hours:", salonResponse?.hours);
       } catch (error) {
         console.error("Failed to load settings:", error);
       }
@@ -206,22 +217,50 @@ export default function TenantFooter() {
               Opening Hours
             </h3>
             <ul className="space-y-3 text-sm text-gray-600">
-              <li className="flex justify-between gap-4">
-                <span>Monday - Friday</span>
-                <span className="font-semibold text-gray-900">
-                  9:00 - 18:00
-                </span>
-              </li>
-              <li className="flex justify-between gap-4">
-                <span>Saturday</span>
-                <span className="font-semibold text-gray-900">
-                  10:00 - 16:00
-                </span>
-              </li>
-              <li className="flex justify-between gap-4">
-                <span>Sunday</span>
-                <span className="font-semibold text-gray-900">Closed</span>
-              </li>
+              {settings?.businessHours || data?.hours ? (
+                Object.entries({
+                  mon: "Monday",
+                  tue: "Tuesday",
+                  wed: "Wednesday",
+                  thu: "Thursday",
+                  fri: "Friday",
+                  sat: "Saturday",
+                  sun: "Sunday",
+                }).map(([key, label]) => {
+                  const h =
+                    settings?.businessHours?.[key] || data?.hours?.[key];
+                  const isOpen = h?.open;
+                  return (
+                    <li key={key} className="flex justify-between gap-4">
+                      <span>{label}</span>
+                      <span className="font-semibold text-gray-900">
+                        {isOpen && h?.start && h?.end
+                          ? `${h.start} – ${h.end}`
+                          : "Closed"}
+                      </span>
+                    </li>
+                  );
+                })
+              ) : (
+                <>
+                  <li className="flex justify-between gap-4">
+                    <span>Monday - Friday</span>
+                    <span className="font-semibold text-gray-900">
+                      9:00 - 18:00
+                    </span>
+                  </li>
+                  <li className="flex justify-between gap-4">
+                    <span>Saturday</span>
+                    <span className="font-semibold text-gray-900">
+                      10:00 - 16:00
+                    </span>
+                  </li>
+                  <li className="flex justify-between gap-4">
+                    <span>Sunday</span>
+                    <span className="font-semibold text-gray-900">Closed</span>
+                  </li>
+                </>
+              )}
             </ul>
 
             {/* Social Media */}

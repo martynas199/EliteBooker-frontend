@@ -390,18 +390,36 @@ export default function LandingPage() {
                 />
               </div>
 
+              {/* Search Bar - Center */}
+              <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+                <button
+                  onClick={() => navigate("/search")}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 rounded-full transition-all text-left"
+                >
+                  <svg
+                    className="w-5 h-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                  <span className="text-gray-500 font-medium">
+                    Search for salons, spas, or treatments...
+                  </span>
+                </button>
+              </div>
+
               {/* Right Actions - Desktop */}
               <div className="hidden md:flex items-center gap-3">
                 {!isAuthenticated && (
                   /* Not logged in - show log in and list business buttons */
                   <>
-                    <button
-                      onClick={handleLogin}
-                      className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
-                    >
-                      Log in
-                    </button>
-
                     <button
                       onClick={() => navigate("/signup")}
                       className="px-4 py-2 text-sm font-medium border border-gray-300 rounded-full text-gray-900 hover:border-gray-400 transition-all"
@@ -492,6 +510,27 @@ export default function LandingPage() {
 
               {/* Mobile Menu Button */}
               <div className="md:hidden flex items-center gap-3 relative">
+                {/* Search Button - Mobile */}
+                <button
+                  onClick={() => navigate("/search")}
+                  className="p-2 text-gray-600 hover:text-violet-600 transition-colors"
+                  aria-label="Search"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </button>
+
                 {isAuthenticated ? (
                   /* Logged in - only show avatar */
                   <>

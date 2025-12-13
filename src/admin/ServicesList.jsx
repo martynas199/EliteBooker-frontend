@@ -5,6 +5,10 @@ import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
 import { ServiceCardSkeleton } from "../shared/components/ui/Skeleton";
 import { useLanguage } from "../shared/contexts/LanguageContext";
 import { t } from "../locales/adminTranslations";
+import {
+  SelectDrawer,
+  SelectButton,
+} from "../shared/components/ui/SelectDrawer";
 
 /**
  * ServicesList - Display and manage services in admin panel
@@ -32,6 +36,10 @@ export default function ServicesList({
   const [filterActive, setFilterActive] = useState("all"); // 'all', 'active', 'inactive'
   const [filterCategory, setFilterCategory] = useState("all");
   const [deleteConfirm, setDeleteConfirm] = useState(null); // serviceId being deleted
+
+  // Drawer states for mobile
+  const [showActiveDrawer, setShowActiveDrawer] = useState(false);
+  const [showCategoryDrawer, setShowCategoryDrawer] = useState(false);
 
   // Extract unique categories with useMemo
   const categories = useMemo(() => {
@@ -109,7 +117,7 @@ export default function ServicesList({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg">
+          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg hidden sm:flex">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -156,44 +164,29 @@ export default function ServicesList({
           </div>
 
           {/* Active Filter */}
-          <select
+          <SelectButton
             value={filterActive}
-            onChange={(e) => setFilterActive(e.target.value)}
-            className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors appearance-none bg-white cursor-pointer"
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\")",
-              backgroundPosition: "right 0.5rem center",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "1.5em 1.5em",
-              paddingRight: "2.5rem",
-            }}
-          >
-            <option value="all">{t("allStatus", language)}</option>
-            <option value="active">{t("activeOnly", language)}</option>
-            <option value="inactive">{t("inactiveOnly", language)}</option>
-          </select>
+            placeholder={t("allStatus", language)}
+            options={[
+              { value: "all", label: t("allStatus", language) },
+              { value: "active", label: t("activeOnly", language) },
+              { value: "inactive", label: t("inactiveOnly", language) },
+            ]}
+            onClick={() => setShowActiveDrawer(true)}
+            className="px-4 py-3 rounded-xl"
+          />
 
           {/* Category Filter */}
-          <select
+          <SelectButton
             value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-            className="px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors appearance-none bg-white cursor-pointer"
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\")",
-              backgroundPosition: "right 0.5rem center",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "1.5em 1.5em",
-              paddingRight: "2.5rem",
-            }}
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat === "all" ? t("allCategories", language) : cat}
-              </option>
-            ))}
-          </select>
+            placeholder={t("allCategories", language)}
+            options={categories.map((cat) => ({
+              value: cat,
+              label: cat === "all" ? t("allCategories", language) : cat,
+            }))}
+            onClick={() => setShowCategoryDrawer(true)}
+            className="px-4 py-3 rounded-xl"
+          />
         </div>
 
         <div className="text-sm font-medium text-gray-600">
@@ -442,6 +435,33 @@ export default function ServicesList({
           </div>
         </>
       )}
+
+      {/* Active Status Filter Drawer */}
+      <SelectDrawer
+        open={showActiveDrawer}
+        onClose={() => setShowActiveDrawer(false)}
+        title={t("filterByStatus", language) || "Filter by Status"}
+        options={[
+          { value: "all", label: t("allStatus", language) },
+          { value: "active", label: t("activeOnly", language) },
+          { value: "inactive", label: t("inactiveOnly", language) },
+        ]}
+        value={filterActive}
+        onChange={(value) => setFilterActive(value)}
+      />
+
+      {/* Category Filter Drawer */}
+      <SelectDrawer
+        open={showCategoryDrawer}
+        onClose={() => setShowCategoryDrawer(false)}
+        title={t("filterByCategory", language) || "Filter by Category"}
+        options={categories.map((cat) => ({
+          value: cat,
+          label: cat === "all" ? t("allCategories", language) : cat,
+        }))}
+        value={filterCategory}
+        onChange={(value) => setFilterCategory(value)}
+      />
 
       {/* Delete Confirmation Modal */}
       <ConfirmDeleteModal

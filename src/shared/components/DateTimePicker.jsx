@@ -59,32 +59,14 @@ export default function DateTimePicker({
     currentMonth.getMonth() + 1
   );
 
-  // Log fully booked dates when they change
-  useEffect(() => {
-    console.log("[DateTimePicker] Fully booked dates:", fullyBooked);
-  }, [fullyBooked]);
+  // Log fully booked dates when they change (disabled for production)
+  // useEffect(() => {
+  //   console.log("[DateTimePicker] Fully booked dates:", fullyBooked);
+  // }, [fullyBooked]);
 
   // Build set of working days (0=Sunday, 6=Saturday)
   const workingDaysSet = useMemo(() => {
-    console.log(
-      "[DateTimePicker] beauticianWorkingHours:",
-      beauticianWorkingHours
-    );
-    console.log("[DateTimePicker] customSchedule:", customSchedule);
-    const dayNames = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
     const workingDays = beauticianWorkingHours.map((wh) => wh.dayOfWeek);
-    console.log(
-      "[DateTimePicker] Working days:",
-      workingDays.map((d) => `${dayNames[d]} (${d})`).join(", ")
-    );
     return new Set(workingDays);
   }, [beauticianWorkingHours, customSchedule]);
 
@@ -96,56 +78,33 @@ export default function DateTimePicker({
 
       const dateStr = dayjs(date).format("YYYY-MM-DD");
       const dayOfWeek = date.getDay();
-      const dayNames = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ];
-
-      console.log(
-        `[isDateDisabled] Checking ${dateStr} (${dayNames[dayOfWeek]}, dayOfWeek=${dayOfWeek})`
-      );
 
       // Past dates
       if (date < today) {
-        console.log(`  ❌ Disabled: Past date`);
         return true;
       }
 
       // Check if date has custom schedule override
       if (customSchedule[dateStr]) {
         const customHours = customSchedule[dateStr];
-        console.log(`  📅 Custom schedule found:`, customHours);
         // If custom schedule exists but is empty array, day is not working
         if (customHours.length === 0) {
-          console.log(`  ❌ Disabled: Custom schedule is empty`);
           return true;
         }
         // If custom schedule has hours, day is working
-        console.log(`  ✅ Enabled: Has custom hours`);
         return false;
       }
 
       // Not a working day (check weekly schedule)
       if (!workingDaysSet.has(dayOfWeek)) {
-        console.log(
-          `  ❌ Disabled: Not in working days set. Working days:`,
-          Array.from(workingDaysSet)
-        );
         return true;
       }
 
       // Fully booked
       if (fullyBooked.includes(dateStr)) {
-        console.log(`  ❌ Disabled: Fully booked`);
         return true;
       }
 
-      console.log(`  ✅ Enabled: Available for booking`);
       return false;
     },
     [today, workingDaysSet, fullyBooked, customSchedule]
@@ -222,7 +181,14 @@ export default function DateTimePicker({
             // Rule 3: Slot in correct date
             const slotDate = start.tz(salonTz).format("YYYY-MM-DD");
             if (slotDate !== dateStr) {
-              console.error("Slot not on selected date:", slot, slotDate);
+              console.error(
+                "Slot not on selected date:",
+                slot,
+                "slotDate:",
+                slotDate,
+                "expected:",
+                dateStr
+              );
               return false;
             }
 
@@ -302,7 +268,7 @@ export default function DateTimePicker({
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto min-w-0">
       {/* Error banner for available dates */}
       {availableDatesError && (
         <div
@@ -343,10 +309,10 @@ export default function DateTimePicker({
         </div>
       )}
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 min-w-0">
         {/* Calendar Section */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-2 sm:p-6 min-w-0">
+          <h3 className="text-xl font-bold text-gray-900 mb-4 sm:mb-6">
             Select a Date
           </h3>
 
@@ -598,7 +564,7 @@ export default function DateTimePicker({
         </div>
 
         {/* Time Slots Section */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-4 sm:p-6 min-w-0">
           <h3 className="text-xl font-bold text-gray-900 mb-6">
             {selectedDate ? "Available Times" : "Select a date first"}
           </h3>

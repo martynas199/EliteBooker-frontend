@@ -226,7 +226,7 @@ export default function TimeSlots() {
 
   if (!serviceId) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -306,7 +306,7 @@ export default function TimeSlots() {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="max-w-4xl mx-auto px-4 pt-8"
+          className="max-w-4xl mx-auto px-3 sm:px-4 pt-8"
         >
           <button
             onClick={() => navigate(-1)}
@@ -334,7 +334,7 @@ export default function TimeSlots() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="max-w-4xl mx-auto px-4 mb-12 text-center"
+          className="max-w-4xl mx-auto px-3 sm:px-4 mb-12 text-center"
         >
           <h1 className="text-5xl md:text-6xl font-black text-gray-900 mb-4 tracking-tight">
             Select a Time
@@ -349,7 +349,7 @@ export default function TimeSlots() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="max-w-4xl mx-auto px-4 pb-12"
+          className="max-w-4xl mx-auto px-3 sm:px-4 pb-12"
         >
           {loading ? (
             <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-12">
