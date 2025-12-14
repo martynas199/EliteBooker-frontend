@@ -35,7 +35,12 @@ createRoot(document.getElementById("root")).render(
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
           <Provider store={store}>
-            <BrowserRouter>
+            <BrowserRouter
+              future={{
+                v7_startTransition: true,
+                v7_relativeSplatPath: true,
+              }}
+            >
               <TenantProvider>
                 <AuthProvider>
                   <ClientAuthProvider>
