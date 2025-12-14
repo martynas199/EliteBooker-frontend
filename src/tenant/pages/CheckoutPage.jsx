@@ -8,6 +8,7 @@ import {
   setMode,
   setAppointmentId,
   setService,
+  setServices,
   setSpecialist,
 } from "../state/bookingSlice";
 import {
@@ -29,11 +30,13 @@ import { useCurrency } from "../../shared/contexts/CurrencyContext";
 import PageTransition from "../../shared/components/ui/PageTransition";
 import toast from "react-hot-toast";
 import SEOHead from "../../shared/components/seo/SEOHead";
+import { useTenant } from "../../shared/contexts/TenantContext";
 
 export default function CheckoutPage() {
   const booking = useSelector((s) => s.booking);
   const {
     service: bookingService,
+    services: bookingServices,
     specialist: bookingBeautician,
     time,
   } = booking;
@@ -44,6 +47,7 @@ export default function CheckoutPage() {
   const { user } = useAuth();
   const { client } = useClientAuth();
   const { currency, formatPrice } = useCurrency();
+  const { tenant } = useTenant();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -179,12 +183,27 @@ export default function CheckoutPage() {
     dispatch(setClient(form));
     setLoading(true);
     try {
+      // Use services array if available, otherwise fall back to single service
+      const servicesData = bookingServices && bookingServices.length > 0
+        ? bookingServices
+        : bookingService
+        ? [bookingService]
+        : [];
+
       // Prepare booking data with userId if user is logged in
       const bookingData = {
         specialistId: bookingBeautician?.any
           ? undefined
           : bookingBeautician?.specialistId,
         any: bookingBeautician?.any,
+        // Multi-service support
+        services: servicesData.map(s => ({
+          serviceId: s.serviceId,
+          variantName: s.variantName,
+          price: s.price,
+          duration: s.durationMin,
+        })),
+        // Legacy single service support
         serviceId: bookingService?.serviceId,
         variantName: bookingService?.variantName,
         startISO: time,
@@ -203,16 +222,26 @@ export default function CheckoutPage() {
         if (res?.url) window.location.href = res.url;
       }
     } catch (e) {
-      // If slot is no longer available (409 conflict), redirect back to booking
+      // If slot is no longer available (409 conflict), redirect back to times page
       if (e.response?.status === 409) {
+        console.error('[CHECKOUT] Slot conflict error:', {
+          time: time,
+          specialistId: bookingBeautician?.specialistId,
+          services: bookingServices || [bookingService],
+          error: e.response?.data
+        });
         toast.error(
           "This time slot is no longer available. Please select another time."
         );
-        // Clear the selected slot and redirect to booking page
-        dispatch(setService(null));
-        dispatch(setSpecialist(null));
-        navigate("/book");
+        // Redirect to times page to select a different slot
+        const tenantSlug = tenant?.slug || '';
+        if (tenantSlug) {
+          navigate(`/salon/${tenantSlug}/times`);
+        } else {
+          navigate("/book");
+        }
       } else {
+        console.error('[CHECKOUT] Booking error:', e);
         toast.error(e.message || "Booking failed. Please try again.");
       }
     } finally {
@@ -222,10 +251,18 @@ export default function CheckoutPage() {
 
   // Pricing helpers
   const bookingFee = 0.5;
-  const servicePrice = Number(bookingService?.price || 0);
+  // Calculate total price from all selected services
+  const servicePrice = bookingServices && bookingServices.length > 0
+    ? bookingServices.reduce((sum, svc) => sum + Number(svc.price || 0), 0)
+    : Number(bookingService?.price || 0);
   const totalAmount = bookingBeautician?.inSalonPayment
     ? bookingFee
     : servicePrice + bookingFee;
+  
+  // Calculate total duration
+  const totalDuration = bookingServices && bookingServices.length > 0
+    ? bookingServices.reduce((sum, svc) => sum + Number(svc.durationMin || 0), 0)
+    : Number(bookingService?.durationMin || 0);
 
   return (
     <>
@@ -442,16 +479,48 @@ export default function CheckoutPage() {
                     <div className="font-bold mb-4 text-xl text-gray-900">
                       Summary
                     </div>
-                    <div className="text-sm text-gray-600 mb-1">Service</div>
-                    <div className="flex items-center justify-between mb-4 text-gray-900">
-                      <div className="font-medium">
-                        {bookingService?.serviceName} —{" "}
-                        {bookingService?.variantName}
-                      </div>
-                      <div className="font-bold text-lg">
-                        {formatPrice(servicePrice)}
-                      </div>
+                    <div className="text-sm text-gray-600 mb-2">
+                      {bookingServices && bookingServices.length > 1 ? 'Services' : 'Service'}
                     </div>
+                    
+                    {/* Display all selected services */}
+                    <div className="space-y-3 mb-4">
+                      {bookingServices && bookingServices.length > 0 ? (
+                        bookingServices.map((service, index) => (
+                          <div key={index} className="flex items-start justify-between text-gray-900">
+                            <div className="flex-1">
+                              <div className="font-medium">
+                                {service.serviceName}
+                              </div>
+                              <div className="text-xs text-gray-500 mt-0.5">
+                                {service.variantName} • {service.durationMin} min
+                              </div>
+                            </div>
+                            <div className="font-bold text-base ml-2">
+                              {formatPrice(service.price)}
+                            </div>
+                          </div>
+                        ))
+                      ) : bookingService ? (
+                        <div className="flex items-center justify-between text-gray-900">
+                          <div className="font-medium">
+                            {bookingService.serviceName} —{" "}
+                            {bookingService.variantName}
+                          </div>
+                          <div className="font-bold text-lg">
+                            {formatPrice(servicePrice)}
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                    
+                    {/* Total duration */}
+                    {totalDuration > 0 && (
+                      <div className="flex items-center justify-between mb-4 pb-3 text-sm text-gray-600">
+                        <div>Total Duration</div>
+                        <div className="font-medium">{totalDuration} min</div>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between mb-4 pt-3 border-t border-gray-200">
                       <div className="text-sm text-gray-600">Booking Fee</div>
                       <div className="text-sm font-semibold text-gray-900">

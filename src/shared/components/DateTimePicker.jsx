@@ -18,6 +18,7 @@ dayjs.extend(timezone);
  * @param {string} props.specialistId - ID of the specialist
  * @param {string} props.serviceId - ID of the selected service
  * @param {string} props.variantName - Name of the selected variant
+ * @param {number} props.totalDuration - Total duration in minutes for multi-service bookings
  * @param {string} props.salonTz - Timezone (e.g., "Europe/London")
  * @param {number} props.stepMin - Step interval in minutes (default 15)
  * @param {function} props.onSelect - Callback when slot selected: (slot) => void
@@ -28,6 +29,7 @@ export default function DateTimePicker({
   specialistId,
   serviceId,
   variantName,
+  totalDuration,
   salonTz = "Europe/London",
   stepMin = 15,
   onSelect,
@@ -150,13 +152,26 @@ export default function DateTimePicker({
 
       try {
         const dateStr = dayjs(selectedDate).format("YYYY-MM-DD");
-        const response = await api.get("/slots", {
-          params: {
-            specialistId,
-            serviceId,
-            variantName,
-            date: dateStr,
-          },
+        const params = {
+          specialistId,
+          serviceId,
+          variantName,
+          date: dateStr,
+        };
+        
+        // If totalDuration is provided (multi-service), send it instead of relying on single service
+        if (totalDuration) {
+          params.totalDuration = totalDuration;
+        }
+        
+        console.log('[TIMESLOTS] Fetching slots with params:', params);
+        
+        const response = await api.get("/slots", { params });
+        
+        console.log('[TIMESLOTS] Received slots:', {
+          count: response.data.slots?.length || 0,
+          date: dateStr,
+          totalDuration: params.totalDuration
         });
 
         const fetchedSlots = response.data.slots || [];

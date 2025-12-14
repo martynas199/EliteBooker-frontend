@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import {
@@ -9,17 +9,29 @@ import {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import BackBar from "../../shared/components/ui/BackBar";
 import DateTimePicker from "../../shared/components/DateTimePicker";
+import ServiceStackBar from "../components/ServiceStackBar";
 import { api } from "../../shared/lib/apiClient";
 import PageTransition from "../../shared/components/ui/PageTransition";
 import toast from "react-hot-toast";
+import { useTenant } from "../../shared/contexts/TenantContext";
 
 export default function TimeSlots() {
-  const { service: bookingService, specialist: bookingSpecialist } =
-    useSelector((s) => s.booking);
+  const { 
+    service: bookingService, 
+    specialist: bookingSpecialist,
+    services: bookingServices 
+  } = useSelector((s) => s.booking);
   const serviceId = bookingService?.serviceId;
   const variantName = bookingService?.variantName;
   const specialistId = bookingSpecialist?.specialistId; // Backend field name preserved
   const any = bookingSpecialist?.any;
+  const { tenant } = useTenant();
+
+  // Calculate total duration from all selected services
+  const totalDuration = useMemo(() => {
+    if (!bookingServices || bookingServices.length === 0) return null;
+    return bookingServices.reduce((sum, svc) => sum + (svc.durationMin || 0), 0);
+  }, [bookingServices]);
 
   const [specialist, setSpecialist] = useState(null);
   const [service, setService] = useState(null);
@@ -251,7 +263,7 @@ export default function TimeSlots() {
             Please select a service first.
           </p>
           <button
-            onClick={() => navigate("/services")}
+            onClick={() => navigate(`/salon/${tenant?.slug}/specialists`)}
             className="px-8 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
           >
             Choose Service
@@ -301,7 +313,7 @@ export default function TimeSlots() {
       {/* Dynamic Background */}
       <div className="fixed inset-0 -z-10 bg-white" />
 
-      <PageTransition className="min-h-screen relative z-0">
+      <PageTransition className="min-h-screen relative">
         {/* Back Button */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -363,6 +375,7 @@ export default function TimeSlots() {
               specialistId={specialist._id}
               serviceId={serviceId}
               variantName={variantName}
+              totalDuration={totalDuration}
               salonTz="Europe/London"
               stepMin={15}
               beauticianWorkingHours={(specialist.workingHours || []).filter(
@@ -393,6 +406,9 @@ export default function TimeSlots() {
             </div>
           )}
         </motion.div>
+
+        {/* Service Stack Bar - Floating bottom bar with selected services */}
+        <ServiceStackBar />
       </PageTransition>
     </>
   );

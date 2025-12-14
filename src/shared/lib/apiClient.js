@@ -29,8 +29,8 @@ api.interceptors.request.use(
     // Also add for homepage and other routes if clientToken exists
     const clientToken = localStorage.getItem("clientToken");
     if (clientToken && !config.headers["Authorization"]) {
-      // Add for /client routes OR for /api/client endpoints from any page
-      if (pathname.startsWith("/client") || config.url?.includes("/client/")) {
+      // Add for /client routes OR for /api/client endpoints OR for favorites endpoints
+      if (pathname.startsWith("/client") || config.url?.includes("/client/") || config.url?.includes("/favorites")) {
         config.headers["Authorization"] = `Bearer ${clientToken}`;
         console.log("[API Client] Added client Authorization header");
       }

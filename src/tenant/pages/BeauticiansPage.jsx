@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { api } from "../../shared/lib/apiClient";
 import { useDispatch } from "react-redux";
-import { setService, setSpecialist } from "../state/bookingSlice";
+import { addService, setSpecialist } from "../state/bookingSlice";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import PageTransition, {
   StaggerContainer,
@@ -13,6 +13,7 @@ import ServiceCard from "../components/ServiceCard";
 import SpecialistHeader from "../components/SpecialistHeader";
 import SpecialistCard from "../components/SpecialistCard";
 import ServiceVariantSelector from "../../shared/components/ServiceVariantSelector";
+import ServiceStackBar from "../components/ServiceStackBar";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import { generateBreadcrumbSchema } from "../../shared/utils/schemaGenerator";
 
@@ -195,21 +196,22 @@ export default function SpecialistSelectionPage() {
   };
 
   const handleVariantConfirm = (selectedVariant, service) => {
-    // Set booking data with selected variant
+    // Add service to the booking stack
     // Use promo price if available, otherwise use regular price
     const finalPrice = selectedVariant.promoPrice || selectedVariant.price;
     dispatch(
-      setService({
+      addService({
         serviceId: service._id,
         serviceName: service.name,
         variantName: selectedVariant.name,
         price: finalPrice,
         durationMin: selectedVariant.durationMin,
-        bufferBeforeMin: selectedVariant.bufferBeforeMin,
-        bufferAfterMin: selectedVariant.bufferAfterMin,
+        bufferBeforeMin: selectedVariant.bufferBeforeMin || 0,
+        bufferAfterMin: selectedVariant.bufferAfterMin || 0,
       })
     );
 
+    // Set specialist if not already set
     dispatch(
       setSpecialist({
         specialistId: selectedSpecialist._id,
@@ -218,13 +220,9 @@ export default function SpecialistSelectionPage() {
       })
     );
 
-    // Navigate to time selection with URL params for persistence
-    const params = new URLSearchParams({
-      service: service._id,
-      variant: selectedVariant.name,
-      specialist: selectedSpecialist._id, // URL param name unchanged for compatibility
-    });
-    navigate(`/salon/${tenant?.slug}/times?${params.toString()}`);
+    // Close variant selector - don't navigate
+    setShowVariantSelector(false);
+    setSelectedService(null);
   };
 
   const handleVariantCancel = () => {
@@ -405,7 +403,10 @@ export default function SpecialistSelectionPage() {
                     <StaggerItem key={service._id} className="w-full">
                       <ServiceCard
                         service={service}
-                        onClick={() => handleServiceSelect(service)}
+                        onClick={(variant) => {
+                          // Directly add the service with selected variant
+                          handleVariantConfirm(variant, service);
+                        }}
                       />
                     </StaggerItem>
                   ))}
@@ -424,6 +425,9 @@ export default function SpecialistSelectionPage() {
             onCancel={handleVariantCancel}
           />
         )}
+
+        {/* Service Stack Bar - Floating bottom bar with selected services */}
+        <ServiceStackBar />
       </PageTransition>
     </>
   );

@@ -349,8 +349,9 @@ export default function ClientProfilePage() {
           </div>
 
           {/* Profile Card */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <div className="flex items-start justify-between mb-6">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 mb-6">
+            {/* Desktop Layout */}
+            <div className="hidden md:flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
                 <div className="h-16 w-16 rounded-full bg-gray-900 text-white flex items-center justify-center text-2xl font-bold">
                   {profile?.profile?.name?.charAt(0).toUpperCase() || "?"}
@@ -359,7 +360,7 @@ export default function ClientProfilePage() {
                   <h2 className="text-2xl font-bold text-gray-900">
                     {profile?.profile?.name}
                   </h2>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-4 mt-2 text-sm text-gray-600 flex-wrap">
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4" />
                       {profile?.profile?.email}
@@ -386,23 +387,50 @@ export default function ClientProfilePage() {
               )}
             </div>
 
+            {/* Mobile Layout */}
+            <div className="md:hidden mb-6">
+              <div className="space-y-3 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 flex-shrink-0" />
+                  <span className="break-all">{profile?.profile?.email}</span>
+                </div>
+                {profile?.profile?.phone && (
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-4 w-4 flex-shrink-0" />
+                    <span>{profile?.profile?.phone}</span>
+                  </div>
+                )}
+              </div>
+
+              {!editing && (
+                <Button 
+                  variant="secondary" 
+                  onClick={() => setEditing(true)}
+                  className="w-full mt-4"
+                >
+                  <Pencil className="h-5 w-5" />
+                  Edit Profile
+                </Button>
+              )}
+            </div>
+
             {/* Platform Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Total Bookings</p>
-                <p className="text-2xl font-bold text-gray-900">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">Total Bookings</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">
                   {profile.profile.totalBookings || 0}
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Businesses Visited</p>
-                <p className="text-2xl font-bold text-gray-900">
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">Businesses Visited</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">
                   {profile.businesses?.length || 0}
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Member Since</p>
-                <p className="text-2xl font-bold text-gray-900">
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">Member Since</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">
                   {formatDate(profile.profile.memberSince)}
                 </p>
               </div>
@@ -411,7 +439,7 @@ export default function ClientProfilePage() {
             {/* Edit Form */}
             {editing && (
               <div className="border-t border-gray-200 pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
                   Edit Information
                 </h3>
                 <div className="space-y-4">
@@ -439,7 +467,7 @@ export default function ClientProfilePage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Preferred Language
@@ -472,17 +500,19 @@ export default function ClientProfilePage() {
                     </div>
                   </div>
 
-                  <div className="flex gap-2 pt-4">
+                  <div className="flex flex-col sm:flex-row gap-2 pt-4">
                     <Button
                       variant="brand"
                       onClick={handleSave}
                       disabled={saving}
+                      className="w-full sm:w-auto"
                     >
                       {saving ? "Saving..." : "Save Changes"}
                     </Button>
                     <Button
                       variant="secondary"
                       onClick={() => setEditing(false)}
+                      className="w-full sm:w-auto"
                     >
                       Cancel
                     </Button>
@@ -493,43 +523,43 @@ export default function ClientProfilePage() {
           </div>
 
           {/* Businesses */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 mb-6">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
               My Businesses ({profile.businesses.length})
             </h2>
 
             {profile.businesses.length === 0 ? (
-              <p className="text-center text-gray-600 py-8">
+              <p className="text-center text-gray-600 py-8 text-sm sm:text-base">
                 You haven't booked with any businesses yet
               </p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {profile.businesses.map((business, idx) => (
                   <div
                     key={idx}
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                    className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-center gap-3 mb-3">
-                      <Store className="h-8 w-8 text-gray-900" />
-                      <h3 className="font-semibold text-gray-900">
+                      <Store className="h-6 w-6 sm:h-8 sm:w-8 text-gray-900 flex-shrink-0" />
+                      <h3 className="font-semibold text-sm sm:text-base text-gray-900 break-words">
                         {business?.tenant?.name || "Unknown Business"}
                       </h3>
                     </div>
 
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
+                    <div className="space-y-2 text-xs sm:text-sm">
+                      <div className="flex justify-between gap-2">
                         <span className="text-gray-600">Total Spent:</span>
                         <span className="font-medium text-gray-900">
                           {formatCurrency(business?.stats?.totalSpent || 0)}
                         </span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between gap-2">
                         <span className="text-gray-600">Visits:</span>
                         <span className="font-medium text-gray-900">
                           {business?.stats?.totalVisits || 0}
                         </span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between gap-2">
                         <span className="text-gray-600">Last Visit:</span>
                         <span className="font-medium text-gray-900">
                           {business?.stats?.lastVisit
@@ -545,21 +575,29 @@ export default function ClientProfilePage() {
           </div>
 
           {/* GDPR Actions */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 mb-6">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
               Data & Privacy
             </h2>
-            <div className="flex gap-4">
-              <Button variant="secondary" onClick={handleExportData}>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <Button 
+                variant="secondary" 
+                onClick={handleExportData}
+                className="w-full sm:w-auto"
+              >
                 <Download className="h-5 w-5" />
                 Export My Data
               </Button>
-              <Button variant="danger" onClick={handleDeleteAccount}>
+              <Button 
+                variant="danger" 
+                onClick={handleDeleteAccount}
+                className="w-full sm:w-auto"
+              >
                 <Trash2 className="h-5 w-5" />
                 Delete Account
               </Button>
             </div>
-            <p className="text-sm text-gray-600 mt-3">
+            <p className="text-xs sm:text-sm text-gray-600 mt-3">
               Export all your data in JSON format, or permanently delete your
               account and all associated data.
             </p>

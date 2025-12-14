@@ -1232,36 +1232,78 @@ export default function Dashboard() {
               </div>
 
               {/* Service & Specialist */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                      />
-                    </svg>
-                    Service
-                  </h4>
-                  <p className="text-gray-900 font-medium">
-                    {selectedEvent.resource.serviceId?.name ||
-                      selectedEvent.resource.variantName ||
-                      "Unknown Service"}
-                  </p>
-                  {selectedEvent.resource.variantName && (
-                    <p className="text-sm text-gray-600 mt-1">
-                      {selectedEvent.resource.variantName}
+              <div className="grid grid-cols-1 gap-4">
+                {/* Services Section */}
+                {selectedEvent.resource.services && selectedEvent.resource.services.length > 0 ? (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                        />
+                      </svg>
+                      {selectedEvent.resource.services.length > 1 ? 'Services' : 'Service'}
+                    </h4>
+                    <div className="space-y-2">
+                      {selectedEvent.resource.services.map((svc, idx) => (
+                        <div key={idx} className="bg-white border border-gray-200 rounded p-3">
+                          <p className="text-gray-900 font-medium">
+                            {svc.service?.name || svc.serviceName || 'Service'}
+                          </p>
+                          {svc.variantName && (
+                            <p className="text-sm text-gray-600 mt-1">
+                              {svc.variantName} • {svc.duration || svc.durationMin || 0} min • £{(svc.price || 0).toFixed(2)}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                      {selectedEvent.resource.services.length > 1 && (
+                        <div className="pt-2 border-t border-gray-300 text-sm font-medium text-gray-700">
+                          Total: {selectedEvent.resource.services.reduce((sum, s) => sum + (s.duration || 0), 0)} min • £{selectedEvent.resource.services.reduce((sum, s) => sum + (s.price || 0), 0).toFixed(2)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                        />
+                      </svg>
+                      Service
+                    </h4>
+                    <p className="text-gray-900 font-medium">
+                      {selectedEvent.resource.serviceId?.name ||
+                        selectedEvent.resource.variantName ||
+                        "Unknown Service"}
                     </p>
-                  )}
-                </div>
+                    {selectedEvent.resource.variantName && (
+                      <p className="text-sm text-gray-600 mt-1">
+                        {selectedEvent.resource.variantName}
+                      </p>
+                    )}
+                  </div>
+                )}
 
+                {/* Specialist */}
                 {selectedEvent.resource.specialistId?.name && (
                   <div className="bg-gray-50 rounded-lg p-4">
                     <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">

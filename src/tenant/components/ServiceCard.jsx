@@ -7,11 +7,13 @@ import { useCurrency } from "../../shared/contexts/CurrencyContext";
  * ServiceCard - reusable card for displaying a service with image, name, category, description, and variants (price & duration)
  * @param {object} props
  * @param {object} props.service - The service object
- * @param {function} props.onClick - Click handler for the card
+ * @param {function} props.onClick - Click handler for selecting a variant (receives variant object)
+ * @param {boolean} props.isSelected - Whether this service is selected
  */
-function ServiceCard({ service, onClick }) {
+function ServiceCard({ service, onClick, isSelected = false }) {
   const { formatPrice } = useCurrency();
   const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+  const [showVariantsModal, setShowVariantsModal] = useState(false);
 
   // Support both new image object and legacy imageUrl string
   const imageUrl = service.image?.url || service.imageUrl;
@@ -219,17 +221,49 @@ function ServiceCard({ service, onClick }) {
                 )}
               </div>
 
-              {/* Book Now Button */}
+              {/* Select/Selected Button */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onClick?.();
+                  // If multiple variants, show variants modal
+                  if (service.variants && service.variants.length > 1) {
+                    setShowVariantsModal(true);
+                  } else {
+                    // Single variant or no variants - select directly
+                    const variant = service.variants?.[0] || {
+                      name: "Standard",
+                      price: service.price,
+                      durationMin: service.durationMin,
+                    };
+                    onClick?.(variant);
+                  }
                 }}
-                className="px-2 sm:px-6 py-1 sm:py-2 bg-black hover:bg-gray-800 text-white text-[10px] sm:text-sm font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-250 whitespace-nowrap flex-shrink-0 w-auto"
+                className={`px-2 sm:px-6 py-1 sm:py-2 text-[10px] sm:text-sm font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-250 whitespace-nowrap flex-shrink-0 w-auto flex items-center gap-1 sm:gap-2 ${
+                  isSelected
+                    ? "bg-violet-600 hover:bg-violet-700 text-white"
+                    : "bg-black hover:bg-gray-800 text-white"
+                }`}
               >
-                {service.variants && service.variants.length > 1
-                  ? "Choose Option"
-                  : "Book Now"}
+                {isSelected && (
+                  <svg
+                    className="w-3 h-3 sm:w-4 sm:h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                )}
+                {isSelected
+                  ? "Selected"
+                  : service.variants && service.variants.length > 1
+                  ? "Select"
+                  : "Select"}
               </button>
             </div>
 
@@ -282,6 +316,66 @@ function ServiceCard({ service, onClick }) {
         </div>
       </Card>
 
+      {/* Variants Modal */}
+      <Modal
+        open={showVariantsModal}
+        onClose={() => setShowVariantsModal(false)}
+        title={`Select ${service.name} Option`}
+      >
+        <div className="p-4 sm:p-6">
+          <p className="text-sm text-gray-600 mb-4">
+            Choose the option that works best for you:
+          </p>
+          <div className="space-y-3">
+            {service.variants?.map((variant) => (
+              <div
+                key={variant.name}
+                className="border border-gray-200 rounded-xl p-4 hover:border-black transition-colors"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <h4 className="font-bold text-gray-900 mb-1">
+                      {variant.name}
+                    </h4>
+                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 7v5l3 2"
+                          />
+                        </svg>
+                        {variant.durationMin} min
+                      </div>
+                      <div className="font-bold text-black">
+                        {formatPrice(variant.price)}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowVariantsModal(false);
+                      onClick?.(variant);
+                    }}
+                    className="px-4 py-2 bg-black hover:bg-gray-800 text-white text-sm font-bold rounded-full transition-colors whitespace-nowrap"
+                  >
+                    Select
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Modal>
+
       {/* Description Modal */}
       <Modal
         open={showDescriptionModal}
@@ -326,13 +420,24 @@ function ServiceCard({ service, onClick }) {
               <button
                 onClick={() => {
                   setShowDescriptionModal(false);
-                  onClick?.();
+                  // If multiple variants, show variants modal
+                  if (service.variants && service.variants.length > 1) {
+                    setShowVariantsModal(true);
+                  } else {
+                    // Single variant or no variants - select directly
+                    const variant = service.variants?.[0] || {
+                      name: "Standard",
+                      price: service.price,
+                      durationMin: service.durationMin,
+                    };
+                    onClick?.(variant);
+                  }
                 }}
                 className="px-6 py-2.5 bg-black hover:bg-gray-800 text-white text-sm font-semibold rounded-full shadow-md hover:shadow-lg transition-all"
               >
                 {service.variants && service.variants.length > 1
                   ? "Choose Option"
-                  : "Book Now"}
+                  : "Select"}
               </button>
             </div>
           </div>

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../../shared/lib/apiClient";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
-import { setService, setSpecialist } from "../state/bookingSlice";
+import { addService, setServices, setSpecialist } from "../state/bookingSlice";
 import {
   getFavorites,
   addToFavorites,
@@ -18,6 +18,7 @@ import SpecialistCard from "../components/SpecialistCard";
 import LocationServicesView from "../components/LocationServicesView";
 import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 import LoginDrawer from "../../shared/components/modals/LoginDrawer";
+import ServiceStackBar from "../components/ServiceStackBar";
 import toast from "react-hot-toast";
 
 /**
@@ -139,6 +140,9 @@ export default function SalonLandingLuxury() {
   const { tenant } = useTenant();
   const { formatPrice } = useCurrency();
   const { client, isAuthenticated } = useClientAuth();
+  
+  // Get selected services from Redux
+  const bookingServices = useSelector((state) => state.booking.services || []);
 
   // State
   const [loading, setLoading] = useState(true);
@@ -243,44 +247,62 @@ export default function SalonLandingLuxury() {
       if (isFavorite) {
         await removeFromFavorites(tenant._id);
         setIsFavorite(false);
-        toast.success("Removed from favorites");
+        toast.success("Removed from favourites");
       } else {
         await addToFavorites(tenant._id);
         setIsFavorite(true);
-        toast.success("Added to favorites");
+        toast.success("Added to favourites");
       }
     } catch (error) {
-      toast.error(error.message || "Failed to update favorites");
+      toast.error(error.message || "Failed to update favourites");
     } finally {
       setFavoritesLoading(false);
     }
   };
 
+  // Handler for sharing the business
+  const handleShare = async () => {
+    const shareData = {
+      title: salonName,
+      text: `Check out ${salonName}${salonDescription ? ` - ${salonDescription}` : ""}`,
+      url: window.location.href,
+    };
+
+    try {
+      // Check if Web Share API is available
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: copy link to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success("Link copied to clipboard!");
+      }
+    } catch (error) {
+      // User cancelled share or error occurred
+      if (error.name !== "AbortError") {
+        console.error("Error sharing:", error);
+        toast.error("Failed to share");
+      }
+    }
+  };
+
   // Handlers
-  const handleServiceClick = (service) => {
+  const handleServiceClick = (service, variant) => {
+    // Add service to the booking stack with the selected variant
     dispatch(
-      setService({
+      addService({
         serviceId: service._id,
-        variantName: service.variantName,
-        price: service.price,
-        durationMin: service.durationMin,
-        bufferBeforeMin: service.bufferBeforeMin,
-        bufferAfterMin: service.bufferAfterMin,
+        serviceName: service.name,
+        variantName: variant.name,
+        price: variant.price,
+        durationMin: variant.durationMin,
+        bufferBeforeMin: service.bufferBeforeMin || 0,
+        bufferAfterMin: service.bufferAfterMin || 0,
       })
     );
 
-    if (specialists.length === 1) {
-      dispatch(
-        setSpecialist({
-          specialistId: specialists[0]._id, // Backend field name preserved for API compatibility
-          any: false,
-          inSalonPayment: false,
-        })
-      );
-      navigate(`/salon/${tenant?.slug}/times`);
-    } else {
-      navigate(`/salon/${tenant?.slug}/specialists`);
-    }
+    // Don't navigate - let user continue adding services
+    // They can click Continue on the ServiceStackBar when ready
   };
 
   const handleSpecialistClick = (specialist) => {
@@ -348,41 +370,68 @@ export default function SalonLandingLuxury() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Hero Section - Clean and Professional */}
           <div className="relative bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 rounded-3xl overflow-hidden mb-12 shadow-2xl">
-            {/* Favorite Button - Top Right */}
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              onClick={handleToggleFavorite}
-              disabled={favoritesLoading}
-              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 p-3 sm:p-4 bg-white/90 backdrop-blur-md rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 group disabled:opacity-50"
-              aria-label={
-                isFavorite ? "Remove from favorites" : "Add to favorites"
-              }
-            >
-              <motion.svg
-                initial={false}
-                animate={{
-                  scale: isFavorite ? [1, 1.2, 1] : 1,
-                }}
-                transition={{ duration: 0.3 }}
-                className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors duration-300 ${
-                  isFavorite
-                    ? "text-red-500 fill-current"
-                    : "text-gray-400 group-hover:text-red-500"
-                }`}
-                fill={isFavorite ? "currentColor" : "none"}
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
+            {/* Action Buttons - Top Right */}
+            <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center gap-2">
+              {/* Share Button */}
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                onClick={handleShare}
+                className="p-3 sm:p-4 bg-white/90 backdrop-blur-md rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 group"
+                aria-label="Share this business"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                />
-              </motion.svg>
-            </motion.button>
+                <svg
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 group-hover:text-brand-600 transition-colors duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+                  />
+                </svg>
+              </motion.button>
+
+              {/* Favorite Button */}
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                onClick={handleToggleFavorite}
+                disabled={favoritesLoading}
+                className="p-3 sm:p-4 bg-white/90 backdrop-blur-md rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 group disabled:opacity-50"
+                aria-label={
+                  isFavorite ? "Remove from favorites" : "Add to favorites"
+                }
+              >
+                <motion.svg
+                  initial={false}
+                  animate={{
+                    scale: isFavorite ? [1, 1.2, 1] : 1,
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors duration-300 ${
+                    isFavorite
+                      ? "text-red-500 fill-current"
+                      : "text-gray-400 group-hover:text-red-500"
+                  }`}
+                  fill={isFavorite ? "currentColor" : "none"}
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                  />
+                </motion.svg>
+              </motion.button>
+            </div>
 
             {/* Hero Image Background */}
             {(heroSection?.centerImage?.url || settings?.heroImage?.url) && (
@@ -804,7 +853,10 @@ export default function SalonLandingLuxury() {
                             >
                               <ServiceCard
                                 service={service}
-                                onClick={() => handleServiceClick(service)}
+                                onClick={(variant) => handleServiceClick(service, variant)}
+                                isSelected={bookingServices.some(
+                                  (s) => s.serviceId === service._id
+                                )}
                               />
                             </div>
                           ))}
@@ -856,6 +908,9 @@ export default function SalonLandingLuxury() {
           onClose={() => setShowLoginDrawer(false)}
           message="Please sign in to add this salon to your favorites"
         />
+
+        {/* Service Stack Bar - Floating bottom bar with selected services */}
+        <ServiceStackBar />
       </div>
     </>
   );

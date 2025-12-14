@@ -1,14 +1,17 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../../shared/contexts/AuthContext";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { useTenant } from "../../shared/contexts/TenantContext";
+import ProfileMenu from "../../shared/components/ui/ProfileMenu";
+import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 
 /**
  * Navigation - Reusable navigation bar component for tenant pages
  * Clean light theme design with responsive mobile menu
  */
 export default function Navigation() {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const {
     client,
@@ -19,6 +22,7 @@ export default function Navigation() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
 
   const salonName = tenant?.name || "Beauty Salon";
   const ecommerceEnabled = tenant?.features?.enableProducts || false;
@@ -95,7 +99,62 @@ export default function Navigation() {
 
           {/* Right Actions - Desktop */}
           <div className="hidden md:flex items-center gap-3">
-            {isAuthenticated ? (
+            {isClientAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+                  aria-label="Profile menu"
+                >
+                  <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white text-sm font-bold">
+                    {client?.name?.[0]?.toUpperCase() || "U"}
+                  </div>
+                  <span className="max-w-[100px] truncate">
+                    {client?.name || "User"}
+                  </span>
+                  <svg
+                    className={`w-4 h-4 transition-transform ${
+                      profileMenuOpen ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                {/* Profile Menu Dropdown */}
+                {profileMenuOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-[998]"
+                      onClick={() => setProfileMenuOpen(false)}
+                    />
+                    <div
+                      className="absolute right-0 top-full mt-2 bg-white rounded-2xl shadow-2xl overflow-hidden z-[999]"
+                      style={{ minWidth: "320px" }}
+                    >
+                      <ProfileMenu
+                        client={client}
+                        onLogout={clientLogout}
+                        variant="dropdown"
+                        onItemClick={() => setProfileMenuOpen(false)}
+                        onGiftCardClick={() => {
+                          setProfileMenuOpen(false);
+                          setShowGiftCardModal(true);
+                        }}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : user ? (
               <div
                 className="relative"
                 onMouseEnter={() => setProfileMenuOpen(true)}
@@ -106,14 +165,9 @@ export default function Navigation() {
                   aria-label="Profile"
                 >
                   <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white text-sm font-bold">
-                    {(user
-                      ? user.name?.[0]
-                      : client?.name?.[0]
-                    )?.toUpperCase() || "U"}
+                    {user.name?.[0]?.toUpperCase() || "U"}
                   </div>
-                  <span className="max-w-[100px] truncate">
-                    {user ? user.name : client?.name}
-                  </span>
+                  <span className="max-w-[100px] truncate">{user.name}</span>
                 </button>
 
                 {/* Profile Dropdown */}
@@ -122,19 +176,14 @@ export default function Navigation() {
                     <div className="bg-white rounded-xl shadow-xl border border-gray-200 py-2 overflow-hidden">
                       <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
                         <p className="text-sm font-bold text-gray-900 truncate">
-                          {user ? user.name : client?.name}
+                          {user.name}
                         </p>
                         <p className="text-xs text-gray-500 truncate">
-                          {user ? user.email : client?.email}
+                          {user.email}
                         </p>
                       </div>
                       <Link
-                        to={user ? "/profile" : "/client/profile"}
-                        state={
-                          !user && tenant?.slug
-                            ? { fromBusiness: tenant.slug }
-                            : undefined
-                        }
+                        to="/profile"
                         onClick={() => setProfileMenuOpen(false)}
                         className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all"
                       >
@@ -191,8 +240,31 @@ export default function Navigation() {
             )}
           </div>
 
-          {/* Mobile Hamburger Button */}
+          {/* Mobile Actions - Person Icon + Hamburger */}
           <div className="md:hidden flex items-center gap-2">
+            {/* Person Icon - Only show when signed in, navigates to mobile menu page */}
+            {isAuthenticated && (
+              <button
+                onClick={() => navigate("/menu")}
+                className="flex items-center justify-center w-9 h-9 rounded-full bg-black text-white font-semibold hover:shadow-lg transition-all overflow-hidden"
+                title={(user?.name || client?.name) || "Account"}
+                aria-label="Open profile menu"
+              >
+                {client?.avatar ? (
+                  <img
+                    src={client.avatar}
+                    alt={(user?.name || client?.name) || "User"}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-sm">
+                    {(user?.name?.[0] || client?.name?.[0] || "U").toUpperCase()}
+                  </span>
+                )}
+              </button>
+            )}
+
+            {/* Hamburger Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
@@ -265,51 +337,32 @@ export default function Navigation() {
                   Shop
                 </Link>
               )}
-              <div className="border-t border-gray-200 my-2"></div>
-              {isAuthenticated ? (
+              {/* Sign In link only shown when not authenticated */}
+              {!isAuthenticated && (
                 <>
+                  <div className="border-t border-gray-200 my-2"></div>
                   <Link
-                    to={user ? "/profile" : "/client/profile"}
-                    state={
-                      !user && tenant?.slug
-                        ? { fromBusiness: tenant.slug }
-                        : undefined
-                    }
+                    to={`/salon/${tenant?.slug}/login`}
                     onClick={() => setMobileMenuOpen(false)}
                     className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
                   >
-                    Profile ({user ? user.name : client?.name})
+                    Sign In
                   </Link>
-                  <button
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      handleLogout();
-                    }}
-                    className="px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-all text-left"
-                  >
-                    Sign Out
-                  </button>
                 </>
-              ) : (
-                <Link
-                  to={`/salon/${tenant?.slug}/login`}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
-                >
-                  Sign In
-                </Link>
               )}
-              <Link
-                to="/admin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
-              >
-                Admin
-              </Link>
             </div>
           </nav>
         )}
       </div>
+
+      {/* Gift Card Modal */}
+      <GiftCardModal
+        isOpen={showGiftCardModal}
+        onClose={() => setShowGiftCardModal(false)}
+        onSuccess={(giftCard) => {
+          console.log("Gift card created:", giftCard);
+        }}
+      />
     </header>
   );
 }

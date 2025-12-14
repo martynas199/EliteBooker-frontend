@@ -310,7 +310,7 @@ export default function ClientAppointmentsPage() {
                     <div className="text-right">
                       <p className="text-2xl font-bold text-gray-900">
                         {formatPrice(
-                          booking.totalPrice || booking.serviceId?.price || 0
+                          booking.price || booking.serviceId?.price || 0
                         )}
                       </p>
                       {booking.serviceId?.duration && (
