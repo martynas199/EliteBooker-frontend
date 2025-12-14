@@ -40,8 +40,12 @@ export default function ProfileMenu({
     if (onItemClick) onItemClick();
     
     // Handle special actions
-    if (action === "gift-card" && onGiftCardClick) {
-      onGiftCardClick();
+    if (action === "gift-card") {
+      if (onGiftCardClick) {
+        onGiftCardClick();
+      } else {
+        console.warn("Gift card clicked but no handler provided");
+      }
       return;
     }
     
@@ -242,7 +246,7 @@ export default function ProfileMenu({
               return (
                 <button
                   key={index}
-                  onClick={() => handleNavigation(item.path)}
+                  onClick={() => handleNavigation(item.path, item.action)}
                   className="w-full flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-left"
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />
@@ -306,7 +310,7 @@ export default function ProfileMenu({
             return (
               <button
                 key={index}
-                onClick={() => handleNavigation(item.path)}
+                onClick={() => handleNavigation(item.path, item.action)}
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors text-left"
               >
                 <Icon className="w-5 h-5 flex-shrink-0" />
