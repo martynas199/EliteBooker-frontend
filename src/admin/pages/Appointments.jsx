@@ -253,12 +253,14 @@ export default function Appointments() {
           r.client?.phone?.toLowerCase().includes(query) ||
           r.specialist?.name?.toLowerCase().includes(query) ||
           r.service?.name?.toLowerCase().includes(query) ||
-          (r.services && r.services.length > 0 && 
-           r.services.some(svc => 
-             svc.service?.name?.toLowerCase().includes(query) ||
-             svc.serviceName?.toLowerCase().includes(query) ||
-             svc.variantName?.toLowerCase().includes(query)
-           )) ||
+          (r.services &&
+            r.services.length > 0 &&
+            r.services.some(
+              (svc) =>
+                svc.service?.name?.toLowerCase().includes(query) ||
+                svc.serviceName?.toLowerCase().includes(query) ||
+                svc.variantName?.toLowerCase().includes(query)
+            )) ||
           r.variantName?.toLowerCase().includes(query)
         );
       });
@@ -278,12 +280,18 @@ export default function Appointments() {
           bVal = b.specialist?.name || b.specialistId || "";
           break;
         case "service":
-          aVal = a.services && a.services.length > 0 
-            ? a.services.map(s => s.service?.name || s.serviceName || s.serviceId).join(', ')
-            : `${a.service?.name || a.serviceId} - ${a.variantName}`;
-          bVal = b.services && b.services.length > 0
-            ? b.services.map(s => s.service?.name || s.serviceName || s.serviceId).join(', ')
-            : `${b.service?.name || b.serviceId} - ${b.variantName}`;
+          aVal =
+            a.services && a.services.length > 0
+              ? a.services
+                  .map((s) => s.service?.name || s.serviceName || s.serviceId)
+                  .join(", ")
+              : `${a.service?.name || a.serviceId} - ${a.variantName}`;
+          bVal =
+            b.services && b.services.length > 0
+              ? b.services
+                  .map((s) => s.service?.name || s.serviceName || s.serviceId)
+                  .join(", ")
+              : `${b.service?.name || b.serviceId} - ${b.variantName}`;
           break;
         case "start":
           aVal = new Date(a.start).getTime();
@@ -1185,10 +1193,11 @@ export default function Appointments() {
                         {r.services.map((svc, idx) => (
                           <div key={idx}>
                             <div className="font-medium text-gray-900">
-                              {svc.service?.name || svc.serviceId || 'Service'}
+                              {svc.service?.name || svc.serviceId || "Service"}
                             </div>
                             <div className="text-xs text-gray-500">
-                              {svc.variantName} • {svc.duration || svc.durationMin || 0} min
+                              {svc.variantName} •{" "}
+                              {svc.duration || svc.durationMin || 0} min
                             </div>
                           </div>
                         ))}
@@ -1203,7 +1212,9 @@ export default function Appointments() {
                         <div className="font-medium text-gray-900">
                           {r.service?.name || r.serviceId}
                         </div>
-                        <div className="text-xs text-gray-500">{r.variantName}</div>
+                        <div className="text-xs text-gray-500">
+                          {r.variantName}
+                        </div>
                       </div>
                     )}
                   </td>
@@ -1633,17 +1644,20 @@ export default function Appointments() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-xs text-gray-500">
-                      {r.services && r.services.length > 1 ? 'Services' : 'Service'}
+                      {r.services && r.services.length > 1
+                        ? "Services"
+                        : "Service"}
                     </div>
                     {r.services && r.services.length > 0 ? (
                       <div className="space-y-2">
                         {r.services.map((svc, idx) => (
                           <div key={idx}>
                             <div className="font-semibold text-base text-gray-900">
-                              {svc.service?.name || svc.serviceId || 'Service'}
+                              {svc.service?.name || svc.serviceId || "Service"}
                             </div>
                             <div className="text-sm text-gray-600 mt-0.5">
-                              {svc.variantName} • {svc.duration || svc.durationMin || 0} min
+                              {svc.variantName} •{" "}
+                              {svc.duration || svc.durationMin || 0} min
                             </div>
                           </div>
                         ))}
@@ -2263,7 +2277,7 @@ function EditModal({
               ))}
             </select>
           </FormField>
-          
+
           {/* Multi-Service Display */}
           {appointment.services && appointment.services.length > 0 ? (
             <div className="space-y-2">
@@ -2272,56 +2286,68 @@ function EditModal({
               </label>
               <div className="space-y-2 bg-gray-50 border border-gray-200 rounded-lg p-3">
                 {appointment.services.map((svc, idx) => (
-                  <div key={idx} className="bg-white border border-gray-200 rounded p-3">
+                  <div
+                    key={idx}
+                    className="bg-white border border-gray-200 rounded p-3"
+                  >
                     <div className="font-medium text-gray-900">
-                      {svc.service?.name || svc.serviceName || 'Service'}
+                      {svc.service?.name || svc.serviceName || "Service"}
                     </div>
                     <div className="text-sm text-gray-600 mt-1">
-                      {svc.variantName} • {svc.duration || svc.durationMin || 0} min • £{(svc.price || 0).toFixed(2)}
+                      {svc.variantName} • {svc.duration || svc.durationMin || 0}{" "}
+                      min • £{(svc.price || 0).toFixed(2)}
                     </div>
                   </div>
                 ))}
                 <div className="pt-2 border-t border-gray-200 text-sm font-medium text-gray-700">
-                  Total: {appointment.services.reduce((sum, s) => sum + (s.duration || 0), 0)} min • £{appointment.services.reduce((sum, s) => sum + (s.price || 0), 0).toFixed(2)}
+                  Total:{" "}
+                  {appointment.services.reduce(
+                    (sum, s) => sum + (s.duration || 0),
+                    0
+                  )}{" "}
+                  min • £
+                  {appointment.services
+                    .reduce((sum, s) => sum + (s.price || 0), 0)
+                    .toFixed(2)}
                 </div>
               </div>
             </div>
           ) : (
             <>
               <FormField label="Service" htmlFor="service-select">
-            <select
-              id="service-select"
-              className="border rounded w-full px-3 py-2"
-              value={appointment.serviceId}
-              onChange={(e) => {
-                updateField("serviceId", e.target.value);
-                updateField("variantName", "");
-              }}
-            >
-              <option value="">Select Service</option>
-              {services.map((s) => (
-                <option key={s._id} value={s._id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </FormField>
-          <FormField label="Variant" htmlFor="variant-select">
-            <select
-              id="variant-select"
-              className="border rounded w-full px-3 py-2"
-              value={appointment.variantName}
-              onChange={(e) => updateField("variantName", e.target.value)}
-              disabled={!appointment.serviceId}
-            >
-              <option value="">Select Variant</option>
-              {variants.map((v) => (
-                <option key={v.name} value={v.name}>
-                  {v.name} - £{v.price} ({v.durationMin}min)
-                </option>
-              ))}
-            </select>
-          </FormField>
+                <select
+                  id="service-select"
+                  className="border rounded w-full px-3 py-2"
+                  value={appointment.serviceId}
+                  onChange={(e) => {
+                    updateField("serviceId", e.target.value);
+                    updateField("variantName", "");
+                  }}
+                >
+                  <option value="">Select Service</option>
+                  {services.map((s) => (
+                    <option key={s._id} value={s._id}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </FormField>
+              <FormField label="Variant" htmlFor="variant-select">
+                <select
+                  id="variant-select"
+                  className="border rounded w-full px-3 py-2"
+                  value={appointment.variantName}
+                  onChange={(e) => updateField("variantName", e.target.value)}
+                  disabled={!appointment.serviceId}
+                >
+                  <option value="">Select Variant</option>
+                  {variants.map((v) => (
+                    <option key={v.name} value={v.name}>
+                      {v.name} - £{v.price} ({v.durationMin}min)
+                    </option>
+                  ))}
+                </select>
+              </FormField>
             </>
           )}
           <div className="w-full max-w-full overflow-hidden">
