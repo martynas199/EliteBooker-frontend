@@ -328,8 +328,6 @@ export default function SearchPage() {
       return;
     }
 
-    console.log(`[updateMarkers] Processing ${venues.length} venues`);
-
     // Clear existing markers
     markersRef.current.forEach((marker) => {
       try {
@@ -342,12 +340,6 @@ export default function SearchPage() {
 
     // Add markers for each venue
     venues.forEach((venue) => {
-      console.log(`[Marker] Venue ${venue.name}:`, {
-        hasLocation: !!venue.location,
-        hasCoordinates: !!venue.location?.coordinates,
-        coordinates: venue.location?.coordinates
-      });
-      
       if (venue.location?.coordinates) {
         try {
           const [lng, lat] = venue.location.coordinates;
