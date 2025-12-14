@@ -184,11 +184,12 @@ export default function CheckoutPage() {
     setLoading(true);
     try {
       // Use services array if available, otherwise fall back to single service
-      const servicesData = bookingServices && bookingServices.length > 0
-        ? bookingServices
-        : bookingService
-        ? [bookingService]
-        : [];
+      const servicesData =
+        bookingServices && bookingServices.length > 0
+          ? bookingServices
+          : bookingService
+          ? [bookingService]
+          : [];
 
       // Prepare booking data with userId if user is logged in
       const bookingData = {
@@ -197,7 +198,7 @@ export default function CheckoutPage() {
           : bookingBeautician?.specialistId,
         any: bookingBeautician?.any,
         // Multi-service support
-        services: servicesData.map(s => ({
+        services: servicesData.map((s) => ({
           serviceId: s.serviceId,
           variantName: s.variantName,
           price: s.price,
@@ -224,24 +225,24 @@ export default function CheckoutPage() {
     } catch (e) {
       // If slot is no longer available (409 conflict), redirect back to times page
       if (e.response?.status === 409) {
-        console.error('[CHECKOUT] Slot conflict error:', {
+        console.error("[CHECKOUT] Slot conflict error:", {
           time: time,
           specialistId: bookingBeautician?.specialistId,
           services: bookingServices || [bookingService],
-          error: e.response?.data
+          error: e.response?.data,
         });
         toast.error(
           "This time slot is no longer available. Please select another time."
         );
         // Redirect to times page to select a different slot
-        const tenantSlug = tenant?.slug || '';
+        const tenantSlug = tenant?.slug || "";
         if (tenantSlug) {
           navigate(`/salon/${tenantSlug}/times`);
         } else {
           navigate("/book");
         }
       } else {
-        console.error('[CHECKOUT] Booking error:', e);
+        console.error("[CHECKOUT] Booking error:", e);
         toast.error(e.message || "Booking failed. Please try again.");
       }
     } finally {
@@ -252,17 +253,22 @@ export default function CheckoutPage() {
   // Pricing helpers
   const bookingFee = 0.5;
   // Calculate total price from all selected services
-  const servicePrice = bookingServices && bookingServices.length > 0
-    ? bookingServices.reduce((sum, svc) => sum + Number(svc.price || 0), 0)
-    : Number(bookingService?.price || 0);
+  const servicePrice =
+    bookingServices && bookingServices.length > 0
+      ? bookingServices.reduce((sum, svc) => sum + Number(svc.price || 0), 0)
+      : Number(bookingService?.price || 0);
   const totalAmount = bookingBeautician?.inSalonPayment
     ? bookingFee
     : servicePrice + bookingFee;
-  
+
   // Calculate total duration
-  const totalDuration = bookingServices && bookingServices.length > 0
-    ? bookingServices.reduce((sum, svc) => sum + Number(svc.durationMin || 0), 0)
-    : Number(bookingService?.durationMin || 0);
+  const totalDuration =
+    bookingServices && bookingServices.length > 0
+      ? bookingServices.reduce(
+          (sum, svc) => sum + Number(svc.durationMin || 0),
+          0
+        )
+      : Number(bookingService?.durationMin || 0);
 
   return (
     <>
@@ -480,20 +486,26 @@ export default function CheckoutPage() {
                       Summary
                     </div>
                     <div className="text-sm text-gray-600 mb-2">
-                      {bookingServices && bookingServices.length > 1 ? 'Services' : 'Service'}
+                      {bookingServices && bookingServices.length > 1
+                        ? "Services"
+                        : "Service"}
                     </div>
-                    
+
                     {/* Display all selected services */}
                     <div className="space-y-3 mb-4">
                       {bookingServices && bookingServices.length > 0 ? (
                         bookingServices.map((service, index) => (
-                          <div key={index} className="flex items-start justify-between text-gray-900">
+                          <div
+                            key={index}
+                            className="flex items-start justify-between text-gray-900"
+                          >
                             <div className="flex-1">
                               <div className="font-medium">
                                 {service.serviceName}
                               </div>
                               <div className="text-xs text-gray-500 mt-0.5">
-                                {service.variantName} • {service.durationMin} min
+                                {service.variantName} • {service.durationMin}{" "}
+                                min
                               </div>
                             </div>
                             <div className="font-bold text-base ml-2">
@@ -513,7 +525,7 @@ export default function CheckoutPage() {
                         </div>
                       ) : null}
                     </div>
-                    
+
                     {/* Total duration */}
                     {totalDuration > 0 && (
                       <div className="flex items-center justify-between mb-4 pb-3 text-sm text-gray-600">

@@ -22,7 +22,10 @@ export default function ServiceStackBar() {
 
   // Calculate totals
   const totalPrice = services.reduce((sum, s) => sum + (s.price || 0), 0);
-  const totalDuration = services.reduce((sum, s) => sum + (s.durationMin || 0), 0);
+  const totalDuration = services.reduce(
+    (sum, s) => sum + (s.durationMin || 0),
+    0
+  );
 
   const handleContinue = () => {
     if (specialist) {
@@ -50,7 +53,8 @@ export default function ServiceStackBar() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1 sm:mb-2">
                 <h3 className="text-sm sm:text-base font-bold text-gray-900">
-                  {services.length} {services.length === 1 ? "Service" : "Services"}
+                  {services.length}{" "}
+                  {services.length === 1 ? "Service" : "Services"}
                 </h3>
                 <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
                   <Clock className="w-3 h-3 sm:w-4 sm:h-4" />

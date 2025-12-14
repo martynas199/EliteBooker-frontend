@@ -16,10 +16,10 @@ import toast from "react-hot-toast";
 import { useTenant } from "../../shared/contexts/TenantContext";
 
 export default function TimeSlots() {
-  const { 
-    service: bookingService, 
+  const {
+    service: bookingService,
     specialist: bookingSpecialist,
-    services: bookingServices 
+    services: bookingServices,
   } = useSelector((s) => s.booking);
   const serviceId = bookingService?.serviceId;
   const variantName = bookingService?.variantName;
@@ -30,7 +30,10 @@ export default function TimeSlots() {
   // Calculate total duration from all selected services
   const totalDuration = useMemo(() => {
     if (!bookingServices || bookingServices.length === 0) return null;
-    return bookingServices.reduce((sum, svc) => sum + (svc.durationMin || 0), 0);
+    return bookingServices.reduce(
+      (sum, svc) => sum + (svc.durationMin || 0),
+      0
+    );
   }, [bookingServices]);
 
   const [specialist, setSpecialist] = useState(null);

@@ -77,13 +77,25 @@ export default function SearchPage() {
         },
         (error) => {
           console.log("Location access denied, using default location");
-          // Default to London
-          setUserLocation({ lat: 51.5074, lng: -0.1278 });
+          // Use environment variables for default location, fallback to London
+          const defaultLat = parseFloat(
+            import.meta.env.VITE_DEFAULT_LAT || "51.5074"
+          );
+          const defaultLng = parseFloat(
+            import.meta.env.VITE_DEFAULT_LNG || "-0.1278"
+          );
+          setUserLocation({ lat: defaultLat, lng: defaultLng });
         }
       );
     } else {
-      // Default to London
-      setUserLocation({ lat: 51.5074, lng: -0.1278 });
+      // Use environment variables for default location, fallback to London
+      const defaultLat = parseFloat(
+        import.meta.env.VITE_DEFAULT_LAT || "51.5074"
+      );
+      const defaultLng = parseFloat(
+        import.meta.env.VITE_DEFAULT_LNG || "-0.1278"
+      );
+      setUserLocation({ lat: defaultLat, lng: defaultLng });
     }
   };
 
@@ -97,7 +109,14 @@ export default function SearchPage() {
     try {
       await loadGoogleMapsScript(apiKey);
 
-      const mapCenter = userLocation || { lat: 51.5074, lng: -0.1278 };
+      // Use environment variables for default location, fallback to London
+      const defaultLat = parseFloat(
+        import.meta.env.VITE_DEFAULT_LAT || "51.5074"
+      );
+      const defaultLng = parseFloat(
+        import.meta.env.VITE_DEFAULT_LNG || "-0.1278"
+      );
+      const mapCenter = userLocation || { lat: defaultLat, lng: defaultLng };
 
       const map = new window.google.maps.Map(mapRef.current, {
         center: mapCenter,

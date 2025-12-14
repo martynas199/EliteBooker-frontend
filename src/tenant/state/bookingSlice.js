@@ -27,7 +27,11 @@ const bookingSlice = createSlice({
     },
     removeService: (state, action) => {
       const index = action.payload;
-      if (typeof index === 'number' && index >= 0 && index < state.services.length) {
+      if (
+        typeof index === "number" &&
+        index >= 0 &&
+        index < state.services.length
+      ) {
         state.services.splice(index, 1);
       }
       // Update legacy field

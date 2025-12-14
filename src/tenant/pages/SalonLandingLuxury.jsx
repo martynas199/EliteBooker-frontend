@@ -140,7 +140,7 @@ export default function SalonLandingLuxury() {
   const { tenant } = useTenant();
   const { formatPrice } = useCurrency();
   const { client, isAuthenticated } = useClientAuth();
-  
+
   // Get selected services from Redux
   const bookingServices = useSelector((state) => state.booking.services || []);
 
@@ -264,7 +264,9 @@ export default function SalonLandingLuxury() {
   const handleShare = async () => {
     const shareData = {
       title: salonName,
-      text: `Check out ${salonName}${salonDescription ? ` - ${salonDescription}` : ""}`,
+      text: `Check out ${salonName}${
+        salonDescription ? ` - ${salonDescription}` : ""
+      }`,
       url: window.location.href,
     };
 
@@ -853,7 +855,9 @@ export default function SalonLandingLuxury() {
                             >
                               <ServiceCard
                                 service={service}
-                                onClick={(variant) => handleServiceClick(service, variant)}
+                                onClick={(variant) =>
+                                  handleServiceClick(service, variant)
+                                }
                                 isSelected={bookingServices.some(
                                   (s) => s.serviceId === service._id
                                 )}

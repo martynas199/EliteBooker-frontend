@@ -247,18 +247,22 @@ export default function Navigation() {
               <button
                 onClick={() => navigate("/menu")}
                 className="flex items-center justify-center w-9 h-9 rounded-full bg-black text-white font-semibold hover:shadow-lg transition-all overflow-hidden"
-                title={(user?.name || client?.name) || "Account"}
+                title={user?.name || client?.name || "Account"}
                 aria-label="Open profile menu"
               >
                 {client?.avatar ? (
                   <img
                     src={client.avatar}
-                    alt={(user?.name || client?.name) || "User"}
+                    alt={user?.name || client?.name || "User"}
                     className="w-full h-full object-cover"
                   />
                 ) : (
                   <span className="text-sm">
-                    {(user?.name?.[0] || client?.name?.[0] || "U").toUpperCase()}
+                    {(
+                      user?.name?.[0] ||
+                      client?.name?.[0] ||
+                      "U"
+                    ).toUpperCase()}
                   </span>
                 )}
               </button>

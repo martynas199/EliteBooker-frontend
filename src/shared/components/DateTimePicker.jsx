@@ -158,20 +158,20 @@ export default function DateTimePicker({
           variantName,
           date: dateStr,
         };
-        
+
         // If totalDuration is provided (multi-service), send it instead of relying on single service
         if (totalDuration) {
           params.totalDuration = totalDuration;
         }
-        
-        console.log('[TIMESLOTS] Fetching slots with params:', params);
-        
+
+        console.log("[TIMESLOTS] Fetching slots with params:", params);
+
         const response = await api.get("/slots", { params });
-        
-        console.log('[TIMESLOTS] Received slots:', {
+
+        console.log("[TIMESLOTS] Received slots:", {
           count: response.data.slots?.length || 0,
           date: dateStr,
-          totalDuration: params.totalDuration
+          totalDuration: params.totalDuration,
         });
 
         const fetchedSlots = response.data.slots || [];

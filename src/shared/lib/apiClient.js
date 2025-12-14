@@ -30,7 +30,11 @@ api.interceptors.request.use(
     const clientToken = localStorage.getItem("clientToken");
     if (clientToken && !config.headers["Authorization"]) {
       // Add for /client routes OR for /api/client endpoints OR for favorites endpoints
-      if (pathname.startsWith("/client") || config.url?.includes("/client/") || config.url?.includes("/favorites")) {
+      if (
+        pathname.startsWith("/client") ||
+        config.url?.includes("/client/") ||
+        config.url?.includes("/favorites")
+      ) {
         config.headers["Authorization"] = `Bearer ${clientToken}`;
         console.log("[API Client] Added client Authorization header");
       }
@@ -113,7 +117,7 @@ api.interceptors.response.use(
     // Handle 401 Unauthorized - Try to refresh token or clear client token
     if (error.response.status === 401 && !originalRequest._retry) {
       const pathname = window.location.pathname;
-      
+
       // For client routes, clear localStorage token (like beauty salon app)
       if (pathname.startsWith("/client")) {
         console.log("[API Client] 401 on client route - clearing clientToken");
@@ -121,7 +125,7 @@ api.interceptors.response.use(
         // Don't redirect - let ClientAuthContext handle the state
         return Promise.reject(error);
       }
-      
+
       // For admin routes, try to refresh token
       if (isRefreshing) {
         // If already refreshing, queue this request

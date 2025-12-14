@@ -403,8 +403,8 @@ export default function ClientProfilePage() {
               </div>
 
               {!editing && (
-                <Button 
-                  variant="secondary" 
+                <Button
+                  variant="secondary"
                   onClick={() => setEditing(true)}
                   className="w-full mt-4"
                 >
@@ -417,19 +417,25 @@ export default function ClientProfilePage() {
             {/* Platform Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
               <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
-                <p className="text-xs sm:text-sm text-gray-600 mb-1">Total Bookings</p>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">
+                  Total Bookings
+                </p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">
                   {profile.profile.totalBookings || 0}
                 </p>
               </div>
               <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
-                <p className="text-xs sm:text-sm text-gray-600 mb-1">Businesses Visited</p>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">
+                  Businesses Visited
+                </p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">
                   {profile.businesses?.length || 0}
                 </p>
               </div>
               <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
-                <p className="text-xs sm:text-sm text-gray-600 mb-1">Member Since</p>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">
+                  Member Since
+                </p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">
                   {formatDate(profile.profile.memberSince)}
                 </p>
@@ -580,16 +586,16 @@ export default function ClientProfilePage() {
               Data & Privacy
             </h2>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Button 
-                variant="secondary" 
+              <Button
+                variant="secondary"
                 onClick={handleExportData}
                 className="w-full sm:w-auto"
               >
                 <Download className="h-5 w-5" />
                 Export My Data
               </Button>
-              <Button 
-                variant="danger" 
+              <Button
+                variant="danger"
                 onClick={handleDeleteAccount}
                 className="w-full sm:w-auto"
               >
