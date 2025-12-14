@@ -4,6 +4,7 @@ import PageTransition from "../../shared/components/ui/PageTransition";
 import Card from "../../shared/components/ui/Card";
 import MenuDropdown from "../../shared/components/ui/MenuDropdown";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
+import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
@@ -16,6 +17,7 @@ export default function LandingPage() {
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
+  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
 
   // Debug: Log client data when it changes
   useEffect(() => {
@@ -491,6 +493,10 @@ export default function LandingPage() {
                             onLogout={logout}
                             variant="dropdown"
                             onItemClick={() => setShowMenuDropdown(false)}
+                            onGiftCardClick={() => {
+                              setShowMenuDropdown(false);
+                              setShowGiftCardModal(true);
+                            }}
                           />
                         </div>
                       </>
@@ -1508,6 +1514,15 @@ export default function LandingPage() {
           </motion.div>
         </div>
       )}
+
+      {/* Gift Card Modal */}
+      <GiftCardModal
+        isOpen={showGiftCardModal}
+        onClose={() => setShowGiftCardModal(false)}
+        onSuccess={(giftCard) => {
+          console.log("Gift card created:", giftCard);
+        }}
+      />
     </>
   );
 }

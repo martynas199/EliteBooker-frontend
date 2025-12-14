@@ -25,17 +25,26 @@ import {
  * @param {Function} props.onLogout - Logout callback function
  * @param {string} props.variant - 'sidebar' | 'dropdown' (default: 'sidebar')
  * @param {Function} props.onItemClick - Optional callback when menu item is clicked
+ * @param {Function} props.onGiftCardClick - Optional callback when gift card item is clicked
  */
 export default function ProfileMenu({
   client,
   onLogout,
   variant = "sidebar",
   onItemClick,
+  onGiftCardClick,
 }) {
   const navigate = useNavigate();
 
-  const handleNavigation = (path) => {
+  const handleNavigation = (path, action) => {
     if (onItemClick) onItemClick();
+    
+    // Handle special actions
+    if (action === "gift-card" && onGiftCardClick) {
+      onGiftCardClick();
+      return;
+    }
+    
     navigate(path);
   };
 
@@ -73,6 +82,7 @@ export default function ProfileMenu({
       icon: Gift,
       label: "Send a gift card",
       path: "/gift-cards",
+      action: "gift-card",
       section: "main",
     },
     {
@@ -151,7 +161,7 @@ export default function ProfileMenu({
             return (
               <button
                 key={index}
-                onClick={() => handleNavigation(item.path)}
+                onClick={() => handleNavigation(item.path, item.action)}
                 className="flex items-center justify-between px-4 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100"
               >
                 <div className="flex items-center gap-3">

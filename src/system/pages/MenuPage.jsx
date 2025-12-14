@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
+import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 
 export default function MenuPage() {
   const navigate = useNavigate();
   const { client, logout } = useClientAuth();
+  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -38,7 +41,21 @@ export default function MenuPage() {
       </div>
 
       {/* Profile Menu Content */}
-      <ProfileMenu client={client} onLogout={handleLogout} variant="mobile" />
+      <ProfileMenu
+        client={client}
+        onLogout={handleLogout}
+        variant="mobile"
+        onGiftCardClick={() => setShowGiftCardModal(true)}
+      />
+
+      {/* Gift Card Modal */}
+      <GiftCardModal
+        isOpen={showGiftCardModal}
+        onClose={() => setShowGiftCardModal(false)}
+        onSuccess={(giftCard) => {
+          console.log("Gift card created:", giftCard);
+        }}
+      />
     </div>
   );
 }

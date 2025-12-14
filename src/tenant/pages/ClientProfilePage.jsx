@@ -19,6 +19,7 @@ import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Button from "../../shared/components/ui/Button";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
+import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 
 export default function ClientProfilePage() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export default function ClientProfilePage() {
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(false);
+  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
   const [saving, setSaving] = useState(false);
 
   // Get the business slug from URL state if available
@@ -290,6 +292,7 @@ export default function ClientProfilePage() {
           client={profile?.profile}
           onLogout={handleLogout}
           variant="sidebar"
+          onGiftCardClick={() => setShowGiftCardModal(true)}
         />
       </div>
 
@@ -563,6 +566,15 @@ export default function ClientProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Gift Card Modal */}
+      <GiftCardModal
+        isOpen={showGiftCardModal}
+        onClose={() => setShowGiftCardModal(false)}
+        onSuccess={(giftCard) => {
+          console.log("Gift card created:", giftCard);
+        }}
+      />
     </div>
   );
 }

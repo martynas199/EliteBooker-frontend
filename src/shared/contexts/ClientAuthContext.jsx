@@ -87,8 +87,13 @@ export function ClientAuthProvider({ children }) {
 
   const login = async (email, password) => {
     const response = await api.post("/client/login", { email, password });
-    const { client: clientData } = response.data;
-    // Token is set as httpOnly cookie by backend
+    const { client: clientData, token } = response.data;
+    
+    // Store token in localStorage for persistence
+    if (token) {
+      localStorage.setItem("clientToken", token);
+    }
+    
     setClient(clientData);
     return clientData;
   };
@@ -100,8 +105,13 @@ export function ClientAuthProvider({ children }) {
       name,
       phone,
     });
-    const { client: clientData } = response.data;
-    // Token is set as httpOnly cookie by backend
+    const { client: clientData, token } = response.data;
+    
+    // Store token in localStorage for persistence
+    if (token) {
+      localStorage.setItem("clientToken", token);
+    }
+    
     setClient(clientData);
     return clientData;
   };
@@ -109,8 +119,9 @@ export function ClientAuthProvider({ children }) {
   const logout = async () => {
     console.log("[ClientAuth] Starting logout process...");
 
-    // Clear client state immediately
+    // Clear client state and localStorage immediately
     setClient(null);
+    localStorage.removeItem("clientToken");
 
     try {
       // Call backend to clear httpOnly cookie
@@ -119,7 +130,7 @@ export function ClientAuthProvider({ children }) {
       return true;
     } catch (error) {
       console.error("[ClientAuth] Backend logout error:", error);
-      // Client state already cleared
+      // Client state and localStorage already cleared
       return false;
     }
   };

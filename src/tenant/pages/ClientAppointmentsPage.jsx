@@ -14,16 +14,20 @@ import {
 } from "lucide-react";
 import { api } from "../../shared/lib/apiClient";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
+import { useCurrency } from "../../shared/contexts/CurrencyContext";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Button from "../../shared/components/ui/Button";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
+import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 
 export default function ClientAppointmentsPage() {
   const navigate = useNavigate();
   const { client, logout } = useClientAuth();
+  const { formatPrice } = useCurrency();
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState([]);
-  const [filter, setFilter] = useState("all"); // all, upcoming, past, cancelled
+  const [filter, setFilter] = useState("all");
+  const [showGiftCardModal, setShowGiftCardModal] = useState(false); // all, upcoming, past, cancelled
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -74,13 +78,6 @@ export default function ClientAppointmentsPage() {
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
-
-  const formatCurrency = (amount, currency = "GBP") => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: currency,
-    }).format(amount);
   };
 
   const getStatusBadge = (status) => {
@@ -170,6 +167,7 @@ export default function ClientAppointmentsPage() {
           client={client}
           onLogout={handleLogout}
           variant="sidebar"
+          onGiftCardClick={() => setShowGiftCardModal(true)}
         />
       </div>
 
@@ -311,7 +309,7 @@ export default function ClientAppointmentsPage() {
                     {/* Price */}
                     <div className="text-right">
                       <p className="text-2xl font-bold text-gray-900">
-                        {formatCurrency(
+                        {formatPrice(
                           booking.totalPrice || booking.serviceId?.price || 0
                         )}
                       </p>
@@ -376,6 +374,15 @@ export default function ClientAppointmentsPage() {
           )}
         </div>
       </div>
+
+      {/* Gift Card Modal */}
+      <GiftCardModal
+        isOpen={showGiftCardModal}
+        onClose={() => setShowGiftCardModal(false)}
+        onSuccess={(giftCard) => {
+          console.log("Gift card created:", giftCard);
+        }}
+      />
     </div>
   );
 }
