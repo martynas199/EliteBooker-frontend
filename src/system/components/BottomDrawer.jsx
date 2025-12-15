@@ -441,11 +441,11 @@ const BottomDrawer = ({
           style={{
             WebkitOverflowScrolling: "touch",
             // EXTRA LARGE bottom padding to ensure last item is fully scrollable
-            // 20rem = 320px base + safe-area-inset for iPhone home indicator
+            // 24rem = 384px base + safe-area-inset for iPhone home indicator
             paddingBottom:
               keyboardHeight > 0
-                ? `calc(${keyboardHeight}px + 15rem)`
-                : "max(20rem, calc(18rem + env(safe-area-inset-bottom, 0px)))",
+                ? `calc(${keyboardHeight}px + 18rem)`
+                : "max(24rem, calc(22rem + env(safe-area-inset-bottom, 0px)))",
           }}
           onScroll={handleScroll}
         >
