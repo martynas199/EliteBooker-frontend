@@ -615,6 +615,15 @@ export default function SearchPage() {
         description="Find and book beauty salons, spas, and wellness businesses near you"
       />
 
+      {/* Prevent iOS zoom on search input focus */}
+      <style>{`
+        @media (max-width: 768px) {
+          input[type="text"] {
+            font-size: 16px !important;
+          }
+        }
+      `}</style>
+
       <div className="fixed inset-0 bg-white">
         {/* Header */}
         <header className="bg-white border-b border-gray-200 z-[110] fixed top-0 left-0 right-0 flex-shrink-0">
@@ -661,6 +670,19 @@ export default function SearchPage() {
                     setFilters((prev) => ({ ...prev, search: e.target.value }))
                   }
                   className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-full focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                  style={{ fontSize: "16px", touchAction: "manipulation" }}
+                  onFocus={() => {
+                    // Lock drawer when search is focused
+                    if (window.bottomDrawerAPI) {
+                      window.bottomDrawerAPI.lockDragging(true);
+                    }
+                  }}
+                  onBlur={() => {
+                    // Unlock drawer when search loses focus
+                    if (window.bottomDrawerAPI) {
+                      window.bottomDrawerAPI.lockDragging(false);
+                    }
+                  }}
                 />
               </div>
 

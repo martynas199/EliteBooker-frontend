@@ -11,6 +11,7 @@ import { motion, useMotionValue, useTransform, animate } from "framer-motion";
  * - Smart scroll coordination (drawer drag when list at top, scroll otherwise)
  * - Spring animations with natural physics
  * - 60fps performance with GPU acceleration
+ * - Keyboard-aware: freezes snap points on input focus to prevent layout shift
  *
  * Based on Fresha's bottom sheet UX pattern
  */
@@ -46,6 +47,8 @@ const BottomDrawer = ({
   const [currentSnap, setCurrentSnap] = useState(initialSnap);
   const [isDragging, setIsDragging] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   // Refs for drag tracking
   const dragStartY = useRef(0);
@@ -54,21 +57,29 @@ const BottomDrawer = ({
   const contentRef = useRef(null);
   const animationRef = useRef(null);
 
+  // 🔒 CRITICAL: Freeze viewport height on mount to prevent snap point drift
+  // Capture height immediately on component creation (before first render)
+  const frozenViewportHeight = useRef(
+    window.visualViewport?.height || window.innerHeight
+  );
+
   // Motion values for smooth animations
-  const drawerHeight = useMotionValue(getSnapHeight(initialSnap));
+  const drawerHeight = useMotionValue(0);
 
   /**
-   * Get viewport height (handles iOS Safari dynamic bottom bar)
+   * Get frozen viewport height (captured on mount, never changes)
+   * This prevents snap points from recalculating when keyboard opens
    */
   const getViewportHeight = useCallback(() => {
-    return window.visualViewport?.height || window.innerHeight;
+    // Return the pre-captured frozen height
+    return frozenViewportHeight.current;
   }, []);
 
   /**
-   * Calculate pixel height for a snap point
+   * Calculate pixel height for a snap point using FROZEN viewport height
    */
   function getSnapHeight(snap) {
-    const vh = window.visualViewport?.height || window.innerHeight;
+    const vh = frozenViewportHeight.current || getViewportHeight();
     return vh * SNAP_POINTS[snap.toUpperCase()];
   }
 
@@ -186,10 +197,13 @@ const BottomDrawer = ({
   }, []);
 
   /**
-   * Touch Start Handler
+   * Touch Start Handler - LOCKED during input focus
    */
   const handleTouchStart = useCallback(
     (e) => {
+      // 🔒 Block dragging when input is focused (keyboard open)
+      if (isInputFocused) return;
+
       // Only allow drag when content is scrolled to top
       if (!isAtTop) return;
 
@@ -211,15 +225,15 @@ const BottomDrawer = ({
         contentRef.current.style.overflowY = "hidden";
       }
     },
-    [isAtTop, drawerHeight]
+    [isAtTop, drawerHeight, isInputFocused]
   );
 
   /**
-   * Touch Move Handler
+   * Touch Move Handler - LOCKED during input focus
    */
   const handleTouchMove = useCallback(
     (e) => {
-      if (!isDragging) return;
+      if (!isDragging || isInputFocused) return;
 
       const touch = e.touches[0];
       const deltaY = dragStartY.current - touch.clientY;
@@ -244,7 +258,7 @@ const BottomDrawer = ({
       // Prevent default to avoid scroll bounce
       e.preventDefault();
     },
-    [isDragging, clampHeight, drawerHeight]
+    [isDragging, clampHeight, drawerHeight, isInputFocused]
   );
 
   /**
@@ -292,25 +306,89 @@ const BottomDrawer = ({
 
   /**
    * Handle window resize (orientation change, keyboard, etc)
+   * 🔒 DISABLED - We use frozen viewport height to prevent snap point drift
    */
   useEffect(() => {
-    const handleResize = () => {
-      const newHeight = getSnapHeight(currentSnap);
-      drawerHeight.set(newHeight);
+    // Detect keyboard open/close using VisualViewport API
+    const handleVisualViewportResize = () => {
+      if (!window.visualViewport) return;
+
+      const visualHeight = window.visualViewport.height;
+      const windowHeight = window.innerHeight;
+      const heightDiff = windowHeight - visualHeight;
+
+      // Keyboard is open if visual viewport is significantly smaller
+      if (heightDiff > 150) {
+        setKeyboardHeight(heightDiff);
+        console.log("[BottomDrawer] Keyboard detected, height:", heightDiff);
+      } else {
+        setKeyboardHeight(0);
+      }
     };
 
-    window.addEventListener("resize", handleResize);
+    // Listen for input focus/blur to lock dragging
+    const handleFocusIn = (e) => {
+      if (
+        e.target.tagName === "INPUT" ||
+        e.target.tagName === "TEXTAREA" ||
+        e.target.isContentEditable
+      ) {
+        setIsInputFocused(true);
+        console.log("[BottomDrawer] Input focused - drawer locked");
+      }
+    };
+
+    const handleFocusOut = (e) => {
+      if (
+        e.target.tagName === "INPUT" ||
+        e.target.tagName === "TEXTAREA" ||
+        e.target.isContentEditable
+      ) {
+        setIsInputFocused(false);
+        console.log("[BottomDrawer] Input blurred - drawer unlocked");
+      }
+    };
+
+    // Attach listeners
+    document.addEventListener("focusin", handleFocusIn);
+    document.addEventListener("focusout", handleFocusOut);
+
     if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", handleResize);
+      window.visualViewport.addEventListener(
+        "resize",
+        handleVisualViewportResize
+      );
     }
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("focusin", handleFocusIn);
+      document.removeEventListener("focusout", handleFocusOut);
       if (window.visualViewport) {
-        window.visualViewport.removeEventListener("resize", handleResize);
+        window.visualViewport.removeEventListener(
+          "resize",
+          handleVisualViewportResize
+        );
       }
     };
-  }, [currentSnap, drawerHeight]);
+  }, []);
+
+  /**
+   * Initialize drawer height on mount using frozen viewport
+   */
+  useEffect(() => {
+    // Set initial frozen viewport height
+    frozenViewportHeight.current =
+      window.visualViewport?.height || window.innerHeight;
+
+    // Set initial drawer height
+    const initialHeight = getSnapHeight(initialSnap);
+    drawerHeight.set(initialHeight);
+
+    console.log(
+      "[BottomDrawer] Initialized with frozen height:",
+      frozenViewportHeight.current
+    );
+  }, [initialSnap, drawerHeight]);
 
   /**
    * Expose imperative handle for programmatic control
@@ -320,6 +398,7 @@ const BottomDrawer = ({
     window.bottomDrawerAPI = {
       snapTo: (snap) => animateToSnap(snap),
       getCurrentSnap: () => currentSnap,
+      lockDragging: (locked) => setIsInputFocused(locked),
     };
 
     return () => {
@@ -384,9 +463,26 @@ const BottomDrawer = ({
           className="h-full overflow-y-auto overscroll-contain pb-20"
           style={{
             WebkitOverflowScrolling: "touch",
+            // Adjust padding when keyboard is open
+            paddingBottom:
+              keyboardHeight > 0 ? `${keyboardHeight + 20}px` : "5rem",
           }}
           onScroll={handleScroll}
         >
+          {/* Prevent iOS zoom on inputs */}
+          <style>{`
+            input, textarea, select {
+              font-size: 16px !important;
+              touch-action: manipulation;
+            }
+            
+            /* Lock body scroll when drawer is being dragged */
+            body.drawer-dragging {
+              overflow: hidden;
+              position: fixed;
+              width: 100%;
+            }
+          `}</style>
           {children}
         </div>
       </motion.div>
