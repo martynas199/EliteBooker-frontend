@@ -77,9 +77,22 @@ export function getOptimizedImageUrl(url, options = {}) {
   if (dpr > 1) transformations.push(`dpr_${dpr}`);
 
   const transformString = transformations.join(",");
+  
+  if (!transformString) {
+    return url;
+  }
 
-  // Insert transformations into URL after '/upload/'
-  return url.replace("/upload/", `/upload/${transformString}/`);
+  // Match pattern: /upload/ or /upload/v123456/
+  // We want to insert transformations after /upload/ but before the resource path
+  const uploadPattern = /\/upload\/(v\d+\/)?/;
+  const match = url.match(uploadPattern);
+  
+  if (match) {
+    const versionPart = match[1] || ''; // v123456/ or empty
+    return url.replace(uploadPattern, `/upload/${transformString}/${versionPart}`);
+  }
+  
+  return url;
 }
 
 /**
