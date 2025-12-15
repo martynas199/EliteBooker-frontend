@@ -97,6 +97,7 @@ const Tenants = lazy(() => import("../admin/pages/Tenants"));
 const PlatformFeatures = lazy(() => import("../admin/pages/PlatformFeatures"));
 const Clients = lazy(() => import("../admin/pages/ClientsPage"));
 const ClientDetails = lazy(() => import("../admin/pages/ClientDetailsPage"));
+const TakePaymentPage = lazy(() => import("../tenant/pages/TakePaymentPage"));
 
 function CustomerLayout() {
   const dispatch = useDispatch();
@@ -444,6 +445,14 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
                 <Profile />
+              </Suspense>
+            }
+          />
+          <Route
+            path="take-payment"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <TakePaymentPage />
               </Suspense>
             }
           />

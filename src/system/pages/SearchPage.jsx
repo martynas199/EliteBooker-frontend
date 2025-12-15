@@ -6,6 +6,7 @@ import { api } from "../../shared/lib/apiClient";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import BottomDrawer from "../components/BottomDrawer";
 import React from "react";
+import OptimizedImage from "../../shared/components/OptimizedImage";
 
 // Google Maps loader with duplicate prevention
 const loadGoogleMapsScript = (apiKey) => {
@@ -877,12 +878,16 @@ const BusinessCard = React.memo(
     const defaultImage =
       "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=80";
 
-    // Use hero image from branding (same as tenant landing page uses settings.heroImage)
-    // Priority: heroImages[0] → coverImage → default placeholder
+    // Use centerImage from HeroSection (returned by backend /tenants/public)
+    // Priority: centerImage → coverImage → default placeholder
     const venueImage =
-      venue.branding?.heroImages?.[0]?.url ||
-      venue.branding?.coverImage?.url ||
-      defaultImage;
+      venue.centerImage?.url || venue.coverImage?.url || defaultImage;
+
+    // console.log("BusinessCard venue image:", {
+    //   venueName: venue.name,
+    //   centerImage: venue.centerImage,
+    //   venueImage,
+    // });
 
     const rating = venue.rating || 5.0;
     const reviewCount = venue.reviewCount || 0;
@@ -914,13 +919,17 @@ const BusinessCard = React.memo(
         <div className="flex gap-3 p-3 h-[140px]">
           {/* Thumbnail - 90x90px */}
           <div className="w-[90px] h-[90px] flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
-            <img
+            <OptimizedImage
               src={venueImage}
               alt={venue.name}
+              width={90}
+              height={90}
+              crop="fill"
+              quality="auto"
+              format="auto"
+              loading="lazy"
+              blur={false}
               className="w-full h-full object-cover"
-              onError={(e) => {
-                e.target.src = defaultImage;
-              }}
             />
           </div>
 

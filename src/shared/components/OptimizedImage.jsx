@@ -81,6 +81,8 @@ export default function OptimizedImage({
   const isCloudinary = isCloudinaryUrl(src);
   const optimizedUrl = isCloudinary ? getOptimizedImageUrl(src, options) : src;
 
+  // console.log("OptimizedImage render:", { src, optimizedUrl, isCloudinary });
+
   const placeholderUrl =
     isCloudinary && blur ? getBlurPlaceholder(src, 40) : null;
 

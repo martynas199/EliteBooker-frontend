@@ -13,6 +13,7 @@ import {
   Package,
   LogOut,
   Users,
+  CreditCard,
 } from "lucide-react";
 import { useTenantSettings } from "../../shared/hooks/useTenantSettings";
 
@@ -27,6 +28,7 @@ const iconMap = {
   Sliders,
   Package,
   Users,
+  CreditCard,
 };
 
 // Navigation configuration
@@ -48,6 +50,11 @@ const navigationConfig = [
     label: "Clients",
     icon: "Users",
     path: "/admin/clients",
+  },
+  {
+    label: "Take Payment",
+    icon: "CreditCard",
+    path: "/admin/take-payment",
   },
   {
     label: "Booking Setup",

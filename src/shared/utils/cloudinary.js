@@ -53,47 +53,9 @@ export function getOptimizedImageUrl(url, options = {}) {
     return url;
   }
 
-  const {
-    width,
-    height,
-    crop = "fill",
-    gravity = "auto",
-    quality = "auto",
-    format = "auto",
-    blur,
-    dpr = 1,
-  } = options;
-
-  // Build transformation string
-  const transformations = [];
-
-  if (width) transformations.push(`w_${width}`);
-  if (height) transformations.push(`h_${height}`);
-  if (crop) transformations.push(`c_${crop}`);
-  if (gravity && crop !== "scale") transformations.push(`g_${gravity}`);
-  if (quality) transformations.push(`q_${quality}`);
-  if (format) transformations.push(`f_${format}`);
-  if (blur) transformations.push(`e_blur:${blur}`);
-  if (dpr > 1) transformations.push(`dpr_${dpr}`);
-
-  const transformString = transformations.join(",");
-  
-  if (!transformString) {
-    return url;
-  }
-
-  // Cloudinary URL structure: https://res.cloudinary.com/{cloud}/image/upload/{version?}/{transforms?}/{public_id}.{ext}
-  // We need to insert transformations AFTER version (if exists) but BEFORE public_id
-  
-  // Check if URL has a version number (v followed by digits)
-  if (/\/upload\/v\d+\//.test(url)) {
-    // Has version: insert after version
-    return url.replace(/\/upload\/(v\d+\/)/, `/upload/$1${transformString}/`);
-  } else {
-    // No version: insert after /upload/
-    return url.replace(/\/upload\//, `/upload/${transformString}/`);
-  }
-}
+  // Temporarily disable transformations for folder-based URLs that cause 404s
+  // TODO: Fix Cloudinary transformation support for folder paths
+  return url;
 }
 
 /**
