@@ -379,12 +379,14 @@ export default function LandingPage() {
       />
 
       <PageTransition className="overflow-x-hidden bg-white">
-        {/* Navigation Header */}
+        {/* Navigation Header - with safe area for iPhone notch */}
         <header
           className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200"
           style={{
+            top: "constant(safe-area-inset-top)",
+            top: "env(safe-area-inset-top, 0px)",
             paddingTop: "constant(safe-area-inset-top)",
-            paddingTop: "env(safe-area-inset-top, 0px)"
+            paddingTop: "env(safe-area-inset-top, 0px)",
           }}
         >
           <div className="max-w-8xl mx-auto px-4 sm:px-8 lg:px-10">
