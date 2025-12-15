@@ -378,11 +378,11 @@ export default function LandingPage() {
         keywords="salon booking system, spa software, online appointment scheduling, beauty salon software, appointment booking, payment processing, booking app"
       />
 
-      <PageTransition 
+      <PageTransition
         className="overflow-x-hidden bg-white"
         style={{
           paddingTop: "env(safe-area-inset-top)",
-          paddingBottom: "env(safe-area-inset-bottom)"
+          paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
         {/* Navigation Header */}

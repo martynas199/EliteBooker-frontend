@@ -196,16 +196,25 @@ const BottomDrawer = ({
   }, []);
 
   /**
-   * Touch Start Handler
+   * Touch Start Handler - Responds from handle area or when at scroll top
    */
   const handleTouchStart = useCallback(
     (e) => {
-      // Only allow drag when content is scrolled to top
-      if (!isAtTop) return;
-
       const touch = e.touches[0];
       dragStartY.current = touch.clientY;
       dragStartHeight.current = drawerHeight.get();
+
+      // Get handle element (top 60px of drawer)
+      const drawerElement = e.currentTarget;
+      const drawerRect = drawerElement.getBoundingClientRect();
+      const touchY = touch.clientY;
+      const relativeY = touchY - drawerRect.top;
+
+      // Allow dragging if:
+      // 1. Touch is in handle area (top 60px) OR
+      // 2. Content is scrolled to top
+      const inHandleArea = relativeY < 60;
+      if (!inHandleArea && !isAtTop) return;
 
       // Initialize velocity tracking
       velocityTracker.current = {
@@ -431,12 +440,12 @@ const BottomDrawer = ({
           className="h-full overflow-y-auto overscroll-contain"
           style={{
             WebkitOverflowScrolling: "touch",
-            // Extra padding at bottom to ensure last item is visible
-            // Includes safe-area-inset for iPhone home indicator
+            // Large bottom padding to ensure last item is fully scrollable
+            // Uses max() to ensure enough space with or without safe-area-inset
             paddingBottom:
-              keyboardHeight > 0 
-                ? `calc(${keyboardHeight}px + 8rem)` 
-                : "calc(8rem + env(safe-area-inset-bottom))",
+              keyboardHeight > 0
+                ? `calc(${keyboardHeight}px + 10rem)`
+                : "max(12rem, calc(10rem + env(safe-area-inset-bottom, 0px)))",
           }}
           onScroll={handleScroll}
         >

@@ -35,6 +35,9 @@
     position: relative;
     /* Prevent bounce/pull-to-refresh */
     overscroll-behavior: none;
+    /* Safe area insets for iPhone notch/home indicator */
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
   /* Root element uses fixed height */
