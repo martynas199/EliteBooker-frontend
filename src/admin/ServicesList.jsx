@@ -5,6 +5,7 @@ import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
 import { ServiceCardSkeleton } from "../shared/components/ui/Skeleton";
 import { useLanguage } from "../shared/contexts/LanguageContext";
 import { t } from "../locales/adminTranslations";
+import { useDebounce } from "../shared/hooks/useDebounce";
 import {
   SelectDrawer,
   SelectButton,
@@ -37,6 +38,9 @@ export default function ServicesList({
   const [filterCategory, setFilterCategory] = useState("all");
   const [deleteConfirm, setDeleteConfirm] = useState(null); // serviceId being deleted
 
+  // Debounce search term to avoid excessive filtering
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
   // Drawer states for mobile
   const [showActiveDrawer, setShowActiveDrawer] = useState(false);
   const [showCategoryDrawer, setShowCategoryDrawer] = useState(false);
@@ -46,12 +50,12 @@ export default function ServicesList({
     return ["all", ...new Set(services.map((s) => s.category).filter(Boolean))];
   }, [services]);
 
-  // Filter services with useMemo for performance
+  // Filter services with useMemo for performance - uses debounced search
   const filteredServices = useMemo(() => {
     return services.filter((service) => {
       const matchesSearch =
-        service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        service.description?.toLowerCase().includes(searchTerm.toLowerCase());
+        service.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        service.description?.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
 
       const matchesActive =
         filterActive === "all" ||
@@ -63,7 +67,7 @@ export default function ServicesList({
 
       return matchesSearch && matchesActive && matchesCategory;
     });
-  }, [services, searchTerm, filterActive, filterCategory]);
+  }, [services, debouncedSearchTerm, filterActive, filterCategory]);
 
   const handleDeleteClick = (service) => {
     setDeleteConfirm(service);

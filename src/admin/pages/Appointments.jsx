@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { selectAdmin } from "../../shared/state/authSlice";
@@ -17,6 +17,7 @@ import DateTimePicker from "../../shared/components/DateTimePicker";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import dayjs from "dayjs";
+import { useDebounce } from "../../shared/hooks/useDebounce";
 import {
   SelectDrawer,
   SelectButton,
@@ -75,6 +76,9 @@ export default function Appointments() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
+
+  // Debounce search query to avoid excessive filtering
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   const fetchAppointments = async (page = 1) => {
     try {
@@ -243,9 +247,9 @@ export default function Appointments() {
       });
     }
 
-    // Apply search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+    // Apply search filter - uses debounced query
+    if (debouncedSearchQuery.trim()) {
+      const query = debouncedSearchQuery.toLowerCase();
       filteredRows = filteredRows.filter((r) => {
         return (
           r.client?.name?.toLowerCase().includes(query) ||
@@ -319,7 +323,7 @@ export default function Appointments() {
     dateFilter,
     customStartDate,
     customEndDate,
-    searchQuery,
+    debouncedSearchQuery,
     sortConfig.key,
     sortConfig.direction,
   ]);
