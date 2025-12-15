@@ -12,6 +12,7 @@ import {
   generateBreadcrumbSchema,
 } from "../../shared/utils/schemaGenerator";
 import Breadcrumb from "../../shared/components/ui/Breadcrumb";
+import OptimizedImage from "../../shared/components/OptimizedImage";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -210,9 +211,15 @@ export default function ProductDetailPage() {
                 {/* Main Image */}
                 <div className="relative aspect-square bg-gray-100 rounded-xl overflow-hidden">
                   {allImages.length > 0 ? (
-                    <img
+                    <OptimizedImage
                       src={allImages[selectedImageIndex]?.url}
                       alt={product.title}
+                      preset="productDetail"
+                      responsive
+                      sizes={{
+                        "(max-width: 768px)": "100vw",
+                        default: "50vw",
+                      }}
                       className="w-full h-full object-cover"
                     />
                   ) : (

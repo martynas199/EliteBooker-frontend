@@ -54,8 +54,12 @@ export default function ServicesList({
   const filteredServices = useMemo(() => {
     return services.filter((service) => {
       const matchesSearch =
-        service.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-        service.description?.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
+        service.name
+          .toLowerCase()
+          .includes(debouncedSearchTerm.toLowerCase()) ||
+        service.description
+          ?.toLowerCase()
+          .includes(debouncedSearchTerm.toLowerCase());
 
       const matchesActive =
         filterActive === "all" ||

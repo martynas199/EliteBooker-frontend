@@ -169,9 +169,9 @@ export default function DateTimePicker({
 
         console.log("[TIMESLOTS] Fetching slots with params:", params);
 
-        const response = await api.get("/slots", { 
+        const response = await api.get("/slots", {
           params,
-          signal: abortController.signal // Add cancellation support
+          signal: abortController.signal, // Add cancellation support
         });
 
         console.log("[TIMESLOTS] Received slots:", {
@@ -239,11 +239,11 @@ export default function DateTimePicker({
         }
       } catch (error) {
         // Ignore abort errors (user navigated away or changed date)
-        if (error.name === 'AbortError' || error.code === 'ERR_CANCELED') {
+        if (error.name === "AbortError" || error.code === "ERR_CANCELED") {
           console.log("[TIMESLOTS] Request cancelled");
           return;
         }
-        
+
         console.error("Failed to fetch slots:", error);
         setSlotsError(
           error.response?.data?.message ||
@@ -262,7 +262,14 @@ export default function DateTimePicker({
     return () => {
       abortController.abort();
     };
-  }, [selectedDate, specialistId, serviceId, variantName, salonTz, totalDuration]);
+  }, [
+    selectedDate,
+    specialistId,
+    serviceId,
+    variantName,
+    salonTz,
+    totalDuration,
+  ]);
 
   const handleDateSelect = (date) => {
     if (!date || isDateDisabled(date)) return;

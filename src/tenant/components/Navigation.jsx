@@ -5,6 +5,7 @@ import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 import GiftCardModal from "../../shared/components/modals/GiftCardModal";
+import OptimizedImage from "../../shared/components/OptimizedImage";
 
 /**
  * Navigation - Reusable navigation bar component for tenant pages
@@ -50,9 +51,14 @@ export default function Navigation() {
             className="flex items-center gap-3 group"
           >
             {tenant?.branding?.logo?.url ? (
-              <img
+              <OptimizedImage
                 src={tenant.branding.logo.url}
                 alt={salonName}
+                width={120}
+                height={40}
+                crop="fit"
+                quality="auto"
+                format="auto"
                 className="h-10 w-auto object-contain"
               />
             ) : (

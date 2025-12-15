@@ -1,5 +1,6 @@
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
 import toast from "react-hot-toast";
+import OptimizedImage from "../../shared/components/OptimizedImage";
 
 export default function ProductCard({ product, onClick }) {
   const { formatPrice, getPrice, getOriginalPrice, currency } = useCurrency();
@@ -90,12 +91,18 @@ export default function ProductCard({ product, onClick }) {
       {/* Product Image */}
       <div className="relative aspect-square bg-gray-100 overflow-hidden">
         {product.image?.url ? (
-          <img
+          <OptimizedImage
             src={product.image.url}
             alt={`${product.title} - ${
               product.brand || "Premium beauty product"
             } available at Noble Elegance Beauty Salon Wisbech`}
-            loading="lazy"
+            preset="productCard"
+            responsive
+            sizes={{
+              "(max-width: 640px)": "50vw",
+              "(max-width: 1024px)": "33vw",
+              default: "25vw",
+            }}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
         ) : (

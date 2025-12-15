@@ -30,92 +30,98 @@ export default function Dashboard() {
   const [showCreateServiceModal, setShowCreateServiceModal] = useState(false);
   const [showCreateStaffModal, setShowCreateStaffModal] = useState(false);
 
-  const fetchData = useCallback(async (signal) => {
-    try {
-      setLoading(true);
+  const fetchData = useCallback(
+    async (signal) => {
+      try {
+        setLoading(true);
 
-      // Fetch appointments, specialists, and salon info in parallel with cancellation support
-      const [appointmentsRes, specialistsRes, salonRes] = await Promise.all([
-        api.get("/appointments", { signal }),
-        api.get("/specialists", { params: { limit: 1000 }, signal }),
-        api.get("/salon", { signal }),
-      ]);
+        // Fetch appointments, specialists, and salon info in parallel with cancellation support
+        const [appointmentsRes, specialistsRes, salonRes] = await Promise.all([
+          api.get("/appointments", { signal }),
+          api.get("/specialists", { params: { limit: 1000 }, signal }),
+          api.get("/salon", { signal }),
+        ]);
 
-      let appointments = appointmentsRes.data || [];
-      const specialistsData = specialistsRes.data || [];
-      const salonData = salonRes.data || {};
+        let appointments = appointmentsRes.data || [];
+        const specialistsData = specialistsRes.data || [];
+        const salonData = salonRes.data || {};
 
-      console.log("[Dashboard] Salon data:", salonData);
+        console.log("[Dashboard] Salon data:", salonData);
 
-      // Store salon slug for booking page link
-      // Priority: use slug first, then generate from name, never use ID
-      const slug =
-        salonData.slug ||
-        (salonData.name
-          ? salonData.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
-          : null);
+        // Store salon slug for booking page link
+        // Priority: use slug first, then generate from name, never use ID
+        const slug =
+          salonData.slug ||
+          (salonData.name
+            ? salonData.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+            : null);
 
-      if (slug) {
-        setSalonSlug(slug);
-        console.log("[Dashboard] Salon slug set:", slug);
-      } else {
-        console.warn("[Dashboard] No salon slug found in response", salonData);
+        if (slug) {
+          setSalonSlug(slug);
+          console.log("[Dashboard] Salon slug set:", slug);
+        } else {
+          console.warn(
+            "[Dashboard] No salon slug found in response",
+            salonData
+          );
+        }
+
+        console.log("[Dashboard] Admin info:", {
+          admin: admin,
+          isSuperAdmin,
+          specialistId: admin?.specialistId,
+          role: admin?.role,
+        });
+
+        // Filter appointments based on admin role and linked specialist
+        if (isSuperAdmin) {
+          // Super admin sees all appointments
+          console.log(
+            "[Dashboard] Super admin - showing all appointments:",
+            appointments.length
+          );
+        } else if (admin?.specialistId) {
+          // Regular admin with linked specialist - only show their specialist's appointments
+          const originalCount = appointments.length;
+          appointments = appointments.filter(
+            (apt) => apt.specialistId?._id === admin.specialistId
+          );
+          console.log(
+            `[Dashboard] Regular admin with specialist ${admin.specialistId} - filtered from ${originalCount} to ${appointments.length} appointments`
+          );
+          // Auto-select the specialist's filter
+          setSelectedSpecialist(admin.specialistId);
+        } else {
+          // Regular admin without linked specialist - show no appointments
+          console.log(
+            "[Dashboard] Regular admin without linked specialist - showing no appointments"
+          );
+          appointments = [];
+        }
+
+        setAllAppointments(appointments);
+        setSpecialists(specialistsData);
+      } catch (error) {
+        // Ignore abort errors (user navigated away)
+        if (error.name === "AbortError" || error.code === "ERR_CANCELED") {
+          console.log("[Dashboard] Request cancelled");
+          return;
+        }
+
+        console.error("Failed to fetch data:", error);
+        toast.error("Failed to load dashboard data");
+      } finally {
+        setLoading(false);
       }
-
-      console.log("[Dashboard] Admin info:", {
-        admin: admin,
-        isSuperAdmin,
-        specialistId: admin?.specialistId,
-        role: admin?.role,
-      });
-
-      // Filter appointments based on admin role and linked specialist
-      if (isSuperAdmin) {
-        // Super admin sees all appointments
-        console.log(
-          "[Dashboard] Super admin - showing all appointments:",
-          appointments.length
-        );
-      } else if (admin?.specialistId) {
-        // Regular admin with linked specialist - only show their specialist's appointments
-        const originalCount = appointments.length;
-        appointments = appointments.filter(
-          (apt) => apt.specialistId?._id === admin.specialistId
-        );
-        console.log(
-          `[Dashboard] Regular admin with specialist ${admin.specialistId} - filtered from ${originalCount} to ${appointments.length} appointments`
-        );
-        // Auto-select the specialist's filter
-        setSelectedSpecialist(admin.specialistId);
-      } else {
-        // Regular admin without linked specialist - show no appointments
-        console.log(
-          "[Dashboard] Regular admin without linked specialist - showing no appointments"
-        );
-        appointments = [];
-      }
-
-      setAllAppointments(appointments);
-      setSpecialists(specialistsData);
-    } catch (error) {
-      // Ignore abort errors (user navigated away)
-      if (error.name === 'AbortError' || error.code === 'ERR_CANCELED') {
-        console.log("[Dashboard] Request cancelled");
-        return;
-      }
-      
-      console.error("Failed to fetch data:", error);
-      toast.error("Failed to load dashboard data");
-    } finally {
-      setLoading(false);
-    }
-  }, [admin?.specialistId, isSuperAdmin]); // Only recreate if these change
+    },
+    [admin?.specialistId, isSuperAdmin]
+  ); // Only recreate if these change
 
   useEffect(() => {
     const abortController = new AbortController();
-    
+
     fetchData(abortController.signal);
-    
+
     // Cleanup: Cancel request if component unmounts or dependencies change
     return () => {
       abortController.abort();

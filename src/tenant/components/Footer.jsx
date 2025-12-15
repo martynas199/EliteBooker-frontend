@@ -4,6 +4,7 @@ import { useTenant } from "../../shared/contexts/TenantContext";
 import { useState, useEffect } from "react";
 import { api } from "../../shared/lib/apiClient";
 import { SalonAPI } from "../pages/salon.api";
+import OptimizedImage from "../../shared/components/OptimizedImage";
 
 export default function TenantFooter() {
   const { tenant } = useTenant();
@@ -62,9 +63,14 @@ export default function TenantFooter() {
             <Link to="" className="inline-block mb-6 group">
               <div className="flex items-center gap-3">
                 {tenant?.branding?.logo?.url ? (
-                  <img
+                  <OptimizedImage
                     src={tenant.branding.logo.url}
                     alt={salonName}
+                    width={120}
+                    height={48}
+                    crop="fit"
+                    quality="auto"
+                    format="auto"
                     className="h-12 w-auto object-contain"
                   />
                 ) : (
