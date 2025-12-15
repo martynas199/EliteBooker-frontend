@@ -428,12 +428,15 @@ const BottomDrawer = ({
         {/* Scrollable content */}
         <div
           ref={contentRef}
-          className="h-full overflow-y-auto overscroll-contain pb-20"
+          className="h-full overflow-y-auto overscroll-contain"
           style={{
             WebkitOverflowScrolling: "touch",
-            // Adjust padding when keyboard is open
+            // Extra padding at bottom to ensure last item is visible
+            // Includes safe-area-inset for iPhone home indicator
             paddingBottom:
-              keyboardHeight > 0 ? `${keyboardHeight + 20}px` : "5rem",
+              keyboardHeight > 0 
+                ? `calc(${keyboardHeight}px + 8rem)` 
+                : "calc(8rem + env(safe-area-inset-bottom))",
           }}
           onScroll={handleScroll}
         >
