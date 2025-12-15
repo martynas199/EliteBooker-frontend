@@ -66,6 +66,12 @@ export default function OptimizedImage({
   const imgRef = useRef(null);
   const observerRef = useRef(null);
 
+  // Reset loading state when src changes
+  useEffect(() => {
+    setIsLoaded(false);
+    setHasError(false);
+  }, [src]);
+
   // Build transformation options
   const options = preset
     ? getPreset(preset, { width, height, quality, crop, gravity, format, dpr })
