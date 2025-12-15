@@ -671,18 +671,6 @@ export default function SearchPage() {
                   }
                   className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-full focus:ring-2 focus:ring-black focus:border-transparent text-sm"
                   style={{ fontSize: "16px", touchAction: "manipulation" }}
-                  onFocus={() => {
-                    // Lock drawer when search is focused
-                    if (window.bottomDrawerAPI) {
-                      window.bottomDrawerAPI.lockDragging(true);
-                    }
-                  }}
-                  onBlur={() => {
-                    // Unlock drawer when search loses focus
-                    if (window.bottomDrawerAPI) {
-                      window.bottomDrawerAPI.lockDragging(false);
-                    }
-                  }}
                 />
               </div>
 

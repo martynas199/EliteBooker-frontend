@@ -3,6 +3,7 @@
 ## 🐛 Problem Statement
 
 **On mobile browsers (especially iOS Safari):**
+
 - Focusing an `<input>` causes browser zoom or viewport resize
 - `window.innerHeight` changes when keyboard appears
 - Drawer snap points (based on viewport height) become invalid
@@ -13,6 +14,7 @@
 The issue had **THREE** critical problems:
 
 ### 1. Dynamic Viewport Height in CSS ❌
+
 ```css
 /* WRONG - Changes when keyboard opens */
 html {
@@ -26,6 +28,7 @@ body {
 **Problem:** `dvh` (dynamic viewport height) recalculates when keyboard opens, causing layout shift.
 
 ### 2. Lazy Viewport Capture in JS ❌
+
 ```javascript
 // WRONG - Captured on first call, might be too late
 const getViewportHeight = () => {
@@ -39,9 +42,11 @@ const getViewportHeight = () => {
 **Problem:** If captured after keyboard is already open, the "frozen" height is wrong.
 
 ### 3. Missing Overscroll Prevention ❌
+
 ```css
 /* MISSING - Allows bounce that breaks drawer */
-html, body {
+html,
+body {
   /* No overscroll-behavior */
 }
 ```
@@ -82,6 +87,7 @@ body {
 ```
 
 **Why this works:**
+
 - `height: 100%` is static and never recalculates
 - `overscroll-behavior: none` prevents pull-to-refresh interference
 - Drawer calculates snap points from JS-frozen height, not CSS
@@ -103,6 +109,7 @@ const getViewportHeight = useCallback(() => {
 ```
 
 **Why this works:**
+
 - `useRef()` initialization happens **before** first render
 - Height captured before keyboard can ever open
 - Never recalculates, even if called later
@@ -129,6 +136,7 @@ const getViewportHeight = useCallback(() => {
 ```
 
 **Why this works:**
+
 - `fontSize: 16px` prevents iOS auto-zoom (iOS zooms inputs < 16px)
 - `lockDragging(true)` prevents drawer movement while typing
 - `touchAction: manipulation` disables double-tap zoom
@@ -145,6 +153,7 @@ const getViewportHeight = useCallback(() => {
 ```
 
 **Why this works:**
+
 - `maximum-scale=1.0` prevents pinch zoom
 - `user-scalable=no` disables manual zoom
 - `viewport-fit=cover` respects safe areas (iPhone notch)
@@ -152,6 +161,7 @@ const getViewportHeight = useCallback(() => {
 ## 🧪 Testing Checklist
 
 ### iOS Safari
+
 - [ ] Focus search input → No zoom, drawer stays in place
 - [ ] Type in search → Drawer doesn't jump or collapse
 - [ ] Switch between inputs → Smooth transitions
@@ -159,12 +169,14 @@ const getViewportHeight = useCallback(() => {
 - [ ] Pull-to-refresh → Disabled, doesn't interfere with drawer
 
 ### Android Chrome
+
 - [ ] Focus search input → No viewport resize
 - [ ] Keyboard opens → Drawer position stable
 - [ ] Back button → Keyboard closes smoothly
 - [ ] Tab key navigation → Works without breaking drawer
 
 ### Edge Cases
+
 - [ ] Search while drawer is mid-height → Stays locked
 - [ ] Search while drawer is expanded → No jump
 - [ ] Search while drawer is collapsed → Can't drag while typing
@@ -174,6 +186,7 @@ const getViewportHeight = useCallback(() => {
 ## 📊 Before vs After
 
 ### Before (BROKEN)
+
 ```
 User focuses input
     ↓
@@ -191,6 +204,7 @@ Drawer jumps from 320px → 160px
 ```
 
 ### After (FIXED)
+
 ```
 Component mounts
     ↓
@@ -216,6 +230,7 @@ Drawer stays at 320px
 ## 🎯 Key Principles (Fresha-Level)
 
 ### 1. Never Trust Live Viewport Height
+
 ```javascript
 // ❌ WRONG
 const height = window.innerHeight; // Changes with keyboard
@@ -225,6 +240,7 @@ const height = frozenViewportHeight.current; // Never changes
 ```
 
 ### 2. Capture Height Before First Render
+
 ```javascript
 // ❌ WRONG - Might capture after keyboard opens
 useEffect(() => {
@@ -236,6 +252,7 @@ const frozenViewportHeight = useRef(window.innerHeight);
 ```
 
 ### 3. Lock Drawer During Input Focus
+
 ```javascript
 // ❌ WRONG - Drawer can still move while typing
 <input onFocus={() => {}} />
@@ -248,6 +265,7 @@ const frozenViewportHeight = useRef(window.innerHeight);
 ```
 
 ### 4. Prevent iOS Auto-Zoom
+
 ```jsx
 // ❌ WRONG - iOS will zoom
 <input style={{ fontSize: "14px" }} />
@@ -257,29 +275,32 @@ const frozenViewportHeight = useRef(window.innerHeight);
 ```
 
 ### 5. Disable Overscroll Bounce
+
 ```css
 /* ❌ WRONG - Allows pull-to-refresh */
-html, body {
+html,
+body {
   /* Nothing */
 }
 
 /* ✅ CORRECT - Disables bounce */
-html, body {
+html,
+body {
   overscroll-behavior: none;
 }
 ```
 
 ## 🚀 Implementation Summary
 
-| Component | Change | Why |
-|-----------|--------|-----|
-| `styles.css` | `100dvh` → `100%` | Fixed height prevents recalculation |
-| `styles.css` | Added `overscroll-behavior: none` | Prevents pull-to-refresh interference |
-| `BottomDrawer.jsx` | Immediate `useRef()` capture | Height frozen before keyboard opens |
-| `BottomDrawer.jsx` | Simplified `getViewportHeight()` | Always returns frozen height |
-| `SearchPage.jsx` | `fontSize: 16px` on input | Prevents iOS auto-zoom |
-| `SearchPage.jsx` | `lockDragging()` on focus | Drawer can't move while typing |
-| `index.html` | `user-scalable=no` | Disables manual zoom |
+| Component          | Change                            | Why                                   |
+| ------------------ | --------------------------------- | ------------------------------------- |
+| `styles.css`       | `100dvh` → `100%`                 | Fixed height prevents recalculation   |
+| `styles.css`       | Added `overscroll-behavior: none` | Prevents pull-to-refresh interference |
+| `BottomDrawer.jsx` | Immediate `useRef()` capture      | Height frozen before keyboard opens   |
+| `BottomDrawer.jsx` | Simplified `getViewportHeight()`  | Always returns frozen height          |
+| `SearchPage.jsx`   | `fontSize: 16px` on input         | Prevents iOS auto-zoom                |
+| `SearchPage.jsx`   | `lockDragging()` on focus         | Drawer can't move while typing        |
+| `index.html`       | `user-scalable=no`                | Disables manual zoom                  |
 
 ## ✅ Validation
 
@@ -291,11 +312,12 @@ All mobile viewport zoom issues are now **COMPLETELY FIXED**:
 ✅ Input focus locks drawer dragging  
 ✅ iOS auto-zoom prevented with 16px font-size  
 ✅ Manual zoom disabled in viewport meta tag  
-✅ VisualViewport API detects keyboard (for future features)  
+✅ VisualViewport API detects keyboard (for future features)
 
 ## 🎉 Result
 
 **Fresha-level smooth mobile UX:**
+
 - ✅ Drawer stays perfectly stable when typing
 - ✅ No jumps, no collapses, no overlaps
 - ✅ Smooth transitions between states
