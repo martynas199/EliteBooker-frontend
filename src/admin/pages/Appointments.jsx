@@ -70,9 +70,11 @@ export default function Appointments() {
 
   // Filter state
   const [selectedSpecialistId, setSelectedSpecialistId] = useState("");
-  const [dateFilter, setDateFilter] = useState("all"); // all, day, week, month, custom
+  const [dateFilter, setDateFilter] = useState(""); // "", day, week, month, custom
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
+  const [showSpecialistDrawer, setShowSpecialistDrawer] = useState(false);
+  const [showDateDrawer, setShowDateDrawer] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
@@ -792,89 +794,74 @@ export default function Appointments() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Specialist Filter */}
             <div className="space-y-2">
-              <label
-                htmlFor="specialist-filter"
-                className="block text-sm font-semibold text-gray-700"
-              >
+              <label className="block text-sm font-semibold text-gray-700">
                 Filter by Specialist
               </label>
-              <div className="relative">
-                <select
-                  id="specialist-filter"
-                  className="w-full appearance-none border-2 border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all cursor-pointer hover:border-gray-300"
-                  value={selectedSpecialistId}
-                  onChange={(e) => setSelectedSpecialistId(e.target.value)}
-                >
-                  <option value="">
-                    {t("allBeauticians", language) || "All Specialists"}
-                  </option>
-                  {specialists.map((b) => (
-                    <option key={b._id} value={b._id}>
-                      {b.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <svg
-                    className="h-5 w-5 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <SelectButton
+                value={selectedSpecialistId}
+                placeholder="Select one..."
+                options={[
+                  { label: "All Specialists", value: "" },
+                  ...specialists.map((b) => ({
+                    label: b.name,
+                    value: b._id,
+                  })),
+                ]}
+                onClick={() => setShowSpecialistDrawer(true)}
+              />
+              <SelectDrawer
+                open={showSpecialistDrawer}
+                onClose={() => setShowSpecialistDrawer(false)}
+                title="Select Specialist"
+                options={[
+                  { label: "All Specialists", value: "" },
+                  ...specialists.map((b) => ({
+                    label: b.name,
+                    value: b._id,
+                  })),
+                ]}
+                value={selectedSpecialistId}
+                onChange={(value) => {
+                  setSelectedSpecialistId(value);
+                  setShowSpecialistDrawer(false);
+                }}
+              />
             </div>
 
             {/* Date Filter */}
             <div className="space-y-2">
-              <label
-                htmlFor="date-filter"
-                className="block text-sm font-semibold text-gray-700"
-              >
+              <label className="block text-sm font-semibold text-gray-700">
                 Date Range
               </label>
-              <div className="relative">
-                <select
-                  id="date-filter"
-                  className="w-full appearance-none border-2 border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all cursor-pointer hover:border-gray-300"
-                  value={dateFilter}
-                  onChange={(e) => setDateFilter(e.target.value)}
-                >
-                  <option value="all">All Time</option>
-                  <option value="day">{t("today", language) || "Today"}</option>
-                  <option value="week">
-                    {t("thisWeek", language) || "This Week"}
-                  </option>
-                  <option value="month">
-                    {t("thisMonth", language) || "This Month"}
-                  </option>
-                  <option value="custom">
-                    {t("customRange", language) || "Custom Range"}
-                  </option>
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <svg
-                    className="h-5 w-5 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <SelectButton
+                value={dateFilter}
+                placeholder="Select one..."
+                options={[
+                  { label: "All Time", value: "all" },
+                  { label: "Today", value: "day" },
+                  { label: "This Week", value: "week" },
+                  { label: "This Month", value: "month" },
+                  { label: "Custom Range", value: "custom" },
+                ]}
+                onClick={() => setShowDateDrawer(true)}
+              />
+              <SelectDrawer
+                open={showDateDrawer}
+                onClose={() => setShowDateDrawer(false)}
+                title="Select Date Range"
+                options={[
+                  { label: "All Time", value: "all" },
+                  { label: "Today", value: "day" },
+                  { label: "This Week", value: "week" },
+                  { label: "This Month", value: "month" },
+                  { label: "Custom Range", value: "custom" },
+                ]}
+                value={dateFilter}
+                onChange={(value) => {
+                  setDateFilter(value);
+                  setShowDateDrawer(false);
+                }}
+              />
             </div>
           </div>
 

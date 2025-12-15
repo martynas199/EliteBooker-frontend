@@ -156,8 +156,8 @@ export default function StaffList({
         </div>
         <Button
           onClick={onCreate}
-          variant="brand"
-          className="shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-700 hover:to-purple-700"
+          variant="primary"
+          className="shadow-lg hover:shadow-xl transition-all bg-black hover:bg-gray-900"
         >
           <Plus className="w-5 h-5 mr-2 inline-block" />
           Add Staff Member

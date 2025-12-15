@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { api } from "../shared/lib/apiClient";
 import logo from "../assets/logo.svg";
 import LandingPage from "../system/pages/LandingPage";
+import BusinessesLandingPage from "../system/pages/BusinessesLandingPage";
 import SearchPage from "../system/pages/SearchPage";
 import HelpPage from "../system/pages/HelpPage";
 import SalonDetails from "../tenant/pages/SalonDetails";
@@ -184,8 +185,11 @@ export default function AppRoutes() {
         {/* Search Page */}
         <Route path="/search" element={<SearchPage />} />
 
+        {/* Browse Businesses */}
+        <Route path="/business" element={<LandingPage />} />
+
         {/* Platform marketing/landing page */}
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<BusinessesLandingPage />} />
 
         {/* Help & Support */}
         <Route path="/help" element={<HelpPage />} />
