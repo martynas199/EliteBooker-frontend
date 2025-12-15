@@ -47,7 +47,6 @@ const BottomDrawer = ({
   const [currentSnap, setCurrentSnap] = useState(initialSnap);
   const [isDragging, setIsDragging] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
-  const [isInputFocused, setIsInputFocused] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   // Refs for drag tracking
@@ -197,13 +196,10 @@ const BottomDrawer = ({
   }, []);
 
   /**
-   * Touch Start Handler - LOCKED during input focus
+   * Touch Start Handler
    */
   const handleTouchStart = useCallback(
     (e) => {
-      // 🔒 Block dragging when input is focused (keyboard open)
-      if (isInputFocused) return;
-
       // Only allow drag when content is scrolled to top
       if (!isAtTop) return;
 
@@ -225,15 +221,15 @@ const BottomDrawer = ({
         contentRef.current.style.overflowY = "hidden";
       }
     },
-    [isAtTop, drawerHeight, isInputFocused]
+    [isAtTop, drawerHeight]
   );
 
   /**
-   * Touch Move Handler - LOCKED during input focus
+   * Touch Move Handler
    */
   const handleTouchMove = useCallback(
     (e) => {
-      if (!isDragging || isInputFocused) return;
+      if (!isDragging) return;
 
       const touch = e.touches[0];
       const deltaY = dragStartY.current - touch.clientY;
@@ -258,7 +254,7 @@ const BottomDrawer = ({
       // Prevent default to avoid scroll bounce
       e.preventDefault();
     },
-    [isDragging, clampHeight, drawerHeight, isInputFocused]
+    [isDragging, clampHeight, drawerHeight]
   );
 
   /**
@@ -326,32 +322,7 @@ const BottomDrawer = ({
       }
     };
 
-    // Listen for input focus/blur to lock dragging
-    const handleFocusIn = (e) => {
-      if (
-        e.target.tagName === "INPUT" ||
-        e.target.tagName === "TEXTAREA" ||
-        e.target.isContentEditable
-      ) {
-        setIsInputFocused(true);
-        console.log("[BottomDrawer] Input focused - drawer locked");
-      }
-    };
-
-    const handleFocusOut = (e) => {
-      if (
-        e.target.tagName === "INPUT" ||
-        e.target.tagName === "TEXTAREA" ||
-        e.target.isContentEditable
-      ) {
-        setIsInputFocused(false);
-        console.log("[BottomDrawer] Input blurred - drawer unlocked");
-      }
-    };
-
     // Attach listeners
-    document.addEventListener("focusin", handleFocusIn);
-    document.addEventListener("focusout", handleFocusOut);
 
     if (window.visualViewport) {
       window.visualViewport.addEventListener(
@@ -361,8 +332,6 @@ const BottomDrawer = ({
     }
 
     return () => {
-      document.removeEventListener("focusin", handleFocusIn);
-      document.removeEventListener("focusout", handleFocusOut);
       if (window.visualViewport) {
         window.visualViewport.removeEventListener(
           "resize",
@@ -398,7 +367,6 @@ const BottomDrawer = ({
     window.bottomDrawerAPI = {
       snapTo: (snap) => animateToSnap(snap),
       getCurrentSnap: () => currentSnap,
-      lockDragging: (locked) => setIsInputFocused(locked),
     };
 
     return () => {
