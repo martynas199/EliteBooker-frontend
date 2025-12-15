@@ -82,17 +82,18 @@ export function getOptimizedImageUrl(url, options = {}) {
     return url;
   }
 
-  // Match pattern: /upload/ or /upload/v123456/
-  // We want to insert transformations after /upload/ but before the resource path
-  const uploadPattern = /\/upload\/(v\d+\/)?/;
-  const match = url.match(uploadPattern);
+  // Cloudinary URL structure: https://res.cloudinary.com/{cloud}/image/upload/{version?}/{transforms?}/{public_id}.{ext}
+  // We need to insert transformations AFTER version (if exists) but BEFORE public_id
   
-  if (match) {
-    const versionPart = match[1] || ''; // v123456/ or empty
-    return url.replace(uploadPattern, `/upload/${transformString}/${versionPart}`);
+  // Check if URL has a version number (v followed by digits)
+  if (/\/upload\/v\d+\//.test(url)) {
+    // Has version: insert after version
+    return url.replace(/\/upload\/(v\d+\/)/, `/upload/$1${transformString}/`);
+  } else {
+    // No version: insert after /upload/
+    return url.replace(/\/upload\//, `/upload/${transformString}/`);
   }
-  
-  return url;
+}
 }
 
 /**
