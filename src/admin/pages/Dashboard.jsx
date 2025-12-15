@@ -30,15 +30,15 @@ export default function Dashboard() {
   const [showCreateServiceModal, setShowCreateServiceModal] = useState(false);
   const [showCreateStaffModal, setShowCreateStaffModal] = useState(false);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (signal) => {
     try {
       setLoading(true);
 
-      // Fetch appointments, specialists, and salon info in parallel
+      // Fetch appointments, specialists, and salon info in parallel with cancellation support
       const [appointmentsRes, specialistsRes, salonRes] = await Promise.all([
-        api.get("/appointments"),
-        api.get("/specialists", { params: { limit: 1000 } }),
-        api.get("/salon"),
+        api.get("/appointments", { signal }),
+        api.get("/specialists", { params: { limit: 1000 }, signal }),
+        api.get("/salon", { signal }),
       ]);
 
       let appointments = appointmentsRes.data || [];
@@ -98,6 +98,12 @@ export default function Dashboard() {
       setAllAppointments(appointments);
       setSpecialists(specialistsData);
     } catch (error) {
+      // Ignore abort errors (user navigated away)
+      if (error.name === 'AbortError' || error.code === 'ERR_CANCELED') {
+        console.log("[Dashboard] Request cancelled");
+        return;
+      }
+      
       console.error("Failed to fetch data:", error);
       toast.error("Failed to load dashboard data");
     } finally {
@@ -106,7 +112,14 @@ export default function Dashboard() {
   }, [admin?.specialistId, isSuperAdmin]); // Only recreate if these change
 
   useEffect(() => {
-    fetchData();
+    const abortController = new AbortController();
+    
+    fetchData(abortController.signal);
+    
+    // Cleanup: Cancel request if component unmounts or dependencies change
+    return () => {
+      abortController.abort();
+    };
   }, [fetchData]); // Re-fetch when fetchData changes (which depends on admin and isSuperAdmin)
 
   useEffect(() => {
