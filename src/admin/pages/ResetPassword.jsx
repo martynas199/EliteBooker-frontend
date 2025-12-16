@@ -5,6 +5,7 @@ import Button from "../../shared/components/ui/Button";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../shared/state/authSlice";
+import { motion } from "framer-motion";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -108,33 +109,106 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 px-4 py-12">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#3B82F6] to-[#2563EB] flex items-center justify-center shadow-lg">
-              <span className="text-3xl font-bold text-white">B</span>
-            </div>
-          </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#3B82F6] via-[#2563EB] to-[#06B6D4] bg-clip-text text-transparent mb-2">
-            Elite Booker
-          </h1>
-          <p className="text-gray-600">Business Dashboard</p>
-        </div>
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50">
+      {/* Animated gradient orbs - matching login page */}
+      <motion.div
+        animate={{
+          x: [0, 100, 0],
+          y: [0, -100, 0],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-violet-400/20 to-fuchsia-400/20 rounded-full blur-3xl"
+      />
+      <motion.div
+        animate={{
+          x: [0, -100, 0],
+          y: [0, 100, 0],
+          scale: [1.2, 1, 1.2],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-cyan-400/20 to-blue-400/20 rounded-full blur-3xl"
+      />
 
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-blue-100">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+
+      <div className="relative min-h-screen flex items-center justify-center px-4 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-md w-full"
+        >
+          {/* Logo/Title - matching login */}
+          <div className="text-center mb-10">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              className="flex justify-center mb-6"
+            >
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-xl">
+                <svg
+                  className="w-12 h-12 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                  />
+                </svg>
+              </div>
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-4xl font-bold bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600 bg-clip-text text-transparent mb-2"
+            >
               Set New Password
-            </h2>
-            <p className="text-gray-600">Enter your new password below.</p>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-gray-600 text-lg"
+            >
+              Choose a secure password
+            </motion.p>
           </div>
+
+          {/* Reset Password Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="bg-white rounded-3xl shadow-2xl border border-gray-200 p-8"
+          >
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Create New Password
+            </h2>
+            <p className="text-gray-600 mb-8">
+              Enter a strong password for your account
+            </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-semibold text-gray-700 mb-2"
               >
                 New Password
               </label>
@@ -145,7 +219,7 @@ export default function ResetPassword() {
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
                   placeholder="••••••••"
                   autoFocus
                 />
@@ -199,7 +273,7 @@ export default function ResetPassword() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-semibold text-gray-700 mb-2"
               >
                 Confirm New Password
               </label>
@@ -210,7 +284,7 @@ export default function ResetPassword() {
                   type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
                   placeholder="••••••••"
                 />
                 <button
@@ -261,7 +335,7 @@ export default function ResetPassword() {
               type="submit"
               variant="brand"
               size="lg"
-              className="w-full"
+              className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700"
               loading={resetPasswordMutation.isPending}
               disabled={resetPasswordMutation.isPending}
             >
@@ -272,7 +346,7 @@ export default function ResetPassword() {
           <div className="mt-6 text-center">
             <Link
               to="/admin/login"
-              className="text-[#3B82F6] hover:text-[#2563EB] font-medium inline-flex items-center gap-1"
+              className="text-violet-600 hover:text-violet-700 font-semibold inline-flex items-center gap-2 transition-colors"
             >
               <svg
                 className="w-4 h-4"
@@ -290,7 +364,7 @@ export default function ResetPassword() {
               Back to Login
             </Link>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

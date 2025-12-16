@@ -2194,6 +2194,10 @@ function EditModal({
 }) {
   if (!appointment) return null;
 
+  const [showSpecialistDrawer, setShowSpecialistDrawer] = useState(false);
+  const [showServiceDrawer, setShowServiceDrawer] = useState(false);
+  const [showVariantDrawer, setShowVariantDrawer] = useState(false);
+
   const updateField = (field, value) => {
     setAppointment((prev) => ({ ...prev, [field]: value }));
   };
@@ -2254,19 +2258,35 @@ function EditModal({
         <div className="space-y-3 pt-3 border-t">
           <h3 className="font-semibold text-gray-900">Appointment Details</h3>
           <FormField label="Specialist" htmlFor="specialist-select">
-            <select
-              id="specialist-select"
-              className="border rounded w-full px-3 py-2"
+            <SelectButton
               value={appointment.specialistId}
-              onChange={(e) => updateField("specialistId", e.target.value)}
-            >
-              <option value="">Select Specialist</option>
-              {specialists.map((b) => (
-                <option key={b._id} value={b._id}>
-                  {b.name}
-                </option>
-              ))}
-            </select>
+              placeholder="Select Specialist"
+              options={[
+                { label: "Select Specialist", value: "" },
+                ...specialists.map((b) => ({
+                  label: b.name,
+                  value: b._id,
+                })),
+              ]}
+              onClick={() => setShowSpecialistDrawer(true)}
+            />
+            <SelectDrawer
+              open={showSpecialistDrawer}
+              onClose={() => setShowSpecialistDrawer(false)}
+              title="Select Specialist"
+              options={[
+                { label: "Select Specialist", value: "" },
+                ...specialists.map((b) => ({
+                  label: b.name,
+                  value: b._id,
+                })),
+              ]}
+              value={appointment.specialistId}
+              onChange={(value) => {
+                updateField("specialistId", value);
+                setShowSpecialistDrawer(false);
+              }}
+            />
           </FormField>
 
           {/* Multi-Service Display */}
@@ -2306,38 +2326,69 @@ function EditModal({
           ) : (
             <>
               <FormField label="Service" htmlFor="service-select">
-                <select
-                  id="service-select"
-                  className="border rounded w-full px-3 py-2"
+                <SelectButton
                   value={appointment.serviceId}
-                  onChange={(e) => {
-                    updateField("serviceId", e.target.value);
+                  placeholder="Select Service"
+                  options={[
+                    { label: "Select Service", value: "" },
+                    ...services.map((s) => ({
+                      label: s.name,
+                      value: s._id,
+                    })),
+                  ]}
+                  onClick={() => setShowServiceDrawer(true)}
+                />
+                <SelectDrawer
+                  open={showServiceDrawer}
+                  onClose={() => setShowServiceDrawer(false)}
+                  title="Select Service"
+                  options={[
+                    { label: "Select Service", value: "" },
+                    ...services.map((s) => ({
+                      label: s.name,
+                      value: s._id,
+                    })),
+                  ]}
+                  value={appointment.serviceId}
+                  onChange={(value) => {
+                    updateField("serviceId", value);
                     updateField("variantName", "");
+                    setShowServiceDrawer(false);
                   }}
-                >
-                  <option value="">Select Service</option>
-                  {services.map((s) => (
-                    <option key={s._id} value={s._id}>
-                      {s.name}
-                    </option>
-                  ))}
-                </select>
+                />
               </FormField>
               <FormField label="Variant" htmlFor="variant-select">
-                <select
-                  id="variant-select"
-                  className="border rounded w-full px-3 py-2"
+                <SelectButton
                   value={appointment.variantName}
-                  onChange={(e) => updateField("variantName", e.target.value)}
+                  placeholder="Select Variant"
+                  options={[
+                    { label: "Select Variant", value: "" },
+                    ...variants.map((v) => ({
+                      label: `${v.name} - £${v.price} (${v.durationMin}min)`,
+                      value: v.name,
+                    })),
+                  ]}
+                  onClick={() => setShowVariantDrawer(true)}
                   disabled={!appointment.serviceId}
-                >
-                  <option value="">Select Variant</option>
-                  {variants.map((v) => (
-                    <option key={v.name} value={v.name}>
-                      {v.name} - £{v.price} ({v.durationMin}min)
-                    </option>
-                  ))}
-                </select>
+                />
+                <SelectDrawer
+                  open={showVariantDrawer}
+                  onClose={() => setShowVariantDrawer(false)}
+                  title="Select Variant"
+                  options={[
+                    { label: "Select Variant", value: "" },
+                    ...variants.map((v) => ({
+                      label: `${v.name} - £${v.price} (${v.durationMin}min)`,
+                      value: v.name,
+                    })),
+                  ]}
+                  value={appointment.variantName}
+                  onChange={(value) => {
+                    updateField("variantName", value);
+                    setShowVariantDrawer(false);
+                  }}
+                  emptyMessage="Please select a service first"
+                />
               </FormField>
             </>
           )}

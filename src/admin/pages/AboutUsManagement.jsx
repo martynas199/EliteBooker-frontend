@@ -264,19 +264,19 @@ export default function AboutUsManagement() {
 
           {imagePreview ? (
             <div className="space-y-4">
-              <div className="relative inline-block">
+              <div className="relative inline-block w-full">
                 <img
                   src={imagePreview}
                   alt="About Us preview"
-                  className="w-full max-w-md h-48 object-cover rounded-lg border border-gray-200"
+                  className="w-full max-w-full sm:max-w-md h-64 sm:h-48 object-cover rounded-lg border border-gray-200"
                 />
                 <button
                   type="button"
                   onClick={removeImage}
-                  className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                  className="absolute top-2 right-2 sm:-top-2 sm:-right-2 p-2 sm:p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-5 h-5 sm:w-4 sm:h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -393,14 +393,14 @@ export default function AboutUsManagement() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+        <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-6 border-t border-gray-200">
           <button
             type="button"
             onClick={() => {
               setFormData({ quote: "", description: "" });
               removeImage();
             }}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+            className="w-full sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors order-2 sm:order-1"
             disabled={updateMutation.isPending}
           >
             Clear Form
@@ -412,7 +412,7 @@ export default function AboutUsManagement() {
               !formData.quote.trim() ||
               !formData.description.trim()
             }
-            className="px-8 py-3 bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-white rounded-lg hover:from-[#2563EB] hover:to-[#1D4ED8] disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors flex items-center gap-2"
+            className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-white rounded-lg hover:from-[#2563EB] hover:to-[#1D4ED8] disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors flex items-center justify-center gap-2 order-1 sm:order-2"
           >
             {updateMutation.isPending ? (
               <>

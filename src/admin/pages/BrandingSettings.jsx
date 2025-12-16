@@ -353,7 +353,7 @@ export default function BrandingSettings() {
                   <img
                     src={formData.heroImageUrl}
                     alt="Hero preview"
-                    className="w-full h-48 object-cover rounded-lg"
+                    className="w-full h-64 sm:h-48 object-cover rounded-lg"
                     onError={(e) => {
                       e.target.style.display = "none";
                       e.target.nextSibling.style.display = "block";

@@ -17,6 +17,10 @@ import {
 import { api } from "../../shared/lib/apiClient";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Modal from "../../shared/components/ui/Modal";
+import {
+  SelectDrawer,
+  SelectButton,
+} from "../../shared/components/ui/SelectDrawer";
 
 export default function ClientsPage() {
   const navigate = useNavigate();
@@ -36,6 +40,10 @@ export default function ClientsPage() {
   const [selectedClient, setSelectedClient] = useState(null);
   const [clientDetails, setClientDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+
+  // Drawer state
+  const [showStatusDrawer, setShowStatusDrawer] = useState(false);
+  const [showSortDrawer, setShowSortDrawer] = useState(false);
 
   const limit = 20;
 
@@ -263,29 +271,70 @@ export default function ClientsPage() {
             </div>
 
             {/* Status Filter */}
-            <select
-              value={statusFilter}
-              onChange={handleStatusChange}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-            >
-              <option value="all">All Statuses</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="vip">VIP</option>
-              <option value="blocked">Blocked</option>
-            </select>
+            <div>
+              <SelectButton
+                value={statusFilter}
+                placeholder="Filter by status"
+                options={[
+                  { label: "All Statuses", value: "all" },
+                  { label: "Active", value: "active" },
+                  { label: "Inactive", value: "inactive" },
+                  { label: "VIP", value: "vip" },
+                  { label: "Blocked", value: "blocked" },
+                ]}
+                onClick={() => setShowStatusDrawer(true)}
+              />
+              <SelectDrawer
+                open={showStatusDrawer}
+                onClose={() => setShowStatusDrawer(false)}
+                title="Filter by Status"
+                options={[
+                  { label: "All Statuses", value: "all" },
+                  { label: "Active", value: "active" },
+                  { label: "Inactive", value: "inactive" },
+                  { label: "VIP", value: "vip" },
+                  { label: "Blocked", value: "blocked" },
+                ]}
+                value={statusFilter}
+                onChange={(value) => {
+                  setStatusFilter(value);
+                  setPage(0);
+                  setShowStatusDrawer(false);
+                }}
+              />
+            </div>
 
             {/* Sort */}
-            <select
-              value={sortBy}
-              onChange={handleSortChange}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-            >
-              <option value="totalSpend">Sort by: Spending</option>
-              <option value="totalVisits">Sort by: Visits</option>
-              <option value="lastVisit">Sort by: Last Visit</option>
-              <option value="firstVisit">Sort by: First Visit</option>
-            </select>
+            <div>
+              <SelectButton
+                value={sortBy}
+                placeholder="Sort clients"
+                options={[
+                  { label: "Sort by: Spending", value: "totalSpend" },
+                  { label: "Sort by: Visits", value: "totalVisits" },
+                  { label: "Sort by: Last Visit", value: "lastVisit" },
+                  { label: "Sort by: First Visit", value: "firstVisit" },
+                ]}
+                onClick={() => setShowSortDrawer(true)}
+              />
+              <SelectDrawer
+                open={showSortDrawer}
+                onClose={() => setShowSortDrawer(false)}
+                title="Sort Clients"
+                options={[
+                  { label: "Sort by: Spending", value: "totalSpend" },
+                  { label: "Sort by: Visits", value: "totalVisits" },
+                  { label: "Sort by: Last Visit", value: "lastVisit" },
+                  { label: "Sort by: First Visit", value: "firstVisit" },
+                ]}
+                value={sortBy}
+                onChange={(value) => {
+                  setSortBy(value);
+                  setPage(0);
+                  setShowSortDrawer(false);
+                }}
+              />
+            </div>
           </div>
 
           <div className="mt-3 flex items-center justify-between text-sm text-gray-600">

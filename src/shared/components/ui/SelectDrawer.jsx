@@ -66,7 +66,7 @@ export function SelectDrawer({
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-            className="relative bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md max-h-[85vh] flex flex-col mb-safe"
+            className="relative bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md max-h-[80vh] flex flex-col mb-safe"
             style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
           >
             {/* Handle bar for mobile */}
