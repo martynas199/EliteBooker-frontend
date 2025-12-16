@@ -306,7 +306,11 @@ const RegisterPage = () => {
                   </div>
                 </div>
 
-                <Button type="submit" disabled={loading} className="w-full py-3 sm:py-2.5 text-base sm:text-sm">
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3 sm:py-2.5 text-base sm:text-sm"
+                >
                   {loading ? "Creating account..." : "Create account"}
                 </Button>
 

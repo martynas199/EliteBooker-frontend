@@ -410,8 +410,8 @@ export default function TimeSlots() {
           )}
         </motion.div>
 
-        {/* Service Stack Bar - Floating bottom bar with selected services */}
-        <ServiceStackBar />
+        {/* Service Stack Bar - Hidden on time selection page */}
+        {/* <ServiceStackBar /> */}
       </PageTransition>
     </>
   );

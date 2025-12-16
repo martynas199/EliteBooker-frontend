@@ -76,19 +76,19 @@ export default function Navigation() {
           {/* Center Navigation - Desktop */}
           <nav className="hidden md:flex gap-1">
             <Link
-              to=""
+              to="/"
               className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all relative group"
             >
               Services
             </Link>
             <Link
-              to="about"
+              to="/about"
               className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all relative group"
             >
               About Us
             </Link>
             <Link
-              to="salon"
+              to="/salon"
               className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all relative group"
             >
               Contact
@@ -318,21 +318,21 @@ export default function Navigation() {
           <nav className="md:hidden py-4 border-t border-gray-200 animate-slide-down bg-white">
             <div className="flex flex-col gap-1">
               <Link
-                to=""
+                to="/"
                 onClick={() => setMobileMenuOpen(false)}
                 className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
               >
                 Services
               </Link>
               <Link
-                to="about"
+                to="/about"
                 onClick={() => setMobileMenuOpen(false)}
                 className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
               >
                 About Us
               </Link>
               <Link
-                to="salon"
+                to="/salon"
                 onClick={() => setMobileMenuOpen(false)}
                 className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
               >

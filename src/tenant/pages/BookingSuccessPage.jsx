@@ -175,9 +175,7 @@ export default function SuccessPage() {
                               className="bg-gray-50 rounded-lg p-3 sm:p-4"
                             >
                               <p className="text-base sm:text-lg font-bold text-gray-900">
-                                {service.serviceId?.name ||
-                                  service.variantName ||
-                                  "Service"}
+                                {service.serviceId?.name || "Service"}
                               </p>
                               <p className="text-sm sm:text-base text-gray-600 mt-1">
                                 {service.variantName} •{" "}
