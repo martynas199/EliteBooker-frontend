@@ -86,6 +86,14 @@ const navigationConfig = [
     ],
   },
   {
+    label: "Seminars & Masterclasses",
+    icon: "Package",
+    items: [
+      { label: "All Seminars", path: "/admin/seminars" },
+      { label: "Create Seminar", path: "/admin/seminars/new" },
+    ],
+  },
+  {
     label: "Website Builder",
     icon: "Layout",
     items: [
