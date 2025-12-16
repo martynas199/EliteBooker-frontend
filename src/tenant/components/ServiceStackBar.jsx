@@ -94,8 +94,10 @@ export default function ServiceStackBar() {
             {/* Right: Total & Continue Button */}
             <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto">
               <div className="text-left sm:text-right">
-                <p className="text-xs sm:text-sm text-gray-600">Total</p>
-                <p className="text-lg sm:text-2xl font-bold text-gray-900">
+                <p className="text-sm sm:text-base font-semibold text-gray-900">
+                  <span className="text-xs sm:text-sm text-gray-600 mr-2">
+                    Total
+                  </span>
                   {formatPrice(totalPrice)}
                 </p>
               </div>

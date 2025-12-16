@@ -177,8 +177,12 @@ export default function SuccessPage() {
                               <p className="text-base sm:text-lg font-bold text-gray-900">
                                 {service.serviceId?.name || "Service"}
                               </p>
+                              {service.variantName && (
+                                <p className="text-sm sm:text-base text-gray-600 mt-1">
+                                  {service.variantName}
+                                </p>
+                              )}
                               <p className="text-sm sm:text-base text-gray-600 mt-1">
-                                {service.variantName} •{" "}
                                 {service.duration || service.durationMin || 0}{" "}
                                 min
                               </p>
@@ -191,9 +195,11 @@ export default function SuccessPage() {
                         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
                           {appt?.service?.name}
                         </h2>
-                        <p className="text-base sm:text-lg text-black font-semibold">
-                          {appt?.variantName}
-                        </p>
+                        {appt?.variantName && (
+                          <p className="text-base sm:text-lg text-black font-semibold">
+                            {appt?.variantName}
+                          </p>
+                        )}
                       </>
                     )}
                   </div>

@@ -263,7 +263,7 @@ export default function HeroSections() {
                     <img
                       src={centerImagePreview}
                       alt="Center preview"
-                      className="w-48 h-60 object-cover rounded-lg border"
+                      className="w-full max-w-md h-60 sm:h-80 object-cover rounded-lg border"
                     />
                   </div>
                 )}

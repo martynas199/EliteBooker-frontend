@@ -97,95 +97,121 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 px-4 py-12">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#3B82F6] to-[#2563EB] flex items-center justify-center shadow-lg">
-              <span className="text-3xl font-bold text-white">B</span>
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50">
+      {/* Animated gradient orbs - matching login page */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-violet-400/20 to-fuchsia-400/20 rounded-full blur-3xl animate-pulse" />
+        <div
+          className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-cyan-400/20 to-blue-400/20 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        />
+      </div>
+
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+
+      <div className="relative min-h-screen flex items-center justify-center px-4 py-12">
+        <div className="max-w-md w-full">
+          <div className="text-center mb-10">
+            <div className="flex justify-center mb-6">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-xl">
+                <svg
+                  className="w-12 h-12 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600 bg-clip-text text-transparent mb-2">
+              Reset Password
+            </h1>
+            <p className="text-gray-600 text-lg">Business Dashboard</p>
+          </div>
+
+          <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 p-8">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Forgot your password?
+              </h2>
+              <p className="text-gray-600">
+                Enter your email address and we'll send you a link to reset your
+                password.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-semibold text-gray-900 mb-2"
+                >
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+                  placeholder="admin@example.com"
+                  autoFocus
+                />
+              </div>
+
+              <Button
+                type="submit"
+                variant="brand"
+                size="lg"
+                className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700"
+                loading={forgotPasswordMutation.isPending}
+                disabled={forgotPasswordMutation.isPending}
+              >
+                Send Reset Link
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <Link
+                to="/admin/login"
+                className="text-violet-600 hover:text-fuchsia-600 font-medium inline-flex items-center gap-1 transition-colors"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+                Back to Login
+              </Link>
             </div>
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#3B82F6] via-[#2563EB] to-[#06B6D4] bg-clip-text text-transparent mb-2">
-            Elite Booker
-          </h1>
-          <p className="text-gray-600">Business Dashboard</p>
-        </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-blue-100">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Reset Password
-            </h2>
-            <p className="text-gray-600">
-              Enter your email address and we'll send you a link to reset your
-              password.
+          <div className="mt-8 text-center text-sm text-gray-500">
+            <p>
+              Remember your password?{" "}
+              <Link
+                to="/admin/login"
+                className="text-violet-600 hover:text-fuchsia-600 font-medium"
+              >
+                Sign in here
+              </Link>
             </p>
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                placeholder="admin@nobleelegance.com"
-                autoFocus
-              />
-            </div>
-
-            <Button
-              type="submit"
-              variant="brand"
-              size="lg"
-              className="w-full"
-              loading={forgotPasswordMutation.isPending}
-              disabled={forgotPasswordMutation.isPending}
-            >
-              Send Reset Link
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <Link
-              to="/admin/login"
-              className="text-[#3B82F6] hover:text-[#2563EB] font-medium inline-flex items-center gap-1"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                />
-              </svg>
-              Back to Login
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <p>
-            Remember your password?{" "}
-            <Link
-              to="/admin/login"
-              className="text-purple-600 hover:text-purple-700 font-medium"
-            >
-              Sign in here
-            </Link>
-          </p>
         </div>
       </div>
     </div>

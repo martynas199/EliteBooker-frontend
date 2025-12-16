@@ -39,6 +39,11 @@ import BlogPage from "../tenant/pages/BlogPage";
 import BlogPostPage from "../tenant/pages/BlogPostPage";
 import TokenDebugPage from "../tenant/pages/TokenDebugPage";
 import SalonLandingLuxury from "../tenant/pages/SalonLandingLuxury";
+import SeminarsPage from "../tenant/pages/SeminarsPage";
+import SeminarDetailPage from "../tenant/pages/SeminarDetailPage";
+import SeminarBookingPage from "../tenant/pages/SeminarBookingPage";
+import SeminarBookingSuccessPage from "../tenant/pages/SeminarBookingSuccessPage";
+import MySeminarsPage from "../tenant/pages/MySeminarsPage";
 import { useAuth } from "../shared/contexts/AuthContext";
 import { useTenant } from "../shared/contexts/TenantContext";
 import { useTenantSettings } from "../shared/hooks/useTenantSettings";
@@ -99,6 +104,9 @@ const PlatformFeatures = lazy(() => import("../admin/pages/PlatformFeatures"));
 const Clients = lazy(() => import("../admin/pages/ClientsPage"));
 const ClientDetails = lazy(() => import("../admin/pages/ClientDetailsPage"));
 const TakePaymentPage = lazy(() => import("../tenant/pages/TakePaymentPage"));
+const Seminars = lazy(() => import("../admin/pages/Seminars"));
+const SeminarForm = lazy(() => import("../admin/pages/SeminarForm"));
+const SeminarAttendees = lazy(() => import("../admin/pages/SeminarAttendees"));
 
 function CustomerLayout() {
   const dispatch = useDispatch();
@@ -141,6 +149,14 @@ function CustomerLayout() {
           <Route path="about" element={<AboutUsPage />} />
           <Route path="blog" element={<BlogPage />} />
           <Route path="blog/:slug" element={<BlogPostPage />} />
+          <Route path="seminars" element={<SeminarsPage />} />
+          <Route path="seminars/:slug" element={<SeminarDetailPage />} />
+          <Route path="seminars/:slug/book" element={<SeminarBookingPage />} />
+          <Route
+            path="seminars/booking-success"
+            element={<SeminarBookingSuccessPage />}
+          />
+          <Route path="my-seminars" element={<MySeminarsPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="token-debug" element={<TokenDebugPage />} />
@@ -457,6 +473,38 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
                 <TakePaymentPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="seminars"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <Seminars />
+              </Suspense>
+            }
+          />
+          <Route
+            path="seminars/create"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <SeminarForm />
+              </Suspense>
+            }
+          />
+          <Route
+            path="seminars/:id/edit"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <SeminarForm />
+              </Suspense>
+            }
+          />
+          <Route
+            path="seminars/:id/attendees"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <SeminarAttendees />
               </Suspense>
             }
           />
