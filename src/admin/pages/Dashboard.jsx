@@ -1717,7 +1717,7 @@ export default function Dashboard() {
 
       {/* Specialist Filter Drawer */}
       <SelectDrawer
-        isOpen={showSpecialistDrawer}
+        open={showSpecialistDrawer}
         onClose={() => setShowSpecialistDrawer(false)}
         title={t("filterByBeautician", language)}
         options={[

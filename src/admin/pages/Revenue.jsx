@@ -809,7 +809,7 @@ export default function Revenue() {
 
       {/* Specialist Filter Drawer */}
       <SelectDrawer
-        isOpen={showSpecialistDrawer}
+        open={showSpecialistDrawer}
         onClose={() => setShowSpecialistDrawer(false)}
         title="Filter by Specialist"
         options={[
