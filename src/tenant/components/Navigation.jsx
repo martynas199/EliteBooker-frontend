@@ -45,7 +45,7 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo - Left */}
           <Link
-            to=""
+            to={`/salon/${tenant?.slug}`}
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-3 group"
           >
