@@ -133,7 +133,7 @@ export default function StaffList({
   return (
     <div className="space-y-6 overflow-x-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg hidden sm:flex">
             <svg
@@ -157,7 +157,7 @@ export default function StaffList({
         <Button
           onClick={onCreate}
           variant="primary"
-          className="shadow-lg hover:shadow-xl transition-all bg-black hover:bg-gray-900"
+          className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-blue-600 hover:bg-blue-700"
         >
           <Plus className="w-5 h-5 mr-2 inline-block" />
           Add Staff Member

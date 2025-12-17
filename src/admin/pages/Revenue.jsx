@@ -13,6 +13,10 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import {
+  SelectDrawer,
+  SelectButton,
+} from "../../shared/components/ui/SelectDrawer";
 
 export default function Revenue() {
   const [startDate, setStartDate] = useState(
@@ -23,6 +27,7 @@ export default function Revenue() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedSpecialist, setSelectedSpecialist] = useState("all");
+  const [showSpecialistDrawer, setShowSpecialistDrawer] = useState(false);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [dateError, setDateError] = useState("");
@@ -489,18 +494,18 @@ export default function Revenue() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Filter by Specialist
                   </label>
-                  <select
-                    value={selectedSpecialist}
-                    onChange={(e) => setSelectedSpecialist(e.target.value)}
-                    className="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                  >
-                    <option value="all">All Specialists</option>
-                    {data.specialists.map((b) => (
-                      <option key={b.specialistId} value={b.specialistId}>
-                        {b.specialist}
-                      </option>
-                    ))}
-                  </select>
+                  <SelectButton
+                    onClick={() => setShowSpecialistDrawer(true)}
+                    label="Filter by Specialist"
+                    value={
+                      selectedSpecialist === "all"
+                        ? "All Specialists"
+                        : data.specialists.find(
+                            (s) => s.specialistId === selectedSpecialist
+                          )?.specialist || "All Specialists"
+                    }
+                    className="w-full sm:w-64"
+                  />
                 </div>
               )}
 
@@ -800,6 +805,25 @@ export default function Revenue() {
           )}
         </>
       )}
+
+      {/* Specialist Filter Drawer */}
+      <SelectDrawer
+        isOpen={showSpecialistDrawer}
+        onClose={() => setShowSpecialistDrawer(false)}
+        title="Filter by Specialist"
+        options={[
+          { value: "all", label: "All Specialists" },
+          ...(data?.specialists || []).map((s) => ({
+            value: s.specialistId,
+            label: s.specialist,
+          })),
+        ]}
+        value={selectedSpecialist}
+        onChange={(value) => {
+          setSelectedSpecialist(value);
+          setShowSpecialistDrawer(false);
+        }}
+      />
     </div>
   );
 }

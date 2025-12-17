@@ -190,7 +190,7 @@ export default function StripeConnectSettings({ specialistId, email }) {
               <Button onClick={handleConnect} variant="brand">
                 {status?.status === "pending"
                   ? "🔄 Complete Setup"
-                  : "🚀 Connect with Stripe"}
+                  : "� Connect with Stripe"}
               </Button>
               {status?.status === "pending" && (
                 <p className="text-sm text-gray-600 flex items-center">

@@ -91,6 +91,8 @@ export default function FeaturesPage() {
     ecommerce: ecommerceEnabled === true,
     emailNotifications: featureFlags?.emailNotifications === true,
     multiLocation: featureFlags?.multiLocation === true,
+    seminars: featureFlags?.seminars === true,
+    payOnTap: featureFlags?.payOnTap === true,
   });
 
   // Subscription state
@@ -462,6 +464,26 @@ export default function FeaturesPage() {
                 description="Enable multiple business locations. Services and specialists can be assigned to specific locations, and clients can choose their preferred location when booking."
                 enabled={localFlags.multiLocation}
                 onChange={() => handleToggle("multiLocation")}
+              />
+
+              {/* Seminars & Masterclasses */}
+              <FeatureRow
+                title="Seminars & Masterclasses"
+                description="Enable seminars and masterclasses booking system. When enabled, the Seminars section will appear in your admin sidebar and client-facing website."
+                enabled={localFlags.seminars}
+                onChange={() => handleToggle("seminars")}
+                disabled={true}
+                disabledReason="Coming soon! This feature is currently in development."
+              />
+
+              {/* Pay on Tap */}
+              <FeatureRow
+                title="Pay on Tap"
+                description="Enable the Take Payment feature to manually process payments through Stripe terminal. When enabled, the Take Payment link will appear in your admin sidebar."
+                enabled={localFlags.payOnTap}
+                onChange={() => handleToggle("payOnTap")}
+                disabled={true}
+                disabledReason="Coming soon! This feature is currently in development."
               />
             </div>
           </div>

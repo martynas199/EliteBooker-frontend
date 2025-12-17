@@ -823,7 +823,7 @@ export default function TimeOff() {
       )}
 
       {/* Empty State */}
-      {timeOffList.length === 0 && (
+      {timeOffList.length === 0 && !showAddForm && (
         <Card className="p-16 text-center shadow-2xl border-0 ring-1 ring-gray-900/5">
           <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-lg">
             <svg

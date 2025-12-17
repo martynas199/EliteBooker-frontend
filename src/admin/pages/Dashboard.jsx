@@ -11,6 +11,10 @@ import { useLanguage } from "../../shared/contexts/LanguageContext";
 import { t } from "../../locales/adminTranslations";
 import CreateServiceModal from "../components/CreateServiceModal";
 import CreateStaffModal from "../components/CreateStaffModal";
+import {
+  SelectDrawer,
+  SelectButton,
+} from "../../shared/components/ui/SelectDrawer";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -21,6 +25,7 @@ export default function Dashboard() {
   const [allAppointments, setAllAppointments] = useState([]);
   const [specialists, setSpecialists] = useState([]);
   const [selectedSpecialist, setSelectedSpecialist] = useState("all");
+  const [showSpecialistDrawer, setShowSpecialistDrawer] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentView, setCurrentView] = useState("month");
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -401,23 +406,20 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             <label
               htmlFor="specialist-filter"
-              className="text-sm font-medium text-gray-700"
+              className="text-sm font-medium text-gray-700 hidden sm:inline"
             >
               {t("filterByBeautician", language)}:
             </label>
-            <select
-              id="specialist-filter"
-              value={selectedSpecialist}
-              onChange={(e) => setSelectedSpecialist(e.target.value)}
-              className="px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white shadow-sm hover:border-brand-300 transition-colors"
-            >
-              <option value="all">{t("allBeauticians", language)}</option>
-              {specialists.map((specialist) => (
-                <option key={specialist._id} value={specialist._id}>
-                  {specialist.name}
-                </option>
-              ))}
-            </select>
+            <SelectButton
+              onClick={() => setShowSpecialistDrawer(true)}
+              label={t("filterByBeautician", language)}
+              value={
+                selectedSpecialist === "all"
+                  ? t("allBeauticians", language)
+                  : specialists.find((s) => s._id === selectedSpecialist)
+                      ?.name || t("allBeauticians", language)
+              }
+            />
           </div>
         )}
 
@@ -1708,6 +1710,25 @@ export default function Dashboard() {
         onSuccess={() => {
           // Optionally refresh data after staff creation
           fetchData();
+        }}
+      />
+
+      {/* Specialist Filter Drawer */}
+      <SelectDrawer
+        isOpen={showSpecialistDrawer}
+        onClose={() => setShowSpecialistDrawer(false)}
+        title={t("filterByBeautician", language)}
+        options={[
+          { value: "all", label: t("allBeauticians", language) },
+          ...specialists.map((s) => ({
+            value: s._id,
+            label: s.name,
+          })),
+        ]}
+        value={selectedSpecialist}
+        onChange={(value) => {
+          setSelectedSpecialist(value);
+          setShowSpecialistDrawer(false);
         }}
       />
     </div>

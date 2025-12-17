@@ -55,6 +55,7 @@ const navigationConfig = [
     label: "Take Payment",
     icon: "CreditCard",
     path: "/admin/take-payment",
+    condition: "payOnTapEnabled",
   },
   {
     label: "Booking Setup",
@@ -88,6 +89,7 @@ const navigationConfig = [
   {
     label: "Seminars & Masterclasses",
     icon: "Package",
+    condition: "seminarsEnabled",
     items: [
       { label: "All Seminars", path: "/admin/seminars" },
       { label: "Create Seminar", path: "/admin/seminars/new" },
@@ -101,7 +103,6 @@ const navigationConfig = [
       { label: "About Us Page", path: "/admin/about-us" },
       { label: "Contact Page", path: "/admin/settings" },
       { label: "Blog Posts", path: "/admin/blog-posts" },
-      { label: "Branding", path: "/admin/branding" },
     ],
   },
   {
@@ -115,9 +116,9 @@ const navigationConfig = [
   },
 ];
 
-const SidebarItem = ({ item, isNested = false }) => {
+const SidebarItem = ({ item, isNested = false, onClose }) => {
   const location = useLocation();
-  const { ecommerceEnabled, multiLocation } = useTenantSettings();
+  const { ecommerceEnabled, multiLocation, seminarsEnabled, payOnTapEnabled } = useTenantSettings();
   const [isExpanded, setIsExpanded] = useState(true);
 
   // Check if section should be hidden based on conditions
@@ -127,6 +128,16 @@ const SidebarItem = ({ item, isNested = false }) => {
 
   // Hide items based on multiLocation feature
   if (item.condition === "multiLocation" && !multiLocation) {
+    return null;
+  }
+
+  // Hide items based on seminars feature
+  if (item.condition === "seminarsEnabled" && !seminarsEnabled) {
+    return null;
+  }
+
+  // Hide items based on payOnTap feature
+  if (item.condition === "payOnTapEnabled" && !payOnTapEnabled) {
     return null;
   }
 
@@ -185,7 +196,7 @@ const SidebarItem = ({ item, isNested = false }) => {
                     return true;
                   })
                   .map((child, idx) => (
-                    <SidebarItem key={idx} item={child} isNested />
+                    <SidebarItem key={idx} item={child} isNested onClose={onClose} />
                   ))}
               </div>
             </motion.div>
@@ -199,6 +210,7 @@ const SidebarItem = ({ item, isNested = false }) => {
   return (
     <Link
       to={item.path}
+      onClick={onClose}
       className={`
         block px-3 py-2 text-sm rounded-md transition-all duration-150
         ${
@@ -223,7 +235,7 @@ const SidebarItem = ({ item, isNested = false }) => {
   );
 };
 
-export default function Sidebar({ tenant, onLogout }) {
+export default function Sidebar({ tenant, onLogout, onClose }) {
   return (
     <aside className="w-64 min-h-screen bg-slate-50 border-r border-gray-200 flex flex-col overflow-hidden">
       {/* Header */}
@@ -262,6 +274,19 @@ export default function Sidebar({ tenant, onLogout }) {
         <div className="space-y-6">
           {navigationConfig.map((section, idx) => (
             <div key={idx}>
+              {section.items ? (
+                <>
+                  <SidebarItem item={section} onClose={onClose} />
+                </>
+              ) : (
+                <SidebarItem item={section} onClose={onClose} />
+              )}
+            </div>
+          ))}
+                <SidebarItem item={section} onClose={onClose} />
+              )}
+            </div>
+          ))}
               {section.items ? (
                 <div className="space-y-1">
                   <SidebarItem item={section} />

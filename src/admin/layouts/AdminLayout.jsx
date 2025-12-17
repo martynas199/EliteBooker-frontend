@@ -273,6 +273,7 @@ export default function AdminLayout() {
               <Sidebar
                 tenant={{ name: admin?.name || "Elite Booker" }}
                 onLogout={handleLogout}
+                onClose={() => setMobileMenuOpen(false)}
               />
             </div>
           </>

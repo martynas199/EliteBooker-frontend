@@ -33,6 +33,8 @@ const useTenantSettingsStore = create((set, get) => ({
     ecommerce: false,
     emailNotifications: true,
     multiLocation: false,
+    seminars: false,
+    payOnTap: false,
   },
 
   // Gateway connections
@@ -210,6 +212,8 @@ export const useTenantSettings = () => {
     stripeConnected: store.stripeConnected,
     ecommerceEnabled: store.ecommerceEnabled,
     multiLocation: store.featureFlags.multiLocation,
+    seminarsEnabled: store.featureFlags.seminars,
+    payOnTapEnabled: store.featureFlags.payOnTap,
     loading: store.loading,
     updateFeatureFlag: store.updateFeatureFlag,
     loadSettings: store.loadSettings,

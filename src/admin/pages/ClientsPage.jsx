@@ -80,9 +80,11 @@ export default function ClientsPage() {
   const fetchSegments = async () => {
     try {
       const response = await api.get("/admin/clients/segments/all");
+      console.log("[ClientsPage] Segments data:", response.data);
       setSegments(response.data.segments);
     } catch (error) {
       console.error("Failed to fetch segments:", error);
+      console.error("Error response:", error.response?.data);
     }
   };
 
@@ -587,7 +589,10 @@ export default function ClientsPage() {
             {clientDetails.bookings && clientDetails.bookings.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  Recent Bookings
+                  Recent Bookings{" "}
+                  <span className="text-sm font-normal text-gray-500">
+                    (Last 5 bookings - all statuses)
+                  </span>
                 </h3>
                 <div className="space-y-2">
                   {clientDetails.bookings.slice(0, 5).map((booking) => (
