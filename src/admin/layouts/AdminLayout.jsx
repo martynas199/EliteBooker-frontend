@@ -18,6 +18,11 @@ export default function AdminLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
+  // Scroll to top when route changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   // Prevent body scroll when mobile menu is open (including touch events)
   useEffect(() => {
     if (mobileMenuOpen) {

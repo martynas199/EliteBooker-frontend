@@ -47,12 +47,23 @@ export default function Modal({
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
+      
+      // Scroll modal content to top when opening
+      // Use a small delay to ensure the modal is rendered
+      const timer = setTimeout(() => {
+        const modalContent = document.querySelector('.modal-content-scroll');
+        if (modalContent) {
+          modalContent.scrollTop = 0;
+        }
+      }, 50);
+      
+      return () => {
+        document.body.style.overflow = "unset";
+        clearTimeout(timer);
+      };
     } else {
       document.body.style.overflow = "unset";
     }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
   }, [open]);
 
   // Size classes
@@ -140,7 +151,7 @@ export default function Modal({
             </div>
 
             {/* Content */}
-            <div className="px-4 sm:px-6 py-4 sm:py-6 overflow-y-auto flex-1">
+            <div className="modal-content-scroll px-4 sm:px-6 py-4 sm:py-6 overflow-y-auto flex-1">
               {children}
             </div>
 
