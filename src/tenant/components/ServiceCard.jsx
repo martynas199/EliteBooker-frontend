@@ -2,7 +2,6 @@ import { memo, useState } from "react";
 import Card from "../../shared/components/ui/Card";
 import Modal from "../../shared/components/ui/Modal";
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
-import OptimizedImage from "../../shared/components/OptimizedImage";
 
 /**
  * ServiceCard - reusable card for displaying a service with image, name, category, description, and variants (price & duration)
@@ -45,10 +44,9 @@ function ServiceCard({ service, onClick, isSelected = false }) {
         <div className="flex flex-row overflow-x-hidden w-full min-h-[140px]">
           {imageUrl && (
             <div className="relative w-28 sm:w-40 self-stretch overflow-hidden bg-gray-100 flex-shrink-0">
-              <OptimizedImage
+              <img
                 src={imageUrl}
                 alt={imageAlt}
-                preset="serviceCard"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
               {/* Gradient overlay for better aesthetics */}

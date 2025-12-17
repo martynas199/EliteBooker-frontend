@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import OptimizedImage from "../../shared/components/OptimizedImage";
 
 /**
  * SPECIALIST CARD COMPONENT
@@ -19,15 +18,9 @@ export default function SpecialistCard({ specialist, onClick, index = 0 }) {
         {/* Full Card Image with Name Overlay */}
         <div className="relative h-full w-full bg-gradient-to-br from-gray-100 to-gray-200">
           {specialist.image?.url ? (
-            <OptimizedImage
+            <img
               src={specialist.image.url}
               alt={specialist.name}
-              width={600}
-              height={800}
-              crop="fill"
-              gravity="face"
-              quality="auto"
-              format="auto"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (

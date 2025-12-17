@@ -5,7 +5,6 @@ import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 import GiftCardModal from "../../shared/components/modals/GiftCardModal";
-import OptimizedImage from "../../shared/components/OptimizedImage";
 
 /**
  * Navigation - Reusable navigation bar component for tenant pages
@@ -51,14 +50,9 @@ export default function Navigation() {
             className="flex items-center gap-3 group"
           >
             {tenant?.branding?.logo?.url ? (
-              <OptimizedImage
+              <img
                 src={tenant.branding.logo.url}
                 alt={salonName}
-                width={120}
-                height={40}
-                crop="fit"
-                quality="auto"
-                format="auto"
                 className="h-10 w-auto object-contain"
               />
             ) : (
@@ -76,26 +70,26 @@ export default function Navigation() {
           {/* Center Navigation - Desktop */}
           <nav className="hidden md:flex gap-1">
             <Link
-              to="/"
+              to={`/salon/${tenant?.slug}/services`}
               className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all relative group"
             >
               Services
             </Link>
             <Link
-              to="/about"
+              to={`/salon/${tenant?.slug}/about`}
               className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all relative group"
             >
               About Us
             </Link>
             <Link
-              to="/salon"
+              to={`/salon/${tenant?.slug}/salon`}
               className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all relative group"
             >
               Contact
             </Link>
             {ecommerceEnabled && (
               <Link
-                to="products"
+                to={`/salon/${tenant?.slug}/products`}
                 className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all relative group"
               >
                 Shop
@@ -318,21 +312,21 @@ export default function Navigation() {
           <nav className="md:hidden py-4 border-t border-gray-200 animate-slide-down bg-white">
             <div className="flex flex-col gap-1">
               <Link
-                to="/"
+                to={`/salon/${tenant?.slug}/services`}
                 onClick={() => setMobileMenuOpen(false)}
                 className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
               >
                 Services
               </Link>
               <Link
-                to="/about"
+                to={`/salon/${tenant?.slug}/about`}
                 onClick={() => setMobileMenuOpen(false)}
                 className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
               >
                 About Us
               </Link>
               <Link
-                to="/salon"
+                to={`/salon/${tenant?.slug}/salon`}
                 onClick={() => setMobileMenuOpen(false)}
                 className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
               >
@@ -340,7 +334,7 @@ export default function Navigation() {
               </Link>
               {ecommerceEnabled && (
                 <Link
-                  to="products"
+                  to={`/salon/${tenant?.slug}/products`}
                   onClick={() => setMobileMenuOpen(false)}
                   className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
                 >

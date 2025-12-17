@@ -63,14 +63,9 @@ export default function TenantFooter() {
             <Link to="" className="inline-block mb-6 group">
               <div className="flex items-center gap-3">
                 {tenant?.branding?.logo?.url ? (
-                  <OptimizedImage
+                  <img
                     src={tenant.branding.logo.url}
                     alt={salonName}
-                    width={120}
-                    height={48}
-                    crop="fit"
-                    quality="auto"
-                    format="auto"
                     className="h-12 w-auto object-contain"
                   />
                 ) : (

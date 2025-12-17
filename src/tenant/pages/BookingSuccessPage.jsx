@@ -163,11 +163,11 @@ export default function SuccessPage() {
                   <div className="text-center pb-4 sm:pb-6 border-b border-gray-200">
                     {appt?.services && appt.services.length > 0 ? (
                       <>
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
-                          {appt.services.length === 1
-                            ? "Service Booked"
-                            : `${appt.services.length} Services Booked`}
-                        </h2>
+                        {appt.services.length > 1 && (
+                          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
+                            {appt.services.length} Services Booked
+                          </h2>
+                        )}
                         <div className="space-y-2 sm:space-y-3">
                           {appt.services.map((service, index) => (
                             <div
@@ -175,17 +175,20 @@ export default function SuccessPage() {
                               className="bg-gray-50 rounded-lg p-3 sm:p-4"
                             >
                               <p className="text-base sm:text-lg font-bold text-gray-900">
-                                {service.serviceId?.name || "Service"}
+                                {service.serviceName ||
+                                  service.service?.name ||
+                                  "Service"}
                               </p>
                               {service.variantName && (
                                 <p className="text-sm sm:text-base text-gray-600 mt-1">
                                   {service.variantName}
                                 </p>
                               )}
-                              <p className="text-sm sm:text-base text-gray-600 mt-1">
-                                {service.duration || service.durationMin || 0}{" "}
-                                min
-                              </p>
+                              {!service.variantName && (
+                                <p className="text-sm sm:text-base text-gray-600 mt-1">
+                                  {service.duration} min
+                                </p>
+                              )}
                             </div>
                           ))}
                         </div>
