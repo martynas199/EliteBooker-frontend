@@ -130,7 +130,8 @@ export default function AboutUsPage() {
                   src={aboutUs.image.url}
                   alt="Our Team"
                   className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                  loading="eager"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </motion.div>

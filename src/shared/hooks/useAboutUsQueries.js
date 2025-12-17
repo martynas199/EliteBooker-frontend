@@ -30,7 +30,12 @@ export const useAboutUs = () => {
     },
     staleTime: 10 * 60 * 1000, // Consider fresh for 10 minutes (About Us changes rarely)
     gcTime: 30 * 60 * 1000, // Cache for 30 minutes
-    retry: 3, // Retry 3 times for public content
+    retry: (failureCount, error) => {
+      // Don't retry on 404 - content simply doesn't exist yet
+      if (error?.response?.status === 404) return false;
+      // Retry network errors up to 3 times
+      return failureCount < 3;
+    },
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
 
     // Custom error handling

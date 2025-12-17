@@ -174,7 +174,7 @@ export default function Dashboard() {
       .filter(Boolean); // Remove any null entries
   }, [selectedSpecialist, allAppointments]);
 
-  // Calculate stats
+  // Calculate stats (optimized with single-pass reduce)
   const stats = useMemo(() => {
     const today = dayjs().startOf("day");
     const thisMonth = dayjs().startOf("month");
@@ -187,64 +187,71 @@ export default function Dashboard() {
       );
     }
 
-    // Total revenue (confirmed + completed)
-    const totalRevenue = filtered
-      .filter((apt) => apt.status === "confirmed" || apt.status === "completed")
-      .reduce((sum, apt) => sum + (apt.totalPrice || 0), 0);
+    // Single-pass calculation for better performance
+    const result = filtered.reduce(
+      (acc, apt) => {
+        const aptDate = dayjs(apt.start);
+        const isThisMonth = aptDate.isAfter(thisMonth);
+        const isLastMonth =
+          aptDate.isAfter(lastMonth) && aptDate.isBefore(thisMonth);
+        const isToday = aptDate.isSame(today, "day");
+        const isCompletedOrConfirmed =
+          apt.status === "confirmed" || apt.status === "completed";
+        const price = apt.totalPrice || 0;
 
-    // This month's stats
-    const thisMonthAppointments = filtered.filter((apt) =>
-      dayjs(apt.start).isAfter(thisMonth)
-    );
-    const thisMonthRevenue = thisMonthAppointments
-      .filter((apt) => apt.status === "confirmed" || apt.status === "completed")
-      .reduce((sum, apt) => sum + (apt.totalPrice || 0), 0);
+        if (isCompletedOrConfirmed) {
+          acc.totalRevenue += price;
+          if (isThisMonth) acc.thisMonthRevenue += price;
+          if (isLastMonth) acc.lastMonthRevenue += price;
+        }
 
-    // Last month's stats
-    const lastMonthAppointments = filtered.filter(
-      (apt) =>
-        dayjs(apt.start).isAfter(lastMonth) &&
-        dayjs(apt.start).isBefore(thisMonth)
+        if (isThisMonth) acc.thisMonthAppointments++;
+        if (isLastMonth) acc.lastMonthAppointments++;
+        if (isToday) acc.todayAppointments++;
+
+        // Track unique customers
+        if (apt.client?._id) acc.uniqueCustomers.add(apt.client._id);
+
+        return acc;
+      },
+      {
+        totalRevenue: 0,
+        thisMonthRevenue: 0,
+        lastMonthRevenue: 0,
+        thisMonthAppointments: 0,
+        lastMonthAppointments: 0,
+        todayAppointments: 0,
+        uniqueCustomers: new Set(),
+      }
     );
-    const lastMonthRevenue = lastMonthAppointments
-      .filter((apt) => apt.status === "confirmed" || apt.status === "completed")
-      .reduce((sum, apt) => sum + (apt.totalPrice || 0), 0);
 
     // Calculate trends
     const revenueTrend =
-      lastMonthRevenue > 0
-        ? ((thisMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100
-        : thisMonthRevenue > 0
+      result.lastMonthRevenue > 0
+        ? ((result.thisMonthRevenue - result.lastMonthRevenue) /
+            result.lastMonthRevenue) *
+          100
+        : result.thisMonthRevenue > 0
         ? 100
         : 0;
 
     const appointmentsTrend =
-      lastMonthAppointments.length > 0
-        ? ((thisMonthAppointments.length - lastMonthAppointments.length) /
-            lastMonthAppointments.length) *
+      result.lastMonthAppointments > 0
+        ? ((result.thisMonthAppointments - result.lastMonthAppointments) /
+            result.lastMonthAppointments) *
           100
-        : thisMonthAppointments.length > 0
+        : result.thisMonthAppointments > 0
         ? 100
         : 0;
 
-    // Today's appointments
-    const todayAppointments = filtered.filter((apt) =>
-      dayjs(apt.start).isSame(today, "day")
-    ).length;
-
-    // Unique customers
-    const uniqueCustomers = new Set(
-      filtered.map((apt) => apt.client?._id).filter(Boolean)
-    ).size;
-
     return {
-      totalRevenue,
-      thisMonthRevenue,
+      totalRevenue: result.totalRevenue,
+      thisMonthRevenue: result.thisMonthRevenue,
       revenueTrend,
-      totalAppointments: thisMonthAppointments.length,
+      totalAppointments: result.thisMonthAppointments,
       appointmentsTrend,
-      todayAppointments,
-      uniqueCustomers,
+      todayAppointments: result.todayAppointments,
+      uniqueCustomers: result.uniqueCustomers.size,
     };
   }, [allAppointments, selectedSpecialist]);
 

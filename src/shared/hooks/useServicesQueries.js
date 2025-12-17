@@ -21,6 +21,8 @@ export const useServices = () => {
       console.log("[useServices] Fetching services with limit: 1000");
       const response = await api.get("/services", {
         params: { limit: 1000 }, // High limit to get all services
+        // NOTE: Consider implementing pagination if service count grows beyond 100
+        // Most salons have <50 services, so this is acceptable for now
       });
 
       console.log("[useServices] Raw response:", response.data);
@@ -114,6 +116,8 @@ export const useBeauticians = () => {
       console.log("[useBeauticians] Fetching specialists with limit: 1000");
       const response = await api.get("/specialists", {
         params: { limit: 1000 }, // High limit to get all specialists
+        // NOTE: Consider implementing pagination if specialist count grows beyond 100
+        // Most salons have <20 specialists, so this is acceptable for now
       });
 
       console.log("[useBeauticians] Raw response:", response.data);
