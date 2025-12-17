@@ -371,7 +371,7 @@ export default function SalonLandingLuxury() {
       <div className="min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Hero Section - Clean and Professional */}
-          <div className="relative bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 rounded-3xl overflow-hidden mb-12 shadow-2xl">
+          <div className="relative bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 rounded-2xl sm:rounded-3xl overflow-hidden mb-12 shadow-lg sm:shadow-xl">
             {/* Action Buttons - Top Right */}
             <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center gap-2">
               {/* Share Button */}
@@ -449,6 +449,7 @@ export default function SalonLandingLuxury() {
                       `${salonName} hero`
                     }
                     className="w-full h-full object-cover"
+                    loading="eager"
                     onError={(e) => {
                       console.error("Hero image failed to load:", e.target.src);
                       e.target.style.display = "none";
@@ -466,7 +467,7 @@ export default function SalonLandingLuxury() {
               </>
             )}
 
-            <div className="relative z-10 px-6 md:px-12 py-20 md:py-28">
+            <div className="relative z-10 px-4 sm:px-6 md:px-12 py-16 sm:py-20 md:py-28">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
