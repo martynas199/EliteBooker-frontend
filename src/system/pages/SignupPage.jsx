@@ -532,22 +532,13 @@ export default function TenantSignup() {
                   </ul>
                 </div>
 
-                <div className="flex gap-4">
-                  <motion.button
-                    type="button"
-                    onClick={handleBack}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="flex-1 bg-gray-100 text-gray-700 py-4 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
-                  >
-                    Back
-                  </motion.button>
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <motion.button
                     type="submit"
                     disabled={loading}
                     whileHover={{ scale: loading ? 1 : 1.02 }}
                     whileTap={{ scale: loading ? 1 : 0.98 }}
-                    className="flex-1 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-semibold shadow-lg shadow-violet-500/50 hover:shadow-xl hover:shadow-violet-500/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
+                    className="w-full sm:flex-1 sm:order-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-semibold shadow-lg shadow-violet-500/50 hover:shadow-xl hover:shadow-violet-500/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <>
@@ -590,6 +581,15 @@ export default function TenantSignup() {
                         </svg>
                       </>
                     )}
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    onClick={handleBack}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full sm:flex-1 sm:order-1 bg-gray-100 text-gray-700 py-4 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                  >
+                    Back
                   </motion.button>
                 </div>
               </motion.div>

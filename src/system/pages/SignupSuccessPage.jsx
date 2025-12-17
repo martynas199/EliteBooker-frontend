@@ -112,18 +112,18 @@ export default function SignupSuccessPage() {
             <h3 className="font-bold text-gray-900 mb-3 sm:mb-4 text-base sm:text-lg">
               What's Next?
             </h3>
-            <div className="grid md:grid-cols-2 gap-3 sm:gap-4 text-left">
+            <div className="grid md:grid-cols-2 gap-2.5 sm:gap-4 text-left">
               <div className="flex items-start gap-2 sm:gap-3">
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center flex-shrink-0 mt-0.5 sm:mt-1">
                   <span className="text-white font-bold text-xs sm:text-sm">
                     1
                   </span>
                 </div>
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm sm:text-base">
+                <div className="space-y-0.5">
+                  <p className="font-semibold text-gray-900 text-sm sm:text-base mb-0.5">
                     Sign In
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-600">
+                  <p className="text-xs sm:text-sm text-gray-600 mb-0">
                     Access your dashboard with your credentials
                   </p>
                 </div>
@@ -135,11 +135,11 @@ export default function SignupSuccessPage() {
                     2
                   </span>
                 </div>
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm sm:text-base">
+                <div className="space-y-0.5">
+                  <p className="font-semibold text-gray-900 text-sm sm:text-base mb-0.5">
                     Add Services
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-600">
+                  <p className="text-xs sm:text-sm text-gray-600 mb-0">
                     Set up your treatments and pricing
                   </p>
                 </div>
@@ -151,11 +151,11 @@ export default function SignupSuccessPage() {
                     3
                   </span>
                 </div>
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm sm:text-base">
+                <div className="space-y-0.5">
+                  <p className="font-semibold text-gray-900 text-sm sm:text-base mb-0.5">
                     Add Staff
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-600">
+                  <p className="text-xs sm:text-sm text-gray-600 mb-0">
                     Invite your team members
                   </p>
                 </div>
@@ -167,11 +167,11 @@ export default function SignupSuccessPage() {
                     4
                   </span>
                 </div>
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm sm:text-base">
+                <div className="space-y-0.5">
+                  <p className="font-semibold text-gray-900 text-sm sm:text-base mb-0.5">
                     Go Live!
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-600">
+                  <p className="text-xs sm:text-sm text-gray-600 mb-0">
                     Start accepting bookings 24/7
                   </p>
                 </div>

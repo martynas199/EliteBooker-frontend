@@ -39,50 +39,71 @@ function ServiceCard({ service, onClick, isSelected = false }) {
     <>
       <Card
         hoverable
-        className="p-0 overflow-hidden group border border-gray-300 hover:border-gray-900 bg-white hover:shadow-xl transition-all duration-300"
+        className="p-0 overflow-hidden group border border-gray-200 hover:border-black bg-white hover:shadow-xl transition-all duration-300"
       >
-        <div className="flex flex-row overflow-x-hidden w-full min-h-[140px]">
+        <div className="flex flex-row overflow-hidden w-full">
+          {/* Image - on left, compact on mobile */}
           {imageUrl && (
-            <div className="relative w-28 sm:w-40 self-stretch overflow-hidden bg-gray-100 flex-shrink-0">
+            <div className="relative w-28 sm:w-48 flex-shrink-0 overflow-hidden bg-gray-100">
               <img
                 src={imageUrl}
                 alt={imageAlt}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
               />
-              {/* Gradient overlay for better aesthetics */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {hasPromoPrice && (
+                <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center gap-1">
+                  <div className="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-gradient-to-r from-red-600 to-red-500 text-white text-[9px] sm:text-xs font-black rounded-lg shadow-xl flex items-center gap-1 animate-pulse">
+                    <svg
+                      className="w-3 h-3 sm:w-3.5 sm:h-3.5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="uppercase tracking-wide">Sale</span>
+                  </div>
+                </div>
+              )}
             </div>
           )}
-          <div className="flex flex-col flex-1 p-2.5 sm:p-4 min-w-0 overflow-x-hidden">
-            <div className="flex flex-col gap-0.5 mb-1 min-w-0 flex-shrink-0">
-              <div className="font-bold text-sm sm:text-lg text-gray-900 leading-tight break-words group-hover:text-black transition-colors">
+
+          <div className="flex flex-col flex-1 p-3 sm:p-4 min-w-0">
+            {/* Header */}
+            <div className="flex flex-col gap-0.5 mb-2">
+              <h3 className="font-bold text-base sm:text-xl text-gray-900 leading-tight group-hover:text-black transition-colors line-clamp-1">
                 {service.name}
-              </div>
+              </h3>
               {service.category && (
-                <div className="text-gray-600 text-[9px] sm:text-xs font-medium uppercase tracking-wide truncate">
+                <div className="text-gray-500 text-[10px] sm:text-xs font-medium uppercase tracking-wider">
                   {service.category}
                 </div>
               )}
               {(service.primaryBeauticianId?.name ||
                 service.specialist?.name) && (
-                <div className="text-[9px] sm:text-xs text-gray-500 truncate">
-                  By{" "}
+                <div className="text-[10px] sm:text-xs text-gray-500">
+                  with{" "}
                   {service.primaryBeauticianId?.name ||
                     service.specialist?.name}
                 </div>
               )}
             </div>
+
+            {/* Description - only on desktop */}
             {service.description && (
-              <div className="mb-1.5 sm:mb-3 flex-shrink-0">
-                <div className="text-gray-600 text-[11px] sm:text-sm line-clamp-2">
+              <div className="mb-2 space-y-0">
+                <p className="text-gray-600 text-xs sm:text-sm line-clamp-2 leading-relaxed mb-0">
                   {service.description}
-                </div>
+                </p>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowDescriptionModal(true);
                   }}
-                  className="text-gray-700 hover:text-black text-[10px] sm:text-xs font-medium mt-0.5 underline"
+                  className="text-gray-700 hover:text-black text-[10px] sm:text-xs font-semibold underline underline-offset-2"
                 >
                   Read more
                 </button>
@@ -91,7 +112,7 @@ function ServiceCard({ service, onClick, isSelected = false }) {
 
             {/* Variants indicator */}
             {service.variants && service.variants.length > 1 && (
-              <div className="flex items-center gap-1 text-[10px] sm:text-xs text-gray-600 font-medium mb-1 flex-shrink-0">
+              <div className="flex items-center gap-1 text-[10px] sm:text-xs text-gray-500 font-medium mb-2">
                 <svg
                   className="w-3 h-3 sm:w-4 sm:h-4"
                   fill="none"
@@ -102,97 +123,49 @@ function ServiceCard({ service, onClick, isSelected = false }) {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                   />
                 </svg>
-                <span>{service.variants.length} options available</span>
+                {service.variants.length} options
               </div>
             )}
 
-            {/* Price and Action Section */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-auto pt-1.5 sm:pt-2 border-t border-gray-200 gap-2 sm:gap-3 min-w-0 flex-shrink-0">
-              {/* Price and Duration Display */}
-              <div className="flex flex-col gap-0.5 min-w-0 w-full sm:w-auto flex-1">
+            {/* Footer - Price and Action */}
+            <div className="mt-auto flex items-center justify-between gap-2 pt-2 border-t border-gray-100">
+              {/* Price & Duration */}
+              <div className="flex flex-col gap-0.5">
                 {minPrice !== null && (
-                  <>
-                    <div className="flex items-baseline gap-0.5 sm:gap-1 flex-wrap">
-                      <span className="text-[10px] sm:text-xs text-gray-500">
-                        {service.priceVaries ? "Up to" : "From"}
-                      </span>
-                      {hasPromoPrice && minPromoPrice ? (
-                        <>
-                          <span className="text-sm sm:text-base font-medium text-gray-400 line-through">
-                            {formatPrice(
-                              service.priceVaries ? maxPrice : minPrice
-                            )}
-                          </span>
-                          <span className="text-base sm:text-xl font-bold text-red-600">
-                            {formatPrice(
-                              service.priceVaries
-                                ? maxPromoPrice
-                                : minPromoPrice
-                            )}
-                          </span>
-                          {!service.priceVaries &&
-                            maxPromoPrice &&
-                            maxPromoPrice > minPromoPrice && (
-                              <span className="text-[10px] sm:text-xs text-gray-400">
-                                - {formatPrice(maxPromoPrice)}
-                              </span>
-                            )}
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-base sm:text-xl font-bold text-gray-900">
-                            {formatPrice(
-                              service.priceVaries ? maxPrice : minPrice
-                            )}
-                          </span>
-                          {!service.priceVaries && maxPrice > minPrice && (
-                            <span className="text-[10px] sm:text-xs text-gray-400">
-                              - {formatPrice(maxPrice)}
-                            </span>
+                  <div className="flex items-baseline gap-1.5">
+                    {hasPromoPrice ? (
+                      <>
+                        <span className="text-lg sm:text-2xl font-bold text-gray-900">
+                          {formatPrice(
+                            service.priceVaries ? maxPromoPrice : minPromoPrice
                           )}
-                        </>
-                      )}
-                    </div>
-                    {hasPromoPrice && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 border border-red-300 rounded-full text-[9px] sm:text-[10px] text-red-700 font-bold whitespace-nowrap w-fit">
-                        <svg
-                          className="w-2.5 h-2.5 sm:w-3 sm:h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        SPECIAL OFFER
+                        </span>
+                        <span className="text-xs sm:text-sm text-gray-400 line-through">
+                          {formatPrice(
+                            service.priceVaries ? maxPrice : minPrice
+                          )}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-lg sm:text-2xl font-bold text-gray-900">
+                        {formatPrice(service.priceVaries ? maxPrice : minPrice)}
                       </span>
                     )}
-                  </>
-                )}
-                {service.priceVaries && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 border border-amber-200 rounded-full text-[9px] sm:text-[10px] text-amber-700 font-medium">
-                    <svg
-                      className="w-2.5 h-2.5 sm:w-3 sm:h-3"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    Price varies - consultation required
-                  </span>
+                    {!service.priceVaries && maxPrice > minPrice && (
+                      <span className="text-[10px] sm:text-xs text-gray-400">
+                        - {formatPrice(maxPrice)}
+                      </span>
+                    )}
+                  </div>
                 )}
                 {/* Duration */}
                 {service.variants && service.variants.length > 0 && (
-                  <div className="flex items-center gap-0.5 sm:gap-1 text-gray-600 text-[9px] sm:text-xs">
+                  <div className="flex items-center gap-0.5 text-gray-500 text-[10px] sm:text-xs">
                     <svg
-                      className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-gray-500"
+                      className="w-3 h-3 sm:w-3.5 sm:h-3.5"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -220,15 +193,13 @@ function ServiceCard({ service, onClick, isSelected = false }) {
                 )}
               </div>
 
-              {/* Select/Selected Button */}
+              {/* Select Button - Mobile Optimized */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  // If multiple variants, show variants modal
                   if (service.variants && service.variants.length > 1) {
                     setShowVariantsModal(true);
                   } else {
-                    // Single variant or no variants - select directly
                     const variant = service.variants?.[0] || {
                       name: "Standard",
                       price: service.price,
@@ -237,15 +208,15 @@ function ServiceCard({ service, onClick, isSelected = false }) {
                     onClick?.(variant);
                   }
                 }}
-                className={`px-2 sm:px-6 py-1 sm:py-2 text-[10px] sm:text-sm font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-250 whitespace-nowrap flex-shrink-0 w-auto flex items-center gap-1 sm:gap-2 ${
+                className={`px-4 sm:px-6 py-2.5 sm:py-3.5 text-xs sm:text-sm font-bold rounded-xl shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-1.5 whitespace-nowrap ${
                   isSelected
-                    ? "bg-violet-600 hover:bg-violet-700 text-white"
-                    : "bg-black hover:bg-gray-800 text-white"
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "bg-black hover:bg-gray-900 text-white"
                 }`}
               >
                 {isSelected && (
                   <svg
-                    className="w-3 h-3 sm:w-4 sm:h-4"
+                    className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="3"
@@ -258,59 +229,15 @@ function ServiceCard({ service, onClick, isSelected = false }) {
                     />
                   </svg>
                 )}
-                {isSelected
-                  ? "Selected"
-                  : service.variants && service.variants.length > 1
-                  ? "Select"
-                  : "Select"}
+                <span>
+                  {isSelected
+                    ? "Added"
+                    : service.variants && service.variants.length > 1
+                    ? "Choose"
+                    : "Add"}
+                </span>
               </button>
             </div>
-
-            {/* Variants - Hidden by default, can be shown on hover or click if needed */}
-            {Array.isArray(service.variants) &&
-              service.variants.length > 0 &&
-              false && (
-                <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-auto justify-end">
-                  {service.variants.map((v) => (
-                    <span
-                      key={v.name}
-                      className="inline-flex items-center gap-2 sm:gap-3 bg-gray-50 border border-gray-200 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs text-gray-700 font-semibold shadow-sm hover:bg-brand-50 transition-colors whitespace-nowrap"
-                    >
-                      {v.price && (
-                        <span className="flex items-center gap-0.5 text-brand-700 font-bold">
-                          <span className="text-sm sm:text-base">
-                            {"\u00A3"}
-                          </span>
-                          <span className="text-xs sm:text-sm">
-                            {Number(v.price).toFixed(2)}
-                          </span>
-                        </span>
-                      )}
-                      {v.durationMin && (
-                        <span className="flex items-center gap-0.5 sm:gap-1 text-gray-500">
-                          <svg
-                            className="w-3 h-3 sm:w-4 sm:h-4 text-brand-600"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle cx="12" cy="12" r="10" />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M12 7v5l3 2"
-                            />
-                          </svg>
-                          <span className="text-xs sm:text-sm">
-                            {v.durationMin} min
-                          </span>
-                        </span>
-                      )}
-                    </span>
-                  ))}
-                </div>
-              )}
           </div>
         </div>
       </Card>
