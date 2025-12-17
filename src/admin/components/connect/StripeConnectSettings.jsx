@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { StripeConnectAPI } from "./connect.api";
 import Button from "../../../shared/components/ui/Button";
+import { Link2, RefreshCw } from "lucide-react";
 
 export default function StripeConnectSettings({ specialistId, email }) {
   const [status, setStatus] = useState(null);
@@ -188,9 +189,17 @@ export default function StripeConnectSettings({ specialistId, email }) {
           {!status?.connected ? (
             <>
               <Button onClick={handleConnect} variant="brand">
-                {status?.status === "pending"
-                  ? "🔄 Complete Setup"
-                  : "� Connect with Stripe"}
+                {status?.status === "pending" ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 mr-2 inline-block" />
+                    Complete Setup
+                  </>
+                ) : (
+                  <>
+                    <Link2 className="w-4 h-4 mr-2 inline-block" />
+                    Connect with Stripe
+                  </>
+                )}
               </Button>
               {status?.status === "pending" && (
                 <p className="text-sm text-gray-600 flex items-center">
