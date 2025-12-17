@@ -102,7 +102,7 @@ const navigationConfig = [
       { label: "Hero Sections", path: "/admin/hero-sections" },
       { label: "About Us Page", path: "/admin/about-us" },
       { label: "Contact Page", path: "/admin/settings" },
-      { label: "Blog Posts", path: "/admin/blog-posts" },
+      // { label: "Blog Posts", path: "/admin/blog-posts" },
     ],
   },
   {

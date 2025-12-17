@@ -21,7 +21,6 @@ api.interceptors.request.use(
       const adminToken = localStorage.getItem("adminAccessToken");
       if (adminToken) {
         config.headers["Authorization"] = `Bearer ${adminToken}`;
-        console.log("[API Client] Added admin Authorization header");
       }
     }
 
@@ -36,7 +35,6 @@ api.interceptors.request.use(
         config.url?.includes("/favorites")
       ) {
         config.headers["Authorization"] = `Bearer ${clientToken}`;
-        console.log("[API Client] Added client Authorization header");
       }
     }
 
@@ -47,28 +45,14 @@ api.interceptors.request.use(
       if (pathname.startsWith("/admin")) {
         // For admin routes, the backend will extract tenantId from the JWT token
         // No need to send x-tenant-slug or x-tenant-id header - backend handles it via optionalAuth middleware
-        console.log(
-          "[API Client] Admin route detected, tenantId will be extracted from JWT token"
-        );
       } else if (pathname.startsWith("/client")) {
         // For client routes, no tenant context needed (cross-business)
-        console.log(
-          "[API Client] Client route detected, no tenant context needed"
-        );
       } else {
         // For tenant customer routes, extract slug from URL
         const pathMatch = pathname.match(/^\/salon\/([^\/]+)/);
         if (pathMatch) {
           const tenantSlug = pathMatch[1];
           config.headers["x-tenant-slug"] = tenantSlug;
-          console.log(
-            "[API Client] Adding x-tenant-slug header:",
-            tenantSlug,
-            "for request:",
-            config.url
-          );
-        } else {
-          console.log("[API Client] No tenant slug in URL:", pathname);
         }
       }
     }

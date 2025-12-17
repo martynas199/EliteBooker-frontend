@@ -49,11 +49,9 @@ export default function ClientProfilePage() {
   // Fetch business name if we have a slug
   useEffect(() => {
     if (fromBusiness) {
-      console.log("Fetching business name for slug:", fromBusiness);
       api
         .get(`/tenants/slug/${fromBusiness}`)
         .then((res) => {
-          console.log("Business data:", res.data);
           setBusinessName(res.data.tenant?.name || res.data.name);
         })
         .catch((err) => console.error("Failed to fetch business name:", err));
@@ -176,10 +174,8 @@ export default function ClientProfilePage() {
   };
 
   const handleLogout = async () => {
-    console.log("[Profile] Logout button clicked");
     try {
       await logout();
-      console.log("[Profile] Logout successful, forcing full app reload...");
       // Clear any session/local storage
       sessionStorage.clear();
       // Force a complete page reload to reset all React state
@@ -615,9 +611,7 @@ export default function ClientProfilePage() {
       <GiftCardModal
         isOpen={showGiftCardModal}
         onClose={() => setShowGiftCardModal(false)}
-        onSuccess={(giftCard) => {
-          console.log("Gift card created:", giftCard);
-        }}
+        onSuccess={(giftCard) => {}}
       />
     </div>
   );

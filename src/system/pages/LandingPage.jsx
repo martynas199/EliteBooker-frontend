@@ -1525,9 +1525,7 @@ export default function LandingPage() {
       <GiftCardModal
         isOpen={showGiftCardModal}
         onClose={() => setShowGiftCardModal(false)}
-        onSuccess={(giftCard) => {
-          console.log("Gift card created:", giftCard);
-        }}
+        onSuccess={(giftCard) => {}}
       />
     </>
   );

@@ -143,37 +143,12 @@ export default function ProductCheckoutPage() {
         0
       );
 
-      console.log(
-        "📦 Cart items with weights:",
-        itemsWithWeights.map((item) => ({
-          name: item.productName,
-          quantity: item.quantity,
-          weightPerItem: `${item.weightInGrams}g (${item.weight}kg)`,
-          totalWeight: `${(item.weight * item.quantity).toFixed(3)}kg`,
-        }))
-      );
-
-      console.log("⚖️ Total cart weight:", totalWeight.toFixed(3), "kg");
-
-      console.log("📮 Shipping calculation:", {
-        currency: currency,
-        country: formData.country,
-        itemCount: itemsWithWeights.length,
-      });
-
       // Calculate shipping locally (no backend call needed)
       const result = calculateShippingOptions({
         items: itemsWithWeights,
         currency: currency, // EUR triggers EU rates, GBP triggers UK rates
         countryCode: formData.country === "United Kingdom" ? "GB" : "GB",
       });
-
-      console.log("🚚 Shipping options calculated:", result);
-      console.log("🚚 Number of options:", result.options?.length);
-      console.log(
-        "🚚 Options details:",
-        JSON.stringify(result.options, null, 2)
-      );
 
       if (result.options && result.options.length > 0) {
         setShippingOptions(result.options);

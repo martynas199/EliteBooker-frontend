@@ -167,17 +167,9 @@ export default function DateTimePicker({
           params.totalDuration = totalDuration;
         }
 
-        console.log("[TIMESLOTS] Fetching slots with params:", params);
-
         const response = await api.get("/slots", {
           params,
           signal: abortController.signal, // Add cancellation support
-        });
-
-        console.log("[TIMESLOTS] Received slots:", {
-          count: response.data.slots?.length || 0,
-          date: dateStr,
-          totalDuration: params.totalDuration,
         });
 
         const fetchedSlots = response.data.slots || [];

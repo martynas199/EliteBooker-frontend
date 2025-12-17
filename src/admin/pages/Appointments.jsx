@@ -102,18 +102,11 @@ export default function Appointments() {
       // Filter appointments based on admin role and linked specialist
       if (isSuperAdmin) {
         // Super admin sees all appointments
-        console.log(
-          "[Appointments] Super admin - showing all appointments:",
-          appointments.length
-        );
       } else if (admin?.specialistId) {
         // Regular admin with linked specialist - only show their specialist's appointments
         const originalCount = appointments.length;
         appointments = appointments.filter(
           (apt) => apt.specialistId?._id === admin.specialistId
-        );
-        console.log(
-          `[Appointments] Regular admin with specialist ${admin.specialistId} - filtered from ${originalCount} to ${appointments.length} appointments`
         );
 
         // Recalculate pagination for filtered results
@@ -2586,16 +2579,7 @@ function CreateModal({
   // Debug logging
   useEffect(() => {
     if (showTimePicker) {
-      console.log("[CreateModal] DateTimePicker opened with:", {
-        specialistId: appointment.specialistId,
-        beauticianName: selectedSpecialist?.name,
-        serviceId: appointment.serviceId,
-        serviceName: selectedService?.name,
-        variantName: appointment.variantName,
-        workingHours: beauticianWorkingHours,
-        customSchedule: customSchedule,
-        selectedSpecialist: selectedSpecialist,
-      });
+      // DateTimePicker opened
     }
   }, [showTimePicker]);
 

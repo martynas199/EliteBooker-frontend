@@ -351,13 +351,14 @@ export default function HeroSections() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3 justify-end pt-4 border-t">
+            <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-4 border-t">
               {editingSection._id && (
                 <Button
                   type="button"
                   variant="danger"
                   onClick={() => handleDelete(editingSection._id)}
                   disabled={saving}
+                  className="w-full sm:w-auto"
                 >
                   Delete
                 </Button>
@@ -367,10 +368,11 @@ export default function HeroSections() {
                 variant="outline"
                 onClick={handleCancel}
                 disabled={saving}
+                className="w-full sm:w-auto"
               >
                 Cancel
               </Button>
-              <Button type="submit" variant="brand" loading={saving}>
+              <Button type="submit" variant="brand" loading={saving} className="w-full sm:w-auto">
                 {editingSection._id ? "Update" : "Create"}
               </Button>
             </div>

@@ -51,8 +51,6 @@ export default function Dashboard() {
         const specialistsData = specialistsRes.data || [];
         const salonData = salonRes.data || {};
 
-        console.log("[Dashboard] Salon data:", salonData);
-
         // Store salon slug for booking page link
         // Priority: use slug first, then generate from name, never use ID
         const slug =
@@ -63,7 +61,6 @@ export default function Dashboard() {
 
         if (slug) {
           setSalonSlug(slug);
-          console.log("[Dashboard] Salon slug set:", slug);
         } else {
           console.warn(
             "[Dashboard] No salon slug found in response",
@@ -71,36 +68,19 @@ export default function Dashboard() {
           );
         }
 
-        console.log("[Dashboard] Admin info:", {
-          admin: admin,
-          isSuperAdmin,
-          specialistId: admin?.specialistId,
-          role: admin?.role,
-        });
-
         // Filter appointments based on admin role and linked specialist
         if (isSuperAdmin) {
           // Super admin sees all appointments
-          console.log(
-            "[Dashboard] Super admin - showing all appointments:",
-            appointments.length
-          );
         } else if (admin?.specialistId) {
           // Regular admin with linked specialist - only show their specialist's appointments
           const originalCount = appointments.length;
           appointments = appointments.filter(
             (apt) => apt.specialistId?._id === admin.specialistId
           );
-          console.log(
-            `[Dashboard] Regular admin with specialist ${admin.specialistId} - filtered from ${originalCount} to ${appointments.length} appointments`
-          );
           // Auto-select the specialist's filter
           setSelectedSpecialist(admin.specialistId);
         } else {
           // Regular admin without linked specialist - show no appointments
-          console.log(
-            "[Dashboard] Regular admin without linked specialist - showing no appointments"
-          );
           appointments = [];
         }
 
@@ -109,7 +89,6 @@ export default function Dashboard() {
       } catch (error) {
         // Ignore abort errors (user navigated away)
         if (error.name === "AbortError" || error.code === "ERR_CANCELED") {
-          console.log("[Dashboard] Request cancelled");
           return;
         }
 

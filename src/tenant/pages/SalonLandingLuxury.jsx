@@ -902,9 +902,7 @@ export default function SalonLandingLuxury() {
         <GiftCardModal
           isOpen={showGiftCardModal}
           onClose={() => setShowGiftCardModal(false)}
-          onSuccess={(giftCard) => {
-            console.log("Gift card created:", giftCard);
-          }}
+          onSuccess={(giftCard) => {}}
         />
 
         {/* Login Drawer */}

@@ -80,7 +80,6 @@ export default function ClientsPage() {
   const fetchSegments = async () => {
     try {
       const response = await api.get("/admin/clients/segments/all");
-      console.log("[ClientsPage] Segments data:", response.data);
       setSegments(response.data.segments);
     } catch (error) {
       console.error("Failed to fetch segments:", error);
@@ -101,15 +100,12 @@ export default function ClientsPage() {
   };
 
   const handleClientClick = async (client) => {
-    console.log("Client clicked:", client);
     setSelectedClient(client);
     setShowModal(true);
-    console.log("Modal should be open, showModal:", true);
     await fetchClientDetails(client.id);
   };
 
   const closeModal = () => {
-    console.log("Closing modal");
     setShowModal(false);
     setSelectedClient(null);
     setClientDetails(null);
@@ -459,23 +455,11 @@ export default function ClientsPage() {
       </div>
 
       {/* Client Details Modal */}
-      {console.log(
-        "Rendering modal, showModal:",
-        showModal,
-        "selectedClient:",
-        selectedClient
-      )}
       <Modal
         open={showModal}
         onClose={closeModal}
         title={selectedClient?.name || "Client Details"}
       >
-        {console.log(
-          "Inside Modal children, loadingDetails:",
-          loadingDetails,
-          "clientDetails:",
-          clientDetails
-        )}
         {loadingDetails ? (
           <div className="flex justify-center py-12">
             <LoadingSpinner />
