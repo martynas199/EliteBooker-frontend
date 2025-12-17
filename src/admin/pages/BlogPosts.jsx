@@ -4,6 +4,7 @@ import { selectAdmin } from "../../shared/state/authSlice";
 import { api } from "../../shared/lib/apiClient";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
+import Modal from "../../shared/components/ui/Modal";
 
 export default function BlogPosts() {
   const [posts, setPosts] = useState([]);
@@ -310,153 +311,133 @@ export default function BlogPosts() {
       )}
 
       {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {editingPost ? "Edit Blog Post" : "Create New Blog Post"}
-              </h2>
-              <button
-                onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
-              {/* Title */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Title *
-                </label>
-                <input
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) =>
-                    setFormData({ ...formData, title: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                  placeholder="Enter blog post title"
-                  required
-                />
-              </div>
-
-              {/* Excerpt */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Excerpt (Optional)
-                </label>
-                <textarea
-                  value={formData.excerpt}
-                  onChange={(e) =>
-                    setFormData({ ...formData, excerpt: e.target.value })
-                  }
-                  rows={2}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                  placeholder="Brief summary for blog list (max 500 characters)"
-                  maxLength={500}
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  {formData.excerpt.length}/500 characters
-                </p>
-              </div>
-
-              {/* Content */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Content *
-                </label>
-                <textarea
-                  value={formData.content}
-                  onChange={(e) =>
-                    setFormData({ ...formData, content: e.target.value })
-                  }
-                  rows={15}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent font-mono text-sm"
-                  placeholder="Write your blog post content here. You can use HTML tags for formatting: <h2>, <h3>, <p>, <strong>, <ul>, <li>, <blockquote>, etc."
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Supports HTML formatting. Use &lt;h2&gt;, &lt;h3&gt;,
-                  &lt;p&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;li&gt;,
-                  &lt;blockquote&gt; tags.
-                </p>
-              </div>
-
-              {/* Tags */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tags (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={formData.tags}
-                  onChange={(e) =>
-                    setFormData({ ...formData, tags: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                  placeholder="beauty tips, skincare, lip fillers (comma-separated)"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Separate tags with commas
-                </p>
-              </div>
-
-              {/* Status */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Status *
-                </label>
-                <select
-                  value={formData.status}
-                  onChange={(e) =>
-                    setFormData({ ...formData, status: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                  required
-                >
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                </select>
-                <p className="text-xs text-gray-500 mt-1">
-                  Published posts will be visible to customers
-                </p>
-              </div>
-
-              {/* Actions */}
-              <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors"
-                >
-                  {editingPost ? "Update Post" : "Create Post"}
-                </button>
-              </div>
-            </form>
+      <Modal
+        open={isModalOpen}
+        onClose={closeModal}
+        title={editingPost ? "Edit Blog Post" : "Create New Blog Post"}
+        size="xl"
+        showCloseButton={true}
+        closeOnBackdrop={false}
+        closeOnEsc={true}
+        variant="dashboard"
+      >
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Title */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Title *
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+              placeholder="Enter blog post title"
+              required
+            />
           </div>
-        </div>
-      )}
+
+          {/* Excerpt */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Excerpt (Optional)
+            </label>
+            <textarea
+              value={formData.excerpt}
+              onChange={(e) =>
+                setFormData({ ...formData, excerpt: e.target.value })
+              }
+              rows={2}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+              placeholder="Brief summary for blog list (max 500 characters)"
+              maxLength={500}
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              {formData.excerpt.length}/500 characters
+            </p>
+          </div>
+
+          {/* Content */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Content *
+            </label>
+            <textarea
+              value={formData.content}
+              onChange={(e) =>
+                setFormData({ ...formData, content: e.target.value })
+              }
+              rows={15}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent font-mono text-sm"
+              placeholder="Write your blog post content here. You can use HTML tags for formatting: <h2>, <h3>, <p>, <strong>, <ul>, <li>, <blockquote>, etc."
+              required
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Supports HTML formatting. Use &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;,
+              &lt;strong&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;blockquote&gt; tags.
+            </p>
+          </div>
+
+          {/* Tags */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tags (Optional)
+            </label>
+            <input
+              type="text"
+              value={formData.tags}
+              onChange={(e) =>
+                setFormData({ ...formData, tags: e.target.value })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+              placeholder="beauty tips, skincare, lip fillers (comma-separated)"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Separate tags with commas
+            </p>
+          </div>
+
+          {/* Status */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Status *
+            </label>
+            <select
+              value={formData.status}
+              onChange={(e) =>
+                setFormData({ ...formData, status: e.target.value })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+              required
+            >
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Published posts will be visible to customers
+            </p>
+          </div>
+
+          {/* Actions */}
+          <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={closeModal}
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors"
+            >
+              {editingPost ? "Update Post" : "Create Post"}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }
