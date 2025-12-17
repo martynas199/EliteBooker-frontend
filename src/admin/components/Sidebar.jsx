@@ -118,7 +118,8 @@ const navigationConfig = [
 
 const SidebarItem = ({ item, isNested = false, onClose }) => {
   const location = useLocation();
-  const { ecommerceEnabled, multiLocation, seminarsEnabled, payOnTapEnabled } = useTenantSettings();
+  const { ecommerceEnabled, multiLocation, seminarsEnabled, payOnTapEnabled } =
+    useTenantSettings();
   const [isExpanded, setIsExpanded] = useState(true);
 
   // Check if section should be hidden based on conditions
@@ -196,7 +197,12 @@ const SidebarItem = ({ item, isNested = false, onClose }) => {
                     return true;
                   })
                   .map((child, idx) => (
-                    <SidebarItem key={idx} item={child} isNested onClose={onClose} />
+                    <SidebarItem
+                      key={idx}
+                      item={child}
+                      isNested
+                      onClose={onClose}
+                    />
                   ))}
               </div>
             </motion.div>
@@ -274,26 +280,7 @@ export default function Sidebar({ tenant, onLogout, onClose }) {
         <div className="space-y-6">
           {navigationConfig.map((section, idx) => (
             <div key={idx}>
-              {section.items ? (
-                <>
-                  <SidebarItem item={section} onClose={onClose} />
-                </>
-              ) : (
-                <SidebarItem item={section} onClose={onClose} />
-              )}
-            </div>
-          ))}
-                <SidebarItem item={section} onClose={onClose} />
-              )}
-            </div>
-          ))}
-              {section.items ? (
-                <div className="space-y-1">
-                  <SidebarItem item={section} />
-                </div>
-              ) : (
-                <SidebarItem item={section} />
-              )}
+              <SidebarItem item={section} onClose={onClose} />
             </div>
           ))}
         </div>

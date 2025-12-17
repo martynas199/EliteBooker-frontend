@@ -412,13 +412,15 @@ export default function Dashboard() {
             </label>
             <SelectButton
               onClick={() => setShowSpecialistDrawer(true)}
-              label={t("filterByBeautician", language)}
-              value={
-                selectedSpecialist === "all"
-                  ? t("allBeauticians", language)
-                  : specialists.find((s) => s._id === selectedSpecialist)
-                      ?.name || t("allBeauticians", language)
-              }
+              placeholder={t("filterByBeautician", language)}
+              value={selectedSpecialist === "all" ? "all" : selectedSpecialist}
+              options={[
+                { value: "all", label: t("allBeauticians", language) },
+                ...specialists.map((s) => ({
+                  value: s._id,
+                  label: s.name,
+                })),
+              ]}
             />
           </div>
         )}

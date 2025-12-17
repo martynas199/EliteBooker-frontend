@@ -496,14 +496,15 @@ export default function Revenue() {
                   </label>
                   <SelectButton
                     onClick={() => setShowSpecialistDrawer(true)}
-                    label="Filter by Specialist"
-                    value={
-                      selectedSpecialist === "all"
-                        ? "All Specialists"
-                        : data.specialists.find(
-                            (s) => s.specialistId === selectedSpecialist
-                          )?.specialist || "All Specialists"
-                    }
+                    placeholder="Filter by Specialist"
+                    value={selectedSpecialist}
+                    options={[
+                      { value: "all", label: "All Specialists" },
+                      ...data.specialists.map((s) => ({
+                        value: s.specialistId,
+                        label: s.specialist,
+                      })),
+                    ]}
                     className="w-full sm:w-64"
                   />
                 </div>
