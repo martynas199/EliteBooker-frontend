@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Plus, GraduationCap } from "lucide-react";
 import { SeminarsAPI } from "../../tenant/pages/seminars.api";
 import Button from "../../shared/components/ui/Button";
+import Card from "../../shared/components/ui/Card";
 import ConfirmDeleteModal from "../../shared/components/forms/ConfirmDeleteModal";
 
 export default function Seminars() {
@@ -110,22 +112,34 @@ export default function Seminars() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-x-hidden">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Seminars & Masterclasses
-          </h1>
-          <p className="text-gray-600 mt-1">Manage your educational events</p>
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg hidden sm:flex">
+            <GraduationCap className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+              Seminars & Masterclasses
+            </h2>
+            <p className="text-sm text-gray-600">
+              Manage your educational events
+            </p>
+          </div>
         </div>
-        <Button onClick={() => navigate("/admin/seminars/create")}>
+        <Button
+          onClick={() => navigate("/admin/seminars/create")}
+          variant="primary"
+          className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-blue-600 hover:bg-blue-700"
+        >
+          <Plus className="w-5 h-5 mr-2 inline-block" />
           Create Seminar
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border-2 border-gray-100 p-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -196,14 +210,14 @@ export default function Seminars() {
 
       {/* Seminars List */}
       {seminars.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <Card className="p-12 text-center">
           <p className="text-gray-500 text-lg">No seminars found</p>
           <p className="text-gray-400 mt-2">
             Create your first seminar to get started
           </p>
-        </div>
+        </Card>
       ) : (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <Card className="overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
@@ -317,7 +331,7 @@ export default function Seminars() {
               ))}
             </tbody>
           </table>
-        </div>
+        </Card>
       )}
 
       {/* Delete Modal */}

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Palette } from "lucide-react";
 import { selectAdmin } from "../../shared/state/authSlice";
 import api from "../../shared/lib/api";
+import Card from "../../shared/components/ui/Card";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 
 export default function BrandingSettings() {
@@ -142,12 +144,20 @@ export default function BrandingSettings() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Branding Settings</h1>
-        <p className="text-gray-600 mt-2">
-          Customize your salon's colors, logo, and hero section
-        </p>
+    <div className="space-y-6 overflow-x-hidden max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg hidden sm:flex">
+          <Palette className="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            Branding Settings
+          </h2>
+          <p className="text-sm text-gray-600">
+            Customize your salon's colors, logo, and hero section
+          </p>
+        </div>
       </div>
 
       {error && (
@@ -162,9 +172,9 @@ export default function BrandingSettings() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Brand Colors */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <Card className="p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Brand Colors
           </h2>
@@ -268,10 +278,10 @@ export default function BrandingSettings() {
               Reset to default colors
             </button>
           </div>
-        </div>
+        </Card>
 
         {/* Logo & Favicon */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <Card className="p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Logo & Favicon
           </h2>
@@ -327,10 +337,10 @@ export default function BrandingSettings() {
               </p>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Hero Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <Card className="p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Hero Section
           </h2>
@@ -397,7 +407,7 @@ export default function BrandingSettings() {
               />
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Submit Button */}
         <div className="flex justify-end gap-4">

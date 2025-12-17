@@ -372,7 +372,12 @@ export default function HeroSections() {
               >
                 Cancel
               </Button>
-              <Button type="submit" variant="brand" loading={saving} className="w-full sm:w-auto">
+              <Button
+                type="submit"
+                variant="brand"
+                loading={saving}
+                className="w-full sm:w-auto"
+              >
                 {editingSection._id ? "Update" : "Create"}
               </Button>
             </div>

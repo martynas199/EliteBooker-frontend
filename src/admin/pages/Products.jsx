@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Plus, Package } from "lucide-react";
 import { ProductsAPI } from "../../tenant/pages/products.api";
 import { api } from "../../shared/lib/apiClient";
 import Button from "../../shared/components/ui/Button";
+import Card from "../../shared/components/ui/Card";
 import FormField from "../../shared/components/forms/FormField";
 import ConfirmDeleteModal from "../../shared/components/forms/ConfirmDeleteModal";
 
@@ -432,32 +434,37 @@ export default function Products() {
     : products;
 
   return (
-    <div className="space-y-6 sm:space-y-8 p-4 sm:p-6">
+    <div className="space-y-6 overflow-x-hidden">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-gray-900 mb-2 tracking-wide break-words">
-            Products
-          </h1>
-          <p className="text-sm sm:text-base text-gray-600 font-light">
-            Manage your product catalog and popular collections
-          </p>
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg hidden sm:flex">
+            <Package className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+              Products
+            </h2>
+            <p className="text-sm text-gray-600">
+              Manage your product catalog and collections
+            </p>
+          </div>
         </div>
         {!showForm && (
           <Button
             onClick={() => setShowForm(true)}
             variant="primary"
-            className="flex items-center gap-2"
+            className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-blue-600 hover:bg-blue-700"
           >
-            <span className="text-xl">+</span>
-            <span className="hidden sm:inline">Add New Product</span>
+            <Plus className="w-5 h-5 mr-2 inline-block" />
+            Add New Product
           </Button>
         )}
       </div>
 
       {/* Brand Filter Pills */}
       {!showForm && brands.length > 0 && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
+        <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border-2 border-gray-100 p-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <span className="text-sm font-medium text-gray-700 flex-shrink-0">
               Filter by Brand:
@@ -496,8 +503,8 @@ export default function Products() {
 
       {/* Form */}
       {showForm && (
-        <div className="bg-white rounded-xl shadow-lg border-4 border-brand-400 p-4 sm:p-6 md:p-8 mb-8 overflow-hidden">
-          <h2 className="text-lg sm:text-xl md:text-2xl font-serif font-semibold text-gray-900 mb-4 sm:mb-6 tracking-wide break-words">
+        <Card className="p-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
             {editingId ? "Edit Product" : "Add New Product"}
           </h2>
 
@@ -1098,12 +1105,12 @@ export default function Products() {
               </Button>
             </div>
           </form>
-        </div>
+        </Card>
       )}
 
       {/* Products List */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 overflow-hidden">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 break-words">
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">
           {selectedBrand ? (
             <>
               {selectedBrand} Products ({filteredProducts.length})
@@ -1264,7 +1271,7 @@ export default function Products() {
             ))}
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Delete Confirmation Modal */}
       <ConfirmDeleteModal
