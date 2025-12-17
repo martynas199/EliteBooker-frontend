@@ -1,4 +1,5 @@
 ﻿import axios from "axios";
+import { store } from "../../app/store";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
@@ -15,6 +16,7 @@ export const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const pathname = window.location.pathname;
+    const adminState = store.getState()?.auth?.admin;
 
     // Add Authorization header for admin routes (cross-domain compatibility)
     if (pathname.startsWith("/admin") && !config.headers["Authorization"]) {
@@ -22,6 +24,15 @@ api.interceptors.request.use(
       if (adminToken) {
         config.headers["Authorization"] = `Bearer ${adminToken}`;
       }
+    }
+
+    const shouldAttachTenantHeader =
+      pathname.startsWith("/admin") &&
+      adminState?.role === "super_admin" &&
+      adminState?.tenantId;
+
+    if (shouldAttachTenantHeader && !config.headers["x-tenant-id"]) {
+      config.headers["x-tenant-id"] = `${adminState.tenantId}`;
     }
 
     // Add Authorization header for client routes (like beauty salon app)

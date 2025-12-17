@@ -18,6 +18,14 @@ import {
 
 const localizer = dayjsLocalizer(dayjs);
 
+const isCancellationError = (error) => {
+  if (!error) return false;
+  if (error.name === "AbortError") return true;
+  if (error.code === "ERR_CANCELED") return true;
+  if (error.originalError) return isCancellationError(error.originalError);
+  return false;
+};
+
 export default function Dashboard() {
   const { language } = useLanguage();
   const admin = useSelector(selectAdmin);
@@ -34,22 +42,74 @@ export default function Dashboard() {
   const [salonSlug, setSalonSlug] = useState(null);
   const [showCreateServiceModal, setShowCreateServiceModal] = useState(false);
   const [showCreateStaffModal, setShowCreateStaffModal] = useState(false);
+  const [metrics, setMetrics] = useState(null);
+  const [metricsLoading, setMetricsLoading] = useState(false);
 
   const fetchData = useCallback(
     async (signal) => {
       try {
         setLoading(true);
 
-        // Fetch appointments, specialists, and salon info in parallel with cancellation support
-        const [appointmentsRes, specialistsRes, salonRes] = await Promise.all([
-          api.get("/appointments", { signal }),
-          api.get("/specialists", { params: { limit: 1000 }, signal }),
-          api.get("/salon", { signal }),
-        ]);
+        // Fetch appointments, specialists, and salon info with granular error tracking
+        const [appointmentsResult, specialistsResult, salonResult] =
+          await Promise.allSettled([
+            api.get("/appointments", { signal }),
+            api.get("/specialists", { params: { limit: 1000 }, signal }),
+            api.get("/salon", { signal }),
+          ]);
 
-        let appointments = appointmentsRes.data || [];
-        const specialistsData = specialistsRes.data || [];
-        const salonData = salonRes.data || {};
+        const resultList = [appointmentsResult, specialistsResult, salonResult];
+
+        const wasCancelled = resultList.some(
+          (result) =>
+            result.status === "rejected" && isCancellationError(result.reason)
+        );
+
+        if (wasCancelled) {
+          return;
+        }
+
+        const requestErrors = [];
+
+        let appointments = [];
+        let specialistsData = [];
+        let salonData = {};
+
+        if (appointmentsResult.status === "fulfilled") {
+          appointments = appointmentsResult.value.data || [];
+        } else {
+          requestErrors.push({
+            endpoint: "/appointments",
+            error: appointmentsResult.reason,
+          });
+        }
+
+        if (specialistsResult.status === "fulfilled") {
+          specialistsData = specialistsResult.value.data || [];
+        } else {
+          requestErrors.push({
+            endpoint: "/specialists",
+            error: specialistsResult.reason,
+          });
+        }
+
+        if (salonResult.status === "fulfilled") {
+          salonData = salonResult.value.data || {};
+        } else {
+          requestErrors.push({
+            endpoint: "/salon",
+            error: salonResult.reason,
+          });
+        }
+
+        if (requestErrors.length > 0) {
+          requestErrors.forEach(({ endpoint, error }) => {
+            console.error(`[Dashboard] ${endpoint} request failed`, error);
+          });
+          throw (
+            requestErrors[0].error || new Error("Dashboard data request failed")
+          );
+        }
 
         // Store salon slug for booking page link
         // Priority: use slug first, then generate from name, never use ID
@@ -87,8 +147,16 @@ export default function Dashboard() {
         setAllAppointments(appointments);
         setSpecialists(specialistsData);
       } catch (error) {
-        // Ignore abort errors (user navigated away)
-        if (error.name === "AbortError" || error.code === "ERR_CANCELED") {
+        // Ignore abort/cancel errors (user navigated away or request cancelled)
+        if (isCancellationError(error)) {
+          return;
+        }
+
+        // Ignore 403 errors on initial load (admin not yet loaded)
+        if (error.response?.status === 403) {
+          console.log(
+            "[Dashboard] 403 error (likely no auth token yet), will retry when admin loads"
+          );
           return;
         }
 
@@ -102,6 +170,12 @@ export default function Dashboard() {
   ); // Only recreate if these change
 
   useEffect(() => {
+    // Don't fetch data until admin is loaded from localStorage
+    if (!admin) {
+      console.log("[Dashboard] Waiting for admin to load...");
+      return;
+    }
+
     const abortController = new AbortController();
 
     fetchData(abortController.signal);
@@ -110,7 +184,7 @@ export default function Dashboard() {
     return () => {
       abortController.abort();
     };
-  }, [fetchData]); // Re-fetch when fetchData changes (which depends on admin and isSuperAdmin)
+  }, [fetchData, admin]); // Re-fetch when fetchData changes (which depends on admin and isSuperAdmin)
 
   useEffect(() => {
     // Handle window resize for responsive calendar
@@ -174,86 +248,67 @@ export default function Dashboard() {
       .filter(Boolean); // Remove any null entries
   }, [selectedSpecialist, allAppointments]);
 
-  // Calculate stats (optimized with single-pass reduce)
-  const stats = useMemo(() => {
-    const today = dayjs().startOf("day");
-    const thisMonth = dayjs().startOf("month");
-    const lastMonth = dayjs().subtract(1, "month").startOf("month");
+  const emptyStats = useMemo(
+    () => ({
+      totalRevenue: 0,
+      thisMonthRevenue: 0,
+      lastMonthRevenue: 0,
+      revenueTrend: 0,
+      totalAppointments: 0,
+      appointmentsTrend: 0,
+      todayAppointments: 0,
+      uniqueCustomers: 0,
+    }),
+    []
+  );
 
-    let filtered = allAppointments;
-    if (selectedSpecialist !== "all") {
-      filtered = filtered.filter(
-        (apt) => apt.specialistId?._id === selectedSpecialist
-      );
+  const stats = metrics ?? emptyStats;
+
+  useEffect(() => {
+    if (!admin) {
+      return;
     }
 
-    // Single-pass calculation for better performance
-    const result = filtered.reduce(
-      (acc, apt) => {
-        const aptDate = dayjs(apt.start);
-        const isThisMonth = aptDate.isAfter(thisMonth);
-        const isLastMonth =
-          aptDate.isAfter(lastMonth) && aptDate.isBefore(thisMonth);
-        const isToday = aptDate.isSame(today, "day");
-        const isCompletedOrConfirmed =
-          apt.status === "confirmed" || apt.status === "completed";
-        const price = apt.totalPrice || 0;
+    const controller = new AbortController();
+    const specialistFilter = isSuperAdmin
+      ? selectedSpecialist
+      : admin?.specialistId || "all";
 
-        if (isCompletedOrConfirmed) {
-          acc.totalRevenue += price;
-          if (isThisMonth) acc.thisMonthRevenue += price;
-          if (isLastMonth) acc.lastMonthRevenue += price;
+    const params =
+      specialistFilter && specialistFilter !== "all"
+        ? { specialistId: specialistFilter }
+        : undefined;
+
+    const loadMetrics = async () => {
+      try {
+        setMetricsLoading(true);
+        const response = await api.get("/appointments/metrics", {
+          params,
+          signal: controller.signal,
+        });
+        setMetrics(response.data || emptyStats);
+      } catch (error) {
+        if (isCancellationError(error)) {
+          return;
         }
-
-        if (isThisMonth) acc.thisMonthAppointments++;
-        if (isLastMonth) acc.lastMonthAppointments++;
-        if (isToday) acc.todayAppointments++;
-
-        // Track unique customers
-        if (apt.client?._id) acc.uniqueCustomers.add(apt.client._id);
-
-        return acc;
-      },
-      {
-        totalRevenue: 0,
-        thisMonthRevenue: 0,
-        lastMonthRevenue: 0,
-        thisMonthAppointments: 0,
-        lastMonthAppointments: 0,
-        todayAppointments: 0,
-        uniqueCustomers: new Set(),
+        console.error("Failed to fetch dashboard metrics:", error);
+        toast.error("Failed to load dashboard metrics");
+      } finally {
+        setMetricsLoading(false);
       }
-    );
-
-    // Calculate trends
-    const revenueTrend =
-      result.lastMonthRevenue > 0
-        ? ((result.thisMonthRevenue - result.lastMonthRevenue) /
-            result.lastMonthRevenue) *
-          100
-        : result.thisMonthRevenue > 0
-        ? 100
-        : 0;
-
-    const appointmentsTrend =
-      result.lastMonthAppointments > 0
-        ? ((result.thisMonthAppointments - result.lastMonthAppointments) /
-            result.lastMonthAppointments) *
-          100
-        : result.thisMonthAppointments > 0
-        ? 100
-        : 0;
-
-    return {
-      totalRevenue: result.totalRevenue,
-      thisMonthRevenue: result.thisMonthRevenue,
-      revenueTrend,
-      totalAppointments: result.thisMonthAppointments,
-      appointmentsTrend,
-      todayAppointments: result.todayAppointments,
-      uniqueCustomers: result.uniqueCustomers.size,
     };
-  }, [allAppointments, selectedSpecialist]);
+
+    loadMetrics();
+
+    return () => controller.abort();
+  }, [
+    admin?._id,
+    admin?.specialistId,
+    admin?.role,
+    emptyStats,
+    isSuperAdmin,
+    selectedSpecialist,
+  ]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-GB", {
@@ -466,32 +521,39 @@ export default function Dashboard() {
                     />
                   </svg>
                 </div>
-                {stats.revenueTrend !== 0 && (
-                  <div
-                    className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full ${
-                      stats.revenueTrend > 0
-                        ? "bg-green-50 text-green-600 border border-green-200"
-                        : "bg-red-50 text-red-600 border border-red-200"
-                    }`}
-                  >
-                    <svg
-                      className={`w-4 h-4 ${
-                        stats.revenueTrend > 0 ? "rotate-0" : "rotate-180"
+                <div className="flex items-center gap-2">
+                  {metricsLoading && (
+                    <span className="text-xs text-gray-400 animate-pulse">
+                      Updating…
+                    </span>
+                  )}
+                  {stats.revenueTrend !== 0 && (
+                    <div
+                      className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full ${
+                        stats.revenueTrend > 0
+                          ? "bg-green-50 text-green-600 border border-green-200"
+                          : "bg-red-50 text-red-600 border border-red-200"
                       }`}
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 10l7-7m0 0l7 7m-7-7v18"
-                      />
-                    </svg>
-                    <span>{Math.abs(stats.revenueTrend).toFixed(1)}%</span>
-                  </div>
-                )}
+                      <svg
+                        className={`w-4 h-4 ${
+                          stats.revenueTrend > 0 ? "rotate-0" : "rotate-180"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 10l7-7m0 0l7 7m-7-7v18"
+                        />
+                      </svg>
+                      <span>{Math.abs(stats.revenueTrend).toFixed(1)}%</span>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="space-y-2 mt-6">
                 <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
@@ -527,70 +589,46 @@ export default function Dashboard() {
                     />
                   </svg>
                 </div>
-                {stats.appointmentsTrend !== 0 && (
-                  <div
-                    className={`flex items-center gap-1 text-sm font-medium px-2 py-1 rounded-lg ${
-                      stats.appointmentsTrend > 0
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                  >
-                    <svg
-                      className={`w-4 h-4 ${
-                        stats.appointmentsTrend > 0 ? "rotate-0" : "rotate-180"
+                <div className="flex items-center gap-2">
+                  {metricsLoading && (
+                    <span className="text-xs text-gray-400 animate-pulse">
+                      Updating…
+                    </span>
+                  )}
+                  {stats.appointmentsTrend !== 0 && (
+                    <div
+                      className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full ${
+                        stats.appointmentsTrend > 0
+                          ? "bg-green-50 text-green-600 border border-green-200"
+                          : "bg-red-50 text-red-600 border border-red-200"
                       }`}
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 10l7-7m0 0l7 7m-7-7v18"
-                      />
-                    </svg>
-                    <span>{Math.abs(stats.appointmentsTrend).toFixed(1)}%</span>
-                  </div>
-                )}
-              </div>
-              <div className="space-y-2 mt-6">
-                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
-                  This Month
-                </p>
-                <p className="text-4xl font-bold text-gray-900 tracking-tight">
-                  {stats.totalAppointments}
-                </p>
-                <p className="text-gray-400 text-sm font-medium">
-                  Appointments scheduled
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Today's Appointments Card */}
-          <div className="relative bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-orange-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-6">
-                <div className="p-4 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-lg shadow-orange-500/20 group-hover:shadow-xl group-hover:shadow-orange-500/30 group-hover:scale-110 transition-all duration-300">
-                  <svg
-                    className="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                      <svg
+                        className={`w-4 h-4 ${
+                          stats.appointmentsTrend > 0
+                            ? "rotate-0"
+                            : "rotate-180"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 10l7-7m0 0l7 7m-7-7v18"
+                        />
+                      </svg>
+                      <span>
+                        {Math.abs(stats.appointmentsTrend).toFixed(1)}%
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-orange-50 text-orange-600 border border-orange-200">
-                  <span>Today</span>
-                </div>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-orange-50 text-orange-600 border border-orange-200">
+                <span>Today</span>
               </div>
               <div className="space-y-2 mt-6">
                 <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
