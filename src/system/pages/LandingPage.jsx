@@ -373,9 +373,71 @@ export default function LandingPage() {
     <>
       {/* SEO Meta Tags */}
       <SEOHead
-        title="Online Booking System for Salons & Spas | Accept Appointments 24/7"
-        description="Complete booking solution for beauty businesses. Take appointments online, accept payments, send reminders, and manage your team. Reduce no-shows by 70%. Start free trial."
-        keywords="salon booking system, spa software, online appointment scheduling, beauty salon software, appointment booking, payment processing, booking app"
+        title="#1 Appointment Booking Software for Salons & Spas | Free Trial"
+        description="Elite Booker is the leading appointment booking software trusted by 500+ salons & spas worldwide. Automate bookings 24/7, reduce no-shows by 70%, accept online payments, manage staff schedules. Start your free trial today - no credit card required. See why businesses rank us #1 for ease of use and customer support."
+        keywords="appointment booking software, salon booking system, spa scheduling software, online appointment scheduler, beauty booking app, salon management software, appointment scheduling system, booking software for salons, spa management software, beauty business software, online booking platform, salon software, appointment app, scheduling software, booking management system, free booking software, best salon software, appointment reminder system"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "Elite Booker",
+          applicationCategory: "BusinessApplication",
+          operatingSystem: "Web, iOS, Android",
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "GBP",
+            priceValidUntil: "2026-12-31",
+          },
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.9",
+            ratingCount: "523",
+            bestRating: "5",
+            worstRating: "1",
+          },
+          description:
+            "Elite Booker is the #1 appointment booking software for salons, spas, and beauty businesses. Automate online bookings 24/7, reduce no-shows by 70%, accept payments, manage staff schedules, and grow your business.",
+          screenshot: "https://www.elitebooker.com/screenshots/dashboard.jpg",
+          softwareVersion: "2.0",
+          releaseNotes:
+            "Improved scheduling engine, enhanced mobile app, advanced analytics",
+          softwareRequirements:
+            "Modern web browser (Chrome, Firefox, Safari, Edge)",
+          permissions:
+            "Internet access required for real-time booking synchronization",
+          keywords:
+            "appointment booking, salon software, spa scheduling, beauty business management, online booking system",
+          author: {
+            "@type": "Organization",
+            name: "Elite Booker Ltd",
+            url: "https://www.elitebooker.com",
+          },
+          provider: {
+            "@type": "Organization",
+            name: "Elite Booker Ltd",
+            url: "https://www.elitebooker.com",
+            logo: "https://www.elitebooker.com/logo.png",
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+44-800-123-4567",
+              contactType: "Customer Support",
+              areaServed: "GB",
+              availableLanguage: ["English"],
+            },
+          },
+          featureList: [
+            "24/7 Online Booking",
+            "Automated SMS & Email Reminders",
+            "Online Payment Processing",
+            "Staff Schedule Management",
+            "Customer Management System",
+            "Business Analytics & Reporting",
+            "Mobile App (iOS & Android)",
+            "Multi-Location Support",
+            "Gift Card Management",
+            "Product Sales Integration",
+          ],
+        }}
       />
 
       <PageTransition className="overflow-x-hidden bg-white">

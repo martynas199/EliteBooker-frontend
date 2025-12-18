@@ -147,7 +147,7 @@ export function TenantProvider({ children }) {
 
     // Update page title
     if (tenantData.name) {
-      document.title = `${tenantData.name} - Beauty Booking`;
+      document.title = `${tenantData.name} - Book Online | Elite Booker`;
     }
   }
 

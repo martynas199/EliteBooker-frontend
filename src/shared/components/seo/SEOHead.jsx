@@ -25,27 +25,26 @@ export default function SEOHead({
 }) {
   const siteName = "Elite Booker";
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
-  const baseUrl = "https://www.nobleelegance.co.uk";
+  const baseUrl = "https://www.elitebooker.com";
   const canonicalUrl = canonical || window.location.href;
 
-  // Default keywords that appear on every page - based on actual services offered
+  // Default keywords focused on appointment booking software - optimized for ranking #1
   const defaultKeywords = [
-    "beauty salon Wisbech",
-    "Elite Booker",
-    "permanent makeup Wisbech",
-    "lip fillers Cambridgeshire",
-    "anti wrinkle injections Wisbech",
-    "dermal fillers Wisbech",
-    "laser treatments Wisbech",
-    "facial treatments Cambridgeshire",
-    "brow lamination Wisbech",
-    "skin boosters Wisbech",
-    "hair extensions Wisbech",
-    "aesthetic clinic Wisbech",
-    "beauty treatments Peterborough",
-    "cosmetic injectables Cambridgeshire",
-    "beauty salon March",
-    "beauty salon King's Lynn",
+    "appointment booking software",
+    "salon booking system",
+    "spa scheduling software",
+    "online appointment scheduler",
+    "beauty booking app",
+    "salon management software",
+    "appointment scheduling system",
+    "booking software for salons",
+    "spa booking software",
+    "beauty business software",
+    "online booking platform",
+    "salon software",
+    "appointment system",
+    "scheduling software",
+    "booking management system",
   ];
 
   const allKeywords = keywords
@@ -98,11 +97,10 @@ export default function SEOHead({
       <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       <meta name="format-detection" content="telephone=yes" />
 
-      {/* Geographic Tags for Local SEO */}
-      <meta name="geo.region" content="GB-CAM" />
-      <meta name="geo.placename" content="Wisbech, Cambridgeshire" />
-      <meta name="geo.position" content="52.6667;0.1601" />
-      <meta name="ICBM" content="52.6667, 0.1601" />
+      {/* Software Category Tags */}
+      <meta name="category" content="Business Software" />
+      <meta name="application-name" content="Elite Booker" />
+      <meta name="coverage" content="Worldwide" />
 
       {/* JSON-LD Structured Data */}
       {schema && (

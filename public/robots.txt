@@ -1,13 +1,14 @@
-# robots.txt for Elite Booker
-# https://www.nobleelegance.co.uk
+# robots.txt for Elite Booker - Appointment Booking Software
+# https://www.elitebooker.com
 
 User-agent: *
 Allow: /
-Allow: /products
-Allow: /specialists
-Allow: /about
-Allow: /salon
-Allow: /faq
+Allow: /features
+Allow: /pricing
+Allow: /testimonials
+Allow: /demo
+Allow: /help
+Allow: /search
 
 # Block admin pages from search engines
 Disallow: /admin/
@@ -38,7 +39,7 @@ Disallow: /order-success/*
 Disallow: /api/
 
 # Sitemap location
-Sitemap: https://www.nobleelegance.co.uk/sitemap.xml
+Sitemap: https://www.elitebooker.com/sitemap.xml
 
 # Crawl delay (optional - helps prevent server overload)
 Crawl-delay: 1
