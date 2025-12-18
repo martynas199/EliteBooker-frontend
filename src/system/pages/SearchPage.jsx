@@ -623,19 +623,46 @@ export default function SearchPage() {
             font-size: 16px !important;
           }
         }
+        
+        /* Custom scrollbar for desktop */
+        @media (min-width: 1024px) {
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+          }
+          
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f9fafb;
+            border-radius: 4px;
+          }
+          
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 4px;
+            transition: background 0.2s;
+          }
+          
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #d1d5db;
+          }
+        }
+        
+        /* Smooth transitions */
+        * {
+          scroll-behavior: smooth;
+        }
       `}</style>
 
-      <div className="fixed inset-0 bg-white">
+      <div className="fixed inset-0 bg-white flex flex-col">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 z-[110] fixed top-0 left-0 right-0 flex-shrink-0">
-          <div className="px-4 py-3">
-            <div className="flex items-center gap-3">
+        <header className="bg-white border-b border-gray-100 z-[110] flex-shrink-0">
+          <div className="px-4 lg:px-6 xl:px-8 py-4 lg:py-5">
+            <div className="flex items-center gap-3 lg:gap-4 max-w-screen-2xl mx-auto">
               <Link
                 to="/"
-                className="text-gray-600 hover:text-gray-900 transition-colors flex-shrink-0"
+                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 transition-colors flex-shrink-0"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 text-gray-900"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -643,15 +670,15 @@ export default function SearchPage() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={2.5}
                     d="M10 19l-7-7m0 0l7-7m-7 7h18"
                   />
                 </svg>
               </Link>
 
-              <div className="flex-1 relative">
+              <div className="flex-1 max-w-2xl relative">
                 <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -670,14 +697,14 @@ export default function SearchPage() {
                   onChange={(e) =>
                     setFilters((prev) => ({ ...prev, search: e.target.value }))
                   }
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-full focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                  className="w-full pl-11 pr-4 py-3 lg:py-3.5 border border-gray-300 rounded-full focus:ring-1 focus:ring-black focus:border-black text-sm lg:text-base transition-all hover:shadow-md bg-white shadow-sm"
                   style={{ fontSize: "16px", touchAction: "manipulation" }}
                 />
               </div>
 
               <Link
                 to="/client/profile"
-                className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors flex-shrink-0"
+                className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0 border border-gray-200"
               >
                 <svg
                   className="w-5 h-5 text-gray-600"
@@ -697,44 +724,13 @@ export default function SearchPage() {
           </div>
         </header>
 
-        {/* Map Container - Full Screen */}
-        <div className="absolute inset-0 top-[72px] bg-gray-200">
-          <div ref={mapRef} className="absolute inset-0 w-full h-full" />
-          {!import.meta.env.VITE_GOOGLE_MAPS_API_KEY && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-              <div className="text-center p-6">
-                <svg
-                  className="w-16 h-16 mx-auto mb-4 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                </svg>
-                <p className="text-sm font-medium text-gray-600">
-                  Map view unavailable
-                </p>
-                <p className="text-xs text-gray-400 mt-1">
-                  Configure VITE_GOOGLE_MAPS_API_KEY
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Bottom Drawer with Venue Cards */}
-        <BottomDrawer
-          initialSnap="mid"
-          onSnapChange={(snap) => console.log("Drawer snap:", snap)}
-          header={
-            <div>
-              {/* Filter Bar */}
-              <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3">
+        {/* Desktop: Side-by-side layout, Mobile: Bottom drawer */}
+        <div className="flex-1 overflow-hidden relative flex flex-row">
+          {/* Listings Panel - Desktop left side, Mobile bottom drawer */}
+          <div className="hidden lg:flex lg:flex-col lg:w-[400px] xl:w-[440px] 2xl:w-[480px] h-full border-r border-gray-100 bg-white overflow-hidden">
+            {/* Filter Bar */}
+            <div className="flex-shrink-0 px-6 xl:px-8 py-5 border-b border-gray-100">
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
                 <FilterChip
                   label="All distances"
                   active={filters.distance === "all"}
@@ -778,78 +774,240 @@ export default function SearchPage() {
                 />
               </div>
               {/* Results count */}
-              <div className="py-2 border-t border-gray-100">
-                <p className="text-sm text-gray-600">
+              <div className="mt-3.5">
+                <p className="text-sm lg:text-base text-gray-600">
                   <strong className="font-semibold text-gray-900">
                     {filteredVenuesWithDistance.length}
                   </strong>{" "}
-                  venues found
+                  {filteredVenuesWithDistance.length === 1 ? "venue" : "venues"} found
                 </p>
               </div>
             </div>
-          }
-        >
-          {/* Business Cards */}
-          <div ref={cardContainerRef} className="px-4 py-4 space-y-6">
-            {loading ? (
-              <div className="flex items-center justify-center py-20">
-                <div className="text-center">
-                  <div className="inline-block w-8 h-8 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
-                  <p className="mt-4 text-gray-600 text-sm">
-                    Finding venues...
+
+            {/* Business Cards - Scrollable */}
+            <div 
+              ref={cardContainerRef} 
+              className="flex-1 overflow-y-auto px-4 xl:px-5 py-4 space-y-3 custom-scrollbar"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#e5e7eb #f9fafb'
+              }}
+            >
+              {loading ? (
+                <div className="flex items-center justify-center py-20">
+                  <div className="text-center">
+                    <div className="inline-block w-8 h-8 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                    <p className="mt-4 text-gray-600 text-sm">
+                      Finding venues...
+                    </p>
+                  </div>
+                </div>
+              ) : filteredVenuesWithDistance.length === 0 ? (
+                <div className="text-center py-20">
+                    <svg
+                      className="w-16 h-16 mx-auto mb-4 text-gray-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                    <p className="text-gray-900 font-medium mb-2">
+                      No venues found
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Try adjusting your search or filters
+                    </p>
+                  </div>
+                ) : (
+                  <AnimatePresence>
+                    {filteredVenuesWithDistance.map((venue, index) => (
+                      <motion.div
+                        key={venue._id}
+                        ref={(el) => (cardRefs.current[venue._id] = el)}
+                        data-venue-id={venue._id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{
+                          delay: index * 0.05,
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 25,
+                        }}
+                      >
+                        <BusinessCard
+                          venue={venue}
+                          active={venue._id === activeVenueId}
+                          onClick={() => setActiveVenueId(venue._id)}
+                        />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                )}
+            </div>
+          </div>
+
+          {/* Map Container - Desktop right side, Mobile full screen */}
+          <div className="absolute lg:relative inset-0 lg:inset-auto lg:flex-1 h-full w-full bg-gray-100">
+            <div ref={mapRef} className="w-full h-full" />
+            {!import.meta.env.VITE_GOOGLE_MAPS_API_KEY && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                <div className="text-center p-6">
+                  <svg
+                    className="w-16 h-16 mx-auto mb-4 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                  </svg>
+                  <p className="text-sm font-medium text-gray-600">
+                    Map view unavailable
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Configure VITE_GOOGLE_MAPS_API_KEY
                   </p>
                 </div>
               </div>
-            ) : filteredVenuesWithDistance.length === 0 ? (
-              <div className="text-center py-20">
-                <svg
-                  className="w-16 h-16 mx-auto mb-4 text-gray-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                <p className="text-gray-900 font-medium mb-2">
-                  No venues found
-                </p>
-                <p className="text-sm text-gray-500">
-                  Try adjusting your search or filters
-                </p>
-              </div>
-            ) : (
-              <AnimatePresence>
-                {filteredVenuesWithDistance.map((venue, index) => (
-                  <motion.div
-                    key={venue._id}
-                    ref={(el) => (cardRefs.current[venue._id] = el)}
-                    data-venue-id={venue._id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{
-                      delay: index * 0.05,
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 25,
-                    }}
-                  >
-                    <BusinessCard
-                      venue={venue}
-                      active={venue._id === activeVenueId}
-                      onClick={() => setActiveVenueId(venue._id)}
-                    />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
             )}
           </div>
-        </BottomDrawer>
+
+          {/* Mobile Bottom Drawer - Hidden on desktop */}
+          <div className="lg:hidden">
+            <BottomDrawer
+              initialSnap="mid"
+              onSnapChange={(snap) => console.log("Drawer snap:", snap)}
+              header={
+                <div>
+                  {/* Filter Bar */}
+                  <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3">
+                    <FilterChip
+                      label="All distances"
+                      active={filters.distance === "all"}
+                      onClick={() =>
+                        setFilters((prev) => ({ ...prev, distance: "all" }))
+                      }
+                    />
+                    <FilterChip
+                      label="Within 5 mi"
+                      active={filters.distance === "5"}
+                      onClick={() =>
+                        setFilters((prev) => ({ ...prev, distance: "5" }))
+                      }
+                    />
+                    <FilterChip
+                      label="Within 10 mi"
+                      active={filters.distance === "10"}
+                      onClick={() =>
+                        setFilters((prev) => ({ ...prev, distance: "10" }))
+                      }
+                    />
+                    <FilterChip
+                      label="4+ stars"
+                      active={filters.rating === "4"}
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          rating: filters.rating === "4" ? "all" : "4",
+                        }))
+                      }
+                    />
+                    <FilterChip
+                      label="4.5+ stars"
+                      active={filters.rating === "4.5"}
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          rating: filters.rating === "4.5" ? "all" : "4.5",
+                        }))
+                      }
+                    />
+                  </div>
+                  {/* Results count */}
+                  <div className="py-2 border-t border-gray-100">
+                    <p className="text-sm text-gray-600">
+                      <strong className="font-semibold text-gray-900">
+                        {filteredVenuesWithDistance.length}
+                      </strong>{" "}
+                      venues found
+                    </p>
+                  </div>
+                </div>
+              }
+            >
+              {/* Business Cards */}
+              <div className="px-4 py-4 space-y-6">
+                {loading ? (
+                  <div className="flex items-center justify-center py-20">
+                    <div className="text-center">
+                      <div className="inline-block w-8 h-8 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                      <p className="mt-4 text-gray-600 text-sm">
+                        Finding venues...
+                      </p>
+                    </div>
+                  </div>
+                ) : filteredVenuesWithDistance.length === 0 ? (
+                  <div className="text-center py-20">
+                    <svg
+                      className="w-16 h-16 mx-auto mb-4 text-gray-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                    <p className="text-gray-900 font-medium mb-2">
+                      No venues found
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Try adjusting your search or filters
+                    </p>
+                  </div>
+                ) : (
+                  <AnimatePresence>
+                    {filteredVenuesWithDistance.map((venue, index) => (
+                      <motion.div
+                        key={venue._id}
+                        data-venue-id={venue._id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{
+                          delay: index * 0.05,
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 25,
+                        }}
+                      >
+                        <BusinessCard
+                          venue={venue}
+                          active={venue._id === activeVenueId}
+                          onClick={() => setActiveVenueId(venue._id)}
+                        />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                )}
+              </div>
+            </BottomDrawer>
+          </div>
+        </div>
       </div>
     </>
   );
@@ -859,12 +1017,12 @@ export default function SearchPage() {
 const FilterChip = React.memo(function FilterChip({ label, active, onClick }) {
   return (
     <motion.button
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: 0.96 }}
       onClick={onClick}
-      className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+      className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
         active
-          ? "bg-black text-white shadow-md"
-          : "bg-white text-gray-700 border border-gray-300 hover:border-gray-400"
+          ? "bg-gray-900 text-white"
+          : "bg-white text-gray-700 border border-gray-300 hover:border-gray-900 hover:bg-gray-50"
       }`}
     >
       {label}
@@ -911,89 +1069,79 @@ const BusinessCard = React.memo(
       <Link
         to={`/salon/${venue.slug}`}
         onClick={onClick}
-        className={`block bg-white rounded-2xl overflow-hidden transition-all ${
-          active ? "ring-2 ring-black shadow-xl" : "shadow-md hover:shadow-lg"
+        className={`group block bg-white rounded-xl overflow-hidden transition-all duration-200 ${
+          active 
+            ? "ring-2 ring-black shadow-lg" 
+            : "hover:shadow-md border border-gray-100 hover:border-gray-200"
         }`}
       >
-        {/* Card Content - 140px fixed height */}
-        <div className="flex gap-3 p-3 h-[140px]">
-          {/* Thumbnail - 90x90px */}
-          <div className="w-[90px] h-[90px] flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
+        <div className="flex gap-3 p-3">
+          {/* Compact Image */}
+          <div className="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
             <OptimizedImage
               src={venueImage}
               alt={venue.name}
-              width={90}
-              height={90}
+              width={96}
+              height={96}
               crop="fill"
               quality="auto"
               format="auto"
               loading="lazy"
               blur={false}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             />
+            {/* Distance badge */}
+            {venue.distance !== undefined && (
+              <div className="absolute bottom-1.5 right-1.5 bg-black/75 backdrop-blur-sm px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-semibold text-white">
+                  {venue.distance.toFixed(1)}mi
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Content */}
-          <div className="flex-1 min-w-0 flex flex-col">
+          <div className="flex-1 min-w-0 flex flex-col justify-between">
             {/* Header */}
-            <div className="flex items-start justify-between gap-2 mb-1">
-              <div className="flex-1 min-w-0">
-                <h3 className="text-base font-bold text-gray-900 truncate leading-tight">
-                  {venue.name}
-                </h3>
-                <p className="text-xs text-gray-500 truncate">{address}</p>
-              </div>
-            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-0.5 line-clamp-1 leading-tight">
+                {venue.name}
+              </h3>
+              <p className="text-xs text-gray-500 line-clamp-1 mb-2">{address}</p>
 
-            {/* Stats Row */}
-            <div className="flex items-center gap-3 text-xs mt-1">
+              {/* Rating */}
               <div className="flex items-center gap-1">
                 <svg
-                  className="w-3.5 h-3.5 text-yellow-400 fill-current"
+                  className="w-3.5 h-3.5 text-gray-900 fill-current"
                   viewBox="0 0 20 20"
                 >
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
-                <span className="font-semibold text-gray-900">
+                <span className="text-xs font-semibold text-gray-900">
                   {rating.toFixed(1)}
                 </span>
-                <span className="text-gray-400">({reviewCount})</span>
+                <span className="text-xs text-gray-400">
+                  ({reviewCount})
+                </span>
               </div>
-              {venue.distance !== undefined && (
-                <>
-                  <span className="text-gray-300">•</span>
-                  <span className="text-gray-600">
-                    {venue.distance.toFixed(1)} mi
-                  </span>
-                </>
-              )}
-              {minPrice && (
-                <>
-                  <span className="text-gray-300">•</span>
-                  <span className="font-semibold text-gray-900">
-                    From £{minPrice}
-                  </span>
-                </>
-              )}
             </div>
 
-            {/* Next available slot */}
-            <div className="mt-auto pt-2">
-              <p className="text-xs text-green-600 font-medium">
-                ⚡ Available today
-              </p>
+            {/* Footer */}
+            <div className="flex items-center justify-between">
+              {minPrice ? (
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xs text-gray-500">From</span>
+                  <span className="text-sm font-semibold text-gray-900">£{minPrice}</span>
+                </div>
+              ) : (
+                <span className="text-xs text-gray-500">View prices</span>
+              )}
+              <div className="flex items-center gap-1 text-green-600">
+                <div className="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
+                <span className="text-[10px] font-medium uppercase tracking-wide">Available</span>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* CTA Button */}
-        <div className="px-3 pb-3">
-          <motion.div
-            whileTap={{ scale: 0.98 }}
-            className="w-full py-2.5 bg-black text-white text-sm font-semibold rounded-xl text-center hover:bg-gray-900 transition-colors"
-          >
-            View & Book
-          </motion.div>
         </div>
       </Link>
     );
