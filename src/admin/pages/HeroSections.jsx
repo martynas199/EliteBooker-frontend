@@ -373,18 +373,15 @@ export default function HeroSections() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-4 border-t">
-              {editingSection._id && (
-                <Button
-                  type="button"
-                  variant="danger"
-                  onClick={() => handleDelete(editingSection._id)}
-                  disabled={saving}
-                  className="w-full sm:w-auto"
-                >
-                  Delete
-                </Button>
-              )}
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t sm:justify-end">
+              <Button
+                type="submit"
+                variant="brand"
+                loading={saving}
+                className="w-full sm:w-auto sm:order-last"
+              >
+                {editingSection._id ? "Update" : "Create"}
+              </Button>
               <Button
                 type="button"
                 variant="outline"
@@ -394,14 +391,17 @@ export default function HeroSections() {
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                variant="brand"
-                loading={saving}
-                className="w-full sm:w-auto"
-              >
-                {editingSection._id ? "Update" : "Create"}
-              </Button>
+              {editingSection._id && (
+                <Button
+                  type="button"
+                  variant="danger"
+                  onClick={() => handleDelete(editingSection._id)}
+                  disabled={saving}
+                  className="w-full sm:w-auto sm:order-first"
+                >
+                  Delete
+                </Button>
+              )}
             </div>
           </form>
         </Card>
@@ -467,55 +467,56 @@ export default function HeroSections() {
           {sections.map((section) => (
             <Card
               key={section._id}
-              className="p-4 sm:p-6 hover:shadow-lg transition-shadow overflow-hidden"
+              className="p-4 sm:p-8 hover:shadow-lg transition-shadow overflow-hidden"
             >
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
                 {/* Preview Images */}
-                <div className="flex gap-3 justify-center sm:justify-start">
+                <div className="flex gap-3 sm:gap-4 justify-start flex-wrap sm:flex-col sm:flex-shrink-0">
                   {section.centerImage?.url && (
                     <img
                       src={section.centerImage.url}
                       alt="Center"
-                      className="w-20 h-24 sm:w-24 sm:h-32 object-cover rounded-lg border flex-shrink-0"
+                      className="w-full sm:w-48 h-32 sm:h-64 object-cover rounded-lg border shadow-sm"
                     />
                   )}
                   {section.rightImage?.url && (
                     <img
                       src={section.rightImage.url}
                       alt="Right image"
-                      className="w-24 h-20 sm:w-32 sm:h-24 object-cover rounded-lg border flex-shrink-0"
+                      className="w-full sm:w-48 h-24 sm:h-40 object-cover rounded-lg border shadow-sm"
                     />
                   )}
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="mb-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-base sm:text-lg font-bold text-gray-900 break-words">
+                  <div className="mb-4 sm:mb-6">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-base sm:text-2xl font-bold text-gray-900 break-words">
                         {section.title}
                       </h3>
                       {section.active !== false && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 flex-shrink-0">
+                        <span className="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded text-xs sm:text-sm font-medium bg-green-100 text-green-800 flex-shrink-0">
                           Active
                         </span>
                       )}
                       {section.active === false && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 flex-shrink-0">
+                        <span className="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded text-xs sm:text-sm font-medium bg-gray-100 text-gray-800 flex-shrink-0">
                           Inactive
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-600 line-clamp-2 break-words">
+                    <p className="text-sm sm:text-base text-gray-600 line-clamp-2 break-words">
                       {section.subtitle}
                     </p>
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => handleEdit(section)}
+                      className="w-full sm:w-auto sm:px-6"
                     >
                       Edit
                     </Button>
@@ -523,6 +524,7 @@ export default function HeroSections() {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleDelete(section._id)}
+                      className="w-full sm:w-auto sm:px-6"
                     >
                       Delete
                     </Button>
