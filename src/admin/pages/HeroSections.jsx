@@ -285,6 +285,28 @@ export default function HeroSections() {
                 Display Settings
               </h3>
               <div className="space-y-4">
+                <div className="mb-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editingSection.active !== false}
+                      onChange={(e) =>
+                        setEditingSection({
+                          ...editingSection,
+                          active: e.target.checked,
+                        })
+                      }
+                      className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      Active
+                    </span>
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1 ml-6">
+                    Show this hero section on your landing page
+                  </p>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Overlay Opacity
@@ -469,9 +491,21 @@ export default function HeroSections() {
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="mb-3">
-                    <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1 break-words">
-                      {section.title}
-                    </h3>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-base sm:text-lg font-bold text-gray-900 break-words">
+                        {section.title}
+                      </h3>
+                      {section.active !== false && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 flex-shrink-0">
+                          Active
+                        </span>
+                      )}
+                      {section.active === false && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 flex-shrink-0">
+                          Inactive
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm text-gray-600 line-clamp-2 break-words">
                       {section.subtitle}
                     </p>
