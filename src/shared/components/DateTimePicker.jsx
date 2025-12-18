@@ -7,6 +7,8 @@ import "react-day-picker/dist/style.css";
 import { useAvailableDates } from "../hooks/useAvailableDates";
 import { useSlots } from "../../tenant/hooks/useSlots";
 import { StaggerContainer, StaggerItem } from "./ui/PageTransition";
+import { TimeSlotsGrouped } from "./TimeSlotUtils";
+import { SkeletonTimeSlots } from "./ui/Skeleton";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -510,94 +512,53 @@ export default function DateTimePicker({
           )}
 
           {selectedDate && loadingSlots && (
-            <div className="space-y-2">
-              {[...Array(8)].map((_, i) => (
-                <div
-                  key={i}
-                  className="h-12 bg-gray-100 rounded-lg animate-pulse"
-                  role="status"
-                  aria-label="Loading time slots"
-                />
-              ))}
-            </div>
+            <SkeletonTimeSlots />
           )}
 
           {selectedDate && !loadingSlots && slotsError && (
             <div
-              className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg"
+              className="p-4 bg-red-50 border border-red-200 rounded-lg"
               role="alert"
             >
-              <p className="text-red-400 text-sm mb-3">
-                {slotsError.message || slotsError.toString()}
-              </p>
-              <button
-                onClick={() => setSelectedDate(null)}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold transition-colors"
-              >
-                Try Another Date
-              </button>
+              <div className="flex items-start gap-3">
+                <svg
+                  className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <div className="flex-1">
+                  <h4 className="text-red-900 font-semibold text-sm mb-1">
+                    Unable to load times
+                  </h4>
+                  <p className="text-red-800 text-sm">
+                    {slotsError.message || slotsError.toString()}
+                  </p>
+                  <button
+                    onClick={() => setSelectedDate(null)}
+                    className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Try Another Date
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
-          {selectedDate &&
-            !loadingSlots &&
-            !slotsError &&
-            slots.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
-                <svg
-                  className="w-16 h-16 mx-auto mb-4 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <p className="font-bold text-gray-900 text-lg">
-                  No available times for this date
-                </p>
-                <p className="text-sm mt-2">Please try another date</p>
-              </div>
-            )}
-
-          {selectedDate && !loadingSlots && !slotsError && slots.length > 0 && (
-            <StaggerContainer
-              className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[400px] overflow-y-auto"
-              role="listbox"
-              aria-label="Available time slots"
-            >
-              {slots.map((slot, index) => {
-                const isSelected = selectedSlot?.startISO === slot.startISO;
-                return (
-                  <StaggerItem key={`${slot.startISO}-${index}`}>
-                    <button
-                      onClick={() => handleSlotSelect(slot)}
-                      disabled={isSelected}
-                      className={`
-                        px-3 py-3 rounded-xl font-bold text-sm transition-all duration-300
-                        hover:scale-105 active:scale-95
-                        ${
-                          isSelected
-                            ? "bg-green-400 text-black ring-2 ring-green-300 shadow-lg shadow-green-400/30"
-                            : "bg-white text-gray-900 hover:bg-gray-100 border border-gray-300 hover:border-gray-400"
-                        }
-                        disabled:cursor-not-allowed
-                        focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-transparent
-                      `}
-                      role="option"
-                      aria-selected={isSelected}
-                      aria-label={`Time slot ${formatSlotTime(slot.startISO)}`}
-                    >
-                      {formatSlotTime(slot.startISO)}
-                    </button>
-                  </StaggerItem>
-                );
-              })}
-            </StaggerContainer>
+          {selectedDate && !loadingSlots && !slotsError && (
+            <div className="max-h-[500px] overflow-y-auto pr-2">
+              <TimeSlotsGrouped
+                slots={slots}
+                selectedSlot={selectedSlot}
+                onSelect={handleSlotSelect}
+                salonTz={salonTz}
+              />
+            </div>
           )}
         </div>
       </div>

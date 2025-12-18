@@ -73,8 +73,34 @@ export function BeauticianCardSkeleton() {
   );
 }
 
-/**
- * Dashboard stats skeleton
+/** * Time slots skeleton - grouped by period
+ */
+export function SkeletonTimeSlots() {
+  return (
+    <div className="space-y-6">
+      {/* Morning section */}
+      <div>
+        <SkeletonBox className="h-5 w-32 mb-3" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {[...Array(6)].map((_, i) => (
+            <SkeletonBox key={i} className="h-11" />
+          ))}
+        </div>
+      </div>
+      {/* Afternoon section */}
+      <div>
+        <SkeletonBox className="h-5 w-32 mb-3" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {[...Array(8)].map((_, i) => (
+            <SkeletonBox key={`afternoon-${i}`} className="h-11" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** * Dashboard stats skeleton
  */
 export function StatsCardSkeleton() {
   return (

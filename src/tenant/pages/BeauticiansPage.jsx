@@ -5,6 +5,8 @@ import { api } from "../../shared/lib/apiClient";
 import { useDispatch } from "react-redux";
 import { addService, setSpecialist } from "../state/bookingSlice";
 import { useTenant } from "../../shared/contexts/TenantContext";
+import { useBookingGuard } from "../hooks/useBookingGuard";
+import BookingConfirmLeaveModal from "../components/BookingConfirmLeaveModal";
 import PageTransition, {
   StaggerContainer,
   StaggerItem,
@@ -30,6 +32,9 @@ export default function SpecialistSelectionPage() {
   const dispatch = useDispatch();
   const { tenant } = useTenant();
   const [searchParams] = useSearchParams();
+  
+  // Enable booking guard to warn on navigation away
+  const { showModal, onConfirmLeave, onCancelLeave, checkNavigation } = useBookingGuard();
 
   useEffect(() => {
     // Fetch all specialists
@@ -231,13 +236,27 @@ export default function SpecialistSelectionPage() {
   };
 
   const handleBack = () => {
-    setSelectedSpecialist(null);
-    setServices([]);
-    setShowVariantSelector(false);
-    setSelectedService(null);
-    setIsBioExpanded(false);
-    // Clear all URL parameters when going back
-    navigate(`/salon/${tenant?.slug}/specialists`, { replace: true });
+    const canNavigate = checkNavigation(
+      `/salon/${tenant?.slug}`,
+      () => {
+        setSelectedSpecialist(null);
+        setServices([]);
+        setShowVariantSelector(false);
+        setSelectedService(null);
+        setIsBioExpanded(false);
+        // Clear all URL parameters when going back
+        navigate(`/salon/${tenant?.slug}/specialists`, { replace: true });
+      }
+    );
+    
+    if (canNavigate) {
+      setSelectedSpecialist(null);
+      setServices([]);
+      setShowVariantSelector(false);
+      setSelectedService(null);
+      setIsBioExpanded(false);
+      navigate(`/salon/${tenant?.slug}/specialists`, { replace: true });
+    }
   };
 
   if (loading) {
@@ -256,6 +275,13 @@ export default function SpecialistSelectionPage() {
 
   return (
     <>
+      {/* Booking Guard Modal */}
+      <BookingConfirmLeaveModal
+        isOpen={showModal}
+        onConfirm={onConfirmLeave}
+        onCancel={onCancelLeave}
+      />
+      
       <PageTransition className="min-h-screen py-8">
         {/* SEO Meta Tags */}
         <SEOHead

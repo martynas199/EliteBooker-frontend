@@ -28,7 +28,7 @@ export function useTenantServices(options = {}) {
     queryKey: servicesKeys.list(filters),
     queryFn: async () => {
       const services = await ServicesAPI.list();
-      
+
       // Apply client-side filters if provided
       if (filters.specialistId) {
         return services.filter(

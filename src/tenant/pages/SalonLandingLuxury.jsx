@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,6 +7,7 @@ import { useTenant } from "../../shared/contexts/TenantContext";
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { addService, setServices, setSpecialist } from "../state/bookingSlice";
+import { useBookingAutoCleanup } from "../hooks/useBookingGuard";
 import {
   getFavorites,
   addToFavorites,
@@ -141,6 +142,9 @@ export default function SalonLandingLuxury() {
   const { formatPrice } = useCurrency();
   const { client, isAuthenticated } = useClientAuth();
 
+  // Auto-cleanup: Clear any stale booking state on landing
+  useBookingAutoCleanup();
+  
   // Get selected services from Redux
   const bookingServices = useSelector((state) => state.booking.services || []);
 
@@ -290,6 +294,29 @@ export default function SalonLandingLuxury() {
 
   // Handlers
   const handleServiceClick = (service, variant) => {
+    // Get specialist ID from service
+    const serviceSpecialistId = 
+      service.primaryBeauticianId?._id || 
+      service.primaryBeauticianId ||
+      service.specialistId?._id ||
+      service.specialistId ||
+      service.beauticianIds?.[0]?._id ||
+      service.beauticianIds?.[0];
+
+    // Check if user already has services from a different specialist
+    if (bookingServices.length > 0) {
+      const firstServiceSpecialistId = bookingServices[0].specialistId;
+      
+      if (firstServiceSpecialistId && serviceSpecialistId && 
+          firstServiceSpecialistId !== serviceSpecialistId) {
+        toast.error(
+          'You can only book services from the same specialist. Please clear your current selection to choose services from a different specialist.',
+          { duration: 4000 }
+        );
+        return;
+      }
+    }
+
     // Add service to the booking stack with the selected variant
     dispatch(
       addService({
@@ -300,8 +327,27 @@ export default function SalonLandingLuxury() {
         durationMin: variant.durationMin,
         bufferBeforeMin: service.bufferBeforeMin || 0,
         bufferAfterMin: service.bufferAfterMin || 0,
+        specialistId: serviceSpecialistId, // Store specialist ID
       })
     );
+
+    // Auto-select the specialist if this is the first service
+    if (bookingServices.length === 0 && serviceSpecialistId) {
+      // Find the specialist object
+      const specialist = specialists.find(s => 
+        s._id === serviceSpecialistId
+      );
+      
+      if (specialist) {
+        dispatch(
+          setSpecialist({
+            specialistId: specialist._id,
+            any: false,
+            inSalonPayment: specialist.inSalonPayment || false,
+          })
+        );
+      }
+    }
 
     // Don't navigate - let user continue adding services
     // They can click Continue on the ServiceStackBar when ready
@@ -323,6 +369,36 @@ export default function SalonLandingLuxury() {
     settings?.heroImage?.url;
 
   const hasMultipleSpecialists = specialists.length > 1;
+
+  // Group services by specialist
+  const servicesBySpecialist = useMemo(() => {
+    if (!services.length || !specialists.length) return [];
+
+    const grouped = new Map();
+
+    services.forEach(service => {
+      const specialistId = 
+        service.primaryBeauticianId?._id || 
+        service.primaryBeauticianId ||
+        service.specialistId?._id ||
+        service.specialistId ||
+        service.beauticianIds?.[0]?._id ||
+        service.beauticianIds?.[0];
+
+      if (specialistId) {
+        if (!grouped.has(specialistId)) {
+          const specialist = specialists.find(s => s._id === specialistId);
+          grouped.set(specialistId, {
+            specialist,
+            services: []
+          });
+        }
+        grouped.get(specialistId).services.push(service);
+      }
+    });
+
+    return Array.from(grouped.values());
+  }, [services, specialists]);
 
   // Set initial view mode based on specialists count
   useEffect(() => {
@@ -847,7 +923,56 @@ export default function SalonLandingLuxury() {
 
                       {services.length === 0 ? (
                         <EmptyState type="services" />
+                      ) : hasMultipleSpecialists && servicesBySpecialist.length > 0 ? (
+                        // Grouped by specialist
+                        <div className="space-y-12">
+                          {servicesBySpecialist.map(({ specialist, services: specialistServices }) => (
+                            <div key={specialist?._id || 'unknown'} className="space-y-6">
+                              {/* Specialist Header */}
+                              {specialist && (
+                                <div className="flex items-center gap-4 pb-4 border-b border-gray-200">
+                                  {specialist.profilePicture?.url && (
+                                    <img
+                                      src={specialist.profilePicture.url}
+                                      alt={specialist.name}
+                                      className="w-16 h-16 rounded-full object-cover border-2 border-brand-500"
+                                    />
+                                  )}
+                                  <div>
+                                    <h3 className="text-2xl font-bold text-gray-900">
+                                      {specialist.name}
+                                    </h3>
+                                    {specialist.title && (
+                                      <p className="text-gray-600">{specialist.title}</p>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {/* Specialist's Services */}
+                              <div className="grid gap-6 sm:grid-cols-2 overflow-x-hidden w-full">
+                                {specialistServices.map((service) => (
+                                  <div
+                                    key={service._id}
+                                    className="w-full overflow-x-hidden"
+                                  >
+                                    <ServiceCard
+                                      service={service}
+                                      onClick={(variant) =>
+                                        handleServiceClick(service, variant)
+                                      }
+                                      isSelected={bookingServices.some(
+                                        (s) => s.serviceId === service._id
+                                      )}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       ) : (
+                        // Single specialist or ungrouped
                         <div className="grid gap-6 sm:grid-cols-2 overflow-x-hidden w-full">
                           {services.map((service) => (
                             <div

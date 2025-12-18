@@ -13,7 +13,7 @@ export const appointmentsKeys = {
 
 /**
  * Hook to fetch appointment details
- * 
+ *
  * @param {string} appointmentId - Appointment ID
  * @param {Object} options - Query options
  * @param {boolean} [options.enabled=true] - Whether to enable the query
@@ -35,7 +35,7 @@ export function useAppointment(appointmentId, options = {}) {
 /**
  * Hook for reserving appointment without payment (pay in salon)
  * Includes cache invalidation for affected slots
- * 
+ *
  * @returns {Object} Mutation object with { mutate, mutateAsync, isLoading, error, ... }
  */
 export function useReserveAppointment() {

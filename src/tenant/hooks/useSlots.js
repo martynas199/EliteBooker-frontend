@@ -14,13 +14,13 @@ export const slotsKeys = {
 
 /**
  * Hook to fetch available time slots with debouncing, caching, and cancellation
- * 
+ *
  * Features:
  * - Debouncing: 300ms delay when parameters change
  * - Automatic cancellation: Stale requests are cancelled
  * - Query key includes all parameters for precise caching
  * - Slot validation on client side
- * 
+ *
  * @param {Object} params - Slot query parameters
  * @param {string} params.specialistId - Specialist ID
  * @param {string} params.serviceId - Service ID
@@ -41,7 +41,8 @@ export function useSlots(params, options = {}) {
     debounceMs = 300,
   } = options;
 
-  const { specialistId, serviceId, variantName, date, totalDuration, any } = params;
+  const { specialistId, serviceId, variantName, date, totalDuration, any } =
+    params;
 
   // Debounced parameters to prevent excessive API calls
   const [debouncedParams, setDebouncedParams] = useState(params);
@@ -52,7 +53,15 @@ export function useSlots(params, options = {}) {
     }, debounceMs);
 
     return () => clearTimeout(timer);
-  }, [specialistId, serviceId, variantName, date, totalDuration, any, debounceMs]);
+  }, [
+    specialistId,
+    serviceId,
+    variantName,
+    date,
+    totalDuration,
+    any,
+    debounceMs,
+  ]);
 
   // Check if all required params are present
   const hasRequiredParams = !!(
@@ -139,7 +148,9 @@ export function useSlots(params, options = {}) {
         validatedSlots.length < fetchedSlots.length * 0.8
       ) {
         console.warn(
-          `Too many invalid slots: ${fetchedSlots.length - validatedSlots.length}/${fetchedSlots.length}`
+          `Too many invalid slots: ${
+            fetchedSlots.length - validatedSlots.length
+          }/${fetchedSlots.length}`
         );
       }
 
@@ -159,7 +170,7 @@ export function useSlots(params, options = {}) {
 /**
  * Hook to fetch fully booked dates for a month
  * Used by date pickers to disable unavailable dates
- * 
+ *
  * @param {Object} params - Query parameters
  * @param {number} params.year - Year (e.g., 2025)
  * @param {number} params.month - Month (1-12)

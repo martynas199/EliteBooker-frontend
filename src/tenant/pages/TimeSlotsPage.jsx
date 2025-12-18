@@ -10,10 +10,14 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import BackBar from "../../shared/components/ui/BackBar";
 import DateTimePicker from "../../shared/components/DateTimePicker";
 import ServiceStackBar from "../components/ServiceStackBar";
+import BookingSummary from "../components/BookingSummary";
+import BookingProgress from "../components/BookingProgress";
+import BookingConfirmLeaveModal from "../components/BookingConfirmLeaveModal";
 import { api } from "../../shared/lib/apiClient";
 import PageTransition from "../../shared/components/ui/PageTransition";
 import toast from "react-hot-toast";
 import { useTenant } from "../../shared/contexts/TenantContext";
+import { useBookingGuard } from "../hooks/useBookingGuard";
 
 export default function TimeSlots() {
   const {
@@ -43,6 +47,18 @@ export default function TimeSlots() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  
+  // Enable booking guard to warn on navigation away
+  const { showModal, onConfirmLeave, onCancelLeave, checkNavigation } = useBookingGuard();
+
+  // Handle back navigation with guard
+  const handleBack = () => {
+    const canNavigate = checkNavigation(
+      window.location.pathname.split('/').slice(0, -1).join('/'),
+      () => navigate(-1)
+    );
+    if (canNavigate) navigate(-1);
+  };
 
   // Restore booking state from URL parameters if Redux state is empty
   useEffect(() => {
@@ -313,6 +329,13 @@ export default function TimeSlots() {
 
   return (
     <>
+      {/* Booking Guard Modal */}
+      <BookingConfirmLeaveModal
+        isOpen={showModal}
+        onConfirm={onConfirmLeave}
+        onCancel={onCancelLeave}
+      />
+
       {/* Dynamic Background */}
       <div className="fixed inset-0 -z-10 bg-white" />
 
@@ -324,7 +347,7 @@ export default function TimeSlots() {
           className="max-w-4xl mx-auto px-3 sm:px-4 pt-8"
         >
           <button
-            onClick={() => navigate(-1)}
+            onClick={handleBack}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-8 transition-colors font-semibold group"
           >
             <svg
