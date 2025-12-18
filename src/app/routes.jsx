@@ -128,51 +128,54 @@ function CustomerLayout() {
             isLandingPage ? "" : "max-w-6xl mx-auto px-4 py-8 overflow-x-hidden"
           }
         >
-        <Routes>
-          <Route index element={<SalonLandingLuxury />} />
-          <Route path="services" element={<ServicesPage />} />
-          <Route path="specialists" element={<BeauticianSelectionPage />} />
-          <Route path="times" element={<TimeSlots />} />
-          <Route path="checkout" element={<CheckoutPage />} />
-          <Route path="confirmation" element={<ConfirmationPage />} />
-          <Route path="salon" element={<SalonDetails />} />
-          <Route path="products" element={<ProductsPage />} />
-          <Route path="products/:id" element={<ProductDetailPage />} />
-          <Route path="success" element={<SuccessPage />} />
-          <Route path="cancel" element={<CancelPage />} />
-          <Route path="faq" element={<FAQPage />} />
-          <Route path="product-checkout" element={<ProductCheckoutPage />} />
-          <Route path="shop/success" element={<ShopSuccessPage />} />
-          <Route path="shop/cancel" element={<ShopCancelPage />} />
-          <Route
-            path="order-success/:orderNumber"
-            element={<OrderSuccessPage />}
-          />
-          <Route path="about" element={<AboutUsPage />} />
-          <Route path="blog" element={<BlogPage />} />
-          <Route path="blog/:slug" element={<BlogPostPage />} />
-          <Route path="seminars" element={<SeminarsPage />} />
-          <Route path="seminars/:slug" element={<SeminarDetailPage />} />
-          <Route path="seminars/:slug/book" element={<SeminarBookingPage />} />
-          <Route
-            path="seminars/booking-success"
-            element={<SeminarBookingSuccessPage />}
-          />
-          <Route path="my-seminars" element={<MySeminarsPage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          <Route path="token-debug" element={<TokenDebugPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="profile/edit" element={<ProfileEditPage />} />
-        </Routes>
-      </main>
+          <Routes>
+            <Route index element={<SalonLandingLuxury />} />
+            <Route path="services" element={<ServicesPage />} />
+            <Route path="specialists" element={<BeauticianSelectionPage />} />
+            <Route path="times" element={<TimeSlots />} />
+            <Route path="checkout" element={<CheckoutPage />} />
+            <Route path="confirmation" element={<ConfirmationPage />} />
+            <Route path="salon" element={<SalonDetails />} />
+            <Route path="products" element={<ProductsPage />} />
+            <Route path="products/:id" element={<ProductDetailPage />} />
+            <Route path="success" element={<SuccessPage />} />
+            <Route path="cancel" element={<CancelPage />} />
+            <Route path="faq" element={<FAQPage />} />
+            <Route path="product-checkout" element={<ProductCheckoutPage />} />
+            <Route path="shop/success" element={<ShopSuccessPage />} />
+            <Route path="shop/cancel" element={<ShopCancelPage />} />
+            <Route
+              path="order-success/:orderNumber"
+              element={<OrderSuccessPage />}
+            />
+            <Route path="about" element={<AboutUsPage />} />
+            <Route path="blog" element={<BlogPage />} />
+            <Route path="blog/:slug" element={<BlogPostPage />} />
+            <Route path="seminars" element={<SeminarsPage />} />
+            <Route path="seminars/:slug" element={<SeminarDetailPage />} />
+            <Route
+              path="seminars/:slug/book"
+              element={<SeminarBookingPage />}
+            />
+            <Route
+              path="seminars/booking-success"
+              element={<SeminarBookingSuccessPage />}
+            />
+            <Route path="my-seminars" element={<MySeminarsPage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            <Route path="token-debug" element={<TokenDebugPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="profile/edit" element={<ProfileEditPage />} />
+          </Routes>
+        </main>
 
-      {/* Tenant Footer */}
-      <TenantFooter />
+        {/* Tenant Footer */}
+        <TenantFooter />
 
-      {/* Cart Sidebar */}
-      <CartSidebar />
-    </div>
+        {/* Cart Sidebar */}
+        <CartSidebar />
+      </div>
     </SettingsProvider>
   );
 }

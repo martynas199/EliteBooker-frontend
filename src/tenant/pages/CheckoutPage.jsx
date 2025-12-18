@@ -434,20 +434,6 @@ export default function CheckoutPage() {
                     </div>
                   )}
 
-                  {/* Cancellation Policy Link */}
-                  <div className="text-sm text-gray-600 flex items-center gap-1.5">
-                    <span>📋</span>
-                    <span>Review our</span>
-                    <Link
-                      to="/faq"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-900 hover:text-black underline font-semibold"
-                    >
-                      cancellation policy
-                    </Link>
-                  </div>
-
                   <div className="flex flex-col gap-3 pt-4">
                     <Button
                       disabled={loading}

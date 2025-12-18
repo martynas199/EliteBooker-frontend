@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { DayPicker } from "react-day-picker";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import "react-day-picker/dist/style.css";
 import { useAvailableDates } from "../hooks/useAvailableDates";
-import { api } from "../lib/apiClient";
+import { useSlots } from "../../tenant/hooks/useSlots";
 import { StaggerContainer, StaggerItem } from "./ui/PageTransition";
 
 dayjs.extend(utc);
@@ -38,11 +38,34 @@ export default function DateTimePicker({
 }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const [loadingSlots, setLoadingSlots] = useState(false);
-  const [slotsError, setSlotsError] = useState(null);
   const [mobileCalendarOpen, setMobileCalendarOpen] = useState(false);
+
+  // Format date for API query
+  const dateStr = useMemo(() => {
+    return selectedDate ? dayjs(selectedDate).format("YYYY-MM-DD") : null;
+  }, [selectedDate]);
+
+  // Fetch slots using React Query with debouncing and caching
+  const {
+    data: slots = [],
+    isLoading: loadingSlots,
+    error: slotsError,
+    isFetching: isFetchingSlots,
+  } = useSlots(
+    {
+      specialistId,
+      serviceId,
+      variantName,
+      date: dateStr,
+      totalDuration,
+    },
+    {
+      salonTz,
+      enabled: !!dateStr, // Only fetch when date is selected
+      debounceMs: 300,
+    }
+  );
 
   // Get today in salon timezone
   const today = useMemo(() => {
@@ -138,134 +161,10 @@ export default function DateTimePicker({
     [today, workingDaysSet, fullyBooked, customSchedule]
   );
 
-  // Fetch slots when date selected
-  useEffect(() => {
-    if (!selectedDate) {
-      setSlots([]);
-      return;
-    }
-
-    // AbortController for request cancellation
-    const abortController = new AbortController();
-
-    const fetchSlots = async () => {
-      setLoadingSlots(true);
-      setSlotsError(null);
-      setSelectedSlot(null);
-
-      try {
-        const dateStr = dayjs(selectedDate).format("YYYY-MM-DD");
-        const params = {
-          specialistId,
-          serviceId,
-          variantName,
-          date: dateStr,
-        };
-
-        // If totalDuration is provided (multi-service), send it instead of relying on single service
-        if (totalDuration) {
-          params.totalDuration = totalDuration;
-        }
-
-        const response = await api.get("/slots", {
-          params,
-          signal: abortController.signal, // Add cancellation support
-        });
-
-        const fetchedSlots = response.data.slots || [];
-
-        // Client-side validation of slots
-        const validatedSlots = fetchedSlots.filter((slot) => {
-          try {
-            // Rule 1: Valid ISO strings
-            const start = dayjs(slot.startISO);
-            const end = dayjs(slot.endISO);
-            if (!start.isValid() || !end.isValid()) {
-              console.error("Invalid ISO string in slot:", slot);
-              return false;
-            }
-
-            // Rule 2: End after start
-            if (!end.isAfter(start)) {
-              console.error("Slot end not after start:", slot);
-              return false;
-            }
-
-            // Rule 3: Slot in correct date
-            const slotDate = start.tz(salonTz).format("YYYY-MM-DD");
-            if (slotDate !== dateStr) {
-              console.error(
-                "Slot not on selected date:",
-                slot,
-                "slotDate:",
-                slotDate,
-                "expected:",
-                dateStr
-              );
-              return false;
-            }
-
-            return true;
-          } catch (err) {
-            console.error("Slot validation error:", err, slot);
-            return false;
-          }
-        });
-
-        // If too many slots invalidated, show error
-        if (
-          fetchedSlots.length > 0 &&
-          validatedSlots.length < fetchedSlots.length * 0.8
-        ) {
-          console.error(
-            `Too many invalid slots: ${
-              fetchedSlots.length - validatedSlots.length
-            }/${fetchedSlots.length}`
-          );
-          setSlotsError(
-            "Temporary error fetching slots — please try another date"
-          );
-          setSlots([]);
-        } else {
-          setSlots(validatedSlots);
-        }
-      } catch (error) {
-        // Ignore abort errors (user navigated away or changed date)
-        if (error.name === "AbortError" || error.code === "ERR_CANCELED") {
-          console.log("[TIMESLOTS] Request cancelled");
-          return;
-        }
-
-        console.error("Failed to fetch slots:", error);
-        setSlotsError(
-          error.response?.data?.message ||
-            error.message ||
-            "Failed to load available times"
-        );
-        setSlots([]);
-      } finally {
-        setLoadingSlots(false);
-      }
-    };
-
-    fetchSlots();
-
-    // Cleanup: Cancel request if component unmounts or date changes
-    return () => {
-      abortController.abort();
-    };
-  }, [
-    selectedDate,
-    specialistId,
-    serviceId,
-    variantName,
-    salonTz,
-    totalDuration,
-  ]);
-
   const handleDateSelect = (date) => {
     if (!date || isDateDisabled(date)) return;
     setSelectedDate(date);
+    setSelectedSlot(null); // Clear selected slot when date changes
     setMobileCalendarOpen(false);
   };
 
@@ -273,15 +172,6 @@ export default function DateTimePicker({
     if (selectedSlot?.startISO === slot.startISO) return; // Already selected
     setSelectedSlot(slot);
     onSelect(slot);
-  };
-
-  const handleRetrySlots = () => {
-    if (selectedDate) {
-      // Trigger re-fetch by clearing and re-setting date
-      const date = selectedDate;
-      setSelectedDate(null);
-      setTimeout(() => setSelectedDate(date), 50);
-    }
   };
 
   const handleRetryAvailableDates = () => {
@@ -637,12 +527,14 @@ export default function DateTimePicker({
               className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg"
               role="alert"
             >
-              <p className="text-red-400 text-sm mb-3">{slotsError}</p>
+              <p className="text-red-400 text-sm mb-3">
+                {slotsError.message || slotsError.toString()}
+              </p>
               <button
-                onClick={handleRetrySlots}
+                onClick={() => setSelectedDate(null)}
                 className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold transition-colors"
               >
-                Retry
+                Try Another Date
               </button>
             </div>
           )}

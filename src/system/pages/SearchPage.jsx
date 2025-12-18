@@ -779,18 +779,19 @@ export default function SearchPage() {
                   <strong className="font-semibold text-gray-900">
                     {filteredVenuesWithDistance.length}
                   </strong>{" "}
-                  {filteredVenuesWithDistance.length === 1 ? "venue" : "venues"} found
+                  {filteredVenuesWithDistance.length === 1 ? "venue" : "venues"}{" "}
+                  found
                 </p>
               </div>
             </div>
 
             {/* Business Cards - Scrollable */}
-            <div 
-              ref={cardContainerRef} 
+            <div
+              ref={cardContainerRef}
               className="flex-1 overflow-y-auto px-4 xl:px-5 py-4 space-y-3 custom-scrollbar"
               style={{
-                scrollbarWidth: 'thin',
-                scrollbarColor: '#e5e7eb #f9fafb'
+                scrollbarWidth: "thin",
+                scrollbarColor: "#e5e7eb #f9fafb",
               }}
             >
               {loading ? (
@@ -804,52 +805,52 @@ export default function SearchPage() {
                 </div>
               ) : filteredVenuesWithDistance.length === 0 ? (
                 <div className="text-center py-20">
-                    <svg
-                      className="w-16 h-16 mx-auto mb-4 text-gray-300"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                  <svg
+                    className="w-16 h-16 mx-auto mb-4 text-gray-300"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                  <p className="text-gray-900 font-medium mb-2">
+                    No venues found
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Try adjusting your search or filters
+                  </p>
+                </div>
+              ) : (
+                <AnimatePresence>
+                  {filteredVenuesWithDistance.map((venue, index) => (
+                    <motion.div
+                      key={venue._id}
+                      ref={(el) => (cardRefs.current[venue._id] = el)}
+                      data-venue-id={venue._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{
+                        delay: index * 0.05,
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25,
+                      }}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      <BusinessCard
+                        venue={venue}
+                        active={venue._id === activeVenueId}
+                        onClick={() => setActiveVenueId(venue._id)}
                       />
-                    </svg>
-                    <p className="text-gray-900 font-medium mb-2">
-                      No venues found
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Try adjusting your search or filters
-                    </p>
-                  </div>
-                ) : (
-                  <AnimatePresence>
-                    {filteredVenuesWithDistance.map((venue, index) => (
-                      <motion.div
-                        key={venue._id}
-                        ref={(el) => (cardRefs.current[venue._id] = el)}
-                        data-venue-id={venue._id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{
-                          delay: index * 0.05,
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 25,
-                        }}
-                      >
-                        <BusinessCard
-                          venue={venue}
-                          active={venue._id === activeVenueId}
-                          onClick={() => setActiveVenueId(venue._id)}
-                        />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                )}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              )}
             </div>
           </div>
 
@@ -1070,8 +1071,8 @@ const BusinessCard = React.memo(
         to={`/salon/${venue.slug}`}
         onClick={onClick}
         className={`group block bg-white rounded-xl overflow-hidden transition-all duration-200 ${
-          active 
-            ? "ring-2 ring-black shadow-lg" 
+          active
+            ? "ring-2 ring-black shadow-lg"
             : "hover:shadow-md border border-gray-100 hover:border-gray-200"
         }`}
       >
@@ -1107,7 +1108,9 @@ const BusinessCard = React.memo(
               <h3 className="text-sm font-semibold text-gray-900 mb-0.5 line-clamp-1 leading-tight">
                 {venue.name}
               </h3>
-              <p className="text-xs text-gray-500 line-clamp-1 mb-2">{address}</p>
+              <p className="text-xs text-gray-500 line-clamp-1 mb-2">
+                {address}
+              </p>
 
               {/* Rating */}
               <div className="flex items-center gap-1">
@@ -1120,9 +1123,7 @@ const BusinessCard = React.memo(
                 <span className="text-xs font-semibold text-gray-900">
                   {rating.toFixed(1)}
                 </span>
-                <span className="text-xs text-gray-400">
-                  ({reviewCount})
-                </span>
+                <span className="text-xs text-gray-400">({reviewCount})</span>
               </div>
             </div>
 
@@ -1131,14 +1132,18 @@ const BusinessCard = React.memo(
               {minPrice ? (
                 <div className="flex items-baseline gap-1">
                   <span className="text-xs text-gray-500">From</span>
-                  <span className="text-sm font-semibold text-gray-900">£{minPrice}</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    £{minPrice}
+                  </span>
                 </div>
               ) : (
                 <span className="text-xs text-gray-500">View prices</span>
               )}
               <div className="flex items-center gap-1 text-green-600">
                 <div className="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
-                <span className="text-[10px] font-medium uppercase tracking-wide">Available</span>
+                <span className="text-[10px] font-medium uppercase tracking-wide">
+                  Available
+                </span>
               </div>
             </div>
           </div>
