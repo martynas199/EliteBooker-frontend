@@ -204,8 +204,8 @@ export default function AppRoutes() {
         {/* Browse Businesses */}
         <Route path="/business" element={<LandingPage />} />
 
-        {/* Platform marketing/landing page */}
-        <Route path="/" element={<BusinessesLandingPage />} />
+        {/* Platform marketing/landing page - Main route until search is fully developed */}
+        <Route path="/" element={<LandingPage />} />
 
         {/* Help & Support */}
         <Route path="/help" element={<HelpPage />} />
