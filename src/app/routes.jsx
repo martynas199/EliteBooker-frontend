@@ -47,6 +47,7 @@ import MySeminarsPage from "../tenant/pages/MySeminarsPage";
 import { useAuth } from "../shared/contexts/AuthContext";
 import { useTenant } from "../shared/contexts/TenantContext";
 import { useTenantSettings } from "../shared/hooks/useTenantSettings";
+import { SettingsProvider } from "../shared/contexts/SettingsContext";
 
 import AdminLayout from "../admin/layouts/AdminLayout";
 import LoadingSpinner from "../shared/components/ui/LoadingSpinner";
@@ -119,13 +120,14 @@ function CustomerLayout() {
     location.pathname.split("/").filter(Boolean).length === 2; // /salon/slug
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navigation />
-      <main
-        className={
-          isLandingPage ? "" : "max-w-6xl mx-auto px-4 py-8 overflow-x-hidden"
-        }
-      >
+    <SettingsProvider>
+      <div className="min-h-screen overflow-x-hidden">
+        <Navigation />
+        <main
+          className={
+            isLandingPage ? "" : "max-w-6xl mx-auto px-4 py-8 overflow-x-hidden"
+          }
+        >
         <Routes>
           <Route index element={<SalonLandingLuxury />} />
           <Route path="services" element={<ServicesPage />} />
@@ -171,6 +173,7 @@ function CustomerLayout() {
       {/* Cart Sidebar */}
       <CartSidebar />
     </div>
+    </SettingsProvider>
   );
 }
 

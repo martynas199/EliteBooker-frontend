@@ -1,0 +1,76 @@
+import { createContext, useContext, useState, useEffect } from "react";
+import { api } from "../lib/apiClient";
+import { SalonAPI } from "../../tenant/pages/salon.api";
+
+const SettingsContext = createContext(null);
+
+/**
+ * SettingsProvider - Provides salon settings and data globally
+ * Prevents duplicate API calls by caching the data
+ */
+export function SettingsProvider({ children }) {
+  const [settings, setSettings] = useState(null);
+  const [salonData, setSalonData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadSettings() {
+      try {
+        setLoading(true);
+        const [settingsResponse, salonResponse] = await Promise.all([
+          api.get("/settings"),
+          SalonAPI.get().catch(() => null),
+        ]);
+
+        if (isMounted) {
+          setSettings(settingsResponse.data);
+          setSalonData(salonResponse);
+          setError(null);
+        }
+      } catch (err) {
+        console.error("Failed to load settings:", err);
+        if (isMounted) {
+          setError(err);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadSettings();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const value = {
+    settings,
+    salonData,
+    loading,
+    error,
+  };
+
+  return (
+    <SettingsContext.Provider value={value}>
+      {children}
+    </SettingsContext.Provider>
+  );
+}
+
+/**
+ * Hook to access settings and salon data
+ * @returns {{ settings, salonData, loading, error }}
+ */
+export function useSettings() {
+  const context = useContext(SettingsContext);
+  if (!context) {
+    throw new Error("useSettings must be used within SettingsProvider");
+  }
+  return context;
+}

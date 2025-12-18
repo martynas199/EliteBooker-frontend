@@ -1,37 +1,13 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTenant } from "../../shared/contexts/TenantContext";
-import { useState, useEffect } from "react";
-import { api } from "../../shared/lib/apiClient";
-import { SalonAPI } from "../pages/salon.api";
+import { useSettings } from "../../shared/contexts/SettingsContext";
 import OptimizedImage from "../../shared/components/OptimizedImage";
 
 export default function TenantFooter() {
   const { tenant } = useTenant();
-  const [settings, setSettings] = useState(null);
-  const [data, setData] = useState(null);
+  const { settings, salonData: data } = useSettings();
   const currentYear = new Date().getFullYear();
-
-  useEffect(() => {
-    async function loadSettings() {
-      try {
-        const [settingsResponse, salonResponse] = await Promise.all([
-          api.get("/settings"),
-          SalonAPI.get().catch(() => null),
-        ]);
-        setSettings(settingsResponse.data);
-        setData(salonResponse);
-        console.log(
-          "Footer settings.businessHours:",
-          settingsResponse.data?.businessHours
-        );
-        console.log("Footer data.hours:", salonResponse?.hours);
-      } catch (error) {
-        console.error("Failed to load settings:", error);
-      }
-    }
-    loadSettings();
-  }, []);
 
   const salonName = tenant?.name || settings?.salonName || "Beauty Salon";
   const salonDescription =
