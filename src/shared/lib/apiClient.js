@@ -114,7 +114,10 @@ api.interceptors.response.use(
       const pathname = window.location.pathname;
 
       // Skip token refresh for login/register endpoints
-      if (originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/register')) {
+      if (
+        originalRequest.url?.includes("/auth/login") ||
+        originalRequest.url?.includes("/auth/register")
+      ) {
         return Promise.reject(error);
       }
 

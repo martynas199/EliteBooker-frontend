@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { ServicesAPI } from "./services.api";
 import { SalonAPI } from "./salon.api";
 import { useTenant } from "../../shared/contexts/TenantContext";
-import { setService } from "../state/bookingSlice";
+import { addService, setService } from "../state/bookingSlice";
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
 import Card from "../../shared/components/ui/Card";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import PageTransition from "../../shared/components/ui/PageTransition";
+import ServiceCard from "../components/ServiceCard";
+import ServiceStackBar from "../components/ServiceStackBar";
+import toast from "react-hot-toast";
 
 export default function ServicesPage() {
   const navigate = useNavigate();
@@ -21,6 +24,7 @@ export default function ServicesPage() {
   const [salon, setSalon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const bookingServices = useSelector((state) => state.booking.services) || [];
 
   useEffect(() => {
     async function loadData() {
@@ -52,53 +56,46 @@ export default function ServicesPage() {
       ? services
       : services.filter((s) => s.category === selectedCategory);
 
-  const handleServiceSelect = (service) => {
-    const firstVariant = service.variants?.[0];
+  const handleServiceClick = (service, selectedVariant) => {
+    // Get specialist ID from service
+    const serviceSpecialistId =
+      service.primaryBeauticianId?._id ||
+      service.primaryBeauticianId ||
+      service.specialistId?._id ||
+      service.specialistId ||
+      service.beauticianIds?.[0]?._id ||
+      service.beauticianIds?.[0];
+
+    // Check if user already has services from a different specialist
+    if (bookingServices.length > 0) {
+      const firstServiceSpecialistId = bookingServices[0].specialistId;
+
+      if (
+        firstServiceSpecialistId &&
+        serviceSpecialistId &&
+        firstServiceSpecialistId !== serviceSpecialistId
+      ) {
+        toast.error(
+          "You can only book services from the same specialist. Please clear your current selection to choose services from a different specialist.",
+          { duration: 4000 }
+        );
+        return;
+      }
+    }
+
+    // Add service to the booking stack with the selected variant
     dispatch(
-      setService({
+      addService({
         serviceId: service._id,
-        variantName: firstVariant?.name,
-        price: firstVariant?.price || service.price,
-        durationMin: firstVariant?.durationMin || service.durationMin,
-        bufferBeforeMin: service.bufferBeforeMin,
-        bufferAfterMin: service.bufferAfterMin,
+        serviceName: service.name,
+        variantName: selectedVariant.name,
+        price: selectedVariant.price,
+        durationMin: selectedVariant.durationMin,
+        bufferBeforeMin: service.bufferBeforeMin || 0,
+        bufferAfterMin: service.bufferAfterMin || 0,
+        specialistId: serviceSpecialistId, // Store specialist ID
       })
     );
-    navigate(`/salon/${tenant?.slug}/specialists`);
-  };
-
-  // Get service price display
-  const getServicePrice = (service) => {
-    if (service.variants && service.variants.length > 0) {
-      const prices = service.variants.map((v) => v.price || 0);
-      const minPrice = Math.min(...prices);
-      const maxPrice = Math.max(...prices);
-
-      if (minPrice === maxPrice) {
-        return formatPrice(minPrice);
-      }
-      return `${formatPrice(minPrice)} - ${formatPrice(maxPrice)}`;
-    }
-    return formatPrice(service.price || 0);
-  };
-
-  // Get service duration display
-  const getServiceDuration = (service) => {
-    if (service.variants && service.variants.length > 0) {
-      const durations = service.variants
-        .map((v) => v.durationMin)
-        .filter(Boolean);
-      if (durations.length > 0) {
-        const minDuration = Math.min(...durations);
-        const maxDuration = Math.max(...durations);
-
-        if (minDuration === maxDuration) {
-          return `${minDuration} min`;
-        }
-        return `${minDuration}-${maxDuration} min`;
-      }
-    }
-    return service.durationMin ? `${service.durationMin} min` : null;
   };
 
   if (loading) {
@@ -229,120 +226,23 @@ export default function ServicesPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid gap-6 sm:grid-cols-2 w-full"
           >
             {filteredServices.map((service, index) => (
               <motion.div
                 key={service._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
                 data-testid="service-card"
               >
-                <Card
-                  className="group h-full hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer border-2 border-transparent hover:border-brand-200"
-                  onClick={() => handleServiceSelect(service)}
-                >
-                  {/* Service Image */}
-                  {service.image?.url && (
-                    <div className="relative h-48 overflow-hidden">
-                      <img
-                        src={service.image.url}
-                        alt={service.image.alt || service.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                      {/* Category Badge */}
-                      {service.category && (
-                        <div className="absolute top-4 left-4">
-                          <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-brand-700 text-xs font-bold rounded-full shadow-lg">
-                            {service.category}
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                <ServiceCard
+                  service={service}
+                  onClick={(variant) => handleServiceClick(service, variant)}
+                  isSelected={bookingServices.some(
+                    (s) => s.serviceId === service._id
                   )}
-
-                  <div className="p-6">
-                    {/* Service Name */}
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-brand-600 transition-colors">
-                      {service.name}
-                    </h3>
-
-                    {/* Description */}
-                    {service.description && (
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
-                        {service.description}
-                      </p>
-                    )}
-
-                    {/* Price & Duration */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div>
-                        <div className="text-sm text-gray-500 font-medium mb-1">
-                          Price
-                        </div>
-                        <div className="text-2xl font-black text-brand-600">
-                          {getServicePrice(service)}
-                        </div>
-                      </div>
-
-                      {getServiceDuration(service) && (
-                        <div className="text-right">
-                          <div className="text-sm text-gray-500 font-medium mb-1">
-                            Duration
-                          </div>
-                          <div className="flex items-center gap-1.5 text-gray-700 font-semibold">
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                            {getServiceDuration(service)}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Variants Info */}
-                    {service.variants && service.variants.length > 1 && (
-                      <div className="mt-4 pt-4 border-t border-gray-100">
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <svg
-                            className="w-4 h-4 text-brand-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                            />
-                          </svg>
-                          <span className="font-medium">
-                            {service.variants.length} options available
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Book Button */}
-                    <button className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-bold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 shadow-lg shadow-brand-500/30 group-hover:shadow-xl group-hover:shadow-brand-500/40 group-hover:scale-105">
-                      Book Now
-                    </button>
-                  </div>
-                </Card>
+                />
               </motion.div>
             ))}
           </motion.div>
@@ -382,6 +282,9 @@ export default function ServicesPage() {
           </Card>
         </motion.div>
       </PageTransition>
+
+      {/* Service Stack Bar - Fixed at bottom when services are selected */}
+      {bookingServices.length > 0 && <ServiceStackBar />}
     </>
   );
 }
