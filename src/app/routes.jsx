@@ -119,13 +119,18 @@ function CustomerLayout() {
   const isLandingPage =
     location.pathname.split("/").filter(Boolean).length === 2; // /salon/slug
 
+  // Check if we're on the times page (needs custom width handling)
+  const isTimesPage = location.pathname.endsWith("/times");
+
   return (
     <SettingsProvider>
       <div className="min-h-screen overflow-x-hidden">
         <Navigation />
         <main
           className={
-            isLandingPage ? "" : "max-w-6xl mx-auto px-4 py-8 overflow-x-hidden"
+            isLandingPage || isTimesPage
+              ? ""
+              : "max-w-6xl mx-auto px-4 py-8 overflow-x-hidden"
           }
         >
           <Routes>

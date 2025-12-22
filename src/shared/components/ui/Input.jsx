@@ -7,7 +7,7 @@ export function Input({ className = "", ...props }) {
   return (
     <input
       className={[
-        "bg-white border border-gray-300 rounded-xl px-4 py-3 w-full text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-black focus:bg-white transition-all duration-250 hover:border-gray-400 hover:bg-white",
+        "bg-white border border-gray-300 rounded-xl px-3 sm:px-4 py-3 w-full text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-black focus:bg-white transition-all duration-250 hover:border-gray-400 hover:bg-white",
         className,
       ]
         .join(" ")

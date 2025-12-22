@@ -191,7 +191,7 @@ export default function DateTimePicker({
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto min-w-0">
+    <div className="w-full min-w-0">
       {/* Error banner for available dates */}
       {availableDatesError && (
         <div
@@ -391,9 +391,14 @@ export default function DateTimePicker({
             .rdp-root {
               --rdp-accent-color: #000000;
               --rdp-background-color: #f9fafb;
+              width: 100%;
             }
             .rdp-month {
               width: 100%;
+            }
+            .rdp-month table {
+              width: 100%;
+              table-layout: fixed;
             }
             .rdp-caption {
               display: flex;

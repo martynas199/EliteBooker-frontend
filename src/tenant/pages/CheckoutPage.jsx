@@ -281,7 +281,7 @@ export default function CheckoutPage() {
       <div className="fixed inset-0 bg-white -z-10"></div>
 
       <div className="min-h-screen relative">
-        <div className="max-w-6xl mx-auto px-4 py-10 space-y-8">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-10 space-y-8">
           <BackBar onBack={() => navigate(-1)} />
 
           <motion.div
@@ -289,7 +289,7 @@ export default function CheckoutPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-8 space-y-8">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-4 sm:p-8 space-y-8">
               <h1 className="text-4xl md:text-5xl font-bold text-center mb-2 tracking-tight text-gray-900">
                 Checkout
               </h1>
