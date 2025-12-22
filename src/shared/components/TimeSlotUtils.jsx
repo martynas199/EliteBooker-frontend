@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Sunrise, Sun, Moon, Clock } from 'lucide-react';
+import { Sunrise, Sun, Moon, Clock } from "lucide-react";
 
 /**
  * Group time slots by period (Morning / Afternoon / Evening)
@@ -12,7 +12,7 @@ export function groupSlotsByPeriod(slots, salonTz = "Europe/London") {
 
   slots.forEach((slot) => {
     const hour = dayjs(slot.startISO).tz(salonTz).hour();
-    
+
     if (hour < 12) {
       morning.push(slot);
     } else if (hour < 17) {
@@ -34,7 +34,7 @@ export function groupSlotsByPeriod(slots, salonTz = "Europe/London") {
  */
 export function TimeSlotButton({ slot, isSelected, onClick, salonTz }) {
   const time = dayjs(slot.startISO).tz(salonTz).format("h:mm A");
-  
+
   return (
     <button
       type="button"
@@ -44,9 +44,10 @@ export function TimeSlotButton({ slot, isSelected, onClick, salonTz }) {
         font-medium text-base
         transition-all duration-200
         focus:outline-none focus:ring-2 focus:ring-offset-1
-        ${isSelected
-          ? 'bg-indigo-600 text-white ring-2 ring-indigo-600 ring-offset-2 scale-[1.02]'
-          : 'bg-white text-gray-900 border-2 border-gray-300 hover:border-indigo-500 hover:bg-indigo-50'
+        ${
+          isSelected
+            ? "bg-indigo-600 text-white ring-2 ring-indigo-600 ring-offset-2 scale-[1.02]"
+            : "bg-white text-gray-900 border-2 border-gray-300 hover:border-indigo-500 hover:bg-indigo-50"
         }
       `}
       data-testid="time-slot"
@@ -66,7 +67,10 @@ export function TimeSlotsGrouped({ slots, selectedSlot, onSelect, salonTz }) {
   if (periods.length === 0) {
     return (
       <div className="text-center py-12 text-gray-500">
-        <Clock className="w-16 h-16 mx-auto mb-4 text-gray-400" strokeWidth={1.5} />
+        <Clock
+          className="w-16 h-16 mx-auto mb-4 text-gray-400"
+          strokeWidth={1.5}
+        />
         <p className="font-bold text-gray-900 text-lg mb-2">
           No available times
         </p>

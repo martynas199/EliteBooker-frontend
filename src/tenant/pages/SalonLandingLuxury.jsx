@@ -144,7 +144,7 @@ export default function SalonLandingLuxury() {
 
   // Auto-cleanup: Clear any stale booking state on landing
   useBookingAutoCleanup();
-  
+
   // Get selected services from Redux
   const bookingServices = useSelector((state) => state.booking.services || []);
 
@@ -295,8 +295,8 @@ export default function SalonLandingLuxury() {
   // Handlers
   const handleServiceClick = (service, variant) => {
     // Get specialist ID from service
-    const serviceSpecialistId = 
-      service.primaryBeauticianId?._id || 
+    const serviceSpecialistId =
+      service.primaryBeauticianId?._id ||
       service.primaryBeauticianId ||
       service.specialistId?._id ||
       service.specialistId ||
@@ -306,11 +306,14 @@ export default function SalonLandingLuxury() {
     // Check if user already has services from a different specialist
     if (bookingServices.length > 0) {
       const firstServiceSpecialistId = bookingServices[0].specialistId;
-      
-      if (firstServiceSpecialistId && serviceSpecialistId && 
-          firstServiceSpecialistId !== serviceSpecialistId) {
+
+      if (
+        firstServiceSpecialistId &&
+        serviceSpecialistId &&
+        firstServiceSpecialistId !== serviceSpecialistId
+      ) {
         toast.error(
-          'You can only book services from the same specialist. Please clear your current selection to choose services from a different specialist.',
+          "You can only book services from the same specialist. Please clear your current selection to choose services from a different specialist.",
           { duration: 4000 }
         );
         return;
@@ -334,10 +337,8 @@ export default function SalonLandingLuxury() {
     // Auto-select the specialist if this is the first service
     if (bookingServices.length === 0 && serviceSpecialistId) {
       // Find the specialist object
-      const specialist = specialists.find(s => 
-        s._id === serviceSpecialistId
-      );
-      
+      const specialist = specialists.find((s) => s._id === serviceSpecialistId);
+
       if (specialist) {
         dispatch(
           setSpecialist({
@@ -376,9 +377,9 @@ export default function SalonLandingLuxury() {
 
     const grouped = new Map();
 
-    services.forEach(service => {
-      const specialistId = 
-        service.primaryBeauticianId?._id || 
+    services.forEach((service) => {
+      const specialistId =
+        service.primaryBeauticianId?._id ||
         service.primaryBeauticianId ||
         service.specialistId?._id ||
         service.specialistId ||
@@ -387,10 +388,10 @@ export default function SalonLandingLuxury() {
 
       if (specialistId) {
         if (!grouped.has(specialistId)) {
-          const specialist = specialists.find(s => s._id === specialistId);
+          const specialist = specialists.find((s) => s._id === specialistId);
           grouped.set(specialistId, {
             specialist,
-            services: []
+            services: [],
           });
         }
         grouped.get(specialistId).services.push(service);
@@ -923,61 +924,69 @@ export default function SalonLandingLuxury() {
 
                       {services.length === 0 ? (
                         <EmptyState type="services" />
-                      ) : hasMultipleSpecialists && servicesBySpecialist.length > 0 ? (
+                      ) : hasMultipleSpecialists &&
+                        servicesBySpecialist.length > 0 ? (
                         // Grouped by specialist
                         <div className="space-y-12">
-                          {servicesBySpecialist.map(({ specialist, services: specialistServices }) => (
-                            <div key={specialist?._id || 'unknown'} className="space-y-6">
-                              {/* Specialist Header */}
-                              {specialist && (
-                                <div className="flex items-center gap-4 pb-4 border-b border-gray-200">
-                                  {specialist.profilePicture?.url && (
-                                    <img
-                                      src={specialist.profilePicture.url}
-                                      alt={specialist.name}
-                                      className="w-16 h-16 rounded-full object-cover border-2 border-brand-500"
-                                    />
-                                  )}
-                                  <div>
-                                    <h3 className="text-2xl font-bold text-gray-900">
-                                      {specialist.name}
-                                    </h3>
-                                    {specialist.title && (
-                                      <p className="text-gray-600">{specialist.title}</p>
+                          {servicesBySpecialist.map(
+                            ({ specialist, services: specialistServices }) => (
+                              <div
+                                key={specialist?._id || "unknown"}
+                                className="space-y-6"
+                              >
+                                {/* Specialist Header */}
+                                {specialist && (
+                                  <div className="flex items-center gap-4 pb-4 border-b border-gray-200">
+                                    {specialist.profilePicture?.url && (
+                                      <img
+                                        src={specialist.profilePicture.url}
+                                        alt={specialist.name}
+                                        className="w-16 h-16 rounded-full object-cover border-2 border-brand-500"
+                                      />
                                     )}
-                                  </div>
-                                </div>
-                              )}
-                              
-                              {/* Specialist's Services */}
-                              <div className="grid gap-6 sm:grid-cols-2 overflow-x-hidden w-full">
-                                {specialistServices.map((service) => (
-                                  <div
-                                    key={service._id}
-                                    className="w-full overflow-x-hidden"
-                                  >
-                                    <ServiceCard
-                                      service={service}
-                                      onClick={(variant) =>
-                                        handleServiceClick(service, variant)
-                                      }
-                                      isSelected={bookingServices.some(
-                                        (s) => s.serviceId === service._id
+                                    <div>
+                                      <h3 className="text-2xl font-bold text-gray-900">
+                                        {specialist.name}
+                                      </h3>
+                                      {specialist.title && (
+                                        <p className="text-gray-600">
+                                          {specialist.title}
+                                        </p>
                                       )}
-                                    />
+                                    </div>
                                   </div>
-                                ))}
+                                )}
+
+                                {/* Specialist's Services */}
+                                <div className="grid gap-6 sm:grid-cols-2 w-full">
+                                  {specialistServices.map((service) => (
+                                    <div
+                                      key={service._id}
+                                      className="w-full"
+                                    >
+                                      <ServiceCard
+                                        service={service}
+                                        onClick={(variant) =>
+                                          handleServiceClick(service, variant)
+                                        }
+                                        isSelected={bookingServices.some(
+                                          (s) => s.serviceId === service._id
+                                        )}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            )
+                          )}
                         </div>
                       ) : (
                         // Single specialist or ungrouped
-                        <div className="grid gap-6 sm:grid-cols-2 overflow-x-hidden w-full">
+                        <div className="grid gap-6 sm:grid-cols-2 w-full">
                           {services.map((service) => (
                             <div
                               key={service._id}
-                              className="w-full overflow-x-hidden"
+                              className="w-full"
                             >
                               <ServiceCard
                                 service={service}

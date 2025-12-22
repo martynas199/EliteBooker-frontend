@@ -563,6 +563,7 @@ export default function Appointments() {
       end: "",
       price: 0,
       paymentStatus: "paid",
+      depositAmount: 30, // Default 30% deposit
     });
     setCreateModalOpen(true);
   }
@@ -604,6 +605,8 @@ export default function Appointments() {
         startISO: newAppointment.start,
         mode:
           newAppointment.paymentStatus === "paid" ? "pay_in_salon" : "online",
+        paymentStatus: newAppointment.paymentStatus, // Pass the payment status (paid, unpaid, deposit)
+        depositAmount: newAppointment.depositAmount, // Pass custom deposit amount (percentage)
       });
 
       if (response.data.ok) {
@@ -613,9 +616,17 @@ export default function Appointments() {
         toast.success("Appointment created successfully");
       }
     } catch (e) {
-      toast.error(
-        e.response?.data?.error || e.message || "Failed to create appointment"
-      );
+      // Close modal first so error is visible
+      setCreateModalOpen(false);
+      // Show error toast after a brief delay to ensure modal closes first
+      setTimeout(() => {
+        toast.error(
+          e.response?.data?.error ||
+            e.message ||
+            "Failed to create appointment",
+          { duration: 5000 } // Show error for 5 seconds
+        );
+      }, 100);
     } finally {
       setSubmitting(false);
     }
@@ -2658,7 +2669,8 @@ function CreateModal({
             <input
               type="text"
               id="client-name"
-              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400 text-sm sm:text-base"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400"
+              style={{ fontSize: "16px" }}
               value={appointment.clientName}
               onChange={(e) => updateField("clientName", e.target.value)}
               placeholder="Enter client's full name"
@@ -2669,7 +2681,8 @@ function CreateModal({
             <input
               type="email"
               id="client-email"
-              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400 text-sm sm:text-base"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400"
+              style={{ fontSize: "16px" }}
               value={appointment.clientEmail}
               onChange={(e) => updateField("clientEmail", e.target.value)}
               placeholder="client@example.com"
@@ -2680,7 +2693,8 @@ function CreateModal({
             <input
               type="tel"
               id="client-phone"
-              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400 text-sm sm:text-base"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400"
+              style={{ fontSize: "16px" }}
               value={appointment.clientPhone}
               onChange={(e) => updateField("clientPhone", e.target.value)}
               placeholder="+44 7700 900000"
@@ -2689,7 +2703,8 @@ function CreateModal({
           <FormField label="Notes" htmlFor="client-notes">
             <textarea
               id="client-notes"
-              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400 text-sm sm:text-base"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400"
+              style={{ fontSize: "16px" }}
               rows="2"
               value={appointment.clientNotes}
               onChange={(e) => updateField("clientNotes", e.target.value)}
@@ -2885,6 +2900,44 @@ function CreateModal({
             />
           </FormField>
 
+          {/* Deposit Amount - Only show when deposit is selected */}
+          {appointment.paymentStatus === "deposit" && (
+            <FormField
+              label="Deposit Amount (%)"
+              htmlFor="deposit-amount-create"
+            >
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  id="deposit-amount-create"
+                  min="0"
+                  max="100"
+                  step="5"
+                  className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900"
+                  style={{ fontSize: "16px", width: "100px" }}
+                  value={appointment.depositAmount}
+                  onChange={(e) =>
+                    updateField("depositAmount", Number(e.target.value))
+                  }
+                />
+                <span className="text-gray-600 font-medium">%</span>
+                {appointment.price > 0 && (
+                  <span className="text-sm text-gray-500">
+                    = £
+                    {(
+                      (appointment.price * appointment.depositAmount) /
+                      100
+                    ).toFixed(2)}
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Customer will pay this percentage as a deposit. Remaining
+                balance due at salon.
+              </p>
+            </FormField>
+          )}
+
           {/* Payment Type & Details */}
           {appointment.payment && (
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
@@ -3055,6 +3108,7 @@ function CreateModal({
         options={[
           { value: "paid", label: "💵 Paid (Cash/Card in Person)" },
           { value: "unpaid", label: "🔄 Unpaid (Online Payment Required)" },
+          { value: "deposit", label: "💰 Deposit (Partial Payment)" },
         ]}
         value={appointment.paymentStatus}
         onChange={(val) => updateField("paymentStatus", val)}

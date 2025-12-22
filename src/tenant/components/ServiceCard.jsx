@@ -39,7 +39,7 @@ function ServiceCard({ service, onClick, isSelected = false }) {
     <>
       <Card
         hoverable
-        className="p-0 overflow-hidden group border border-gray-200 hover:border-black bg-white hover:shadow-xl transition-all duration-300"
+        className="p-0 overflow-hidden group border border-gray-200 hover:border-black bg-white hover:shadow-xl transition-all duration-300 relative hover:z-10"
       >
         <div className="flex flex-row overflow-hidden w-full">
           {/* Image - on left, compact on mobile */}

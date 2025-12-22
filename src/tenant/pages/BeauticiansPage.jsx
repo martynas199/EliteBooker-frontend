@@ -32,9 +32,10 @@ export default function SpecialistSelectionPage() {
   const dispatch = useDispatch();
   const { tenant } = useTenant();
   const [searchParams] = useSearchParams();
-  
+
   // Enable booking guard to warn on navigation away
-  const { showModal, onConfirmLeave, onCancelLeave, checkNavigation } = useBookingGuard();
+  const { showModal, onConfirmLeave, onCancelLeave, checkNavigation } =
+    useBookingGuard();
 
   useEffect(() => {
     // Fetch all specialists
@@ -236,19 +237,16 @@ export default function SpecialistSelectionPage() {
   };
 
   const handleBack = () => {
-    const canNavigate = checkNavigation(
-      `/salon/${tenant?.slug}`,
-      () => {
-        setSelectedSpecialist(null);
-        setServices([]);
-        setShowVariantSelector(false);
-        setSelectedService(null);
-        setIsBioExpanded(false);
-        // Clear all URL parameters when going back
-        navigate(`/salon/${tenant?.slug}/specialists`, { replace: true });
-      }
-    );
-    
+    const canNavigate = checkNavigation(`/salon/${tenant?.slug}`, () => {
+      setSelectedSpecialist(null);
+      setServices([]);
+      setShowVariantSelector(false);
+      setSelectedService(null);
+      setIsBioExpanded(false);
+      // Clear all URL parameters when going back
+      navigate(`/salon/${tenant?.slug}/specialists`, { replace: true });
+    });
+
     if (canNavigate) {
       setSelectedSpecialist(null);
       setServices([]);
@@ -281,7 +279,7 @@ export default function SpecialistSelectionPage() {
         onConfirm={onConfirmLeave}
         onCancel={onCancelLeave}
       />
-      
+
       <PageTransition className="min-h-screen py-8">
         {/* SEO Meta Tags */}
         <SEOHead

@@ -1,56 +1,59 @@
-import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { useTenant } from '../../shared/contexts/TenantContext';
-import { useCurrency } from '../../shared/contexts/CurrencyContext';
-import dayjs from 'dayjs';
-import Card from '../../shared/components/ui/Card';
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { useTenant } from "../../shared/contexts/TenantContext";
+import { useCurrency } from "../../shared/contexts/CurrencyContext";
+import dayjs from "dayjs";
+import Card from "../../shared/components/ui/Card";
 
 /**
  * BookingSummary - Sticky booking summary sidebar/footer
- * 
+ *
  * Reduces "back button anxiety" by always showing:
  * - Selected services with variants
  * - Chosen specialist
  * - Date and time
  * - Total duration
  * - Total price
- * 
+ *
  * Sticky on desktop (right sidebar), bottom on mobile
  * Hidden on landing page
  */
-export default function BookingSummary({ className = '' }) {
+export default function BookingSummary({ className = "" }) {
   const location = useLocation();
   const booking = useSelector((s) => s.booking);
   const { tenant } = useTenant();
   const { formatPrice } = useCurrency();
 
   // Check if we're on the landing page
-  const pathSegments = location.pathname.split('/').filter(Boolean);
-  const isLandingPage = pathSegments.length === 2 && pathSegments[0] === 'salon';
-  
+  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const isLandingPage =
+    pathSegments.length === 2 && pathSegments[0] === "salon";
+
   // Don't show on landing page
   if (isLandingPage) return null;
 
-  const {
-    service,
-    services,
-    specialist,
-    time,
-  } = booking;
+  const { service, services, specialist, time } = booking;
 
   // Don't show if no services selected
   const hasServices = services?.length > 0 || service;
   if (!hasServices) return null;
 
   // Calculate totals
-  const allServices = services?.length > 0 ? services : service ? [service] : [];
-  const totalDuration = allServices.reduce((sum, svc) => sum + (svc.durationMin || 0), 0);
-  const totalPrice = allServices.reduce((sum, svc) => sum + (svc.price || 0), 0);
+  const allServices =
+    services?.length > 0 ? services : service ? [service] : [];
+  const totalDuration = allServices.reduce(
+    (sum, svc) => sum + (svc.durationMin || 0),
+    0
+  );
+  const totalPrice = allServices.reduce(
+    (sum, svc) => sum + (svc.price || 0),
+    0
+  );
 
   // Format date/time
   const formattedDateTime = time
-    ? dayjs(time).format('ddd, MMM D, YYYY [at] h:mm A')
-    : 'Not selected';
+    ? dayjs(time).format("ddd, MMM D, YYYY [at] h:mm A")
+    : "Not selected";
 
   return (
     <Card elevated className={`sticky top-6 ${className}`}>
@@ -59,7 +62,8 @@ export default function BookingSummary({ className = '' }) {
         <div>
           <h3 className="text-lg font-bold text-gray-900">Your Booking</h3>
           <p className="text-sm text-gray-500 mt-1">
-            {allServices.length} {allServices.length === 1 ? 'service' : 'services'} selected
+            {allServices.length}{" "}
+            {allServices.length === 1 ? "service" : "services"} selected
           </p>
         </div>
 
@@ -92,7 +96,9 @@ export default function BookingSummary({ className = '' }) {
               Specialist
             </p>
             <p className="text-sm text-gray-900">
-              {specialist.any ? 'Any available specialist' : specialist.name || 'Selected specialist'}
+              {specialist.any
+                ? "Any available specialist"
+                : specialist.name || "Selected specialist"}
             </p>
           </div>
         )}
@@ -126,15 +132,31 @@ export default function BookingSummary({ className = '' }) {
         {/* Reassurance */}
         <div className="pt-4 border-t border-gray-100">
           <div className="flex items-start gap-2 text-xs text-gray-500">
-            <svg className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            <svg
+              className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
             </svg>
             <span>You won't be charged until checkout</span>
           </div>
           {tenant?.cancellationPolicy && (
             <div className="flex items-start gap-2 text-xs text-gray-500 mt-2">
-              <svg className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg
+                className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
               </svg>
               <span>Free cancellation up to 24 hours before</span>
             </div>

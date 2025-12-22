@@ -1,10 +1,14 @@
-import { X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 /**
  * BookingConfirmLeaveModal - Confirm leaving booking flow with services selected
  */
-export default function BookingConfirmLeaveModal({ isOpen, onConfirm, onCancel }) {
+export default function BookingConfirmLeaveModal({
+  isOpen,
+  onConfirm,
+  onCancel,
+}) {
   if (!isOpen) return null;
 
   return (
@@ -50,7 +54,8 @@ export default function BookingConfirmLeaveModal({ isOpen, onConfirm, onCancel }
           {/* Content */}
           <div className="px-6 py-6">
             <p className="text-gray-700">
-              If you leave now, your selected services and booking progress will be lost. Are you sure you want to continue?
+              If you leave now, your selected services and booking progress will
+              be lost. Are you sure you want to continue?
             </p>
           </div>
 

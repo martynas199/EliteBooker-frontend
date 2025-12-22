@@ -21,6 +21,7 @@ export default function Locations() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingLocation, setEditingLocation] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     name: "",
@@ -80,12 +81,62 @@ export default function Locations() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate form
+    const newErrors = {};
+    if (!formData.name.trim()) {
+      newErrors.name = "Location name is required";
+    }
+    if (!formData.address.street.trim()) {
+      newErrors.street = "Street address is required";
+    }
+    if (!formData.address.city.trim()) {
+      newErrors.city = "City is required";
+    }
+    if (!formData.address.postalCode.trim()) {
+      newErrors.postalCode = "Postal code is required";
+    }
+
+    // If there are errors, set them and stop
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    // Clear errors
+    setErrors({});
+
     try {
+      // Convert coordinates to numbers before submitting
+      const submitData = {
+        ...formData,
+        address: {
+          ...formData.address,
+          coordinates: {
+            lat: formData.address.coordinates.lat
+              ? parseFloat(formData.address.coordinates.lat)
+              : null,
+            lng: formData.address.coordinates.lng
+              ? parseFloat(formData.address.coordinates.lng)
+              : null,
+          },
+        },
+      };
+
+      // Remove coordinates if empty
+      if (
+        !submitData.address.coordinates.lat ||
+        !submitData.address.coordinates.lng
+      ) {
+        delete submitData.address.coordinates;
+      }
+
       if (editingLocation) {
-        await api.patch(`/locations/${editingLocation._id}`, formData);
+        await api.patch(`/locations/${editingLocation._id}`, submitData);
         toast.success("Location updated successfully");
       } else {
-        await api.post("/locations", formData);
+        await api.post("/locations", submitData);
         toast.success("Location created successfully");
       }
       fetchLocations();
@@ -139,6 +190,7 @@ export default function Locations() {
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingLocation(null);
+    setErrors({});
     setFormData({
       name: "",
       description: "",
@@ -384,15 +436,19 @@ export default function Locations() {
                     Location Name *
                   </label>
                   <input
-                    type="text"
-                    required
                     value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    onChange={(e) => {
+                      setFormData({ ...formData, name: e.target.value });
+                      if (errors.name) setErrors({ ...errors, name: null });
+                    }}
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                      errors.name ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Downtown Office"
                   />
+                  {errors.name && (
+                    <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                  )}
                 </div>
 
                 <div>
@@ -449,65 +505,116 @@ export default function Locations() {
                   </h3>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Street
+                      Street *
                     </label>
                     <input
                       type="text"
                       value={formData.address.street}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setFormData({
                           ...formData,
                           address: {
                             ...formData.address,
                             street: e.target.value,
                           },
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        });
+                        if (errors.street)
+                          setErrors({ ...errors, street: null });
+                      }}
+                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                        errors.street ? "border-red-500" : "border-gray-300"
+                      }`}
                       placeholder="123 Main Street"
                     />
+                    {errors.street && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.street}
+                      </p>
+                    )}
                   </div>
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        City
+                        City *
                       </label>
                       <input
                         type="text"
                         value={formData.address.city}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           setFormData({
                             ...formData,
                             address: {
                               ...formData.address,
                               city: e.target.value,
                             },
-                          })
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          });
+                          if (errors.city) setErrors({ ...errors, city: null });
+                        }}
+                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                          errors.city ? "border-red-500" : "border-gray-300"
+                        }`}
                         placeholder="New York"
                       />
+                      {errors.city && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {errors.city}
+                        </p>
+                      )}
                     </div>
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Postal Code
+                        Postal Code *
                       </label>
                       <input
                         type="text"
                         value={formData.address.postalCode}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           setFormData({
                             ...formData,
                             address: {
                               ...formData.address,
                               postalCode: e.target.value,
                             },
-                          })
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          });
+                          if (errors.postalCode)
+                            setErrors({ ...errors, postalCode: null });
+                        }}
+                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                          errors.postalCode
+                            ? "border-red-500"
+                            : "border-gray-300"
+                        }`}
                         placeholder="10001"
                       />
+                      {errors.postalCode && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {errors.postalCode}
+                        </p>
+                      )}
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Country
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.address.country}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          address: {
+                            ...formData.address,
+                            country: e.target.value,
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="United States"
+                    />
                   </div>
                 </div>
 

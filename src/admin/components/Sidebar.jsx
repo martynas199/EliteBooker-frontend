@@ -287,7 +287,7 @@ export default function Sidebar({ tenant, onLogout, onClose }) {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 pb-32 lg:pb-4 border-t border-gray-200 flex-shrink-0 bg-slate-50 space-y-1">
+      <div className="p-4 pb-52 lg:pb-4 border-t border-gray-200 flex-shrink-0 bg-slate-50 space-y-1">
         <Link
           to="/admin/profile"
           className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-all duration-150"

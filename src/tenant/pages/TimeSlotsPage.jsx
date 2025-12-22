@@ -47,14 +47,15 @@ export default function TimeSlots() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+
   // Enable booking guard to warn on navigation away
-  const { showModal, onConfirmLeave, onCancelLeave, checkNavigation } = useBookingGuard();
+  const { showModal, onConfirmLeave, onCancelLeave, checkNavigation } =
+    useBookingGuard();
 
   // Handle back navigation with guard
   const handleBack = () => {
     const canNavigate = checkNavigation(
-      window.location.pathname.split('/').slice(0, -1).join('/'),
+      window.location.pathname.split("/").slice(0, -1).join("/"),
       () => navigate(-1)
     );
     if (canNavigate) navigate(-1);
@@ -407,6 +408,7 @@ export default function TimeSlots() {
               beauticianWorkingHours={(specialist.workingHours || []).filter(
                 (wh) => wh && wh.dayOfWeek != null
               )}
+              customSchedule={specialist.customSchedule || {}}
               onSelect={handleSlotSelect}
             />
           ) : (

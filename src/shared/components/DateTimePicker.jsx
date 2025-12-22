@@ -511,9 +511,7 @@ export default function DateTimePicker({
             </div>
           )}
 
-          {selectedDate && loadingSlots && (
-            <SkeletonTimeSlots />
-          )}
+          {selectedDate && loadingSlots && <SkeletonTimeSlots />}
 
           {selectedDate && !loadingSlots && slotsError && (
             <div

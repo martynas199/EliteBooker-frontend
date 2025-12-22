@@ -285,7 +285,7 @@ export default function AdminLayout() {
         )}
 
         {/* Main Content */}
-        <section className="p-4 lg:p-10 pb-20 lg:pb-10 min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-50/50 via-blue-50/10 to-purple-50/10 relative">
+        <section className="p-4 lg:p-10 pb-52 lg:pb-10 min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-50/50 via-blue-50/10 to-purple-50/10 relative">
           {/* Subtle grain texture overlay */}
           <div
             className="absolute inset-0 opacity-[0.015] pointer-events-none"
