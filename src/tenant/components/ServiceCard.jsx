@@ -247,6 +247,7 @@ function ServiceCard({ service, onClick, isSelected = false }) {
         open={showVariantsModal}
         onClose={() => setShowVariantsModal(false)}
         title={`Select ${service.name} Option`}
+        variant="dashboard"
       >
         <div className="p-4 sm:p-6">
           <p className="text-sm text-gray-600 mb-4">
@@ -307,6 +308,7 @@ function ServiceCard({ service, onClick, isSelected = false }) {
         open={showDescriptionModal}
         onClose={() => setShowDescriptionModal(false)}
         title={service.name}
+        variant="dashboard"
       >
         <div className="p-4 sm:p-6">
           {service.category && (

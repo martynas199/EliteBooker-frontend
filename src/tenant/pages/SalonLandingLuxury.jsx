@@ -895,7 +895,7 @@ export default function SalonLandingLuxury() {
 
           {/* Main Content - Only show if no location is selected */}
           {!selectedLocation && (
-            <section className="px-4 pb-20">
+            <section className="px-0 sm:px-4 pb-20">
               <div className="max-w-7xl mx-auto">
                 <AnimatePresence mode="wait">
                   {viewMode === "services" ? (
