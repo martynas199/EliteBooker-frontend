@@ -40,8 +40,10 @@ export function TimeSlotButton({ slot, isSelected, onClick, salonTz }) {
       type="button"
       onClick={() => onClick(slot)}
       className={`
-        h-11 px-4 rounded-lg
+        h-11 px-5 rounded-lg
         font-medium text-base
+        whitespace-nowrap
+        flex items-center justify-center
         transition-all duration-200
         focus:outline-none focus:ring-2 focus:ring-offset-1
         ${
