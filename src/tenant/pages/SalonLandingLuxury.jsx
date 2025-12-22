@@ -960,10 +960,7 @@ export default function SalonLandingLuxury() {
                                 {/* Specialist's Services */}
                                 <div className="grid gap-6 sm:grid-cols-2 w-full">
                                   {specialistServices.map((service) => (
-                                    <div
-                                      key={service._id}
-                                      className="w-full"
-                                    >
+                                    <div key={service._id} className="w-full">
                                       <ServiceCard
                                         service={service}
                                         onClick={(variant) =>
@@ -984,10 +981,7 @@ export default function SalonLandingLuxury() {
                         // Single specialist or ungrouped
                         <div className="grid gap-6 sm:grid-cols-2 w-full">
                           {services.map((service) => (
-                            <div
-                              key={service._id}
-                              className="w-full"
-                            >
+                            <div key={service._id} className="w-full">
                               <ServiceCard
                                 service={service}
                                 onClick={(variant) =>
