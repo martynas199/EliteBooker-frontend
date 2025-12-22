@@ -86,10 +86,29 @@ export default function Profile() {
       }
     } catch (err) {
       console.error("Profile update error:", err);
-      setProfileError(
-        err.response?.data?.error ||
-          "Failed to update profile. Please try again."
-      );
+
+      // Extract error message with details
+      let errorMessage = "Failed to update profile. Please try again.";
+
+      if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+
+        // Add details if available
+        if (err.response.data.details) {
+          // Parse MongoDB duplicate key error for user-friendly message
+          if (err.response.data.details.includes("E11000 duplicate key")) {
+            if (err.response.data.details.includes("email")) {
+              errorMessage =
+                "This email address is already in use by another account.";
+            } else if (err.response.data.details.includes("phone")) {
+              errorMessage =
+                "This phone number is already in use by another account.";
+            }
+          }
+        }
+      }
+
+      setProfileError(errorMessage);
     } finally {
       setProfileLoading(false);
     }
@@ -100,7 +119,6 @@ export default function Profile() {
     setPasswordError("");
     setPasswordSuccess("");
 
-    // Validation
     if (newPassword.length < 8) {
       setPasswordError("New password must be at least 8 characters long.");
       return;

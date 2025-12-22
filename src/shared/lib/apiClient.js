@@ -113,6 +113,11 @@ api.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       const pathname = window.location.pathname;
 
+      // Skip token refresh for login/register endpoints
+      if (originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/register')) {
+        return Promise.reject(error);
+      }
+
       // For client routes, clear localStorage token (like beauty salon app)
       if (pathname.startsWith("/client")) {
         console.log("[API Client] 401 on client route - clearing clientToken");
