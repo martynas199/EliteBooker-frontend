@@ -554,7 +554,7 @@ export default function DateTimePicker({
           )}
 
           {selectedDate && !loadingSlots && !slotsError && (
-            <div className="max-h-[500px] overflow-y-auto pr-2">
+            <div className="lg:max-h-[500px] lg:overflow-y-auto pr-2">
               <TimeSlotsGrouped
                 slots={slots}
                 selectedSlot={selectedSlot}
