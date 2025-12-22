@@ -202,6 +202,55 @@ export default function FeaturesPage() {
     }
   };
 
+  const handleSmsSubscribe = async () => {
+    if (!specialistId) {
+      toast.error(
+        "No specialist linked to your account. Please link your account to a specialist in Admin Management first."
+      );
+      return;
+    }
+    try {
+      setProcessing(true);
+      const res = await api.post(`/features/${specialistId}/subscribe-sms`);
+      if (res.data.checkoutUrl) {
+        window.location.href = res.data.checkoutUrl;
+      }
+    } catch (error) {
+      console.error("Error creating SMS subscription:", error);
+      toast.error(
+        error.response?.data?.error || "Failed to start SMS subscription"
+      );
+      setProcessing(false);
+    }
+  };
+
+  const handleCancelSmsSubscription = async () => {
+    if (!specialistId) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to cancel your SMS subscription? You'll continue to have access until the end of your billing period."
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setProcessing(true);
+      await api.post(`/features/${specialistId}/cancel-sms`);
+      toast.success(
+        "SMS subscription cancelled. It will remain active until the end of your billing period."
+      );
+      fetchFeatureStatus();
+    } catch (error) {
+      console.error("Error cancelling SMS subscription:", error);
+      toast.error(
+        error.response?.data?.error || "Failed to cancel SMS subscription"
+      );
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   // Sync local state when featureFlags change
   useEffect(() => {
     setLocalFlags({
@@ -393,6 +442,132 @@ export default function FeaturesPage() {
                       {processing ? "Processing..." : "Resubscribe"}
                     </button>
                   )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* SMS Confirmations Premium Section */}
+        {specialistId && !subscriptionLoading && (
+          <div className="bg-gradient-to-br from-white via-purple-50/20 to-indigo-50/20 rounded-xl sm:rounded-2xl border border-gray-200 overflow-hidden shadow-lg">
+            <div className="bg-gradient-to-r from-purple-500 via-purple-600 to-indigo-600 p-4 sm:p-6 shadow-xl">
+              <div className="flex items-center gap-2 mb-1">
+                <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                <h2 className="text-base sm:text-lg font-bold text-white">
+                  Premium: SMS Confirmations
+                </h2>
+              </div>
+              <p className="text-xs sm:text-sm text-white/90">
+                Send automatic SMS confirmations to clients when they book
+              </p>
+            </div>
+
+            <div className="p-4 sm:p-6">
+              {/* Status Banner */}
+              {featureStatus?.smsConfirmations?.enabled &&
+                featureStatus?.smsConfirmations?.status === "active" && (
+                  <div className="mb-3 sm:mb-4 p-2.5 sm:p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-center gap-2 text-green-900 font-semibold mb-1 text-xs sm:text-sm">
+                      <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      <span>Active Subscription</span>
+                    </div>
+                    <p className="text-xs text-green-800">
+                      Your clients will receive SMS confirmations when they
+                      book!
+                    </p>
+                    {featureStatus?.smsConfirmations?.currentPeriodEnd && (
+                      <p className="text-xs text-green-700 mt-1">
+                        Next billing:{" "}
+                        {new Date(
+                          featureStatus.smsConfirmations.currentPeriodEnd
+                        ).toLocaleDateString("en-GB")}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+              {featureStatus?.smsConfirmations?.status === "canceled" &&
+                !(
+                  featureStatus?.smsConfirmations?.currentPeriodEnd &&
+                  new Date(featureStatus.smsConfirmations.currentPeriodEnd) <=
+                    new Date()
+                ) && (
+                  <div className="mb-3 sm:mb-4 p-2.5 sm:p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <div className="flex items-center gap-2 text-amber-900 font-semibold mb-1 text-xs sm:text-sm">
+                      <span>Subscription Ending</span>
+                    </div>
+                    <p className="text-xs text-amber-800">
+                      Your subscription is canceled but active until{" "}
+                      {new Date(
+                        featureStatus.smsConfirmations.currentPeriodEnd
+                      ).toLocaleDateString("en-GB")}
+                    </p>
+                  </div>
+                )}
+
+              {/* Benefits List */}
+              <div className="space-y-1.5 sm:space-y-2 mb-4 sm:mb-6">
+                <div className="flex items-start gap-2 text-xs sm:text-sm text-gray-700">
+                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <span>Instant SMS confirmations when clients book</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs sm:text-sm text-gray-700">
+                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <span>Reduce no-shows with automated confirmations</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs sm:text-sm text-gray-700">
+                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <span>Professional client communication</span>
+                </div>
+              </div>
+
+              {/* Pricing & CTA */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-xl sm:text-2xl font-bold text-gray-900">
+                    £3.99
+                    <span className="text-xs sm:text-sm font-normal text-gray-500">
+                      /month
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500">Billed monthly</p>
+                </div>
+
+                <div className="flex gap-2">
+                  {!featureStatus?.smsConfirmations?.enabled && (
+                    <button
+                      onClick={handleSmsSubscribe}
+                      disabled={processing}
+                      className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:from-purple-600 hover:to-indigo-700 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-600/40 transition-all disabled:opacity-50"
+                    >
+                      {processing ? "Processing..." : "Subscribe Now"}
+                    </button>
+                  )}
+
+                  {featureStatus?.smsConfirmations?.enabled &&
+                    featureStatus?.smsConfirmations?.status === "active" && (
+                      <button
+                        onClick={handleCancelSmsSubscription}
+                        disabled={processing}
+                        className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gray-100 text-gray-700 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:bg-gray-200 border border-gray-300 transition-all disabled:opacity-50"
+                      >
+                        {processing ? "Processing..." : "Cancel"}
+                      </button>
+                    )}
+
+                  {featureStatus?.smsConfirmations?.status === "canceled" &&
+                    featureStatus?.smsConfirmations?.currentPeriodEnd &&
+                    new Date(featureStatus.smsConfirmations.currentPeriodEnd) <=
+                      new Date() && (
+                      <button
+                        onClick={handleSmsSubscribe}
+                        disabled={processing}
+                        className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:from-purple-600 hover:to-indigo-700 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-600/40 transition-all disabled:opacity-50"
+                      >
+                        {processing ? "Processing..." : "Resubscribe"}
+                      </button>
+                    )}
                 </div>
               </div>
             </div>
