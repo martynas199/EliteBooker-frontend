@@ -235,7 +235,7 @@ export default function DateTimePicker({
       <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 min-w-0">
         {/* Calendar Section */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-2 sm:p-6 min-w-0">
-          <h3 className="text-xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-4 sm:mb-6 p-2">
             Select a Date
           </h3>
 
@@ -492,8 +492,8 @@ export default function DateTimePicker({
         </div>
 
         {/* Time Slots Section */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-4 sm:p-6 min-w-0">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-2 sm:p-6 min-w-0">
+          <h3 className="text-xl font-bold text-gray-900 p-2 mb-6">
             {selectedDate ? "Available Times" : "Select a date first"}
           </h3>
 
@@ -554,7 +554,7 @@ export default function DateTimePicker({
           )}
 
           {selectedDate && !loadingSlots && !slotsError && (
-            <div className="lg:max-h-[500px] lg:overflow-y-auto pr-2">
+            <div className="lg:max-h-[500px] lg:overflow-y-auto pr-0">
               <TimeSlotsGrouped
                 slots={slots}
                 selectedSlot={selectedSlot}
