@@ -283,7 +283,7 @@ export default function SpecialistSelectionPage() {
       <PageTransition className="min-h-screen py-8">
         {/* SEO Meta Tags */}
         <SEOHead
-          title="Book Appointment Wisbech | Expert Specialists - Noble Elegance"
+          title="Book Appointment Wisbech | Expert Specialists - Elite Booker"
           description="Book your beauty appointment in Wisbech. Expert specialists specializing in permanent makeup, brows, lashes & treatments. Online booking available 24/7!"
           keywords="book beauty appointment Wisbech, beauty booking Cambridgeshire, permanent makeup appointment, book specialist Wisbech, beauty salon booking March, online booking beauty salon, King's Lynn beauty appointments"
           schema={breadcrumbSchema}

@@ -3,7 +3,7 @@
 ## Standard Format (Use Everywhere)
 
 ```
-Business Name: Noble Elegance Beauty Salon
+Business Name: Elite Booker Beauty Salon
 Address: 12 Blackfriars Rd, Wisbech, PE13 1AT, Cambridgeshire, United Kingdom
 Phone: +44 7928 775746
 Opening Hours: Monday - Sunday: 9:00 AM - 5:00 PM
@@ -17,7 +17,7 @@ Opening Hours: Monday - Sunday: 9:00 AM - 5:00 PM
 **Status**: ✅ COMPLETE
 
 ```
-Noble Elegance Beauty Salon
+Elite Booker Beauty Salon
 12 Blackfriars Rd
 Wisbech, PE13 1AT
 Cambridgeshire, UK
@@ -67,7 +67,7 @@ Phone:
 ```json
 {
   "@type": ["BeautySalon", "MedicalClinic", "LocalBusiness"],
-  "name": "Noble Elegance Beauty Salon",
+  "name": "Elite Booker Beauty Salon",
   "telephone": "+447928775746",
   "address": {
     "@type": "PostalAddress",
@@ -118,10 +118,10 @@ Phone:
 
 **Required Changes**:
 
-1. ✅ Business name: `Noble Elegance Beauty Salon`
+1. ✅ Business name: `Elite Booker Beauty Salon`
 2. ✅ Address: `12 Blackfriars Rd, Wisbech PE13 1AT, United Kingdom`
 3. ✅ Phone: `+44 7928 775746`
-4. ✅ Website: `https://www.nobleelegance.co.uk`
+4. ✅ Website: `https://www.elitebooker.co.uk`
 5. ✅ Hours: `Monday-Sunday 9:00 AM - 5:00 PM`
 
 **How to Update**:
@@ -152,7 +152,7 @@ Phone:
 📍 12 Blackfriars Rd, Wisbech PE13 1AT
 📞 +44 7928 775746
 ⏰ Mon-Sun: 9am-5pm
-🌐 nobleelegance.co.uk
+🌐 elitebooker.co.uk
 ```
 
 ---
@@ -276,7 +276,7 @@ Update NAP on these platforms:
 - **Phone Format**: Always use international format `+44 7928 775746`
 - **Address Format**: Always include full format ending with country
 - **Opening Hours**: Keep consistent "Monday - Sunday: 9:00 AM - 5:00 PM"
-- **Business Name**: Never abbreviate, always use full "Noble Elegance Beauty Salon"
+- **Business Name**: Never abbreviate, always use full "Elite Booker Beauty Salon"
 
 ## ✨ Benefits of NAP Consistency
 

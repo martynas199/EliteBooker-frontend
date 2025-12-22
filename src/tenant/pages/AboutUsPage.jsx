@@ -78,8 +78,8 @@ export default function AboutUsPage() {
       {/* SEO Meta Tags */}
       <SEOHead
         title="About Us - Our Story & Mission"
-        description="Discover Noble Elegance Beauty Salon in Wisbech, Cambridgeshire. Learn about our expert specialists, premium beauty services, and our commitment to excellence. Located at 12 Blackfriars Rd, PE13 1AT. We specialize in permanent makeup, brows, lashes and luxury beauty treatments for clients across Wisbech, March, King's Lynn, Peterborough and Cambridgeshire."
-        keywords="about Noble Elegance, beauty salon Wisbech story, experienced specialists Cambridgeshire, professional beauty services, award winning beauty salon, best beauty salon Wisbech"
+        description="Discover Elite Booker Beauty Salon in Wisbech, Cambridgeshire. Learn about our expert specialists, premium beauty services, and our commitment to excellence. Located at 12 Blackfriars Rd, PE13 1AT. We specialize in permanent makeup, brows, lashes and luxury beauty treatments for clients across Wisbech, March, King's Lynn, Peterborough and Cambridgeshire."
+        keywords="about Elite Booker, beauty salon Wisbech story, experienced specialists Cambridgeshire, professional beauty services, award winning beauty salon, best beauty salon Wisbech"
         schema={combinedSchema}
       />
 

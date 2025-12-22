@@ -2,7 +2,7 @@
 
 ## Overview
 
-Complete blog system for Noble Elegance Beauty Salon featuring:
+Complete blog system for Elite Booker Beauty Salon featuring:
 
 - Public blog page: "Let's Talk About Beauty"
 - Individual blog post pages with SEO optimization

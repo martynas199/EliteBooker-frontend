@@ -54,7 +54,7 @@ export default function BlogPage() {
     <PageTransition className="min-h-screen bg-gray-50">
       <SEOHead
         title="Let's Talk About Beauty - Blog & Beauty Tips"
-        description="Discover the latest beauty trends, tips, and expert advice from Noble Elegance Beauty Salon in Wisbech. Learn about aesthetic treatments, skincare, permanent makeup, and beauty secrets from our professional team."
+        description="Discover the latest beauty trends, tips, and expert advice from Elite Booker Beauty Salon in Wisbech. Learn about aesthetic treatments, skincare, permanent makeup, and beauty secrets from our professional team."
         keywords="beauty blog, beauty tips Wisbech, aesthetic advice, skincare tips, permanent makeup guide, beauty trends, lip filler information, anti-wrinkle advice, dermal filler guide"
         schema={breadcrumbSchema}
       />

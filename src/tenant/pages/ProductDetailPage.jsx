@@ -117,7 +117,7 @@ export default function ProductDetailPage() {
     const productUrl = window.location.href;
     const shareData = {
       title: product.title,
-      text: `Check out ${product.title} at Noble Elegance`,
+      text: `Check out ${product.title} at Elite Booker`,
       url: productUrl,
     };
 
@@ -182,14 +182,14 @@ export default function ProductDetailPage() {
   return (
     <>
       <SEOHead
-        title={`${product.title} | Noble Elegance Beauty Products`}
+        title={`${product.title} | Elite Booker Beauty Products`}
         description={
           product.description ||
-          `Shop ${product.title} at Noble Elegance. ${
+          `Shop ${product.title} at Elite Booker. ${
             product.category || "Premium beauty products"
           } available online.`
         }
-        canonical={`https://www.nobleelegance.co.uk/products/${product._id}`}
+        canonical={`https://www.elitebooker.co.uk/products/${product._id}`}
         ogImage={product.image?.url || product.images?.[0]?.url}
         schemas={[
           generateProductSchema(product),

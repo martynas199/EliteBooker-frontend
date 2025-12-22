@@ -77,7 +77,7 @@ export default function BlogPostPage() {
     title: post.title,
     description: post.excerpt,
     content: post.content,
-    author: post.author?.name || "Noble Elegance",
+    author: post.author?.name || "Elite Booker",
     publishedDate: post.publishedAt,
     modifiedDate: post.updatedAt,
   });
@@ -163,7 +163,7 @@ export default function BlogPostPage() {
                 </svg>
               </div>
               <span className="font-medium">
-                {post.author?.name || "Noble Elegance"}
+                {post.author?.name || "Elite Booker"}
               </span>
             </div>
             <div className="flex items-center gap-2">

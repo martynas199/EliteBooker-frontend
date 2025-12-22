@@ -216,7 +216,7 @@ GET / api / products;
 - **Body**: Poppins (sans-serif) - clean, readable
 - **Font weights**: Bold (700) for headings, regular (400) for body
 
-### Colors (Noble Elegance Theme)
+### Colors (Elite Booker Theme)
 
 - **Primary**: brand-600 (buttons, active states)
 - **Gradient**: brand-600 to brand-700 (hero section)

@@ -306,7 +306,7 @@
 
 ### Motion
 
-- [ ] All animations feel "Noble Elegance" (subtle, refined)
+- [ ] All animations feel "Elite Booker" (subtle, refined)
 - [ ] No flashy or aggressive animations
 - [ ] Timing feels intentional, not rushed
 - [ ] Image zooms slow and luxurious (700ms)
@@ -504,6 +504,6 @@
 ---
 
 **Last Updated**: 2024 (Post-animation implementation)
-**Tester**: **********\_**********
-**Date**: **********\_**********
+**Tester**: ****\*\*****\_****\*\*****
+**Date**: ****\*\*****\_****\*\*****
 **Status**: ⏳ Pending Testing

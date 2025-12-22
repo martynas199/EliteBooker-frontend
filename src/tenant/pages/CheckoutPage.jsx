@@ -273,8 +273,8 @@ export default function CheckoutPage() {
   return (
     <>
       <SEOHead
-        title="Checkout - Noble Elegance"
-        description="Complete your booking at Noble Elegance Beauty Salon."
+        title="Checkout - Elite Booker"
+        description="Complete your booking at Elite Booker Beauty Salon."
         noindex={true}
       />
       {/* Fixed background layer */}

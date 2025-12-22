@@ -6,7 +6,7 @@
 
 1. Go to: https://search.google.com/search-console
 2. Click "Add Property"
-3. Enter: `https://www.nobleelegance.co.uk`
+3. Enter: `https://www.elitebooker.co.uk`
 4. Choose verification method: **HTML tag** (already added to your index.html)
 5. The meta tag is already in your `index.html`:
    ```html
@@ -20,7 +20,7 @@
 ### Step 2: Submit Sitemap
 
 1. In Search Console, go to **Sitemaps** (left sidebar)
-2. Enter sitemap URL: `https://www.nobleelegance.co.uk/sitemap.xml`
+2. Enter sitemap URL: `https://www.elitebooker.co.uk/sitemap.xml`
 3. Click "Submit"
 4. Wait 24-48 hours for Google to crawl
 
@@ -51,7 +51,7 @@
 1. Go to: https://analytics.google.com
 2. Click "Admin" (bottom left)
 3. Click "+ Create Property"
-4. Property name: "Noble Elegance Beauty Salon"
+4. Property name: "Elite Booker Beauty Salon"
 5. Time zone: UK
 6. Currency: GBP
 7. Create property
@@ -59,8 +59,8 @@
 ### Step 2: Add Data Stream
 
 1. Click "Web" under Data Streams
-2. Website URL: `https://www.nobleelegance.co.uk`
-3. Stream name: "Noble Elegance Website"
+2. Website URL: `https://www.elitebooker.co.uk`
+3. Stream name: "Elite Booker Website"
 4. Enhanced measurement: **Enable all**
 5. Create stream
 
@@ -133,7 +133,7 @@ gtag("event", "phone_click", {
 ### Step 1: Claim Business
 
 1. Go to: https://business.google.com
-2. Search for "Noble Elegance Beauty Salon Huntingdon"
+2. Search for "Elite Booker Beauty Salon Huntingdon"
 3. If exists: Click "Claim this business"
 4. If not: Click "Add your business"
 
@@ -149,14 +149,14 @@ Choose verification method:
 
 **Business Information:**
 
-- Business name: Noble Elegance Beauty Salon
+- Business name: Elite Booker Beauty Salon
 - Category: Beauty Salon (Primary)
 - Add secondary: Permanent Makeup Service, Day Spa
 - Address: [YOUR ACTUAL ADDRESS]
 - Service area: Huntingdon, Peterborough, March, Wisbech, St Ives, Ramsey
 - Phone: [YOUR ACTUAL PHONE]
-- Website: https://www.nobleelegance.co.uk
-- Appointment URL: https://www.nobleelegance.co.uk/specialists
+- Website: https://www.elitebooker.co.uk
+- Appointment URL: https://www.elitebooker.co.uk/specialists
 
 **Opening Hours:**
 Add your actual hours for each day
@@ -209,7 +209,7 @@ Select all that apply:
 **Review Request Template:**
 
 ```
-Thank you for choosing Noble Elegance! We'd love to hear about your experience.
+Thank you for choosing Elite Booker! We'd love to hear about your experience.
 Please take a moment to leave us a review: [REVIEW LINK]
 ```
 

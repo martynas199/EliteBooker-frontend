@@ -324,8 +324,8 @@ export default function ProductCheckoutPage() {
   return (
     <>
       <SEOHead
-        title="Product Checkout - Noble Elegance"
-        description="Complete your product order at Noble Elegance Beauty Salon."
+        title="Product Checkout - Elite Booker"
+        description="Complete your product order at Elite Booker Beauty Salon."
         noindex={true}
       />
       <div className="max-w-6xl mx-auto px-4 py-4 sm:py-8 overflow-x-hidden">

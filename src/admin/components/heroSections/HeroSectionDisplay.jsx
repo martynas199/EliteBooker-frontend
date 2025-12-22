@@ -65,7 +65,7 @@ export default function HeroSectionDisplay() {
               <div className="relative h-[400px] md:h-[500px] overflow-hidden animate-slideInBottom">
                 <img
                   src={section.centerImage.url}
-                  alt={`${section.title} - Professional beauty treatments at Noble Elegance Wisbech Cambridgeshire`}
+                  alt={`${section.title} - Professional beauty treatments at Elite Booker Wisbech Cambridgeshire`}
                   className="w-full h-full object-cover"
                 />
                 {/* Configurable Overlay */}
@@ -84,7 +84,7 @@ export default function HeroSectionDisplay() {
               <div className="relative h-[400px] md:h-[500px] overflow-hidden animate-slideInRight">
                 <img
                   src={section.rightImage.url}
-                  alt={`${section.title} showcase - Expert beauty services at Noble Elegance Beauty Salon`}
+                  alt={`${section.title} showcase - Expert beauty services at Elite Booker Beauty Salon`}
                   className="w-full h-full object-cover"
                 />
               </div>

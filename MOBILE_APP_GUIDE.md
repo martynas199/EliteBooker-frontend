@@ -1,20 +1,23 @@
-# Noble Elegance Mobile App - Capacitor Integration Guide
+# Elite Booker Mobile App - Capacitor Integration Guide
 
 ## Overview
-This document provides complete instructions for building and deploying the Noble Elegance mobile applications for iOS and Android.
+
+This document provides complete instructions for building and deploying the Elite Booker mobile applications for iOS and Android.
 
 ## ✅ Completed Setup
 
 ### 1. Capacitor Installation & Configuration
+
 - ✅ Installed @capacitor/core and @capacitor/cli
 - ✅ Initialized Capacitor with:
-  - **App Name:** Noble Elegance
-  - **App ID:** uk.co.nobleelegance
+  - **App Name:** Elite Booker
+  - **App ID:** uk.co.elitebooker
   - **Web Directory:** dist/
 - ✅ Installed platform packages (@capacitor/android, @capacitor/ios)
 - ✅ Added Android and iOS platforms
 
 ### 2. Native Plugins Installed
+
 - ✅ @capacitor/app - App lifecycle and back button handling
 - ✅ @capacitor/device - Device information
 - ✅ @capacitor/haptics - Haptic feedback for native feel
@@ -23,6 +26,7 @@ This document provides complete instructions for building and deploying the Nobl
 - ✅ @capacitor/status-bar - Status bar customization
 
 ### 3. Mobile Optimizations
+
 - ✅ Enhanced viewport meta tag with `viewport-fit=cover` for notch support
 - ✅ Created Capacitor initialization module (src/capacitor/appInit.js)
 - ✅ Integrated mobile init into main.jsx
@@ -34,6 +38,7 @@ This document provides complete instructions for building and deploying the Nobl
   - Splash screen auto-hide
 
 ### 4. Configuration Files
+
 - ✅ capacitor.config.json with HTTPS scheme and splash screen settings
 - ✅ Mobile-optimized viewport settings in index.html
 
@@ -44,11 +49,13 @@ This document provides complete instructions for building and deploying the Nobl
 ### Prerequisites
 
 #### For Android:
+
 - **Android Studio** (download from https://developer.android.com/studio)
 - **Java Development Kit (JDK)** 17 or higher
 - **Android SDK** (included with Android Studio)
 
 #### For iOS (macOS only):
+
 - **Xcode** 15+ (download from App Store)
 - **CocoaPods** (install: `sudo gem install cocoapods`)
 - **Apple Developer Account** (for App Store deployment)
@@ -90,6 +97,7 @@ This opens the project in Android Studio.
 ### Android Studio Setup
 
 1. **First Time Setup:**
+
    - Let Android Studio download any required SDK components
    - Wait for Gradle sync to complete
    - Accept any license agreements
@@ -102,6 +110,7 @@ This opens the project in Android Studio.
 ### Build Android App
 
 1. **Debug Build (for testing):**
+
    - Click "Run" button (green play icon)
    - Select connected device or emulator
    - App will install and launch
@@ -116,6 +125,7 @@ This opens the project in Android Studio.
 ### Android Configuration Files
 
 **`android/app/build.gradle`** - Update version:
+
 ```gradle
 android {
     defaultConfig {
@@ -126,6 +136,7 @@ android {
 ```
 
 **`android/app/src/main/AndroidManifest.xml`** - Already configured with:
+
 - Internet permission
 - Camera permission (for future use)
 - Network state permission
@@ -145,24 +156,27 @@ This opens the project in Xcode.
 ### Xcode Setup
 
 1. **First Time Setup:**
+
    - Select the "App" target
    - General tab → Team: Select your Apple Developer account
    - Signing & Capabilities → Enable "Automatically manage signing"
 
 2. **Configure App:**
-   - Display Name: "Noble Elegance"
-   - Bundle Identifier: uk.co.nobleelegance
+   - Display Name: "Elite Booker"
+   - Bundle Identifier: uk.co.elitebooker
    - Version: 1.0.0
    - Build: 1
 
 ### Build iOS App
 
 1. **Simulator Build (for testing):**
+
    - Select target device (e.g., iPhone 15)
    - Click Play button
    - App builds and launches in simulator
 
 2. **Physical Device Testing:**
+
    - Connect iPhone/iPad via USB
    - Select device from dropdown
    - Trust computer on device if prompted
@@ -178,6 +192,7 @@ This opens the project in Xcode.
 ### iOS Configuration Files
 
 **`ios/App/App/Info.plist`** - Key configurations:
+
 - Camera usage description (for future profile images)
 - Photo library usage description
 - Location when in use description (if needed)
@@ -191,6 +206,7 @@ This opens the project in Xcode.
 Create these files in the `resources/` folder:
 
 1. **icon.png** - 1024x1024px
+
    - Square logo with transparent or colored background
    - Should look good when rounded (iOS) or with adaptive icon (Android)
    - Use your existing logo from `src/assets/logo.svg`
@@ -211,6 +227,7 @@ npx capacitor-assets generate
 ```
 
 This automatically creates:
+
 - iOS app icons (all sizes)
 - Android app icons (all densities, adaptive icons)
 - iOS launch screens
@@ -224,14 +241,14 @@ This automatically creates:
 
 ```json
 {
-  "appId": "uk.co.nobleelegance",
-  "appName": "Noble Elegance",
+  "appId": "uk.co.elitebooker",
+  "appName": "Elite Booker",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "server": {
     "androidScheme": "https",
     "iosScheme": "https",
-    "hostname": "app.nobleelegance.co.uk"
+    "hostname": "app.elitebooker.co.uk"
   },
   "plugins": {
     "SplashScreen": {
@@ -261,12 +278,14 @@ This automatically creates:
 ### Android - Google Play Store
 
 1. **Prepare:**
+
    - [ ] Update version in `build.gradle`
    - [ ] Test on multiple Android devices/versions
    - [ ] Generate signed AAB (Android App Bundle)
    - [ ] Create app listing in Google Play Console
 
 2. **Required Assets:**
+
    - [ ] App icon (512x512px)
    - [ ] Feature graphic (1024x500px)
    - [ ] Screenshots (phone + tablet, 2-8 images each)
@@ -282,12 +301,14 @@ This automatically creates:
 ### iOS - App Store
 
 1. **Prepare:**
+
    - [ ] Update version in Xcode
    - [ ] Test on multiple iOS devices/versions
    - [ ] Archive and upload to App Store Connect
    - [ ] Create app record in App Store Connect
 
 2. **Required Assets:**
+
    - [ ] App icon (1024x1024px)
    - [ ] Screenshots (all required device sizes)
    - [ ] App preview videos (optional but recommended)
@@ -307,12 +328,14 @@ This automatically creates:
 ### Android Permissions (AndroidManifest.xml)
 
 Already configured:
+
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
 
 To add (if needed):
+
 ```xml
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -322,6 +345,7 @@ To add (if needed):
 ### iOS Permissions (Info.plist)
 
 To add when needed:
+
 ```xml
 <key>NSCameraUsageDescription</key>
 <string>We need camera access to update your profile picture</string>
@@ -340,6 +364,7 @@ To add when needed:
 Before submitting to stores, test:
 
 ### Functionality
+
 - [ ] Login/Logout works
 - [ ] Booking flow completes successfully
 - [ ] Payment integration works
@@ -349,6 +374,7 @@ Before submitting to stores, test:
 - [ ] Deep links work (appointment confirmations, etc.)
 
 ### UI/UX
+
 - [ ] No horizontal scrolling
 - [ ] All buttons/links are tappable (min 44x44pt on iOS, 48x48dp on Android)
 - [ ] Forms are properly keyboard-aware
@@ -358,6 +384,7 @@ Before submitting to stores, test:
 - [ ] App icon looks good on home screen
 
 ### Performance
+
 - [ ] App launches quickly (< 3 seconds)
 - [ ] Images load efficiently
 - [ ] No memory leaks
@@ -365,6 +392,7 @@ Before submitting to stores, test:
 - [ ] Back button works correctly (Android)
 
 ### Platforms
+
 - [ ] Test on iOS 15+ devices
 - [ ] Test on Android 10+ devices
 - [ ] Test on tablets
@@ -401,10 +429,13 @@ npx cap open ios      # Test iOS
 ## 🆘 Common Issues & Solutions
 
 ### Issue: "Unable to find xcodebuild"
+
 **Solution:** Install Xcode from Mac App Store
 
 ### Issue: "CocoaPods not installed"
-**Solution:** 
+
+**Solution:**
+
 ```bash
 sudo gem install cocoapods
 cd ios/App
@@ -412,19 +443,25 @@ pod install
 ```
 
 ### Issue: Android Gradle sync fails
+
 **Solution:**
+
 - Update Android Studio to latest version
 - File → Invalidate Caches → Invalidate and Restart
 - Check JDK version is 17+
 
 ### Issue: White screen on app launch
+
 **Solution:**
+
 - Check browser console for errors: `npx cap serve`
 - Ensure `npm run build` completed successfully
 - Run `npx cap sync` again
 
 ### Issue: App Transport Security error (iOS)
+
 **Solution:** Add to Info.plist:
+
 ```xml
 <key>NSAppTransportSecurity</key>
 <dict>
@@ -432,7 +469,7 @@ pod install
     <false/>
     <key>NSExceptionDomains</key>
     <dict>
-        <key>nobleelegance.co.uk</key>
+        <key>elitebooker.co.uk</key>
         <dict>
             <key>NSIncludesSubdomains</key>
             <true/>
@@ -457,31 +494,35 @@ Edit `android/app/src/main/AndroidManifest.xml`:
     <category android:name="android.intent.category.DEFAULT" />
     <category android:name="android.intent.category.BROWSABLE" />
     <data
-        android:scheme="https"
-        android:host="www.nobleelegance.co.uk"
-        android:pathPrefix="/appointment" />
+    android:scheme="https"
+    android:host="www.elitebooker.co.uk"
+    android:pathPrefix="/appointment"
+  />
     <data
-        android:scheme="https"
-        android:host="www.nobleelegance.co.uk"
-        android:pathPrefix="/products" />
+    android:scheme="https"
+    android:host="www.elitebooker.co.uk"
+    android:pathPrefix="/products"
+  />
 </intent-filter>
 ```
 
 ### iOS Universal Links
 
 1. Create `apple-app-site-association` file on your server at:
+
    ```
-   https://www.nobleelegance.co.uk/.well-known/apple-app-site-association
+   https://www.elitebooker.co.uk/.well-known/apple-app-site-association
    ```
 
 2. Content:
+
 ```json
 {
   "applinks": {
     "apps": [],
     "details": [
       {
-        "appID": "TEAMID.uk.co.nobleelegance",
+        "appID": "TEAMID.uk.co.elitebooker",
         "paths": ["/appointment/*", "/products/*", "/confirmation/*"]
       }
     ]
@@ -491,7 +532,7 @@ Edit `android/app/src/main/AndroidManifest.xml`:
 
 3. Enable Associated Domains in Xcode:
    - Signing & Capabilities → + Capability → Associated Domains
-   - Add: `applinks:www.nobleelegance.co.uk`
+   - Add: `applinks:www.elitebooker.co.uk`
 
 ---
 
@@ -508,16 +549,19 @@ Edit `android/app/src/main/AndroidManifest.xml`:
 ## 🎯 Next Steps
 
 1. **Create App Icons:**
+
    - Design 1024x1024px icon
    - Design 2732x2732px splash screen
    - Run `npx capacitor-assets generate`
 
 2. **Test Thoroughly:**
+
    - Run on physical devices
    - Test all user flows
    - Check performance
 
 3. **Set Up Store Accounts:**
+
    - Google Play Console ($25 one-time)
    - Apple Developer Program ($99/year)
 

@@ -1,8 +1,8 @@
-# Typography System - Noble Elegance Beauty Salon
+# Typography System - Elite Booker Beauty Salon
 
 ## 🎨 Overview
 
-This document outlines the complete typography system for the Noble Elegance beauty salon booking application. The system uses a luxury pairing of **Playfair Display** (serif) for headings and **Poppins** (sans-serif) for body text, creating an elegant and readable experience across all devices.
+This document outlines the complete typography system for the Elite Booker beauty salon booking application. The system uses a luxury pairing of **Playfair Display** (serif) for headings and **Poppins** (sans-serif) for body text, creating an elegant and readable experience across all devices.
 
 ---
 

@@ -387,8 +387,8 @@ export default function ProductsPage() {
     <div className="min-h-screen">
       {/* SEO Meta Tags */}
       <SEOHead
-        title="Beauty Products Wisbech | Premium Skincare & Cosmetics - Noble Elegance"
-        description="Shop premium beauty products at Noble Elegance Wisbech. Professional skincare, makeup, hair care & beauty tools. Free delivery over £50. Browse now!"
+        title="Beauty Products Wisbech | Premium Skincare & Cosmetics - Elite Booker"
+        description="Shop premium beauty products at Elite Booker Wisbech. Professional skincare, makeup, hair care & beauty tools. Free delivery over £50. Browse now!"
         keywords="beauty products Wisbech, buy cosmetics online, professional beauty products, skincare products Cambridgeshire, makeup shop Wisbech, beauty store March, hair care products, beauty supplies Wisbech"
         schema={breadcrumbSchema}
       />

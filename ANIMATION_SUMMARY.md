@@ -189,7 +189,7 @@
 
 ### Brand Consistency
 
-- ✅ **"Noble Elegance" aesthetic**: Subtle, refined animations match luxury brand tone
+- ✅ **"Elite Booker" aesthetic**: Subtle, refined animations match luxury brand tone
 - ✅ **Warm color palette**: brand-500/600/700 (gold) used consistently
 - ✅ **Intentional motion**: 700ms image zooms, 250ms transitions feel premium
 - ✅ **No jarring effects**: Everything eases smoothly with `ease-out`

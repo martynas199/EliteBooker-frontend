@@ -264,7 +264,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }) {
                       const productUrl = `${window.location.origin}/products/${product._id}`;
                       const shareData = {
                         title: product.title,
-                        text: `Check out ${product.title} at Noble Elegance`,
+                        text: `Check out ${product.title} at Elite Booker`,
                         url: productUrl,
                       };
 

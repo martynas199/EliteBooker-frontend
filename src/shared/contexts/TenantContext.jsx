@@ -43,8 +43,6 @@ function resolveTenantFromURL() {
     "elitebooker.co.uk",
     "www.elitebooker.co.uk",
     "vercel.app", // All Vercel preview/production deployments
-    "nobleelegance.co.uk",
-    "permanentbyjuste.co.uk",
   ];
 
   if (!platformDomains.some((d) => hostname.includes(d))) {

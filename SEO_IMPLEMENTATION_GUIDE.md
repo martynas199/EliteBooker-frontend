@@ -1,10 +1,10 @@
 # SEO Optimization Complete Guide
 
-**Noble Elegance Beauty Salon - Huntingdon, Cambridgeshire**
+**Elite Booker Beauty Salon - Huntingdon, Cambridgeshire**
 
 ## 📊 SEO Implementation Summary
 
-This document outlines all SEO optimizations implemented for the Noble Elegance beauty booking website.
+This document outlines all SEO optimizations implemented for the Elite Booker beauty booking website.
 
 ---
 
@@ -52,7 +52,7 @@ Every page now includes:
 
 **Pages Updated:**
 
-1. **Homepage (`/`)** - "Noble Elegance Beauty Salon | Huntingdon, Cambridgeshire"
+1. **Homepage (`/`)** - "Elite Booker Beauty Salon | Huntingdon, Cambridgeshire"
 2. **Booking Page (`/specialists`)** - "Book Appointment - Select Your Specialist"
 3. **Products Catalog (`/products`)** - "Beauty Products Catalog - Premium Beauty & Skincare"
 4. **About Us (`/about`)** - "About Us - Our Story & Mission"
@@ -179,11 +179,11 @@ All pages include:
    - Verify business ownership
 2. **Add Business Information:**
 
-   - Business name: Noble Elegance Beauty Salon
+   - Business name: Elite Booker Beauty Salon
    - Category: Beauty Salon, Permanent Makeup Service
    - Address: [ADD REAL ADDRESS]
    - Phone: [ADD REAL PHONE]
-   - Website: https://www.nobleelegance.co.uk
+   - Website: https://www.elitebooker.co.uk
    - Service areas: Huntingdon, Peterborough, March, Wisbech, St Ives, Ramsey
 
 3. **Add Services:**
@@ -212,7 +212,7 @@ All pages include:
 
 6. **Add Booking Link:**
 
-   - https://www.nobleelegance.co.uk/specialists
+   - https://www.elitebooker.co.uk/specialists
 
 7. **Collect & Respond to Reviews:**
    - Ask satisfied clients to leave Google reviews
@@ -227,7 +227,7 @@ All pages include:
 
 **Homepage:**
 
-- H1: "Welcome to Noble Elegance Beauty Salon in Huntingdon"
+- H1: "Welcome to Elite Booker Beauty Salon in Huntingdon"
 - Focus: Local keywords, service highlights, CTA to book
 - Internal links to: Services, Products, Booking, About
 
@@ -245,19 +245,19 @@ All pages include:
 
 **About Us:**
 
-- H1: "About Noble Elegance - Our Story & Mission"
+- H1: "About Elite Booker - Our Story & Mission"
 - Focus: Brand story, team, expertise, local connection
 - Trust-building content
 
 **Contact:**
 
-- H1: "Contact Noble Elegance Beauty Salon in Huntingdon"
+- H1: "Contact Elite Booker Beauty Salon in Huntingdon"
 - Focus: Location, hours, directions, contact methods
 - Embedded Google Maps
 
 **FAQ:**
 
-- H1: "Frequently Asked Questions - Noble Elegance Huntingdon"
+- H1: "Frequently Asked Questions - Elite Booker Huntingdon"
 - Focus: Common questions with detailed answers
 - Schema markup for rich snippets
 
@@ -317,13 +317,13 @@ ALL images now include:
 1. **Add Property:**
 
    - Go to: https://search.google.com/search-console
-   - Add property: `https://www.nobleelegance.co.uk`
+   - Add property: `https://www.elitebooker.co.uk`
    - Verify ownership using HTML meta tag (already added to index.html)
 
 2. **Submit Sitemap:**
 
    - In Search Console, go to Sitemaps
-   - Submit: `https://www.nobleelegance.co.uk/sitemap.xml`
+   - Submit: `https://www.elitebooker.co.uk/sitemap.xml`
 
 3. **Monitor:**
    - Index coverage

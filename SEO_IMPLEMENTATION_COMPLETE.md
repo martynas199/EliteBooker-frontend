@@ -1,4 +1,4 @@
-# SEO Implementation Guide - Noble Elegance Beauty Salon
+# SEO Implementation Guide - Elite Booker Beauty Salon
 
 ## ✅ Completed SEO Features
 
@@ -114,7 +114,7 @@ Enhanced alt attributes on:
 **SEO Keywords in Alt Tags:**
 
 - Location: "Wisbech", "Cambridgeshire", "Huntingdon"
-- Business: "Noble Elegance Beauty Salon"
+- Business: "Elite Booker Beauty Salon"
 - Services: "beauty treatments", "permanent makeup", etc.
 - Product types: "premium beauty product", brand names
 
@@ -183,7 +183,7 @@ Create branded Open Graph images for main pages:
 ### 2. Google Search Console Setup
 
 1. Verify site ownership (meta tag already in index.html)
-2. Submit sitemap: `https://nobleelegance.co.uk/sitemap.xml`
+2. Submit sitemap: `https://elitebooker.co.uk/sitemap.xml`
 3. Monitor crawl errors and indexing status
 4. Check mobile usability
 

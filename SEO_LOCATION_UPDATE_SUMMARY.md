@@ -8,7 +8,7 @@ All location references have been updated from Huntingdon to **Wisbech** with ac
 
 ### Location Details
 
-- **Business Name:** Noble Elegance Beauty Salon
+- **Business Name:** Elite Booker Beauty Salon
 - **Address:** 12 Blackfriars Rd, PE13 1AT, Wisbech, Cambridgeshire, UK
 - **Phone:** +44 7928 775746
 - **Hours:** Monday-Sunday, 9:00 AM - 5:00 PM (Open 7 days)

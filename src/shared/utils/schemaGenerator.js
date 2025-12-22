@@ -3,7 +3,7 @@
  * Creates JSON-LD structured data for different types of content
  */
 
-const baseUrl = "https://www.nobleelegance.co.uk";
+const baseUrl = "https://www.elitebooker.co.uk";
 const businessName = "Elite Booker";
 
 /**
@@ -57,8 +57,8 @@ export function generateLocalBusinessSchema() {
     ],
     sameAs: [
       // TODO: Add social media profiles
-      // "https://www.facebook.com/nobleelegance",
-      // "https://www.instagram.com/nobleelegance",
+      // "https://www.facebook.com/elitebooker",
+      // "https://www.instagram.com/elitebooker",
     ],
     paymentAccepted: "Cash, Credit Card, Debit Card",
     areaServed: [

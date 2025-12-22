@@ -10,7 +10,7 @@ export default function ProductCard({ product, onClick }) {
     const productUrl = `${window.location.origin}/products/${product._id}`;
     const shareData = {
       title: product.title,
-      text: `Check out ${product.title} at Noble Elegance`,
+      text: `Check out ${product.title} at Elite Booker`,
       url: productUrl,
     };
 
@@ -94,7 +94,7 @@ export default function ProductCard({ product, onClick }) {
             src={product.image.url}
             alt={`${product.title} - ${
               product.brand || "Premium beauty product"
-            } available at Noble Elegance Beauty Salon Wisbech`}
+            } available at Elite Booker Beauty Salon Wisbech`}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
         ) : (

@@ -7,7 +7,7 @@
 - **Location**: `src/utils/schemaGenerator.js`
 - **Schema Type**: `["BeautySalon", "MedicalClinic", "LocalBusiness"]`
 - **Includes**:
-  - Business name: Noble Elegance Beauty Salon
+  - Business name: Elite Booker Beauty Salon
   - Full address: 12 Blackfriars Rd, Wisbech, PE13 1AT, Cambridgeshire, UK
   - Phone: +44 7928 775746
   - Geo coordinates: 52.6667, 0.1601
@@ -31,7 +31,7 @@
 #### Standardized Format:
 
 ```
-Name: Noble Elegance Beauty Salon
+Name: Elite Booker Beauty Salon
 Address: 12 Blackfriars Rd, Wisbech, PE13 1AT, Cambridgeshire, United Kingdom
 Phone: +44 7928 775746
 ```
@@ -72,10 +72,10 @@ Phone: +44 7928 775746
 Ensure your Google Business Profile has:
 
 ```
-Business Name: Noble Elegance Beauty Salon
+Business Name: Elite Booker Beauty Salon
 Address: 12 Blackfriars Rd, Wisbech PE13 1AT, United Kingdom
 Phone: +44 7928 775746
-Website: https://www.nobleelegance.co.uk
+Website: https://www.elitebooker.co.uk
 Hours: Monday-Sunday 9:00 AM - 5:00 PM
 ```
 
@@ -87,7 +87,7 @@ Hours: Monday-Sunday 9:00 AM - 5:00 PM
 - [ ] List all services with descriptions and prices
 - [ ] Add attributes (Women-owned, Online bookings, etc.)
 - [ ] Enable messaging
-- [ ] Set up booking button linking to: https://www.nobleelegance.co.uk/specialists
+- [ ] Set up booking button linking to: https://www.elitebooker.co.uk/specialists
 
 ### 3. Categories to Add
 
@@ -104,7 +104,7 @@ Hours: Monday-Sunday 9:00 AM - 5:00 PM
 ### 4. Business Description Template
 
 ```
-Noble Elegance is Wisbech's premier aesthetic clinic and beauty salon, specializing in professional cosmetic treatments and beauty services. We offer lip fillers, anti-wrinkle injections, dermal fillers, skin boosters, permanent makeup (brows & lips), laser tattoo removal, laser teeth whitening, facial treatments, brow lamination, hair extensions, cutting, coloring, styling, and full body waxing. Located at 12 Blackfriars Rd, PE13 1AT. Serving Wisbech, March, King's Lynn, Peterborough, and Cambridgeshire. Call +44 7928 775746 or book online 24/7.
+Elite Booker is Wisbech's premier aesthetic clinic and beauty salon, specializing in professional cosmetic treatments and beauty services. We offer lip fillers, anti-wrinkle injections, dermal fillers, skin boosters, permanent makeup (brows & lips), laser tattoo removal, laser teeth whitening, facial treatments, brow lamination, hair extensions, cutting, coloring, styling, and full body waxing. Located at 12 Blackfriars Rd, PE13 1AT. Serving Wisbech, March, King's Lynn, Peterborough, and Cambridgeshire. Call +44 7928 775746 or book online 24/7.
 ```
 
 ### 5. Services to List
@@ -169,9 +169,9 @@ Noble Elegance is Wisbech's premier aesthetic clinic and beauty salon, specializ
 
 1. Visit: https://search.google.com/test/rich-results
 2. Enter your URLs:
-   - Homepage: https://www.nobleelegance.co.uk
-   - Contact: https://www.nobleelegance.co.uk/salon
-   - Services: https://www.nobleelegance.co.uk/specialists
+   - Homepage: https://www.elitebooker.co.uk
+   - Contact: https://www.elitebooker.co.uk/salon
+   - Services: https://www.elitebooker.co.uk/specialists
 3. Verify LocalBusiness schema appears correctly
 
 ### Check NAP Consistency:

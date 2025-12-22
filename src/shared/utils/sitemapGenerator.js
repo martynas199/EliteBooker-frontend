@@ -3,7 +3,7 @@
  * Generates dynamic sitemap.xml with all pages, services, and products
  */
 
-const baseUrl = "https://www.nobleelegance.co.uk";
+const baseUrl = "https://www.elitebooker.co.uk";
 
 /**
  * Generate sitemap.xml content

@@ -1,12 +1,12 @@
 {
-  "appId": "uk.co.nobleelegance",
+  "appId": "uk.co.elitebooker",
   "appName": "Elite Booker",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "server": {
     "androidScheme": "https",
     "iosScheme": "https",
-    "hostname": "app.nobleelegance.co.uk"
+    "hostname": "app.elitebooker.co.uk"
   },
   "plugins": {
     "SplashScreen": {
