@@ -251,7 +251,13 @@ export default function CheckoutPage() {
   }
 
   // Pricing helpers
-  const bookingFee = 0.5;
+  // Check if specialist has active no-fee subscription
+  const hasNoFeeSubscription =
+    bookingBeautician?.subscription?.noFeeBookings?.enabled === true &&
+    bookingBeautician?.subscription?.noFeeBookings?.status === "active";
+
+  const bookingFee = hasNoFeeSubscription ? 0 : 0.99;
+
   // Calculate total price from all selected services
   const servicePrice =
     bookingServices && bookingServices.length > 0
@@ -519,12 +525,17 @@ export default function CheckoutPage() {
                         <div className="font-medium">{totalDuration} min</div>
                       </div>
                     )}
-                    <div className="flex items-center justify-between mb-4 pt-3 border-t border-gray-200">
-                      <div className="text-sm text-gray-600">Booking Fee</div>
-                      <div className="text-sm font-semibold text-gray-900">
-                        {formatPrice(bookingFee)}
+
+                    {/* Booking Fee - only show if greater than 0 */}
+                    {bookingFee > 0 && (
+                      <div className="flex items-center justify-between mb-4 pt-3 border-t border-gray-200">
+                        <div className="text-sm text-gray-600">Booking Fee</div>
+                        <div className="text-sm font-semibold text-gray-900">
+                          {formatPrice(bookingFee)}
+                        </div>
                       </div>
-                    </div>
+                    )}
+
                     <div className="flex items-center justify-between mb-4 pt-3 border-t border-gray-300">
                       <div className="font-bold text-lg text-gray-900">
                         Total

@@ -101,6 +101,7 @@ const ShippingRates = lazy(() => import("../admin/pages/ShippingRates"));
 const BlogPosts = lazy(() => import("../admin/pages/BlogPosts"));
 const BrandingSettings = lazy(() => import("../admin/pages/BrandingSettings"));
 const Tenants = lazy(() => import("../admin/pages/Tenants"));
+const TenantDetails = lazy(() => import("../admin/pages/TenantDetails"));
 const PlatformFeatures = lazy(() => import("../admin/pages/PlatformFeatures"));
 const Clients = lazy(() => import("../admin/pages/ClientsPage"));
 const ClientDetails = lazy(() => import("../admin/pages/ClientDetailsPage"));
@@ -452,6 +453,14 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
                 <Tenants />
+              </Suspense>
+            }
+          />
+          <Route
+            path="tenants/:id"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <TenantDetails />
               </Suspense>
             }
           />

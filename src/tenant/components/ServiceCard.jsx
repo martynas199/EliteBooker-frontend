@@ -35,6 +35,16 @@ function ServiceCard({ service, onClick, isSelected = false }) {
   const maxPromoPrice =
     promoPrices.length > 0 ? Math.max(...promoPrices) : service.promoPrice;
 
+  // Check if payments are unavailable for this specialist
+  const specialist = service.primaryBeauticianId || service.specialist;
+  const hasNoFeeSubscription =
+    specialist?.subscription?.noFeeBookings?.enabled === true &&
+    specialist?.subscription?.noFeeBookings?.status === "active";
+  const isPaymentUnavailable =
+    specialist &&
+    specialist.stripeStatus !== "connected" &&
+    !hasNoFeeSubscription;
+
   return (
     <>
       <Card
@@ -84,10 +94,51 @@ function ServiceCard({ service, onClick, isSelected = false }) {
               )}
               {(service.primaryBeauticianId?.name ||
                 service.specialist?.name) && (
-                <div className="text-[10px] sm:text-xs text-gray-500">
-                  with{" "}
-                  {service.primaryBeauticianId?.name ||
-                    service.specialist?.name}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <div className="text-[10px] sm:text-xs text-gray-500">
+                    with{" "}
+                    {service.primaryBeauticianId?.name ||
+                      service.specialist?.name}
+                  </div>
+                  {/* Payment availability badge */}
+                  {(() => {
+                    const specialist =
+                      service.primaryBeauticianId || service.specialist;
+                    if (!specialist) return null;
+
+                    // Check if specialist has active no-fee subscription
+                    const hasNoFeeSubscription =
+                      specialist?.subscription?.noFeeBookings?.enabled ===
+                        true &&
+                      specialist?.subscription?.noFeeBookings?.status ===
+                        "active";
+
+                    // Only show badge if no Stripe AND no no-fee subscription
+                    const showBadge =
+                      specialist.stripeStatus !== "connected" &&
+                      !hasNoFeeSubscription;
+
+                    if (!showBadge) return null;
+
+                    return (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-800 text-[9px] sm:text-[10px] font-semibold rounded-full border border-amber-200">
+                        <svg
+                          className="w-2.5 h-2.5 sm:w-3 sm:h-3"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                          />
+                        </svg>
+                        Contact for payment
+                      </span>
+                    );
+                  })()}
                 </div>
               )}
             </div>
@@ -197,6 +248,10 @@ function ServiceCard({ service, onClick, isSelected = false }) {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  if (isPaymentUnavailable) {
+                    // Don't allow selection if payment is unavailable
+                    return;
+                  }
                   if (service.variants && service.variants.length > 1) {
                     setShowVariantsModal(true);
                   } else {
@@ -208,10 +263,13 @@ function ServiceCard({ service, onClick, isSelected = false }) {
                     onClick?.(variant);
                   }
                 }}
-                className={`px-4 sm:px-6 py-2.5 sm:py-3.5 text-xs sm:text-sm font-bold rounded-xl shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                  isSelected
-                    ? "bg-green-600 hover:bg-green-700 text-white"
-                    : "bg-black hover:bg-gray-900 text-white"
+                disabled={isPaymentUnavailable}
+                className={`px-4 sm:px-6 py-2.5 sm:py-3.5 text-xs sm:text-sm font-bold rounded-xl shadow-md transform transition-all duration-200 flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                  isPaymentUnavailable
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-60"
+                    : isSelected
+                    ? "bg-green-600 hover:bg-green-700 text-white hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
+                    : "bg-black hover:bg-gray-900 text-white hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
                 }`}
               >
                 {isSelected && (
@@ -230,7 +288,9 @@ function ServiceCard({ service, onClick, isSelected = false }) {
                   </svg>
                 )}
                 <span>
-                  {isSelected
+                  {isPaymentUnavailable
+                    ? "Unavailable"
+                    : isSelected
                     ? "Added"
                     : service.variants && service.variants.length > 1
                     ? "Choose"

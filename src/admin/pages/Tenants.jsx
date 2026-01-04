@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../../shared/contexts/AuthContext";
+import { useSelector } from "react-redux";
+import { selectAdmin } from "../../shared/state/authSlice";
+import { useNavigate } from "react-router-dom";
 import api from "../../shared/lib/api";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 
 export default function Tenants() {
-  const { user } = useAuth();
+  const admin = useSelector(selectAdmin);
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [tenants, setTenants] = useState([]);
   const [error, setError] = useState("");
@@ -12,22 +15,23 @@ export default function Tenants() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
 
-  // Check if user is super admin
-  const isSuperAdmin =
-    user?.role === "super-admin" || user?.role === "super_admin";
+  // Check if user is super admin or support
+  const isSuperAdmin = admin?.role === "super_admin";
+  const isSupport = admin?.role === "support";
+  const hasAccess = isSuperAdmin || isSupport;
 
   useEffect(() => {
-    if (isSuperAdmin) {
+    if (hasAccess) {
       fetchTenants();
     }
-  }, [isSuperAdmin]);
+  }, [hasAccess]);
 
   const fetchTenants = async () => {
     try {
       setLoading(true);
       setError("");
       const response = await api.get("/api/tenants");
-      setTenants(response.data || []);
+      setTenants(response.data?.tenants || []);
     } catch (err) {
       console.error("Failed to load tenants:", err);
       setError(err.response?.data?.error || "Failed to load tenants");
@@ -70,6 +74,38 @@ export default function Tenants() {
     }
   };
 
+  const handleDelete = async (tenantId, tenantName) => {
+    const confirmMessage = `⚠️ WARNING: This action cannot be undone!\n\nThis will permanently delete:\n- The tenant account\n- All staff members\n- All services\n- All appointments\n- All orders\n- All products\n- All settings\n- All admin accounts\n\nType the tenant name "${tenantName}" to confirm deletion:`;
+
+    const userInput = prompt(confirmMessage);
+
+    if (userInput !== tenantName) {
+      if (userInput !== null) {
+        setError("Deletion cancelled: Tenant name did not match");
+        setTimeout(() => setError(""), 3000);
+      }
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await api.delete(`/api/tenants/${tenantId}`);
+      setSuccess(
+        `Tenant deleted successfully. ${JSON.stringify(
+          response.data.deletedData
+        )}`
+      );
+      fetchTenants();
+      setTimeout(() => setSuccess(""), 5000);
+    } catch (err) {
+      console.error("Failed to delete tenant:", err);
+      setError(err.response?.data?.error || "Failed to delete tenant");
+      setTimeout(() => setError(""), 5000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleImpersonate = (tenant) => {
     // Store current super admin token
     const currentToken = localStorage.getItem("token");
@@ -95,12 +131,9 @@ export default function Tenants() {
   // Filter tenants based on search and status
   const filteredTenants = tenants.filter((tenant) => {
     const matchesSearch =
-      tenant.businessInfo?.name
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      tenant.businessInfo?.email
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
+      tenant.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tenant.businessName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tenant.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       tenant.slug?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus =
@@ -109,8 +142,8 @@ export default function Tenants() {
     return matchesSearch && matchesStatus;
   });
 
-  // Access denied for non-super admins
-  if (!isSuperAdmin) {
+  // Access denied for non-super admins and non-support users
+  if (!hasAccess) {
     return (
       <div className="max-w-4xl mx-auto">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
@@ -133,7 +166,8 @@ export default function Tenants() {
             Access Denied
           </h2>
           <p className="text-gray-600">
-            This page is only accessible to super administrators.
+            This page is only accessible to super administrators and support
+            team members.
           </p>
         </div>
       </div>
@@ -298,10 +332,12 @@ export default function Tenants() {
                       <div className="flex items-center">
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            {tenant.businessInfo?.name || "Unnamed Tenant"}
+                            {tenant.businessName ||
+                              tenant.name ||
+                              "Unnamed Tenant"}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {tenant.businessInfo?.email || "No email"}
+                            {tenant.email || "No email"}
                           </div>
                         </div>
                       </div>
@@ -332,11 +368,13 @@ export default function Tenants() {
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end gap-2">
                         <button
-                          onClick={() => handleImpersonate(tenant)}
+                          onClick={() =>
+                            navigate(`/admin/tenants/${tenant._id}`)
+                          }
                           className="text-brand-600 hover:text-brand-900"
-                          title="View as this tenant"
+                          title="View tenant details"
                         >
-                          View
+                          View Details
                         </button>
                         {tenant.status === "active" ? (
                           <button
@@ -353,6 +391,18 @@ export default function Tenants() {
                             Activate
                           </button>
                         ) : null}
+                        <button
+                          onClick={() =>
+                            handleDelete(
+                              tenant._id,
+                              tenant.businessName || tenant.name || tenant.slug
+                            )
+                          }
+                          className="text-red-600 hover:text-red-900 font-semibold"
+                          title="Permanently delete tenant and all data"
+                        >
+                          Delete
+                        </button>
                       </div>
                     </td>
                   </tr>

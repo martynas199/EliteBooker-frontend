@@ -206,16 +206,50 @@ export default function ServicesList({
 
       {/* Services Table / Cards */}
       {filteredServices.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-12 text-center">
-          <p className="text-gray-500 text-lg mb-4">
+        <div className="bg-white rounded-2xl shadow-2xl border-0 ring-1 ring-gray-900/5 p-16 text-center">
+          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center shadow-lg">
+            <svg
+              className="w-12 h-12 text-blue-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-3">
+            {services.length === 0 ? "No Services Yet" : "No Services Found"}
+          </h3>
+          <p className="text-gray-600 text-lg mb-8 max-w-md mx-auto">
             {services.length === 0
-              ? t("noServicesFound", language)
-              : t("noServicesFound", language)}
+              ? "Start by creating your first service to offer to your clients"
+              : "Try adjusting your filters to find what you're looking for"}
           </p>
           {services.length === 0 && (
-            <Button onClick={onCreate} variant="brand">
+            <button
+              onClick={onCreate}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold px-8 py-4 rounded-xl shadow-xl hover:shadow-2xl transition-all text-base"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
               {t("addService", language)}
-            </Button>
+            </button>
           )}
         </div>
       ) : (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -97,9 +97,11 @@ export default function FeaturesPage() {
 
   // Subscription state
   const [subscriptionLoading, setSubscriptionLoading] = useState(true);
-  const [processing, setProcessing] = useState(false);
+  const [processingNoFee, setProcessingNoFee] = useState(false);
+  const [processingSms, setProcessingSms] = useState(false);
   const [featureStatus, setFeatureStatus] = useState(null);
   const specialistId = admin?.specialistId;
+  const hasProcessedParams = useRef(false);
 
   // Load settings from API on mount
   useEffect(() => {
@@ -110,15 +112,36 @@ export default function FeaturesPage() {
   useEffect(() => {
     const success = searchParams.get("success");
     const canceled = searchParams.get("canceled");
+    const type = searchParams.get("type");
 
-    if (success === "true") {
-      toast.success(
-        "Subscription activated! The booking fee has been removed for all your clients."
-      );
-      navigate("/admin/platform-features", { replace: true });
-    } else if (canceled === "true") {
-      toast.error("Subscription canceled. You can try again anytime.");
-      navigate("/admin/platform-features", { replace: true });
+    if (
+      (success === "true" || canceled === "true") &&
+      !hasProcessedParams.current
+    ) {
+      hasProcessedParams.current = true;
+
+      if (success === "true") {
+        // Navigate first to clear params
+        navigate("/admin/platform-features", { replace: true });
+
+        // Reload settings and show toast
+        loadSettings();
+        fetchFeatureStatus();
+
+        // Show appropriate message based on subscription type
+        if (type === "sms") {
+          toast.success(
+            "SMS Confirmations activated! Your clients will now receive SMS notifications."
+          );
+        } else {
+          toast.success(
+            "Subscription activated! The booking fee has been removed for all your clients."
+          );
+        }
+      } else if (canceled === "true") {
+        navigate("/admin/platform-features", { replace: true });
+        toast.error("Subscription canceled. You can try again anytime.");
+      }
     }
   }, [searchParams, navigate]);
 
@@ -156,7 +179,7 @@ export default function FeaturesPage() {
       return;
     }
     try {
-      setProcessing(true);
+      setProcessingNoFee(true);
       console.log(
         "Making API call to:",
         `/features/${specialistId}/subscribe-no-fee`
@@ -171,7 +194,7 @@ export default function FeaturesPage() {
       toast.error(
         error.response?.data?.error || "Failed to start subscription"
       );
-      setProcessing(false);
+      setProcessingNoFee(false);
     }
   };
 
@@ -186,19 +209,34 @@ export default function FeaturesPage() {
     }
 
     try {
-      setProcessing(true);
+      setProcessingNoFee(true);
       await api.post(`/features/${specialistId}/cancel-no-fee`);
+
+      // Optimistically update the state
+      setFeatureStatus((prev) => ({
+        ...prev,
+        noFeeBookings: {
+          ...prev?.noFeeBookings,
+          status: "canceled",
+          enabled: false,
+        },
+      }));
+
       toast.success(
         "Subscription cancelled. It will remain active until the end of your billing period."
       );
-      fetchFeatureStatus();
+
+      // Small delay to let backend update, then fetch fresh data
+      setTimeout(async () => {
+        await Promise.all([fetchFeatureStatus(), loadSettings()]);
+        setProcessingNoFee(false);
+      }, 500);
     } catch (error) {
       console.error("Error cancelling subscription:", error);
       toast.error(
         error.response?.data?.error || "Failed to cancel subscription"
       );
-    } finally {
-      setProcessing(false);
+      setProcessingNoFee(false);
     }
   };
 
@@ -210,7 +248,7 @@ export default function FeaturesPage() {
       return;
     }
     try {
-      setProcessing(true);
+      setProcessingSms(true);
       const res = await api.post(`/features/${specialistId}/subscribe-sms`);
       if (res.data.checkoutUrl) {
         window.location.href = res.data.checkoutUrl;
@@ -220,7 +258,7 @@ export default function FeaturesPage() {
       toast.error(
         error.response?.data?.error || "Failed to start SMS subscription"
       );
-      setProcessing(false);
+      setProcessingSms(false);
     }
   };
 
@@ -235,19 +273,34 @@ export default function FeaturesPage() {
     }
 
     try {
-      setProcessing(true);
+      setProcessingSms(true);
       await api.post(`/features/${specialistId}/cancel-sms`);
+
+      // Optimistically update the state
+      setFeatureStatus((prev) => ({
+        ...prev,
+        smsConfirmations: {
+          ...prev?.smsConfirmations,
+          status: "canceled",
+          enabled: false,
+        },
+      }));
+
       toast.success(
         "SMS subscription cancelled. It will remain active until the end of your billing period."
       );
-      fetchFeatureStatus();
+
+      // Small delay to let backend update, then fetch fresh data
+      setTimeout(async () => {
+        await Promise.all([fetchFeatureStatus(), loadSettings()]);
+        setProcessingSms(false);
+      }, 500);
     } catch (error) {
       console.error("Error cancelling SMS subscription:", error);
       toast.error(
         error.response?.data?.error || "Failed to cancel SMS subscription"
       );
-    } finally {
-      setProcessing(false);
+      setProcessingSms(false);
     }
   };
 
@@ -416,30 +469,30 @@ export default function FeaturesPage() {
                   {!isActive && !isCanceled && (
                     <button
                       onClick={handleSubscribe}
-                      disabled={processing}
+                      disabled={processingNoFee}
                       className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:from-brand-600 hover:to-brand-700 shadow-lg shadow-brand-500/30 hover:shadow-xl hover:shadow-brand-600/40 transition-all disabled:opacity-50"
                     >
-                      {processing ? "Processing..." : "Subscribe Now"}
+                      {processingNoFee ? "Processing..." : "Subscribe Now"}
                     </button>
                   )}
 
                   {isActive && (
                     <button
                       onClick={handleCancelSubscription}
-                      disabled={processing}
+                      disabled={processingNoFee}
                       className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gray-100 text-gray-700 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:bg-gray-200 border border-gray-300 transition-all disabled:opacity-50"
                     >
-                      {processing ? "Processing..." : "Cancel"}
+                      {processingNoFee ? "Processing..." : "Cancel"}
                     </button>
                   )}
 
                   {isFullyCanceled && (
                     <button
                       onClick={handleSubscribe}
-                      disabled={processing}
+                      disabled={processingNoFee}
                       className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:from-brand-600 hover:to-brand-700 shadow-lg shadow-brand-500/30 hover:shadow-xl hover:shadow-brand-600/40 transition-all disabled:opacity-50"
                     >
-                      {processing ? "Processing..." : "Resubscribe"}
+                      {processingNoFee ? "Processing..." : "Resubscribe"}
                     </button>
                   )}
                 </div>
@@ -514,7 +567,7 @@ export default function FeaturesPage() {
                 </div>
                 <div className="flex items-start gap-2 text-xs sm:text-sm text-gray-700">
                   <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 flex-shrink-0 mt-0.5" />
-                  <span>Reduce no-shows with automated confirmations</span>
+                  <span>Reduce no-shows with automated reminders</span>
                 </div>
                 <div className="flex items-start gap-2 text-xs sm:text-sm text-gray-700">
                   <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 flex-shrink-0 mt-0.5" />
@@ -538,10 +591,10 @@ export default function FeaturesPage() {
                   {!featureStatus?.smsConfirmations?.enabled && (
                     <button
                       onClick={handleSmsSubscribe}
-                      disabled={processing}
+                      disabled={processingSms}
                       className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:from-purple-600 hover:to-indigo-700 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-600/40 transition-all disabled:opacity-50"
                     >
-                      {processing ? "Processing..." : "Subscribe Now"}
+                      {processingSms ? "Processing..." : "Subscribe Now"}
                     </button>
                   )}
 
@@ -549,10 +602,10 @@ export default function FeaturesPage() {
                     featureStatus?.smsConfirmations?.status === "active" && (
                       <button
                         onClick={handleCancelSmsSubscription}
-                        disabled={processing}
+                        disabled={processingSms}
                         className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gray-100 text-gray-700 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:bg-gray-200 border border-gray-300 transition-all disabled:opacity-50"
                       >
-                        {processing ? "Processing..." : "Cancel"}
+                        {processingSms ? "Processing..." : "Cancel"}
                       </button>
                     )}
 
@@ -562,10 +615,10 @@ export default function FeaturesPage() {
                       new Date() && (
                       <button
                         onClick={handleSmsSubscribe}
-                        disabled={processing}
+                        disabled={processingSms}
                         className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:from-purple-600 hover:to-indigo-700 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-600/40 transition-all disabled:opacity-50"
                       >
-                        {processing ? "Processing..." : "Resubscribe"}
+                        {processingSms ? "Processing..." : "Resubscribe"}
                       </button>
                     )}
                 </div>
@@ -587,10 +640,18 @@ export default function FeaturesPage() {
                 description="Send SMS messages when appointments are created or modified."
                 enabled={localFlags.smsConfirmations}
                 onChange={() => handleToggle("smsConfirmations")}
-                disabled={!smsGatewayConnected}
+                disabled={
+                  !(
+                    featureStatus?.smsConfirmations?.enabled &&
+                    featureStatus?.smsConfirmations?.status === "active"
+                  )
+                }
                 disabledReason={
-                  !smsGatewayConnected
-                    ? "SMS gateway not configured. Contact support to enable."
+                  !(
+                    featureStatus?.smsConfirmations?.enabled &&
+                    featureStatus?.smsConfirmations?.status === "active"
+                  )
+                    ? "Subscribe to Premium: SMS Confirmations to enable this feature."
                     : null
                 }
               />
@@ -601,10 +662,18 @@ export default function FeaturesPage() {
                 description="Automatically send SMS reminders 12 hours before scheduled appointments."
                 enabled={localFlags.smsReminders}
                 onChange={() => handleToggle("smsReminders")}
-                disabled={!smsGatewayConnected}
+                disabled={
+                  !(
+                    featureStatus?.smsConfirmations?.enabled &&
+                    featureStatus?.smsConfirmations?.status === "active"
+                  )
+                }
                 disabledReason={
-                  !smsGatewayConnected
-                    ? "SMS gateway not configured. Contact support to enable."
+                  !(
+                    featureStatus?.smsConfirmations?.enabled &&
+                    featureStatus?.smsConfirmations?.status === "active"
+                  )
+                    ? "Subscribe to Premium: SMS Confirmations to enable this feature."
                     : null
                 }
               />

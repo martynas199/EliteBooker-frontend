@@ -141,7 +141,6 @@ export default function OnboardingComplete() {
             <ul className="text-sm text-blue-800 space-y-1">
               <li>✓ Start accepting bookings and product orders</li>
               <li>✓ Payments will be transferred directly to your account</li>
-              <li>✓ Platform fee: £0.50 per booking</li>
               <li>✓ Product sales: 100% to you (no platform fee)</li>
             </ul>
           </div>

@@ -1388,7 +1388,7 @@ export default function LandingPage() {
                           <span className="text-green-500 mt-1">✓</span>
                           <span
                             className={`text-gray-700 ${
-                              feature.includes("£0.50") ? "text-sm" : ""
+                              feature.includes("£0.99") ? "text-sm" : ""
                             }`}
                           >
                             {feature}
@@ -1494,7 +1494,7 @@ export default function LandingPage() {
                   </div>
                   <div className="pt-0.5">
                     <p className="font-bold text-gray-900 text-sm leading-none mb-0.5">
-                      £0.50 per booking
+                      £0.99 per booking
                     </p>
                     <p className="text-xs text-gray-600 leading-none">
                       Simple pay-as-you-go
@@ -1511,7 +1511,7 @@ export default function LandingPage() {
                       Paid by the customer
                     </p>
                     <p className="text-xs text-gray-600">
-                      The £0.50 fee is paid by the customer when they book
+                      The £0.99 fee is paid by the customer when they book
                     </p>
                   </div>
                 </div>
@@ -1542,7 +1542,7 @@ export default function LandingPage() {
               <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
                 <p className="text-xs text-gray-700 mb-1">
                   <strong>Example:</strong> Customer books £50 haircut → Pays
-                  £50.50 total (£50 service + £0.50 booking fee)
+                  £50.99 total (£50 service + £0.99 booking fee)
                 </p>
                 <p className="text-xs text-gray-600">
                   * You receive £50 minus{" "}

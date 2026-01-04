@@ -14,6 +14,7 @@ import {
   LogOut,
   Users,
   CreditCard,
+  Headphones,
 } from "lucide-react";
 import { useTenantSettings } from "../../shared/hooks/useTenantSettings";
 
@@ -29,6 +30,7 @@ const iconMap = {
   Package,
   Users,
   CreditCard,
+  Headphones,
 };
 
 // Navigation configuration
@@ -67,8 +69,8 @@ const navigationConfig = [
         condition: "multiLocation",
       },
       { label: "Services", path: "/admin/services" },
-      { label: "Staff", path: "/admin/staff" },
-      { label: "My Schedule", path: "/admin/schedule" },
+      { label: "Staff", path: "/admin/staff", condition: "notSpecialist" },
+      { label: "Custom Working Hours", path: "/admin/schedule" },
       { label: "Time Off", path: "/admin/timeoff" },
       { label: "Booking Policies", path: "/admin/cancellation" },
     ],
@@ -98,6 +100,7 @@ const navigationConfig = [
   {
     label: "Website Builder",
     icon: "Layout",
+    condition: "notSpecialist",
     items: [
       { label: "Hero Sections", path: "/admin/hero-sections" },
       { label: "About Us Page", path: "/admin/about-us" },
@@ -111,12 +114,22 @@ const navigationConfig = [
     items: [
       { label: "Stripe Connect", path: "/admin/stripe-connect" },
       { label: "Features & Subscriptions", path: "/admin/platform-features" },
-      { label: "Admin Links", path: "/admin/admin-links" },
+      {
+        label: "Admin Links",
+        path: "/admin/admin-links",
+        condition: "notSpecialist",
+      },
     ],
+  },
+  {
+    label: "Support",
+    icon: "Headphones",
+    condition: "supportRole",
+    items: [{ label: "All Registered Businesses", path: "/admin/tenants" }],
   },
 ];
 
-const SidebarItem = ({ item, isNested = false, onClose }) => {
+const SidebarItem = ({ item, isNested = false, onClose, userRole }) => {
   const location = useLocation();
   const { ecommerceEnabled, multiLocation, seminarsEnabled, payOnTapEnabled } =
     useTenantSettings();
@@ -139,6 +152,16 @@ const SidebarItem = ({ item, isNested = false, onClose }) => {
 
   // Hide items based on payOnTap feature
   if (item.condition === "payOnTapEnabled" && !payOnTapEnabled) {
+    return null;
+  }
+
+  // Hide Support menu for non-support users
+  if (item.condition === "supportRole" && userRole !== "support") {
+    return null;
+  }
+
+  // Hide items for specialist role
+  if (item.condition === "notSpecialist" && userRole === "specialist") {
     return null;
   }
 
@@ -202,6 +225,7 @@ const SidebarItem = ({ item, isNested = false, onClose }) => {
                       item={child}
                       isNested
                       onClose={onClose}
+                      userRole={userRole}
                     />
                   ))}
               </div>
@@ -241,7 +265,7 @@ const SidebarItem = ({ item, isNested = false, onClose }) => {
   );
 };
 
-export default function Sidebar({ tenant, onLogout, onClose }) {
+export default function Sidebar({ tenant, admin, onLogout, onClose }) {
   return (
     <aside className="w-64 min-h-screen bg-slate-50 border-r border-gray-200 flex flex-col overflow-hidden">
       {/* Header */}
@@ -280,7 +304,11 @@ export default function Sidebar({ tenant, onLogout, onClose }) {
         <div className="space-y-6">
           {navigationConfig.map((section, idx) => (
             <div key={idx}>
-              <SidebarItem item={section} onClose={onClose} />
+              <SidebarItem
+                item={section}
+                onClose={onClose}
+                userRole={admin?.role}
+              />
             </div>
           ))}
         </div>

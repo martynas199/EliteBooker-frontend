@@ -519,7 +519,7 @@ export default function TenantSignup() {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-green-500 font-bold mt-0.5">✓</span>
-                      <span>Full access to all booking features</span>
+                      <span>Access to booking features</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-green-500 font-bold mt-0.5">✓</span>

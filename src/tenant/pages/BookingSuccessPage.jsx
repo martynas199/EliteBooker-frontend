@@ -302,28 +302,43 @@ export default function SuccessPage() {
                             </h3>
                           </div>
                           <div className="space-y-2">
-                            <div className="flex justify-between text-sm sm:text-base text-gray-600">
-                              <span>Deposit</span>
-                              <span className="font-semibold">
-                                £
-                                {(
-                                  (appt.payment.amountTotal - 50) /
-                                  100
-                                ).toFixed(2)}
-                              </span>
-                            </div>
-                            <div className="flex justify-between text-sm sm:text-base text-gray-600">
-                              <span>Booking Fee</span>
-                              <span className="font-semibold">£0.50</span>
-                            </div>
-                            <div className="flex justify-between pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-green-600/30">
-                              <span className="font-bold text-gray-900 text-sm sm:text-base">
-                                Total
-                              </span>
-                              <span className="text-xl sm:text-2xl font-bold text-green-600">
-                                £{(appt.payment.amountTotal / 100).toFixed(2)}
-                              </span>
-                            </div>
+                            {(() => {
+                              // Get platform fee from payment (0 for no-fee subscription, 99 otherwise)
+                              const platformFee =
+                                appt.payment?.stripe?.platformFee || 0;
+                              const depositAmount =
+                                (appt.payment.amountTotal - platformFee) / 100;
+
+                              return (
+                                <>
+                                  <div className="flex justify-between text-sm sm:text-base text-gray-600">
+                                    <span>Deposit</span>
+                                    <span className="font-semibold">
+                                      £{depositAmount.toFixed(2)}
+                                    </span>
+                                  </div>
+                                  {platformFee > 0 && (
+                                    <div className="flex justify-between text-sm sm:text-base text-gray-600">
+                                      <span>Booking Fee</span>
+                                      <span className="font-semibold">
+                                        £{(platformFee / 100).toFixed(2)}
+                                      </span>
+                                    </div>
+                                  )}
+                                  <div className="flex justify-between pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-green-600/30">
+                                    <span className="font-bold text-gray-900 text-sm sm:text-base">
+                                      Total
+                                    </span>
+                                    <span className="text-xl sm:text-2xl font-bold text-green-600">
+                                      £
+                                      {(appt.payment.amountTotal / 100).toFixed(
+                                        2
+                                      )}
+                                    </span>
+                                  </div>
+                                </>
+                              );
+                            })()}
                           </div>
                         </div>
 
@@ -348,10 +363,15 @@ export default function SuccessPage() {
                           </div>
                           <div className="text-3xl sm:text-4xl font-bold text-amber-600">
                             £
-                            {(
-                              Number(appt.price || 0) -
-                              (appt.payment.amountTotal - 50) / 100
-                            ).toFixed(2)}
+                            {(() => {
+                              const platformFee =
+                                appt.payment?.stripe?.platformFee || 0;
+                              const depositAmount =
+                                (appt.payment.amountTotal - platformFee) / 100;
+                              return (
+                                Number(appt.price || 0) - depositAmount
+                              ).toFixed(2);
+                            })()}
                           </div>
                         </div>
                       </div>

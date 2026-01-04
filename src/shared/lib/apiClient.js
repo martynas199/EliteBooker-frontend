@@ -118,7 +118,15 @@ api.interceptors.response.use(
         originalRequest.url?.includes("/auth/login") ||
         originalRequest.url?.includes("/auth/register")
       ) {
-        return Promise.reject(error);
+        // Return structured error for login/register failures
+        const errorMessage =
+          error?.response?.data?.error ||
+          error?.response?.data?.message ||
+          "Authentication failed";
+        const structuredError = new Error(errorMessage);
+        structuredError.status = error.response?.status;
+        structuredError.response = error.response;
+        return Promise.reject(structuredError);
       }
 
       // For client routes, clear localStorage token (like beauty salon app)

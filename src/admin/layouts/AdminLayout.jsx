@@ -254,6 +254,7 @@ export default function AdminLayout() {
         <div className="hidden lg:block">
           <Sidebar
             tenant={{ name: admin?.name || "Elite Booker" }}
+            admin={admin}
             onLogout={handleLogout}
           />
         </div>
@@ -277,6 +278,7 @@ export default function AdminLayout() {
             >
               <Sidebar
                 tenant={{ name: admin?.name || "Elite Booker" }}
+                admin={admin}
                 onLogout={handleLogout}
                 onClose={() => setMobileMenuOpen(false)}
               />
