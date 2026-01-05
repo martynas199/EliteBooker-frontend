@@ -5,6 +5,7 @@ import Card from "../../shared/components/ui/Card";
 import MenuDropdown from "../../shared/components/ui/MenuDropdown";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 import GiftCardModal from "../../shared/components/modals/GiftCardModal";
+import DemoRequestModal from "../../shared/components/modals/DemoRequestModal";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
@@ -18,6 +19,7 @@ export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const [showGiftCardModal, setShowGiftCardModal] = useState(false);
+  const [showDemoModal, setShowDemoModal] = useState(false);
 
   // Debug: Log client data when it changes
   useEffect(() => {
@@ -461,7 +463,7 @@ export default function LandingPage() {
               </div>
 
               {/* Search Bar - Center */}
-              <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+              <div className="hidden flex-1 max-w-2xl mx-8">
                 <button
                   onClick={() => navigate("/search")}
                   className="w-full flex items-center gap-3 px-4 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 rounded-full transition-all text-left"
@@ -587,7 +589,7 @@ export default function LandingPage() {
                 {/* Search Button - Mobile */}
                 <button
                   onClick={() => navigate("/search")}
-                  className="p-2 text-gray-600 hover:text-violet-600 transition-colors"
+                  className="hidden p-2 text-gray-600 hover:text-violet-600 transition-colors"
                   aria-label="Search"
                 >
                   <svg
@@ -1203,7 +1205,7 @@ export default function LandingPage() {
                   <iframe
                     width="100%"
                     height="100%"
-                    src="https://www.youtube.com/embed/qhlbHP2Q5uY?autoplay=1&mute=1&loop=1&playlist=qhlbHP2Q5uY&controls=1&rel=0"
+                    src="https://www.youtube.com/embed/uJC681X-d2Q?autoplay=1&mute=1&loop=1&playlist=uJC681X-d2Q&controls=1&rel=0"
                     title="Platform Demo"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -1430,7 +1432,7 @@ export default function LandingPage() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate("/contact")}
+                  onClick={() => setShowDemoModal(true)}
                   className="px-8 py-4 bg-transparent text-white rounded-xl font-semibold text-lg border-2 border-white/30 hover:border-white/60 transition-all"
                 >
                   Schedule a Demo
@@ -1588,6 +1590,12 @@ export default function LandingPage() {
         isOpen={showGiftCardModal}
         onClose={() => setShowGiftCardModal(false)}
         onSuccess={(giftCard) => {}}
+      />
+
+      {/* Demo Request Modal */}
+      <DemoRequestModal
+        isOpen={showDemoModal}
+        onClose={() => setShowDemoModal(false)}
       />
     </>
   );

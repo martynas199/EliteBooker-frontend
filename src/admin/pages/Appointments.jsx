@@ -2483,11 +2483,6 @@ function EditModal({
                         </p>
                       </div>
                     )}
-                    {appointment.payment.stripe?.paymentIntentId && (
-                      <div className="text-xs text-gray-600 mt-2">
-                        Payment ID: {appointment.payment.stripe.paymentIntentId}
-                      </div>
-                    )}
                   </>
                 );
               })()}
@@ -2985,11 +2980,6 @@ function CreateModal({
                           Balance Due: £
                           {Number(appointment.price - depositAmount).toFixed(2)}
                         </p>
-                      </div>
-                    )}
-                    {appointment.payment.stripe?.paymentIntentId && (
-                      <div className="text-xs text-gray-600 mt-2">
-                        Payment ID: {appointment.payment.stripe.paymentIntentId}
                       </div>
                     )}
                   </>
