@@ -81,6 +81,9 @@ const Profile = lazy(() => import("../admin/pages/Profile"));
 const CancellationPolicy = lazy(() =>
   import("../admin/pages/CancellationPolicy")
 );
+const BookingPoliciesPage = lazy(() =>
+  import("../admin/pages/BookingPoliciesPage")
+);
 const TimeOff = lazy(() => import("../admin/pages/TimeOff"));
 const HeroSections = lazy(() => import("../admin/pages/HeroSections"));
 const AboutUsManagement = lazy(() =>
@@ -476,7 +479,7 @@ export default function AppRoutes() {
             path="cancellation"
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <CancellationPolicy />
+                <BookingPoliciesPage />
               </Suspense>
             }
           />

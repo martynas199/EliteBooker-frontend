@@ -11,6 +11,7 @@ import {
   Store,
   Phone,
   Mail,
+  RefreshCw,
 } from "lucide-react";
 import { api } from "../../shared/lib/apiClient";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
@@ -19,6 +20,7 @@ import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Button from "../../shared/components/ui/Button";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 import GiftCardModal from "../../shared/components/modals/GiftCardModal";
+import RescheduleModal from "../../shared/components/modals/RescheduleModal";
 
 export default function ClientAppointmentsPage() {
   const navigate = useNavigate();
@@ -27,11 +29,15 @@ export default function ClientAppointmentsPage() {
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState([]);
   const [filter, setFilter] = useState("all");
-  const [showGiftCardModal, setShowGiftCardModal] = useState(false); // all, upcoming, past, cancelled
+  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
   const [error, setError] = useState(null);
+  const [rescheduleMinHours, setRescheduleMinHours] = useState(2); // Default 2 hours
 
   useEffect(() => {
     fetchBookings();
+    fetchReschedulePolicy();
   }, []);
 
   const fetchBookings = async () => {
@@ -41,7 +47,11 @@ export default function ClientAppointmentsPage() {
       const response = await api.get("/client/bookings", {
         params: { limit: 100 },
       });
-      setBookings(response.data.bookings || []);
+      // Sort bookings by date, soonest first
+      const sortedBookings = (response.data.bookings || []).sort((a, b) => {
+        return new Date(a.start) - new Date(b.start);
+      });
+      setBookings(sortedBookings);
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
       setError(error.message || "Failed to load appointments");
@@ -53,6 +63,19 @@ export default function ClientAppointmentsPage() {
     }
   };
 
+  const fetchReschedulePolicy = async () => {
+    try {
+      // Fetch salon-wide cancellation policy
+      const response = await api.get("/cancellation-policy/salon");
+      if (response.data?.rescheduleAllowedHours) {
+        setRescheduleMinHours(response.data.rescheduleAllowedHours);
+      }
+    } catch (error) {
+      console.error("Failed to fetch reschedule policy:", error);
+      // Keep default of 2 hours if fetch fails
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -61,6 +84,27 @@ export default function ClientAppointmentsPage() {
       console.error("Logout failed:", error);
       window.location.replace("/");
     }
+  };
+
+  const handleRescheduleClick = (booking) => {
+    setSelectedBooking(booking);
+    setShowRescheduleModal(true);
+  };
+
+  const handleRescheduleSuccess = () => {
+    setShowRescheduleModal(false);
+    setSelectedBooking(null);
+    // Refresh bookings
+    fetchBookings();
+  };
+
+  // Check if booking can be rescheduled based on time constraints
+  const canReschedule = (booking) => {
+    const now = new Date();
+    const appointmentStart = new Date(booking.start);
+    const hoursUntilAppointment = (appointmentStart - now) / (1000 * 60 * 60);
+
+    return hoursUntilAppointment >= rescheduleMinHours;
   };
 
   const formatDate = (date) => {
@@ -352,20 +396,43 @@ export default function ClientAppointmentsPage() {
                   )}
 
                   {/* Actions */}
-                  <div className="border-t border-gray-100 pt-4 mt-4 flex gap-3">
-                    {booking.tenantId?.slug && (
-                      <Button
-                        variant="secondary"
-                        onClick={() =>
-                          navigate(`/salon/${booking.tenantId.slug}`)
-                        }
-                      >
-                        View Business
-                      </Button>
-                    )}
+                  <div className="border-t border-gray-100 pt-4 mt-4">
+                    <div className="flex gap-3">
+                      {booking.tenantId?.slug && (
+                        <Button
+                          variant="secondary"
+                          onClick={() =>
+                            navigate(`/salon/${booking.tenantId.slug}`)
+                          }
+                        >
+                          View Business
+                        </Button>
+                      )}
+                      {booking.status === "confirmed" &&
+                        new Date(booking.start) > new Date() &&
+                        canReschedule(booking) && (
+                          <Button
+                            variant="secondary"
+                            onClick={() => handleRescheduleClick(booking)}
+                          >
+                            <RefreshCw className="h-4 w-4 mr-1.5" />
+                            Reschedule
+                          </Button>
+                        )}
+                    </div>
+
+                    {/* Show message if appointment is too close to reschedule */}
                     {booking.status === "confirmed" &&
-                      new Date(booking.start) > new Date() && (
-                        <Button variant="secondary">Reschedule</Button>
+                      new Date(booking.start) > new Date() &&
+                      !canReschedule(booking) && (
+                        <div className="mt-3 flex items-start gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                          <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                          <p>
+                            This appointment cannot be rescheduled online
+                            because it is less than {rescheduleMinHours} hours
+                            away.
+                          </p>
+                        </div>
                       )}
                   </div>
                 </div>
@@ -381,6 +448,19 @@ export default function ClientAppointmentsPage() {
         onClose={() => setShowGiftCardModal(false)}
         onSuccess={(giftCard) => {}}
       />
+
+      {/* Reschedule Modal */}
+      {selectedBooking && (
+        <RescheduleModal
+          booking={selectedBooking}
+          isOpen={showRescheduleModal}
+          onClose={() => {
+            setShowRescheduleModal(false);
+            setSelectedBooking(null);
+          }}
+          onSuccess={handleRescheduleSuccess}
+        />
+      )}
     </div>
   );
 }
