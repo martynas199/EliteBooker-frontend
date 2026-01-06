@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { api } from "../../shared/lib/apiClient";
-import { loadStripeTerminal } from "@stripe/terminal-js";
 import { loadStripe } from "@stripe/stripe-js";
 
 /**
@@ -29,7 +28,6 @@ import { loadStripe } from "@stripe/stripe-js";
 
 export default function TakePaymentPage() {
   const navigate = useNavigate();
-  const terminalRef = useRef(null); // Store Stripe Terminal instance
   const stripeRef = useRef(null); // Store Stripe.js instance for mobile payments
   const cancelPaymentRef = useRef(false); // Track if user canceled payment
 
@@ -48,11 +46,11 @@ export default function TakePaymentPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [deviceSupported, setDeviceSupported] = useState(true);
   const [deviceWarning, setDeviceWarning] = useState(null);
-  const [terminalStatus, setTerminalStatus] = useState("initializing"); // initializing, ready, error
+  const [sdkStatus, setSdkStatus] = useState("initializing"); // initializing, ready, error
 
-  // Initialize Stripe Terminal on mount
+  // Initialize Stripe SDK on mount
   useEffect(() => {
-    initializeStripeTerminal();
+    initializePaymentSdk();
   }, []);
 
   // Check device capabilities on mount
@@ -65,51 +63,63 @@ export default function TakePaymentPage() {
     loadTodaysAppointments();
   }, []);
 
-  // ==================== STRIPE TERMINAL INITIALIZATION ====================
+  // ==================== STRIPE SDK INITIALIZATION ====================
 
-  const initializeStripeTerminal = async () => {
+  const initializePaymentSdk = async () => {
     try {
-      setTerminalStatus("initializing");
+      setSdkStatus("initializing");
 
       // Check if running on mobile
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      console.log("🔍 Device detection - isMobile:", isMobile, "userAgent:", navigator.userAgent);
+      console.log(
+        "🔍 Device detection - isMobile:",
+        isMobile,
+        "userAgent:",
+        navigator.userAgent
+      );
 
       // Initialize Stripe.js for all devices (works everywhere)
       console.log("📱 Initializing Stripe.js for payments");
-      
+
       try {
         const configResponse = await api.get("/payments/config");
         console.log("📡 Config response:", configResponse.data);
-        
-        if (!configResponse.data.success || !configResponse.data.publishableKey) {
+
+        if (
+          !configResponse.data.success ||
+          !configResponse.data.publishableKey
+        ) {
           console.error("❌ No publishable key in response");
           throw new Error("Failed to get Stripe publishable key");
         }
 
-        console.log("🔑 Loading Stripe with key:", configResponse.data.publishableKey.substring(0, 20) + "...");
+        console.log(
+          "🔑 Loading Stripe with key:",
+          configResponse.data.publishableKey.substring(0, 20) + "..."
+        );
         const stripe = await loadStripe(configResponse.data.publishableKey);
-        
+
         if (!stripe) {
           console.error("❌ Stripe.js failed to load");
           throw new Error("Failed to initialize Stripe.js");
         }
-        
+
         stripeRef.current = stripe;
-        terminalRef.current = null; // Don't use Terminal SDK
-        console.log("✅ Stripe.js initialized, stripeRef set:", !!stripeRef.current);
+        console.log(
+          "✅ Stripe.js initialized, stripeRef set:",
+          !!stripeRef.current
+        );
       } catch (configError) {
         console.error("❌ Config error:", configError);
         throw configError;
       }
 
-      setTerminalStatus("ready");
+      setSdkStatus("ready");
     } catch (err) {
       console.error("❌ Stripe initialization error:", err);
-      setTerminalStatus("error");
+      setSdkStatus("error");
       setDeviceWarning(`Setup failed: ${err.message}`);
-      setTerminalStatus("ready"); // Allow fallback
-      terminalRef.current = null;
+      setSdkStatus("ready"); // Allow fallback
       stripeRef.current = null;
     }
   };
@@ -138,7 +148,7 @@ export default function TakePaymentPage() {
     if ("NDEFReader" in window) {
       console.log("✅ Web NFC API available");
     } else {
-      console.log("ℹ️ Web NFC API not available (using Stripe Terminal)");
+      console.log("ℹ️ Web NFC API not available (using Stripe.js wallets)");
     }
 
     // Check for payment request API
@@ -243,8 +253,13 @@ export default function TakePaymentPage() {
       return;
     }
 
-    if (terminalStatus !== "ready") {
-      setError("Card reader not ready. Please wait or refresh the page.");
+    if (sdkStatus !== "ready") {
+      setError("Payments not ready. Please wait or refresh the page.");
+      return;
+    }
+
+    if (!stripeRef.current) {
+      setError("Stripe.js not ready. Please refresh the page and try again.");
       return;
     }
 
@@ -254,8 +269,6 @@ export default function TakePaymentPage() {
     goToStep(3); // Move to Tap to Pay screen
 
     try {
-      const terminal = terminalRef.current;
-
       // Step 1: Create Payment Intent
       const intentResponse = await api.post("/payments/intents", {
         appointmentId: selectedAppointment?._id || null,
@@ -263,6 +276,7 @@ export default function TakePaymentPage() {
         amount: amount, // Already in pence from state
         tip: tip, // Already in pence from state
         currency: "gbp",
+        flowType: "wallet",
         metadata: {
           deviceType: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
             ? "mobile"
@@ -282,117 +296,72 @@ export default function TakePaymentPage() {
       console.log("💳 Payment Intent created:", paymentIntentId);
 
       // Step 2 & 3: Collect and process payment
-      console.log(
-        "🔍 Debug - terminal:",
-        !!terminal,
-        "stripeRef:",
-        !!stripeRef.current
-      );
+      console.log("🔍 Debug - stripeRef:", !!stripeRef.current);
 
-      if (terminal) {
-        // Desktop: Use Stripe Terminal SDK with hardware reader
-        console.log("🖥️ Using Stripe Terminal SDK...");
-
-        const collectResult = await terminal.collectPaymentMethod(clientSecret);
-        if (collectResult.error) {
-          throw new Error(
-            collectResult.error.message || "Failed to collect payment method"
-          );
-        }
-
-        console.log("✅ Payment method collected, processing...");
-
-        const processResult = await terminal.processPayment(
-          collectResult.paymentIntent
-        );
-        if (processResult.error) {
-          throw new Error(
-            processResult.error.message || "Failed to process payment"
-          );
-        }
-
-        console.log("✅ Payment processed via Terminal SDK");
-      } else if (stripeRef.current) {
-        // Mobile: Use Stripe.js with Payment Request Button (Apple Pay / Google Pay)
-        console.log("📱 Checking for Apple Pay / Google Pay...");
-
-        const paymentRequest = stripeRef.current.paymentRequest({
-          country: "GB",
-          currency: "gbp",
-          total: {
-            label: selectedAppointment
-              ? `Appointment Payment`
-              : "Custom Payment",
-            amount: totalAmount,
-          },
-          requestPayerName: true,
-          requestPayerEmail: false,
-        });
-
-        // Check if Apple Pay or Google Pay is available
-        const canMakePayment = await paymentRequest.canMakePayment();
-
-        if (canMakePayment) {
-          console.log("✅ Mobile wallet available:", canMakePayment);
-
-          // Set up payment method handler
-          let paymentMethodReceived = false;
-
-          paymentRequest.on("paymentmethod", async (ev) => {
-            try {
-              // Confirm the payment with the PaymentMethod from wallet
-              const { error: confirmError } =
-                await stripeRef.current.confirmCardPayment(
-                  clientSecret,
-                  { payment_method: ev.paymentMethod.id },
-                  { handleActions: false }
-                );
-
-              if (confirmError) {
-                ev.complete("fail");
-                throw confirmError;
-              }
-
-              ev.complete("success");
-              paymentMethodReceived = true;
-              console.log("✅ Payment processed via mobile wallet");
-            } catch (err) {
-              ev.complete("fail");
-              throw err;
-            }
-          });
-
-          // Show the payment sheet
-          const result = await paymentRequest.show();
-
-          // Wait for payment method event to complete
-          if (!paymentMethodReceived) {
-            throw new Error("Payment was canceled or failed");
-          }
-        } else {
-          // No mobile wallet available - show error
-          throw new Error(
-            "Apple Pay / Google Pay not available. Please enable it in your device settings or use a physical card reader."
-          );
-        }
-      } else {
-        // Fallback: No payment method available
-        console.log("❌ No payment method available");
-        // Show instructions to manually charge via Stripe Dashboard
-        console.log("📱 Mobile: Manual payment required");
-        console.log("💳 Payment Intent ID:", paymentIntentId);
-        console.log(
-          "🔗 Charge manually: https://dashboard.stripe.com/test/payments/" +
-            paymentIntentId
-        );
-
-        // For mobile tap-to-pay, show error with instructions
+      if (!stripeRef.current) {
         throw new Error(
-          "Mobile Tap to Pay requires native app. " +
-            "To complete payment, go to Stripe Dashboard > Payments > " +
-            paymentIntentId +
-            " and manually charge the card, or use a physical card reader."
+          "Stripe.js failed to initialize. Please refresh and try again."
         );
+      }
+
+      // Use Stripe.js with Payment Request Button (Apple Pay / Google Pay)
+      console.log("📱 Checking for Apple Pay / Google Pay...");
+
+      const paymentRequest = stripeRef.current.paymentRequest({
+        country: "GB",
+        currency: "gbp",
+        total: {
+          label: selectedAppointment ? `Appointment Payment` : "Custom Payment",
+          amount: totalAmount,
+        },
+        requestPayerName: true,
+        requestPayerEmail: false,
+      });
+
+      // Check if Apple Pay or Google Pay is available
+      const canMakePayment = await paymentRequest.canMakePayment();
+
+      if (!canMakePayment) {
+        throw new Error(
+          "Apple Pay / Google Pay not available. Enable it in your device settings or move to a supported device."
+        );
+      }
+
+      console.log("✅ Mobile wallet available:", canMakePayment);
+
+      // Set up payment method handler
+      let paymentMethodReceived = false;
+
+      paymentRequest.on("paymentmethod", async (ev) => {
+        try {
+          // Confirm the payment with the PaymentMethod from wallet
+          const { error: confirmError } =
+            await stripeRef.current.confirmCardPayment(
+              clientSecret,
+              { payment_method: ev.paymentMethod.id },
+              { handleActions: false }
+            );
+
+          if (confirmError) {
+            ev.complete("fail");
+            throw confirmError;
+          }
+
+          ev.complete("success");
+          paymentMethodReceived = true;
+          console.log("✅ Payment processed via mobile wallet");
+        } catch (err) {
+          ev.complete("fail");
+          throw err;
+        }
+      });
+
+      // Show the payment sheet
+      await paymentRequest.show();
+
+      // Wait for payment method event to complete
+      if (!paymentMethodReceived) {
+        throw new Error("Payment was canceled or failed");
       }
 
       // Step 4: Confirm payment and capture (for manual capture)
@@ -442,7 +411,7 @@ export default function TakePaymentPage() {
 
   /**
    * Poll payment status until succeeded or timeout
-   * In production, Stripe Terminal SDK sends status updates automatically
+   * In production, Stripe webhooks update status automatically
    */
   const pollPaymentStatus = async (paymentIntentId, timeout = 30000) => {
     const startTime = Date.now();
