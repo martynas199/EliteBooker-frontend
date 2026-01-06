@@ -29,6 +29,7 @@ import { loadStripeTerminal } from "@stripe/terminal-js";
 export default function TakePaymentPage() {
   const navigate = useNavigate();
   const terminalRef = useRef(null); // Store Stripe Terminal instance
+  const cancelPaymentRef = useRef(false); // Track if user canceled payment
 
   // State management
   const [step, setStep] = useState(1); // 1: Select, 2: Amount, 3: Tap, 4: Result
@@ -245,6 +246,15 @@ export default function TakePaymentPage() {
 
   const totalAmount = amount + tip;
 
+  // ==================== CANCEL PAYMENT ====================
+
+  const handleCancelPayment = () => {
+    console.log("🚫 Payment canceled by user");
+    cancelPaymentRef.current = true;
+    setIsProcessing(false);
+    goToStep(2); // Go back to amount screen
+  };
+
   // ==================== PAYMENT PROCESSING ====================
 
   const handleTakePayment = async () => {
@@ -260,6 +270,7 @@ export default function TakePaymentPage() {
 
     setIsProcessing(true);
     setError(null);
+    cancelPaymentRef.current = false; // Reset cancel flag
     goToStep(3); // Move to Tap to Pay screen
 
     try {
@@ -315,17 +326,18 @@ export default function TakePaymentPage() {
 
         console.log("✅ Payment processed via Terminal SDK");
       } else {
-        // Mobile: Use Payment Request API or redirect to Stripe Checkout
-        // For now, poll for manual card entry completion
-        console.log("📱 Mobile fallback: Waiting for manual payment...");
-        console.log("ℹ️  For mobile Tap to Pay, use native iOS/Android SDKs via Capacitor");
+        // Mobile: Direct NFC requires native SDKs
+        // Show instructions to manually charge via Stripe Dashboard
+        console.log("📱 Mobile: Manual payment required");
+        console.log("💳 Payment Intent ID:", paymentIntentId);
+        console.log("🔗 Charge manually: https://dashboard.stripe.com/test/payments/" + paymentIntentId);
         
-        // Poll for payment status (simulate waiting for manual card entry)
-        const pollResult = await pollPaymentStatus(paymentIntentId, 60000);
-        
-        if (pollResult.status !== "succeeded") {
-          throw new Error(pollResult.error?.message || "Payment not completed");
-        }
+        // For mobile tap-to-pay, show error with instructions
+        throw new Error(
+          "Mobile Tap to Pay requires native app. " +
+          "To complete payment, go to Stripe Dashboard > Payments > " + paymentIntentId + 
+          " and manually charge the card, or use a physical card reader."
+        );
       }
 
       // Step 4: Confirm payment and capture (for manual capture)
@@ -382,6 +394,11 @@ export default function TakePaymentPage() {
     const pollInterval = 1000; // Poll every second
 
     while (Date.now() - startTime < timeout) {
+      // Check if user canceled
+      if (cancelPaymentRef.current) {
+        throw new Error("Payment canceled");
+      }
+
       try {
         const response = await api.get(`/payments/status/${paymentIntentId}`);
         if (response.data.success) {
@@ -924,10 +941,7 @@ export default function TakePaymentPage() {
 
         {/* Cancel button */}
         <button
-          onClick={() => {
-            setIsProcessing(false);
-            goToStep(2);
-          }}
+          onClick={handleCancelPayment}
           className="mt-8 px-6 py-2 text-gray-600 hover:text-gray-800 font-medium"
         >
           Cancel
