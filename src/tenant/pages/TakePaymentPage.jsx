@@ -262,8 +262,8 @@ export default function TakePaymentPage() {
       const intentResponse = await api.post("/payments/intents", {
         appointmentId: selectedAppointment?._id || null,
         clientId: selectedAppointment?.client?._id,
-        amount: amount * 100, // Convert to pence
-        tip: tip * 100,
+        amount: amount, // Already in pence from state
+        tip: tip, // Already in pence from state
         currency: "gbp",
         metadata: {
           deviceType: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
