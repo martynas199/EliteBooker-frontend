@@ -313,6 +313,7 @@ export default function FeaturesPage() {
       ecommerce: ecommerceEnabled === true,
       emailNotifications: featureFlags?.emailNotifications === true,
       multiLocation: featureFlags?.multiLocation === true,
+      payOnTap: featureFlags?.payOnTap === true,
     });
   }, [featureFlags, ecommerceEnabled]);
 
@@ -327,6 +328,7 @@ export default function FeaturesPage() {
       ecommerce: "E-commerce",
       emailNotifications: "Email Notifications",
       multiLocation: "Multi-Location Support",
+      payOnTap: "Tap to Pay",
     };
 
     // Optimistically update local state
@@ -726,8 +728,6 @@ export default function FeaturesPage() {
                 description="Enable the Take Payment feature to manually process payments through Stripe terminal. When enabled, the Take Payment link will appear in your admin sidebar."
                 enabled={localFlags.payOnTap}
                 onChange={() => handleToggle("payOnTap")}
-                disabled={true}
-                disabledReason="Coming soon! This feature is currently in development."
               />
             </div>
           </div>

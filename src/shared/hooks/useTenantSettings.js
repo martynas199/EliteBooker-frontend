@@ -34,7 +34,7 @@ const useTenantSettingsStore = create((set, get) => ({
     emailNotifications: true,
     multiLocation: false,
     seminars: false,
-    payOnTap: false,
+    payOnTap: true, // Tap to Pay feature - now enabled by default
   },
 
   // Gateway connections

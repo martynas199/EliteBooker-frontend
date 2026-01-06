@@ -291,11 +291,12 @@ export default function ServicesList({
                         >
                           {service.active ? "Active" : "Inactive"}
                         </span>
-                        {service.fixedTimeSlots && service.fixedTimeSlots.length > 0 && (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
-                            🕐 Fixed Times
-                          </span>
-                        )}
+                        {service.fixedTimeSlots &&
+                          service.fixedTimeSlots.length > 0 && (
+                            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                              🕐 Fixed Times
+                            </span>
+                          )}
                       </div>
                     </div>
                   </div>
@@ -456,11 +457,12 @@ export default function ServicesList({
                           >
                             {service.active ? "Active" : "Inactive"}
                           </span>
-                          {service.fixedTimeSlots && service.fixedTimeSlots.length > 0 && (
-                            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
-                              🕐 Fixed Times
-                            </span>
-                          )}
+                          {service.fixedTimeSlots &&
+                            service.fixedTimeSlots.length > 0 && (
+                              <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                                🕐 Fixed Times
+                              </span>
+                            )}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right text-sm">

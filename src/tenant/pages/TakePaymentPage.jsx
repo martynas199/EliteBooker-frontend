@@ -41,17 +41,69 @@ export default function TakePaymentPage() {
   const [paymentResult, setPaymentResult] = useState(null);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [deviceSupported, setDeviceSupported] = useState(true);
+  const [deviceWarning, setDeviceWarning] = useState(null);
+
+  // Check device capabilities on mount
+  useEffect(() => {
+    checkDeviceCapabilities();
+  }, []);
 
   // Load today's appointments on mount
   useEffect(() => {
     loadTodaysAppointments();
   }, []);
 
+  // ==================== DEVICE CAPABILITY CHECK ====================
+
+  const checkDeviceCapabilities = () => {
+    const warnings = [];
+
+    // Check if HTTPS (required for payment APIs)
+    if (
+      window.location.protocol !== "https:" &&
+      window.location.hostname !== "localhost"
+    ) {
+      warnings.push("HTTPS required for secure payments");
+      setDeviceSupported(false);
+    }
+
+    // Check if mobile device (optimal for Tap to Pay)
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (!isMobile) {
+      warnings.push("Tap to Pay works best on mobile devices");
+    }
+
+    // Check for NFC API support (experimental)
+    if ("NDEFReader" in window) {
+      console.log("✅ Web NFC API available");
+    } else {
+      console.log("ℹ️ Web NFC API not available (using Stripe Terminal)");
+    }
+
+    // Check for payment request API
+    if (!window.PaymentRequest) {
+      warnings.push("Payment API not supported on this browser");
+    }
+
+    // In development mode, allow testing on any device
+    if (window.location.hostname === "localhost") {
+      console.log("🧪 Development mode: All device checks bypassed");
+      setDeviceSupported(true);
+      setDeviceWarning(null);
+      return;
+    }
+
+    if (warnings.length > 0) {
+      setDeviceWarning(warnings.join(". "));
+    }
+  };
+
   // ==================== DATA LOADING ====================
 
   const loadTodaysAppointments = async () => {
     try {
-      const response = await api.get("/api/payments/appointments/today");
+      const response = await api.get("/payments/appointments/today");
       if (response.data.success) {
         setAppointments(response.data.data);
       }
@@ -128,7 +180,7 @@ export default function TakePaymentPage() {
 
     try {
       // Step 1: Create Payment Intent
-      const intentResponse = await api.post("/api/payments/intents", {
+      const intentResponse = await api.post("/payments/intents", {
         appointmentId: selectedAppointment?._id || null,
         clientId: selectedAppointment?.client?._id,
         amount: amount * 100, // Convert to pence
@@ -210,9 +262,7 @@ export default function TakePaymentPage() {
 
     while (Date.now() - startTime < timeout) {
       try {
-        const response = await api.get(
-          `/api/payments/status/${paymentIntentId}`
-        );
+        const response = await api.get(`/payments/status/${paymentIntentId}`);
         if (response.data.success) {
           const payment = response.data.data;
 
@@ -280,6 +330,62 @@ export default function TakePaymentPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
+      {/* Device Warning Banner */}
+      {deviceWarning && (
+        <div className="bg-yellow-50 border-b border-yellow-200">
+          <div className="max-w-2xl mx-auto px-4 py-3">
+            <div className="flex items-start gap-2">
+              <svg
+                className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <div className="flex-1">
+                <p className="text-sm text-yellow-800 font-medium">
+                  Device Compatibility Notice
+                </p>
+                <p className="text-sm text-yellow-700 mt-1">{deviceWarning}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!deviceSupported && (
+        <div className="bg-red-50 border-b border-red-200">
+          <div className="max-w-2xl mx-auto px-4 py-3">
+            <div className="flex items-start gap-2">
+              <svg
+                className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <div className="flex-1">
+                <p className="text-sm text-red-800 font-medium">
+                  Device Not Supported
+                </p>
+                <p className="text-sm text-red-700 mt-1">
+                  This device cannot process secure payments. Please use a
+                  mobile device with HTTPS connection.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white border-b shadow-sm">
         <div className="max-w-2xl mx-auto px-4 py-4">

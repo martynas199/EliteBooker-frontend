@@ -70,7 +70,10 @@ export default function Services() {
     if (!serviceDataToSend.useFixedSlots) {
       // Explicitly set to undefined to remove from database
       serviceDataToSend.fixedTimeSlots = undefined;
-    } else if (serviceDataToSend.fixedTimeSlots && serviceDataToSend.fixedTimeSlots.length > 0) {
+    } else if (
+      serviceDataToSend.fixedTimeSlots &&
+      serviceDataToSend.fixedTimeSlots.length > 0
+    ) {
       // Keep the fixed time slots array
       serviceDataToSend.fixedTimeSlots = serviceDataToSend.fixedTimeSlots;
     }

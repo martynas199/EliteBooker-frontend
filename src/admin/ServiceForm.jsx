@@ -129,7 +129,9 @@ export default function ServiceForm({
         active: service.active !== undefined ? service.active : true,
         priceVaries: service.priceVaries || false,
         image: service.image || null,
-        useFixedSlots: Array.isArray(service.fixedTimeSlots) && service.fixedTimeSlots.length > 0,
+        useFixedSlots:
+          Array.isArray(service.fixedTimeSlots) &&
+          service.fixedTimeSlots.length > 0,
         fixedTimeSlots: service.fixedTimeSlots || [],
         variants:
           service.variants && service.variants.length > 0
@@ -680,7 +682,10 @@ export default function ServiceForm({
                   </label>
                   <p className="text-xs text-gray-600 mt-1">
                     Set specific times for appointments
-                    <span className="hidden sm:inline"> instead of automatic slot generation</span>
+                    <span className="hidden sm:inline">
+                      {" "}
+                      instead of automatic slot generation
+                    </span>
                   </p>
                 </div>
               </div>
@@ -708,7 +713,10 @@ export default function ServiceForm({
                           toast.error("This time is already added");
                           return;
                         }
-                        const updated = [...formData.fixedTimeSlots, time].sort();
+                        const updated = [
+                          ...formData.fixedTimeSlots,
+                          time,
+                        ].sort();
                         handleChange("fixedTimeSlots", updated);
                         setNewTimeSlot("");
                         toast.success("Time added");
@@ -723,7 +731,9 @@ export default function ServiceForm({
                   {formData.fixedTimeSlots.length > 0 ? (
                     <div className="space-y-2">
                       <p className="text-xs sm:text-sm font-medium text-gray-700">
-                        {formData.fixedTimeSlots.length} time{formData.fixedTimeSlots.length !== 1 ? 's' : ''} configured:
+                        {formData.fixedTimeSlots.length} time
+                        {formData.fixedTimeSlots.length !== 1 ? "s" : ""}{" "}
+                        configured:
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {formData.fixedTimeSlots.map((time) => (
@@ -739,7 +749,9 @@ export default function ServiceForm({
                               onClick={() => {
                                 handleChange(
                                   "fixedTimeSlots",
-                                  formData.fixedTimeSlots.filter((t) => t !== time)
+                                  formData.fixedTimeSlots.filter(
+                                    (t) => t !== time
+                                  )
                                 );
                                 toast.success("Removed");
                               }}
@@ -759,12 +771,19 @@ export default function ServiceForm({
 
                   {/* Quick Presets */}
                   <div className="p-2.5 sm:p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-xs font-medium text-blue-900 mb-2">💡 Quick Presets:</p>
+                    <p className="text-xs font-medium text-blue-900 mb-2">
+                      💡 Quick Presets:
+                    </p>
                     <div className="flex flex-col sm:flex-row gap-2">
                       <button
                         type="button"
                         onClick={() => {
-                          handleChange("fixedTimeSlots", ["09:00", "12:00", "15:00", "18:00"]);
+                          handleChange("fixedTimeSlots", [
+                            "09:00",
+                            "12:00",
+                            "15:00",
+                            "18:00",
+                          ]);
                           toast.success("Preset applied");
                         }}
                         className="text-xs px-3 py-2 bg-white border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors active:scale-95 font-medium"
@@ -774,7 +793,11 @@ export default function ServiceForm({
                       <button
                         type="button"
                         onClick={() => {
-                          handleChange("fixedTimeSlots", ["10:00", "14:00", "16:00"]);
+                          handleChange("fixedTimeSlots", [
+                            "10:00",
+                            "14:00",
+                            "16:00",
+                          ]);
                           toast.success("Preset applied");
                         }}
                         className="text-xs px-3 py-2 bg-white border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors active:scale-95 font-medium"
