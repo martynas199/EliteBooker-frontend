@@ -73,103 +73,44 @@ export default function TakePaymentPage() {
 
       // Check if running on mobile
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      console.log("🔍 Device detection - isMobile:", isMobile, "userAgent:", navigator.userAgent);
 
-      if (!isMobile) {
-        // Desktop: Try to use Stripe Terminal JS with simulated reader
-        const StripeTerminal = await loadStripeTerminal();
-
-        const fetchConnectionToken = async () => {
-          const response = await api.post("/payments/connection-token");
-          if (!response.data.success) {
-            throw new Error("Failed to get connection token");
-          }
-          return response.data.secret;
-        };
-
-        const terminal = StripeTerminal.create({
-          onFetchConnectionToken: fetchConnectionToken,
-          onUnexpectedReaderDisconnect: () => {
-            console.log("Reader disconnected");
-            setTerminalStatus("error");
-          },
-        });
-
-        // Use simulated reader for testing
-        const discoverResult = await terminal.discoverReaders({
-          simulated: true,
-        });
-
-        if (discoverResult.error) {
-          console.error("Discover error:", discoverResult.error);
-          throw new Error(discoverResult.error.message);
+      // Initialize Stripe.js for all devices (works everywhere)
+      console.log("📱 Initializing Stripe.js for payments");
+      
+      try {
+        const configResponse = await api.get("/payments/config");
+        console.log("📡 Config response:", configResponse.data);
+        
+        if (!configResponse.data.success || !configResponse.data.publishableKey) {
+          console.error("❌ No publishable key in response");
+          throw new Error("Failed to get Stripe publishable key");
         }
 
-        if (discoverResult.discoveredReaders.length === 0) {
-          throw new Error("No simulated readers found");
+        console.log("🔑 Loading Stripe with key:", configResponse.data.publishableKey.substring(0, 20) + "...");
+        const stripe = await loadStripe(configResponse.data.publishableKey);
+        
+        if (!stripe) {
+          console.error("❌ Stripe.js failed to load");
+          throw new Error("Failed to initialize Stripe.js");
         }
-
-        const connectResult = await terminal.connectReader(
-          discoverResult.discoveredReaders[0]
-        );
-
-        if (connectResult.error) {
-          console.error("Connect error:", connectResult.error);
-          throw new Error(connectResult.error.message);
-        }
-
-        console.log("✅ Terminal connected:", connectResult.reader);
-        terminalRef.current = terminal;
-      } else {
-        // Mobile: Initialize Stripe.js for Payment Request API (Apple Pay / Google Pay)
-        console.log(
-          "📱 Mobile device: Initializing Stripe.js for mobile payments"
-        );
-
-        try {
-          const configResponse = await api.get("/payments/config");
-          console.log("📡 Config response:", configResponse.data);
-
-          if (
-            !configResponse.data.success ||
-            !configResponse.data.publishableKey
-          ) {
-            console.error("❌ No publishable key in response");
-            throw new Error("Failed to get Stripe publishable key");
-          }
-
-          console.log(
-            "🔑 Loading Stripe with key:",
-            configResponse.data.publishableKey.substring(0, 20) + "..."
-          );
-          const stripe = await loadStripe(configResponse.data.publishableKey);
-
-          if (!stripe) {
-            console.error("❌ Stripe.js failed to load");
-            throw new Error("Failed to initialize Stripe.js");
-          }
-
-          stripeRef.current = stripe;
-          terminalRef.current = null; // Signal to use mobile payment flow
-          console.log(
-            "✅ Stripe.js initialized for mobile payments, stripeRef set:",
-            !!stripeRef.current
-          );
-        } catch (configError) {
-          console.error("❌ Config error:", configError);
-          throw configError;
-        }
+        
+        stripeRef.current = stripe;
+        terminalRef.current = null; // Don't use Terminal SDK
+        console.log("✅ Stripe.js initialized, stripeRef set:", !!stripeRef.current);
+      } catch (configError) {
+        console.error("❌ Config error:", configError);
+        throw configError;
       }
 
       setTerminalStatus("ready");
     } catch (err) {
       console.error("❌ Stripe initialization error:", err);
       setTerminalStatus("error");
-      setDeviceWarning(
-        `Setup failed: ${err.message}. Will use fallback payment method.`
-      );
-      // Still set to ready to allow fallback
-      setTerminalStatus("ready");
+      setDeviceWarning(`Setup failed: ${err.message}`);
+      setTerminalStatus("ready"); // Allow fallback
       terminalRef.current = null;
+      stripeRef.current = null;
     }
   };
 
