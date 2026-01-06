@@ -320,10 +320,12 @@ export default function TakePaymentPage() {
 
       // Check if Apple Pay or Google Pay is available
       const canMakePayment = await paymentRequest.canMakePayment();
+      const walletAvailable =
+        !!canMakePayment?.applePay || !!canMakePayment?.googlePay;
 
-      if (!canMakePayment) {
+      if (!walletAvailable) {
         throw new Error(
-          "Apple Pay / Google Pay not available. Enable it in your device settings or move to a supported device."
+          "Apple Pay / Google Pay not available on this device. Enable it in your wallet settings or switch to a supported browser."
         );
       }
 
