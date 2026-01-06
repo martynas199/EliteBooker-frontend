@@ -341,7 +341,7 @@ export default function TakePaymentPage() {
             await stripeRef.current.confirmCardPayment(
               clientSecret,
               { payment_method: ev.paymentMethod.id },
-              { handleActions: false }
+              { handleActions: false, redirect: "if_required" }
             );
 
           if (confirmError) {
