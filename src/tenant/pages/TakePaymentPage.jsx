@@ -313,6 +313,8 @@ export default function TakePaymentPage() {
       console.log("💳 Payment Intent created:", paymentIntentId);
 
       // Step 2 & 3: Collect and process payment
+      console.log("🔍 Debug - terminal:", !!terminal, "stripeRef:", !!stripeRef.current);
+      
       if (terminal) {
         // Desktop: Use Stripe Terminal SDK with hardware reader
         console.log("🖥️ Using Stripe Terminal SDK...");
@@ -359,27 +361,39 @@ export default function TakePaymentPage() {
         if (canMakePayment) {
           console.log("✅ Mobile wallet available:", canMakePayment);
           
+          // Set up payment method handler
+          let paymentMethodReceived = false;
+          
+          paymentRequest.on('paymentmethod', async (ev) => {
+            try {
+              // Confirm the payment with the PaymentMethod from wallet
+              const { error: confirmError } = await stripeRef.current.confirmCardPayment(
+                clientSecret,
+                { payment_method: ev.paymentMethod.id },
+                { handleActions: false }
+              );
+
+              if (confirmError) {
+                ev.complete("fail");
+                throw confirmError;
+              }
+
+              ev.complete("success");
+              paymentMethodReceived = true;
+              console.log("✅ Payment processed via mobile wallet");
+            } catch (err) {
+              ev.complete("fail");
+              throw err;
+            }
+          });
+
           // Show the payment sheet
           const result = await paymentRequest.show();
           
-          if (result.error) {
-            throw new Error(result.error.message || "Payment canceled");
+          // Wait for payment method event to complete
+          if (!paymentMethodReceived) {
+            throw new Error("Payment was canceled or failed");
           }
-
-          // Confirm the payment with the PaymentMethod from wallet
-          const { error: confirmError } = await stripeRef.current.confirmCardPayment(
-            clientSecret,
-            { payment_method: result.paymentMethod.id },
-            { handleActions: false }
-          );
-
-          if (confirmError) {
-            result.complete("fail");
-            throw new Error(confirmError.message);
-          }
-
-          result.complete("success");
-          console.log("✅ Payment processed via mobile wallet");
         } else {
           // No mobile wallet available - show error
           throw new Error(
