@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { api } from "../../shared/lib/apiClient";
 import { loadStripeTerminal } from "@stripe/terminal-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 /**
  * TAP TO PAY - TAKE PAYMENT PAGE
@@ -29,6 +30,7 @@ import { loadStripeTerminal } from "@stripe/terminal-js";
 export default function TakePaymentPage() {
   const navigate = useNavigate();
   const terminalRef = useRef(null); // Store Stripe Terminal instance
+  const stripeRef = useRef(null); // Store Stripe.js instance for mobile payments
   const cancelPaymentRef = useRef(false); // Track if user canceled payment
 
   // State management
@@ -118,16 +120,25 @@ export default function TakePaymentPage() {
         console.log("✅ Terminal connected:", connectResult.reader);
         terminalRef.current = terminal;
       } else {
-        // Mobile: Skip Terminal SDK, use direct payment collection
-        console.log("📱 Mobile device: Using direct payment flow");
-        terminalRef.current = null; // Signal to use alternative flow
+        // Mobile: Initialize Stripe.js for Payment Request API (Apple Pay / Google Pay)
+        console.log("📱 Mobile device: Initializing Stripe.js for mobile payments");
+        
+        const configResponse = await api.get("/payments/config");
+        if (!configResponse.data.success || !configResponse.data.publishableKey) {
+          throw new Error("Failed to get Stripe publishable key");
+        }
+
+        const stripe = await loadStripe(configResponse.data.publishableKey);
+        stripeRef.current = stripe;
+        terminalRef.current = null; // Signal to use mobile payment flow
+        console.log("✅ Stripe.js initialized for mobile payments");
       }
 
       setTerminalStatus("ready");
     } catch (err) {
-      console.error("❌ Terminal initialization error:", err);
+      console.error("❌ Stripe initialization error:", err);
       setTerminalStatus("error");
-      setDeviceWarning(`Terminal setup failed: ${err.message}. Will use fallback payment method.`);
+      setDeviceWarning(`Setup failed: ${err.message}. Will use fallback payment method.`);
       // Still set to ready to allow fallback
       setTerminalStatus("ready");
       terminalRef.current = null;
@@ -325,8 +336,59 @@ export default function TakePaymentPage() {
         }
 
         console.log("✅ Payment processed via Terminal SDK");
+      } else if (stripeRef.current) {
+        // Mobile: Use Stripe.js with Payment Request Button (Apple Pay / Google Pay)
+        console.log("📱 Checking for Apple Pay / Google Pay...");
+        
+        const paymentRequest = stripeRef.current.paymentRequest({
+          country: "GB",
+          currency: "gbp",
+          total: {
+            label: selectedAppointment 
+              ? `Appointment Payment` 
+              : "Custom Payment",
+            amount: totalAmount,
+          },
+          requestPayerName: true,
+          requestPayerEmail: false,
+        });
+
+        // Check if Apple Pay or Google Pay is available
+        const canMakePayment = await paymentRequest.canMakePayment();
+        
+        if (canMakePayment) {
+          console.log("✅ Mobile wallet available:", canMakePayment);
+          
+          // Show the payment sheet
+          const result = await paymentRequest.show();
+          
+          if (result.error) {
+            throw new Error(result.error.message || "Payment canceled");
+          }
+
+          // Confirm the payment with the PaymentMethod from wallet
+          const { error: confirmError } = await stripeRef.current.confirmCardPayment(
+            clientSecret,
+            { payment_method: result.paymentMethod.id },
+            { handleActions: false }
+          );
+
+          if (confirmError) {
+            result.complete("fail");
+            throw new Error(confirmError.message);
+          }
+
+          result.complete("success");
+          console.log("✅ Payment processed via mobile wallet");
+        } else {
+          // No mobile wallet available - show error
+          throw new Error(
+            "Apple Pay / Google Pay not available. Please enable it in your device settings or use a physical card reader."
+          );
+        }
       } else {
-        // Mobile: Direct NFC requires native SDKs
+        // Fallback: No payment method available
+        console.log("❌ No payment method available");
         // Show instructions to manually charge via Stripe Dashboard
         console.log("📱 Mobile: Manual payment required");
         console.log("💳 Payment Intent ID:", paymentIntentId);
