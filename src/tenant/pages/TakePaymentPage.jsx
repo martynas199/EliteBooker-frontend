@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { api } from "../../shared/lib/apiClient";
+import { loadStripeTerminal } from "@stripe/terminal-js";
 
 /**
  * TAP TO PAY - TAKE PAYMENT PAGE
@@ -27,6 +28,7 @@ import { api } from "../../shared/lib/apiClient";
 
 export default function TakePaymentPage() {
   const navigate = useNavigate();
+  const terminalRef = useRef(null); // Store Stripe Terminal instance
 
   // State management
   const [step, setStep] = useState(1); // 1: Select, 2: Amount, 3: Tap, 4: Result
@@ -43,6 +45,12 @@ export default function TakePaymentPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [deviceSupported, setDeviceSupported] = useState(true);
   const [deviceWarning, setDeviceWarning] = useState(null);
+  const [terminalStatus, setTerminalStatus] = useState("initializing"); // initializing, ready, error
+
+  // Initialize Stripe Terminal on mount
+  useEffect(() => {
+    initializeStripeTerminal();
+  }, []);
 
   // Check device capabilities on mount
   useEffect(() => {
@@ -53,6 +61,65 @@ export default function TakePaymentPage() {
   useEffect(() => {
     loadTodaysAppointments();
   }, []);
+
+  // ==================== STRIPE TERMINAL INITIALIZATION ====================
+
+  const initializeStripeTerminal = async () => {
+    try {
+      setTerminalStatus("initializing");
+
+      // Get connection token from backend
+      const fetchConnectionToken = async () => {
+        const response = await api.post("/payments/connection-token");
+        if (!response.data.success) {
+          throw new Error("Failed to get connection token");
+        }
+        return response.data.secret;
+      };
+
+      // Load Stripe Terminal
+      const StripeTerminal = await loadStripeTerminal();
+
+      // Create terminal instance - using simulated reader for mobile web
+      const terminal = StripeTerminal.create({
+        onFetchConnectionToken: fetchConnectionToken,
+        onUnexpectedReaderDisconnect: () => {
+          console.log("Reader disconnected");
+          setTerminalStatus("error");
+        },
+      });
+
+      // Discover readers - for mobile web, use simulated reader
+      const discoverResult = await terminal.discoverReaders({
+        simulated: process.env.NODE_ENV === "development", // Use simulated in dev
+        location: undefined, // For mobile tap-to-pay, location is not required
+      });
+
+      if (discoverResult.error) {
+        throw new Error(`Failed to discover readers: ${discoverResult.error.message}`);
+      }
+
+      // Connect to first available reader (or simulated)
+      if (discoverResult.discoveredReaders.length > 0) {
+        const connectResult = await terminal.connectReader(
+          discoverResult.discoveredReaders[0]
+        );
+
+        if (connectResult.error) {
+          throw new Error(`Failed to connect reader: ${connectResult.error.message}`);
+        }
+
+        console.log("✅ Stripe Terminal connected:", connectResult.reader);
+      }
+
+      terminalRef.current = terminal;
+      setTerminalStatus("ready");
+    } catch (err) {
+      console.error("❌ Stripe Terminal initialization error:", err);
+      setTerminalStatus("error");
+      setDeviceWarning(`Terminal setup failed: ${err.message}`);
+    }
+  };
 
   // ==================== DEVICE CAPABILITY CHECK ====================
 
@@ -174,11 +241,23 @@ export default function TakePaymentPage() {
       return;
     }
 
+    if (!terminalRef.current) {
+      setError("Stripe Terminal not initialized. Please refresh the page.");
+      return;
+    }
+
+    if (terminalStatus !== "ready") {
+      setError("Card reader not ready. Please wait or refresh the page.");
+      return;
+    }
+
     setIsProcessing(true);
     setError(null);
     goToStep(3); // Move to Tap to Pay screen
 
     try {
+      const terminal = terminalRef.current;
+
       // Step 1: Create Payment Intent
       const intentResponse = await api.post("/payments/intents", {
         appointmentId: selectedAppointment?._id || null,
@@ -202,37 +281,58 @@ export default function TakePaymentPage() {
       const { clientSecret, paymentIntentId, paymentId } =
         intentResponse.data.data;
 
-      // Step 2: Initialize Stripe Terminal (for real implementation)
-      // This is where you'd use @stripe/terminal-js SDK
-      // For now, simulate the tap-to-pay process
+      console.log("💳 Payment Intent created, collecting payment method...");
 
-      // TODO: Integrate Stripe Terminal SDK
-      // const terminal = StripeTerminal.create({ ... });
-      // const result = await terminal.collectPaymentMethod(clientSecret);
-      // const confirmed = await terminal.processPayment(result.paymentIntent);
+      // Step 2: Collect payment method (activates NFC reader for tap)
+      const collectResult = await terminal.collectPaymentMethod(clientSecret);
 
-      // SIMULATION: Poll for payment status (in production, Stripe SDK handles this)
-      const pollResult = await pollPaymentStatus(paymentIntentId, 30000); // 30 second timeout
+      if (collectResult.error) {
+        throw new Error(
+          collectResult.error.message || "Failed to collect payment method"
+        );
+      }
 
-      if (pollResult.status === "succeeded") {
-        // Payment successful
-        setPaymentResult({
-          success: true,
-          paymentId,
-          amount: totalAmount,
-          cardBrand: pollResult.cardBrand,
-          cardLast4: pollResult.cardLast4,
-          receiptNumber: pollResult.receiptNumber,
-          client: pollResult.client,
-        });
-        goToStep(4);
+      console.log("✅ Payment method collected, processing...");
 
-        // Haptic feedback on success (mobile only)
-        if (navigator.vibrate) {
-          navigator.vibrate([100, 50, 100]);
-        }
-      } else if (pollResult.status === "failed") {
-        throw new Error(pollResult.error?.message || "Payment failed");
+      // Step 3: Process payment (confirms with Stripe)
+      const processResult = await terminal.processPayment(
+        collectResult.paymentIntent
+      );
+
+      if (processResult.error) {
+        throw new Error(
+          processResult.error.message || "Failed to process payment"
+        );
+      }
+
+      console.log("✅ Payment processed successfully");
+
+      // Step 4: Confirm payment and capture (for manual capture)
+      const confirmResponse = await api.post("/payments/confirm", {
+        paymentIntentId,
+      });
+
+      if (!confirmResponse.data.success) {
+        throw new Error("Payment processed but confirmation failed");
+      }
+
+      const payment = confirmResponse.data.data;
+
+      // Payment successful
+      setPaymentResult({
+        success: true,
+        paymentId,
+        amount: totalAmount,
+        cardBrand: payment.cardBrand,
+        cardLast4: payment.cardLast4,
+        receiptNumber: payment.receiptNumber,
+        client: payment.client,
+      });
+      goToStep(4);
+
+      // Haptic feedback on success (mobile only)
+      if (navigator.vibrate) {
+        navigator.vibrate([100, 50, 100]);
       }
     } catch (err) {
       console.error("Payment error:", err);

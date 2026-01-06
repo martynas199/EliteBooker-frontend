@@ -26,6 +26,7 @@
     "@capacitor/splash-screen": "^7.0.3",
     "@capacitor/status-bar": "^7.0.3",
     "@reduxjs/toolkit": "^2.2.5",
+    "@stripe/terminal-js": "^0.26.0",
     "@tanstack/react-query": "^5.90.7",
     "@tanstack/react-query-devtools": "^5.90.2",
     "@vercel/analytics": "^1.5.0",
