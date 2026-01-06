@@ -281,15 +281,22 @@ export default function ServicesList({
                           {service.description}
                         </p>
                       )}
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          service.active
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}
-                      >
-                        {service.active ? "Active" : "Inactive"}
-                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            service.active
+                              ? "bg-green-100 text-green-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {service.active ? "Active" : "Inactive"}
+                        </span>
+                        {service.fixedTimeSlots && service.fixedTimeSlots.length > 0 && (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                            🕐 Fixed Times
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -439,15 +446,22 @@ export default function ServicesList({
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            service.active
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {service.active ? "Active" : "Inactive"}
-                        </span>
+                        <div className="flex flex-wrap gap-2">
+                          <span
+                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              service.active
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {service.active ? "Active" : "Inactive"}
+                          </span>
+                          {service.fixedTimeSlots && service.fixedTimeSlots.length > 0 && (
+                            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                              🕐 Fixed Times
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-right text-sm">
                         <div className="flex items-center justify-end gap-2">

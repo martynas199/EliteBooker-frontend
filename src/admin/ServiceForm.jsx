@@ -60,6 +60,8 @@ export default function ServiceForm({
     active: true,
     priceVaries: false,
     image: null,
+    useFixedSlots: false,
+    fixedTimeSlots: [],
     variants: [
       {
         name: "Standard",
@@ -71,6 +73,8 @@ export default function ServiceForm({
       },
     ],
   });
+
+  const [newTimeSlot, setNewTimeSlot] = useState("");
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -125,6 +129,8 @@ export default function ServiceForm({
         active: service.active !== undefined ? service.active : true,
         priceVaries: service.priceVaries || false,
         image: service.image || null,
+        useFixedSlots: Array.isArray(service.fixedTimeSlots) && service.fixedTimeSlots.length > 0,
+        fixedTimeSlots: service.fixedTimeSlots || [],
         variants:
           service.variants && service.variants.length > 0
             ? service.variants
@@ -648,6 +654,147 @@ export default function ServiceForm({
                 Check this if the service price varies (will show "Up to"
                 instead of "From")
               </p>
+            </div>
+
+            {/* Fixed Time Slots */}
+            <div className="flex flex-col gap-3 p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border-2 border-purple-200">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <input
+                  type="checkbox"
+                  id="useFixedSlots"
+                  checked={formData.useFixedSlots}
+                  onChange={(e) => {
+                    handleChange("useFixedSlots", e.target.checked);
+                    if (!e.target.checked) {
+                      handleChange("fixedTimeSlots", []);
+                    }
+                  }}
+                  className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 cursor-pointer flex-shrink-0 mt-0.5"
+                />
+                <div className="flex-1 min-w-0">
+                  <label
+                    htmlFor="useFixedSlots"
+                    className="text-sm font-semibold text-gray-900 cursor-pointer block"
+                  >
+                    🕐 Use Fixed Time Slots
+                  </label>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Set specific times for appointments
+                    <span className="hidden sm:inline"> instead of automatic slot generation</span>
+                  </p>
+                </div>
+              </div>
+
+              {formData.useFixedSlots && (
+                <div className="space-y-3 mt-1">
+                  {/* Add Time Input */}
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      type="time"
+                      value={newTimeSlot}
+                      onChange={(e) => setNewTimeSlot(e.target.value)}
+                      className="w-full sm:flex-1 px-3 py-2.5 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base"
+                      placeholder="09:15"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const time = newTimeSlot.trim();
+                        if (!time) {
+                          toast.error("Please enter a time");
+                          return;
+                        }
+                        if (formData.fixedTimeSlots.includes(time)) {
+                          toast.error("This time is already added");
+                          return;
+                        }
+                        const updated = [...formData.fixedTimeSlots, time].sort();
+                        handleChange("fixedTimeSlots", updated);
+                        setNewTimeSlot("");
+                        toast.success("Time added");
+                      }}
+                      className="w-full sm:w-auto px-6 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-colors active:scale-95"
+                    >
+                      Add Time
+                    </button>
+                  </div>
+
+                  {/* Configured Times List */}
+                  {formData.fixedTimeSlots.length > 0 ? (
+                    <div className="space-y-2">
+                      <p className="text-xs sm:text-sm font-medium text-gray-700">
+                        {formData.fixedTimeSlots.length} time{formData.fixedTimeSlots.length !== 1 ? 's' : ''} configured:
+                      </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {formData.fixedTimeSlots.map((time) => (
+                          <div
+                            key={time}
+                            className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-purple-200 shadow-sm"
+                          >
+                            <span className="font-mono text-sm sm:text-base font-semibold text-purple-900">
+                              {time}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                handleChange(
+                                  "fixedTimeSlots",
+                                  formData.fixedTimeSlots.filter((t) => t !== time)
+                                );
+                                toast.success("Removed");
+                              }}
+                              className="text-xs sm:text-sm text-red-600 hover:text-red-800 font-medium px-2 py-1 hover:bg-red-50 rounded transition-colors active:scale-95"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-xs sm:text-sm text-gray-500 italic py-2">
+                      Add your first time slot above
+                    </p>
+                  )}
+
+                  {/* Quick Presets */}
+                  <div className="p-2.5 sm:p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-xs font-medium text-blue-900 mb-2">💡 Quick Presets:</p>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleChange("fixedTimeSlots", ["09:00", "12:00", "15:00", "18:00"]);
+                          toast.success("Preset applied");
+                        }}
+                        className="text-xs px-3 py-2 bg-white border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors active:scale-95 font-medium"
+                      >
+                        Every 3hrs (9-6)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleChange("fixedTimeSlots", ["10:00", "14:00", "16:00"]);
+                          toast.success("Preset applied");
+                        }}
+                        className="text-xs px-3 py-2 bg-white border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors active:scale-95 font-medium"
+                      >
+                        Morning+Afternoon
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleChange("fixedTimeSlots", []);
+                          toast.success("Cleared");
+                        }}
+                        className="text-xs px-3 py-2 bg-white border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors active:scale-95 font-medium"
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

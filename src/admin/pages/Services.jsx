@@ -66,6 +66,17 @@ export default function Services() {
     // Prepare service data
     const serviceDataToSend = { ...serviceData };
 
+    // Handle fixed time slots - if useFixedSlots is false, remove fixedTimeSlots
+    if (!serviceDataToSend.useFixedSlots) {
+      // Explicitly set to undefined to remove from database
+      serviceDataToSend.fixedTimeSlots = undefined;
+    } else if (serviceDataToSend.fixedTimeSlots && serviceDataToSend.fixedTimeSlots.length > 0) {
+      // Keep the fixed time slots array
+      serviceDataToSend.fixedTimeSlots = serviceDataToSend.fixedTimeSlots;
+    }
+    // Remove the UI-only field
+    delete serviceDataToSend.useFixedSlots;
+
     // Ensure IDs are strings (convert ObjectId to string if needed)
     if (serviceDataToSend.primaryBeauticianId) {
       serviceDataToSend.primaryBeauticianId = String(
