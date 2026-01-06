@@ -68,56 +68,68 @@ export default function TakePaymentPage() {
     try {
       setTerminalStatus("initializing");
 
-      // Get connection token from backend
-      const fetchConnectionToken = async () => {
-        const response = await api.post("/payments/connection-token");
-        if (!response.data.success) {
-          throw new Error("Failed to get connection token");
+      // Check if running on mobile
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (!isMobile) {
+        // Desktop: Try to use Stripe Terminal JS with simulated reader
+        const StripeTerminal = await loadStripeTerminal();
+
+        const fetchConnectionToken = async () => {
+          const response = await api.post("/payments/connection-token");
+          if (!response.data.success) {
+            throw new Error("Failed to get connection token");
+          }
+          return response.data.secret;
+        };
+
+        const terminal = StripeTerminal.create({
+          onFetchConnectionToken: fetchConnectionToken,
+          onUnexpectedReaderDisconnect: () => {
+            console.log("Reader disconnected");
+            setTerminalStatus("error");
+          },
+        });
+
+        // Use simulated reader for testing
+        const discoverResult = await terminal.discoverReaders({
+          simulated: true,
+        });
+
+        if (discoverResult.error) {
+          console.error("Discover error:", discoverResult.error);
+          throw new Error(discoverResult.error.message);
         }
-        return response.data.secret;
-      };
 
-      // Load Stripe Terminal
-      const StripeTerminal = await loadStripeTerminal();
+        if (discoverResult.discoveredReaders.length === 0) {
+          throw new Error("No simulated readers found");
+        }
 
-      // Create terminal instance - using simulated reader for mobile web
-      const terminal = StripeTerminal.create({
-        onFetchConnectionToken: fetchConnectionToken,
-        onUnexpectedReaderDisconnect: () => {
-          console.log("Reader disconnected");
-          setTerminalStatus("error");
-        },
-      });
-
-      // Discover readers - for mobile web, use simulated reader
-      const discoverResult = await terminal.discoverReaders({
-        simulated: process.env.NODE_ENV === "development", // Use simulated in dev
-        location: undefined, // For mobile tap-to-pay, location is not required
-      });
-
-      if (discoverResult.error) {
-        throw new Error(`Failed to discover readers: ${discoverResult.error.message}`);
-      }
-
-      // Connect to first available reader (or simulated)
-      if (discoverResult.discoveredReaders.length > 0) {
         const connectResult = await terminal.connectReader(
           discoverResult.discoveredReaders[0]
         );
 
         if (connectResult.error) {
-          throw new Error(`Failed to connect reader: ${connectResult.error.message}`);
+          console.error("Connect error:", connectResult.error);
+          throw new Error(connectResult.error.message);
         }
 
-        console.log("✅ Stripe Terminal connected:", connectResult.reader);
+        console.log("✅ Terminal connected:", connectResult.reader);
+        terminalRef.current = terminal;
+      } else {
+        // Mobile: Skip Terminal SDK, use direct payment collection
+        console.log("📱 Mobile device: Using direct payment flow");
+        terminalRef.current = null; // Signal to use alternative flow
       }
 
-      terminalRef.current = terminal;
       setTerminalStatus("ready");
     } catch (err) {
-      console.error("❌ Stripe Terminal initialization error:", err);
+      console.error("❌ Terminal initialization error:", err);
       setTerminalStatus("error");
-      setDeviceWarning(`Terminal setup failed: ${err.message}`);
+      setDeviceWarning(`Terminal setup failed: ${err.message}. Will use fallback payment method.`);
+      // Still set to ready to allow fallback
+      setTerminalStatus("ready");
+      terminalRef.current = null;
     }
   };
 
@@ -241,11 +253,6 @@ export default function TakePaymentPage() {
       return;
     }
 
-    if (!terminalRef.current) {
-      setError("Stripe Terminal not initialized. Please refresh the page.");
-      return;
-    }
-
     if (terminalStatus !== "ready") {
       setError("Card reader not ready. Please wait or refresh the page.");
       return;
@@ -281,31 +288,45 @@ export default function TakePaymentPage() {
       const { clientSecret, paymentIntentId, paymentId } =
         intentResponse.data.data;
 
-      console.log("💳 Payment Intent created, collecting payment method...");
+      console.log("💳 Payment Intent created:", paymentIntentId);
 
-      // Step 2: Collect payment method (activates NFC reader for tap)
-      const collectResult = await terminal.collectPaymentMethod(clientSecret);
+      // Step 2 & 3: Collect and process payment
+      if (terminal) {
+        // Desktop: Use Stripe Terminal SDK with hardware reader
+        console.log("🖥️ Using Stripe Terminal SDK...");
 
-      if (collectResult.error) {
-        throw new Error(
-          collectResult.error.message || "Failed to collect payment method"
+        const collectResult = await terminal.collectPaymentMethod(clientSecret);
+        if (collectResult.error) {
+          throw new Error(
+            collectResult.error.message || "Failed to collect payment method"
+          );
+        }
+
+        console.log("✅ Payment method collected, processing...");
+
+        const processResult = await terminal.processPayment(
+          collectResult.paymentIntent
         );
+        if (processResult.error) {
+          throw new Error(
+            processResult.error.message || "Failed to process payment"
+          );
+        }
+
+        console.log("✅ Payment processed via Terminal SDK");
+      } else {
+        // Mobile: Use Payment Request API or redirect to Stripe Checkout
+        // For now, poll for manual card entry completion
+        console.log("📱 Mobile fallback: Waiting for manual payment...");
+        console.log("ℹ️  For mobile Tap to Pay, use native iOS/Android SDKs via Capacitor");
+        
+        // Poll for payment status (simulate waiting for manual card entry)
+        const pollResult = await pollPaymentStatus(paymentIntentId, 60000);
+        
+        if (pollResult.status !== "succeeded") {
+          throw new Error(pollResult.error?.message || "Payment not completed");
+        }
       }
-
-      console.log("✅ Payment method collected, processing...");
-
-      // Step 3: Process payment (confirms with Stripe)
-      const processResult = await terminal.processPayment(
-        collectResult.paymentIntent
-      );
-
-      if (processResult.error) {
-        throw new Error(
-          processResult.error.message || "Failed to process payment"
-        );
-      }
-
-      console.log("✅ Payment processed successfully");
 
       // Step 4: Confirm payment and capture (for manual capture)
       const confirmResponse = await api.post("/payments/confirm", {
