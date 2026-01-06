@@ -331,11 +331,13 @@ export default function TakePaymentPage() {
 
       // Set up payment method handler
       let paymentMethodReceived = false;
+      let walletPaymentIntent = null;
+      let walletError = null;
 
       paymentRequest.on("paymentmethod", async (ev) => {
         try {
           // Confirm the payment with the PaymentMethod from wallet
-          const { error: confirmError } =
+          const { error: confirmError, paymentIntent } =
             await stripeRef.current.confirmCardPayment(
               clientSecret,
               { payment_method: ev.paymentMethod.id },
@@ -344,23 +346,47 @@ export default function TakePaymentPage() {
 
           if (confirmError) {
             ev.complete("fail");
-            throw confirmError;
+            walletError = confirmError;
+            return;
+          }
+
+          let finalIntent = paymentIntent;
+
+          if (paymentIntent?.status === "requires_action") {
+            console.log(
+              "⚠️ Additional authentication required, invoking handleCardAction"
+            );
+            const { error: actionError, paymentIntent: actionIntent } =
+              await stripeRef.current.handleCardAction(clientSecret);
+
+            if (actionError) {
+              ev.complete("fail");
+              walletError = actionError;
+              return;
+            }
+
+            finalIntent = actionIntent;
           }
 
           ev.complete("success");
           paymentMethodReceived = true;
+          walletPaymentIntent = finalIntent;
           console.log("✅ Payment processed via mobile wallet");
         } catch (err) {
           ev.complete("fail");
-          throw err;
+          walletError = err;
         }
       });
 
       // Show the payment sheet
       await paymentRequest.show();
 
+      if (walletError) {
+        throw walletError;
+      }
+
       // Wait for payment method event to complete
-      if (!paymentMethodReceived) {
+      if (!paymentMethodReceived || !walletPaymentIntent) {
         throw new Error("Payment was canceled or failed");
       }
 
