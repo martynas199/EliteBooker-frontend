@@ -73,7 +73,7 @@ export default function TakePaymentPage() {
 
       // Check if running on mobile
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      
+
       if (!isMobile) {
         // Desktop: Try to use Stripe Terminal JS with simulated reader
         const StripeTerminal = await loadStripeTerminal();
@@ -121,24 +121,52 @@ export default function TakePaymentPage() {
         terminalRef.current = terminal;
       } else {
         // Mobile: Initialize Stripe.js for Payment Request API (Apple Pay / Google Pay)
-        console.log("📱 Mobile device: Initializing Stripe.js for mobile payments");
-        
-        const configResponse = await api.get("/payments/config");
-        if (!configResponse.data.success || !configResponse.data.publishableKey) {
-          throw new Error("Failed to get Stripe publishable key");
-        }
+        console.log(
+          "📱 Mobile device: Initializing Stripe.js for mobile payments"
+        );
 
-        const stripe = await loadStripe(configResponse.data.publishableKey);
-        stripeRef.current = stripe;
-        terminalRef.current = null; // Signal to use mobile payment flow
-        console.log("✅ Stripe.js initialized for mobile payments");
+        try {
+          const configResponse = await api.get("/payments/config");
+          console.log("📡 Config response:", configResponse.data);
+
+          if (
+            !configResponse.data.success ||
+            !configResponse.data.publishableKey
+          ) {
+            console.error("❌ No publishable key in response");
+            throw new Error("Failed to get Stripe publishable key");
+          }
+
+          console.log(
+            "🔑 Loading Stripe with key:",
+            configResponse.data.publishableKey.substring(0, 20) + "..."
+          );
+          const stripe = await loadStripe(configResponse.data.publishableKey);
+
+          if (!stripe) {
+            console.error("❌ Stripe.js failed to load");
+            throw new Error("Failed to initialize Stripe.js");
+          }
+
+          stripeRef.current = stripe;
+          terminalRef.current = null; // Signal to use mobile payment flow
+          console.log(
+            "✅ Stripe.js initialized for mobile payments, stripeRef set:",
+            !!stripeRef.current
+          );
+        } catch (configError) {
+          console.error("❌ Config error:", configError);
+          throw configError;
+        }
       }
 
       setTerminalStatus("ready");
     } catch (err) {
       console.error("❌ Stripe initialization error:", err);
       setTerminalStatus("error");
-      setDeviceWarning(`Setup failed: ${err.message}. Will use fallback payment method.`);
+      setDeviceWarning(
+        `Setup failed: ${err.message}. Will use fallback payment method.`
+      );
       // Still set to ready to allow fallback
       setTerminalStatus("ready");
       terminalRef.current = null;
@@ -313,8 +341,13 @@ export default function TakePaymentPage() {
       console.log("💳 Payment Intent created:", paymentIntentId);
 
       // Step 2 & 3: Collect and process payment
-      console.log("🔍 Debug - terminal:", !!terminal, "stripeRef:", !!stripeRef.current);
-      
+      console.log(
+        "🔍 Debug - terminal:",
+        !!terminal,
+        "stripeRef:",
+        !!stripeRef.current
+      );
+
       if (terminal) {
         // Desktop: Use Stripe Terminal SDK with hardware reader
         console.log("🖥️ Using Stripe Terminal SDK...");
@@ -341,13 +374,13 @@ export default function TakePaymentPage() {
       } else if (stripeRef.current) {
         // Mobile: Use Stripe.js with Payment Request Button (Apple Pay / Google Pay)
         console.log("📱 Checking for Apple Pay / Google Pay...");
-        
+
         const paymentRequest = stripeRef.current.paymentRequest({
           country: "GB",
           currency: "gbp",
           total: {
-            label: selectedAppointment 
-              ? `Appointment Payment` 
+            label: selectedAppointment
+              ? `Appointment Payment`
               : "Custom Payment",
             amount: totalAmount,
           },
@@ -357,21 +390,22 @@ export default function TakePaymentPage() {
 
         // Check if Apple Pay or Google Pay is available
         const canMakePayment = await paymentRequest.canMakePayment();
-        
+
         if (canMakePayment) {
           console.log("✅ Mobile wallet available:", canMakePayment);
-          
+
           // Set up payment method handler
           let paymentMethodReceived = false;
-          
-          paymentRequest.on('paymentmethod', async (ev) => {
+
+          paymentRequest.on("paymentmethod", async (ev) => {
             try {
               // Confirm the payment with the PaymentMethod from wallet
-              const { error: confirmError } = await stripeRef.current.confirmCardPayment(
-                clientSecret,
-                { payment_method: ev.paymentMethod.id },
-                { handleActions: false }
-              );
+              const { error: confirmError } =
+                await stripeRef.current.confirmCardPayment(
+                  clientSecret,
+                  { payment_method: ev.paymentMethod.id },
+                  { handleActions: false }
+                );
 
               if (confirmError) {
                 ev.complete("fail");
@@ -389,7 +423,7 @@ export default function TakePaymentPage() {
 
           // Show the payment sheet
           const result = await paymentRequest.show();
-          
+
           // Wait for payment method event to complete
           if (!paymentMethodReceived) {
             throw new Error("Payment was canceled or failed");
@@ -406,13 +440,17 @@ export default function TakePaymentPage() {
         // Show instructions to manually charge via Stripe Dashboard
         console.log("📱 Mobile: Manual payment required");
         console.log("💳 Payment Intent ID:", paymentIntentId);
-        console.log("🔗 Charge manually: https://dashboard.stripe.com/test/payments/" + paymentIntentId);
-        
+        console.log(
+          "🔗 Charge manually: https://dashboard.stripe.com/test/payments/" +
+            paymentIntentId
+        );
+
         // For mobile tap-to-pay, show error with instructions
         throw new Error(
           "Mobile Tap to Pay requires native app. " +
-          "To complete payment, go to Stripe Dashboard > Payments > " + paymentIntentId + 
-          " and manually charge the card, or use a physical card reader."
+            "To complete payment, go to Stripe Dashboard > Payments > " +
+            paymentIntentId +
+            " and manually charge the card, or use a physical card reader."
         );
       }
 
