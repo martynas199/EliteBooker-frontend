@@ -159,6 +159,8 @@ const useTenantSettingsStore = create((set, get) => ({
           ecommerce: features.enableProducts === true,
           emailNotifications: features.emailNotifications === true,
           multiLocation: features.multiLocation === true,
+          seminars: features.seminars !== false,
+          payOnTap: features.payOnTap !== false,
         },
         ecommerceEnabled: features.enableProducts === true,
         tenantId: tenant._id,
@@ -172,6 +174,8 @@ const useTenantSettingsStore = create((set, get) => ({
         ecommerce: features.enableProducts === true,
         emailNotifications: features.emailNotifications === true,
         multiLocation: features.multiLocation === true,
+        seminars: features.seminars !== false,
+        payOnTap: features.payOnTap !== false,
       });
     } catch (error) {
       console.error("Failed to load tenant settings:", error);
@@ -192,6 +196,8 @@ const useTenantSettingsStore = create((set, get) => ({
         ecommerce: false,
         emailNotifications: true,
         multiLocation: false,
+        seminars: true,
+        payOnTap: true,
       },
       smsGatewayConnected: false,
       stripeConnected: true,

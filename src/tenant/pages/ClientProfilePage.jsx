@@ -41,9 +41,12 @@ export default function ClientProfilePage() {
   const [phone, setPhone] = useState("");
   const [preferredLanguage, setPreferredLanguage] = useState("en");
   const [preferredCurrency, setPreferredCurrency] = useState("GBP");
+  const [seminars, setSeminars] = useState([]);
+  const [seminarsLoading, setSeminarsLoading] = useState(true);
 
   useEffect(() => {
     fetchProfile();
+    fetchSeminars();
   }, []);
 
   // Fetch business name if we have a slug
@@ -101,6 +104,19 @@ export default function ClientProfilePage() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSeminars = async () => {
+    try {
+      setSeminarsLoading(true);
+      const response = await api.get("/seminars/bookings/my-bookings");
+      setSeminars(response.data || []);
+    } catch (error) {
+      console.error("Failed to fetch seminars:", error);
+      setSeminars([]);
+    } finally {
+      setSeminarsLoading(false);
     }
   };
 
@@ -520,6 +536,150 @@ export default function ClientProfilePage() {
                     </Button>
                   </div>
                 </div>
+              </div>
+            )}
+          </div>
+
+          {/* My Seminars */}
+          <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 mb-6">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
+              My Seminars & Masterclasses ({seminars.length})
+            </h2>
+
+            {seminarsLoading ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              </div>
+            ) : seminars.length === 0 ? (
+              <div className="text-center py-8">
+                <svg
+                  className="w-16 h-16 text-gray-300 mx-auto mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
+                </svg>
+                <p className="text-gray-600 mb-4 text-sm sm:text-base">
+                  You haven't registered for any seminars yet
+                </p>
+                <Button
+                  variant="brand"
+                  onClick={() => navigate("../../seminars")}
+                  className="mx-auto"
+                >
+                  Browse Seminars
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {seminars.map((booking) => (
+                  <div
+                    key={booking._id}
+                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                      {/* Seminar Image */}
+                      {booking.seminarInfo?.images?.main && (
+                        <div className="w-full sm:w-24 h-32 sm:h-24 rounded-lg overflow-hidden flex-shrink-0">
+                          <img
+                            src={booking.seminarInfo.images.main}
+                            alt={booking.seminarInfo.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+
+                      {/* Seminar Details */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <h3 className="font-semibold text-base text-gray-900">
+                            {booking.seminarInfo?.title || "Seminar"}
+                          </h3>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
+                              booking.status === "confirmed"
+                                ? "bg-green-100 text-green-700"
+                                : booking.status === "cancelled"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-gray-100 text-gray-700"
+                            }`}
+                          >
+                            {booking.status.charAt(0).toUpperCase() +
+                              booking.status.slice(1)}
+                          </span>
+                        </div>
+
+                        {/* Session Info */}
+                        <div className="space-y-1 text-sm text-gray-600 mb-3">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="h-4 w-4" />
+                            <span>
+                              {booking.sessionInfo?.date
+                                ? new Date(
+                                    booking.sessionInfo.date
+                                  ).toLocaleDateString("en-GB", {
+                                    weekday: "short",
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  })
+                                : "Date TBA"}
+                            </span>
+                          </div>
+                          {booking.sessionInfo?.startTime && (
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4" />
+                              <span>
+                                {booking.sessionInfo.startTime} -{" "}
+                                {booking.sessionInfo.endTime}
+                              </span>
+                            </div>
+                          )}
+                          {booking.attendeeInfo?.name && (
+                            <div className="flex items-center gap-2">
+                              <UserCircle className="h-4 w-4" />
+                              <span>{booking.attendeeInfo.name}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Amount Paid */}
+                        <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                          <span className="text-sm text-gray-600">
+                            Amount Paid:
+                          </span>
+                          <span className="text-base font-semibold text-gray-900">
+                            {formatCurrency(booking.amount / 100)}
+                          </span>
+                        </div>
+
+                        {/* Actions */}
+                        {booking.status === "confirmed" && (
+                          <div className="mt-3">
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() =>
+                                navigate(
+                                  `../../seminars/${booking.seminarInfo?.slug}`
+                                )
+                              }
+                              className="w-full sm:w-auto"
+                            >
+                              View Details
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>

@@ -13,7 +13,7 @@ export default function SeminarBookingSuccessPage() {
 
   useEffect(() => {
     if (!sessionId) {
-      navigate("/seminars");
+      navigate("../seminars");
       return;
     }
     // In a real implementation, you'd verify the session with your backend
@@ -145,7 +145,7 @@ export default function SeminarBookingSuccessPage() {
                 View My Bookings
               </button>
             </Link>
-            <Link to="/seminars">
+            <Link to="../seminars">
               <button className="w-full sm:w-auto px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                 Browse More Seminars
               </button>

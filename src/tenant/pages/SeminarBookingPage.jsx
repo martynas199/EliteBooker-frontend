@@ -25,12 +25,8 @@ export default function SeminarBookingPage() {
   });
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate(`/login?redirect=/seminars/${slug}/book`);
-      return;
-    }
     loadSeminar();
-  }, [slug, isAuthenticated]);
+  }, [slug]);
 
   const loadSeminar = async () => {
     try {
@@ -41,7 +37,9 @@ export default function SeminarBookingPage() {
       // Pre-select session from URL param
       const sessionId = searchParams.get("session");
       if (sessionId) {
-        const session = data.upcomingSessions?.find((s) => s._id === sessionId);
+        const session = data.upcomingSessions?.find(
+          (s) => s.sessionId === sessionId || s._id === sessionId
+        );
         if (session) {
           setSelectedSession(session);
         }
@@ -59,7 +57,7 @@ export default function SeminarBookingPage() {
     } catch (error) {
       console.error("Failed to load seminar:", error);
       toast.error("Seminar not found");
-      navigate("/seminars");
+      navigate("../../seminars");
     } finally {
       setLoading(false);
     }
@@ -84,7 +82,7 @@ export default function SeminarBookingPage() {
     try {
       const checkoutData = {
         seminarId: seminar._id,
-        sessionId: selectedSession._id,
+        sessionId: selectedSession.sessionId || selectedSession._id,
         attendeeInfo: {
           name: formData.name.trim(),
           email: formData.email.trim(),
@@ -143,7 +141,7 @@ export default function SeminarBookingPage() {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={() => navigate(`/seminars/${slug}`)}
+            onClick={() => navigate(`../seminars/${slug}`)}
             className="text-blue-600 hover:text-blue-800 text-sm mb-4 inline-flex items-center"
           >
             <svg
@@ -170,67 +168,49 @@ export default function SeminarBookingPage() {
           {/* Left Column - Form */}
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Session Selection */}
+              {/* Selected Session Display */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                  Select Session
+                  Selected Session
                 </h2>
-                <div className="space-y-3">
-                  {seminar.upcomingSessions &&
-                  seminar.upcomingSessions.length > 0 ? (
-                    seminar.upcomingSessions.map((session) => {
-                      const bookable = isSessionBookable(session);
-                      const spotsLeft =
-                        session.maxAttendees - session.currentAttendees;
-                      return (
-                        <label
-                          key={session._id}
-                          className={`block border-2 rounded-lg p-4 cursor-pointer transition-colors ${
-                            selectedSession?._id === session._id
-                              ? "border-blue-600 bg-blue-50"
-                              : bookable
-                              ? "border-gray-200 hover:border-gray-300"
-                              : "border-gray-200 bg-gray-50 cursor-not-allowed opacity-60"
-                          }`}
-                        >
-                          <div className="flex items-start">
-                            <input
-                              type="radio"
-                              name="session"
-                              value={session._id}
-                              checked={selectedSession?._id === session._id}
-                              onChange={() => setSelectedSession(session)}
-                              disabled={!bookable}
-                              className="mt-1 mr-3"
-                            />
-                            <div className="flex-1">
-                              <p className="font-semibold text-gray-900">
-                                {formatDate(session.date)}
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                {session.startTime} - {session.endTime}
-                              </p>
-                              <p className="text-sm text-gray-500 mt-1">
-                                {spotsLeft} spots remaining
-                              </p>
-                            </div>
-                            {!bookable && (
-                              <span className="text-sm font-medium text-red-600">
-                                {session.status === "full"
-                                  ? "Full"
-                                  : "Unavailable"}
-                              </span>
-                            )}
-                          </div>
-                        </label>
-                      );
-                    })
-                  ) : (
-                    <p className="text-gray-500 text-center py-4">
-                      No available sessions
-                    </p>
-                  )}
-                </div>
+                {selectedSession ? (
+                  <div className="bg-blue-50 border-2 border-blue-600 rounded-lg p-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="font-semibold text-gray-900 text-lg">
+                          {formatDate(selectedSession.date)}
+                        </p>
+                        <p className="text-gray-600 mt-1">
+                          {selectedSession.startTime} -{" "}
+                          {selectedSession.endTime}
+                        </p>
+                        <p className="text-sm text-gray-500 mt-2">
+                          {selectedSession.maxAttendees -
+                            selectedSession.currentAttendees}{" "}
+                          spots remaining
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => navigate(`..`)}
+                        className="text-sm text-blue-600 hover:text-blue-800 underline"
+                      >
+                        Change
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500 mb-4">No session selected</p>
+                    <button
+                      type="button"
+                      onClick={() => navigate(`..`)}
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      Select a session
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Attendee Information */}

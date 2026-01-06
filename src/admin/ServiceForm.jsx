@@ -823,14 +823,14 @@ export default function ServiceForm({
         </div>
 
         {/* Variants Section */}
-        <div className="bg-white rounded-2xl shadow-lg py-6 space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b-2 border-gray-100 px-6">
-            <div className="flex items-center gap-3">
+        <div className="bg-white rounded-2xl shadow-lg py-6 space-y-6 overflow-hidden">
+          <div className="flex flex-col gap-4 px-4 sm:px-6 sm:flex-row sm:items-center sm:justify-between pb-4 border-b-2 border-gray-100">
+            <div className="flex items-start gap-3">
               <div className="p-2 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg">
                 <Layers className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900">
                   {t("serviceVariants", language)}
                 </h3>
                 {errors.variants && (
@@ -841,21 +841,22 @@ export default function ServiceForm({
             <Button
               type="button"
               onClick={addVariant}
-              variant="brand"
+              variant="outline"
               size="sm"
-              className="shadow-md hover:shadow-lg transition-shadow"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl border-2 border-brand-200 bg-white px-4 py-2.5 text-sm font-semibold text-brand-700 shadow-sm hover:border-brand-400"
             >
-              + {t("addVariant", language)}
+              <span className="text-base leading-none">＋</span>
+              <span>{t("addVariant", language)}</span>
             </Button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 px-4 sm:px-6">
             {formData.variants.map((variant, index) => (
               <div
                 key={index}
-                className="p-5 border-2 border-gray-200 rounded-xl space-y-4 bg-gradient-to-br from-gray-50 to-white hover:border-gray-300 transition-colors"
+                className="p-4 sm:p-5 border-2 border-gray-200 rounded-2xl space-y-4 bg-gradient-to-br from-gray-50 to-white hover:border-gray-300 transition-colors"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <h4 className="font-bold text-gray-900 text-base">
                     {t("variantName", language)} {index + 1}
                   </h4>
@@ -870,7 +871,7 @@ export default function ServiceForm({
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <FormField
                     label={t("variantName", language)}
                     error={errors[`variant_${index}_name`]}

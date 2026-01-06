@@ -34,7 +34,8 @@ export default function Seminars() {
       if (filters.search) params.search = filters.search;
 
       const data = await SeminarsAPI.list(params);
-      setSeminars(data);
+      const seminarList = Array.isArray(data) ? data : data?.seminars || [];
+      setSeminars(seminarList);
     } catch (error) {
       console.error("Failed to load seminars:", error);
       toast.error("Failed to load seminars");
@@ -112,18 +113,21 @@ export default function Seminars() {
   }
 
   return (
-    <div className="space-y-6 overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 overflow-x-hidden px-2 sm:px-0">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg hidden sm:flex">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-2 sm:p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg sm:rounded-xl shadow-lg flex sm:hidden">
+            <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+          </div>
+          <div className="hidden sm:flex p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg">
             <GraduationCap className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
               Seminars & Masterclasses
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-xs sm:text-sm text-gray-600">
               Manage your educational events
             </p>
           </div>
@@ -131,18 +135,18 @@ export default function Seminars() {
         <Button
           onClick={() => navigate("/admin/seminars/create")}
           variant="primary"
-          className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-blue-600 hover:bg-blue-700"
+          className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-blue-600 hover:bg-blue-700 text-sm sm:text-base py-2 sm:py-2.5"
         >
-          <Plus className="w-5 h-5 mr-2 inline-block" />
+          <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 inline-block" />
           Create Seminar
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border-2 border-gray-100 p-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl sm:rounded-2xl shadow-lg border-2 border-gray-100 p-4 sm:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
               Search
             </label>
             <input
@@ -153,12 +157,12 @@ export default function Seminars() {
               }
               onKeyDown={(e) => e.key === "Enter" && loadSeminars()}
               placeholder="Search seminars..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
               Status
             </label>
             <select
@@ -166,7 +170,7 @@ export default function Seminars() {
               onChange={(e) =>
                 setFilters({ ...filters, status: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Status</option>
               <option value="draft">Draft</option>
@@ -176,7 +180,7 @@ export default function Seminars() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
               Category
             </label>
             <select
@@ -184,7 +188,7 @@ export default function Seminars() {
               onChange={(e) =>
                 setFilters({ ...filters, category: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Categories</option>
               <option value="Skincare">Skincare</option>
@@ -200,7 +204,7 @@ export default function Seminars() {
             <Button
               onClick={loadSeminars}
               variant="secondary"
-              className="w-full"
+              className="w-full text-sm sm:text-base py-2"
             >
               Apply Filters
             </Button>
@@ -210,128 +214,224 @@ export default function Seminars() {
 
       {/* Seminars List */}
       {seminars.length === 0 ? (
-        <Card className="p-12 text-center">
-          <p className="text-gray-500 text-lg">No seminars found</p>
-          <p className="text-gray-400 mt-2">
+        <Card className="p-8 sm:p-12 text-center">
+          <p className="text-gray-500 text-base sm:text-lg">
+            No seminars found
+          </p>
+          <p className="text-gray-400 mt-2 text-sm">
             Create your first seminar to get started
           </p>
         </Card>
       ) : (
-        <Card className="overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Seminar
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Category
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Sessions
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Price
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {seminars.map((seminar) => (
-                <tr key={seminar._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center">
-                      {seminar.images?.main && (
-                        <img
-                          src={seminar.images.main}
-                          alt={seminar.title}
-                          className="h-12 w-12 rounded object-cover mr-3"
-                        />
-                      )}
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {seminar.title}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {seminar.level}
-                        </div>
-                      </div>
+        <>
+          {/* Mobile Cards View */}
+          <div className="block md:hidden space-y-4">
+            {seminars.map((seminar) => (
+              <Card key={seminar._id} className="p-4">
+                <div className="flex gap-3 mb-3">
+                  {seminar.images?.main && (
+                    <img
+                      src={seminar.images.main}
+                      alt={seminar.title}
+                      className="h-16 w-16 rounded-lg object-cover flex-shrink-0"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-semibold text-gray-900 truncate">
+                      {seminar.title}
+                    </h3>
+                    <p className="text-xs text-gray-600">{seminar.level}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded">
+                        {seminar.category}
+                      </span>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded ${getStatusBadge(
+                          seminar.status
+                        )}`}
+                      >
+                        {seminar.status}
+                      </span>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {seminar.category}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {getUpcomingSessions(seminar)} upcoming
-                    <br />
-                    <span className="text-xs text-gray-400">
-                      {seminar.sessions?.length || 0} total
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
+                  <div>
+                    <span className="text-gray-600">Sessions: </span>
+                    <span className="font-medium">
+                      {getUpcomingSessions(seminar)} upcoming
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {seminar.pricing.currency} {seminar.pricing.price}
-                    {seminar.pricing.earlyBirdPrice && (
-                      <div className="text-xs text-green-600">
-                        Early: {seminar.pricing.currency}{" "}
-                        {seminar.pricing.earlyBirdPrice}
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(
-                        seminar.status
-                      )}`}
-                    >
-                      {seminar.status}
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Price: </span>
+                    <span className="font-medium">
+                      {seminar.pricing.currency} {seminar.pricing.price}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                    <Link
-                      to={`/admin/seminars/${seminar._id}/attendees`}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      Attendees
-                    </Link>
-                    <Link
-                      to={`/admin/seminars/${seminar._id}/edit`}
-                      className="text-indigo-600 hover:text-indigo-900"
-                    >
-                      Edit
-                    </Link>
-                    {seminar.status === "draft" && (
-                      <button
-                        onClick={() => handlePublish(seminar._id)}
-                        className="text-green-600 hover:text-green-900"
-                      >
-                        Publish
-                      </button>
-                    )}
-                    {seminar.status === "published" && (
-                      <button
-                        onClick={() => handleArchive(seminar._id)}
-                        className="text-orange-600 hover:text-orange-900"
-                      >
-                        Archive
-                      </button>
-                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    to={`/admin/seminars/${seminar._id}/attendees`}
+                    className="flex-1 text-center px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded transition-colors"
+                  >
+                    Attendees
+                  </Link>
+                  <Link
+                    to={`/admin/seminars/${seminar._id}/edit`}
+                    className="flex-1 text-center px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded transition-colors"
+                  >
+                    Edit
+                  </Link>
+                  {seminar.status === "draft" && (
                     <button
-                      onClick={() => setDeleteModal({ open: true, seminar })}
-                      className="text-red-600 hover:text-red-900"
+                      onClick={() => handlePublish(seminar._id)}
+                      className="flex-1 px-3 py-1.5 text-xs font-medium text-green-600 bg-green-50 hover:bg-green-100 rounded transition-colors"
                     >
-                      Delete
+                      Publish
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Card>
+                  )}
+                  {seminar.status === "published" && (
+                    <button
+                      onClick={() => handleArchive(seminar._id)}
+                      className="flex-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded transition-colors"
+                    >
+                      Archive
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setDeleteModal({ open: true, seminar })}
+                    className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <Card className="overflow-hidden hidden md:block">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Seminar
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Category
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Sessions
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Price
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {seminars.map((seminar) => (
+                    <tr key={seminar._id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          {seminar.images?.main && (
+                            <img
+                              src={seminar.images.main}
+                              alt={seminar.title}
+                              className="h-12 w-12 rounded object-cover mr-3"
+                            />
+                          )}
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {seminar.title}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {seminar.level}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {seminar.category}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {getUpcomingSessions(seminar)} upcoming
+                        <br />
+                        <span className="text-xs text-gray-400">
+                          {seminar.sessions?.length || 0} total
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {seminar.pricing.currency} {seminar.pricing.price}
+                        {seminar.pricing.earlyBirdPrice && (
+                          <div className="text-xs text-green-600">
+                            Early: {seminar.pricing.currency}{" "}
+                            {seminar.pricing.earlyBirdPrice}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(
+                            seminar.status
+                          )}`}
+                        >
+                          {seminar.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                        <Link
+                          to={`/admin/seminars/${seminar._id}/attendees`}
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          Attendees
+                        </Link>
+                        <Link
+                          to={`/admin/seminars/${seminar._id}/edit`}
+                          className="text-indigo-600 hover:text-indigo-900"
+                        >
+                          Edit
+                        </Link>
+                        {seminar.status === "draft" && (
+                          <button
+                            onClick={() => handlePublish(seminar._id)}
+                            className="text-green-600 hover:text-green-900"
+                          >
+                            Publish
+                          </button>
+                        )}
+                        {seminar.status === "published" && (
+                          <button
+                            onClick={() => handleArchive(seminar._id)}
+                            className="text-orange-600 hover:text-orange-900"
+                          >
+                            Archive
+                          </button>
+                        )}
+                        <button
+                          onClick={() =>
+                            setDeleteModal({ open: true, seminar })
+                          }
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
       )}
 
       {/* Delete Modal */}

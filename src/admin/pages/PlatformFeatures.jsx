@@ -313,6 +313,7 @@ export default function FeaturesPage() {
       ecommerce: ecommerceEnabled === true,
       emailNotifications: featureFlags?.emailNotifications === true,
       multiLocation: featureFlags?.multiLocation === true,
+      seminars: featureFlags?.seminars === true,
       payOnTap: featureFlags?.payOnTap === true,
     });
   }, [featureFlags, ecommerceEnabled]);
@@ -328,6 +329,7 @@ export default function FeaturesPage() {
       ecommerce: "E-commerce",
       emailNotifications: "Email Notifications",
       multiLocation: "Multi-Location Support",
+      seminars: "Seminars & Masterclasses",
       payOnTap: "Tap to Pay",
     };
 
@@ -718,8 +720,6 @@ export default function FeaturesPage() {
                 description="Enable seminars and masterclasses booking system. When enabled, the Seminars section will appear in your admin sidebar and client-facing website."
                 enabled={localFlags.seminars}
                 onChange={() => handleToggle("seminars")}
-                disabled={true}
-                disabledReason="Coming soon! This feature is currently in development."
               />
 
               {/* Pay on Tap */}

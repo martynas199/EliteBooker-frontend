@@ -27,19 +27,15 @@ export default function SeminarDetailPage() {
     } catch (error) {
       console.error("Failed to load seminar:", error);
       toast.error("Seminar not found");
-      navigate("/seminars");
+      navigate("../seminars");
     } finally {
       setLoading(false);
     }
   };
 
   const handleBookNow = (session) => {
-    if (!isAuthenticated) {
-      toast.error("Please log in to book a seminar");
-      navigate(`/login?redirect=/seminars/${slug}`);
-      return;
-    }
-    navigate(`/seminars/${slug}/book?session=${session._id}`);
+    const sessionIdentifier = session.sessionId || session._id;
+    navigate(`book?session=${sessionIdentifier}`);
   };
 
   const formatDate = (date) => {
@@ -99,7 +95,10 @@ export default function SeminarDetailPage() {
               Home
             </Link>
             <span className="mx-2 text-gray-400">/</span>
-            <Link to="/seminars" className="text-gray-500 hover:text-gray-700">
+            <Link
+              to="../seminars"
+              className="text-gray-500 hover:text-gray-700"
+            >
               Seminars
             </Link>
             <span className="mx-2 text-gray-400">/</span>

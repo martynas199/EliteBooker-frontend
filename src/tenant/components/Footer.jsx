@@ -31,8 +31,11 @@ export default function TenantFooter() {
     : "";
 
   return (
-    <footer className="relative bg-gray-50 text-gray-600 overflow-hidden mt-20 border-t border-gray-200">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <footer
+      className="relative bg-gray-50 text-gray-600 overflow-hidden mt-20 border-t border-gray-200"
+      style={{ paddingBottom: "calc(7rem + env(safe-area-inset-bottom))" }}
+    >
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-32">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand Section */}
           <div className="lg:col-span-2">

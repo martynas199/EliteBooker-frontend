@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectAdmin } from "../../shared/state/authSlice";
 import { api } from "../../shared/lib/apiClient";
@@ -281,6 +282,27 @@ export default function Dashboard() {
   );
 
   const stats = metrics ?? emptyStats;
+
+  const stripeSpecialist = useMemo(() => {
+    if (!specialists?.length) return null;
+
+    if (isSuperAdmin) {
+      if (selectedSpecialist === "all") return null;
+      return specialists.find((s) => s._id === selectedSpecialist) || null;
+    }
+
+    if (admin?.specialistId) {
+      return specialists.find((s) => s._id === admin.specialistId) || null;
+    }
+
+    return null;
+  }, [specialists, isSuperAdmin, selectedSpecialist, admin?.specialistId]);
+
+  const showStripeAlert = Boolean(
+    stripeSpecialist &&
+      (stripeSpecialist.stripeStatus !== "connected" ||
+        !stripeSpecialist.stripeAccountId)
+  );
 
   useEffect(() => {
     if (!admin) {
@@ -623,6 +645,57 @@ export default function Dashboard() {
             </div>
           )}
       </div>
+
+      {showStripeAlert && (
+        <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50/90 px-5 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-xl bg-amber-100 text-amber-700">
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-amber-900">
+                {stripeSpecialist?.name || "Selected specialist"} is not
+                connected to Stripe.
+              </p>
+              <p className="text-xs text-amber-800 mt-1">
+                To receive booking payments you need to complete Stripe Connect
+                onboarding for this specialist.
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/admin/stripe-connect"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-300 bg-white px-5 py-2 text-sm font-semibold text-amber-900 shadow-sm hover:border-amber-400"
+          >
+            Go to Stripe Connect
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </Link>
+        </div>
+      )}
 
       {/* Stats Cards */}
       {(isSuperAdmin || admin?.specialistId) && (

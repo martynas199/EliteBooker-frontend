@@ -26,13 +26,14 @@ export default function SeminarsPage() {
       const params = {};
       if (filters.category) params.category = filters.category;
       if (filters.level) params.level = filters.level;
-      if (filters.location) params.location = filters.location;
+      if (filters.location) params.locationType = filters.location;
       if (filters.search) params.search = filters.search;
       if (filters.minPrice) params.minPrice = filters.minPrice;
       if (filters.maxPrice) params.maxPrice = filters.maxPrice;
 
       const data = await SeminarsAPI.listPublic(params);
-      setSeminars(data);
+      const seminarList = Array.isArray(data) ? data : data?.seminars || [];
+      setSeminars(seminarList);
     } catch (error) {
       console.error("Failed to load seminars:", error);
       toast.error("Failed to load seminars");
@@ -247,7 +248,7 @@ export default function SeminarsPage() {
                   {seminars.map((seminar) => (
                     <Link
                       key={seminar._id}
-                      to={`/seminars/${seminar.slug}`}
+                      to={`${seminar.slug}`}
                       className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
                     >
                       {/* Image */}
@@ -316,7 +317,9 @@ export default function SeminarsPage() {
                                     {formatDate(session.date)} •{" "}
                                     {session.startTime}
                                     <span className="ml-auto text-xs">
-                                      {session.spotsAvailable} spots left
+                                      {session.maxAttendees -
+                                        session.currentAttendees}{" "}
+                                      spots left
                                     </span>
                                   </div>
                                 )

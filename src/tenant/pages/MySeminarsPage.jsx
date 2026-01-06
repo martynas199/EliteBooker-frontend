@@ -121,7 +121,7 @@ export default function MySeminarsPage() {
             <p className="text-gray-500 text-lg mb-4">
               No seminar bookings yet
             </p>
-            <Link to="/seminars">
+            <Link to="../seminars">
               <Button>Browse Seminars</Button>
             </Link>
           </div>
@@ -256,7 +256,7 @@ export default function MySeminarsPage() {
                               : "Cancel Booking"}
                           </button>
                         )}
-                        <Link to={`/seminars/${booking.seminarInfo?.slug}`}>
+                        <Link to={`../seminars/${booking.seminarInfo?.slug}`}>
                           <button className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 border border-blue-300 rounded-md hover:bg-blue-50">
                             View Seminar Details
                           </button>

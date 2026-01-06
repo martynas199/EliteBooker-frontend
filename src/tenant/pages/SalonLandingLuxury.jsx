@@ -162,9 +162,12 @@ export default function SalonLandingLuxury() {
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [showGiftCardModal, setShowGiftCardModal] = useState(false);
   const [showLoginDrawer, setShowLoginDrawer] = useState(false);
+  const [featuredSeminars, setFeaturedSeminars] = useState([]);
+  const [seminarsLoading, setSeminarsLoading] = useState(true);
 
   // Check if multi-location feature is enabled from tenant features
   const isMultiLocationEnabled = tenant?.features?.multiLocation || false;
+  const isSeminarsEnabled = tenant?.features?.seminars !== false;
 
   // Load data
   useEffect(() => {
@@ -203,6 +206,20 @@ export default function SalonLandingLuxury() {
         // Filter active locations
         const activeLocations = locationsRes.data.filter((l) => l.isActive);
         setLocations(activeLocations);
+
+        // Load featured seminars if seminars feature is enabled
+        if (tenant?.features?.seminars !== false) {
+          try {
+            const seminarsRes = await api.get("/seminars/public?limit=3");
+            const seminarList = Array.isArray(seminarsRes.data)
+              ? seminarsRes.data
+              : seminarsRes.data?.seminars || [];
+            setFeaturedSeminars(seminarList.slice(0, 3));
+          } catch (err) {
+            console.error("[LANDING] Error fetching seminars:", err);
+          }
+        }
+        setSeminarsLoading(false);
       } catch (error) {
         console.error("Failed to load data:", error);
       } finally {
@@ -892,6 +909,148 @@ export default function SalonLandingLuxury() {
               <ProfessionalToggle value={viewMode} onChange={setViewMode} />
             </div>
           )}
+
+          {/* Featured Seminars Section */}
+          {!selectedLocation &&
+            isSeminarsEnabled &&
+            featuredSeminars.length > 0 && (
+              <section className="px-4 pb-16 pt-8">
+                <div className="max-w-7xl mx-auto">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="text-center mb-8 sm:mb-12"
+                  >
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-4">
+                      Upcoming Seminars & Masterclasses
+                    </h2>
+                    <p className="text-gray-600 text-base sm:text-lg px-4">
+                      Enhance your skills with expert-led educational events
+                    </p>
+                  </motion.div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                    {featuredSeminars.map((seminar, index) => (
+                      <motion.div
+                        key={seminar._id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300 group"
+                      >
+                        {/* Image */}
+                        <div className="aspect-[16/9] sm:aspect-[4/3] overflow-hidden bg-gray-100">
+                          {seminar.images?.main ? (
+                            <img
+                              src={seminar.images.main}
+                              alt={seminar.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-400">
+                              <svg
+                                className="w-12 h-12 sm:w-16 sm:h-16"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-4 sm:p-6">
+                          {/* Badges */}
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded">
+                              {seminar.category}
+                            </span>
+                            <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded">
+                              {seminar.level}
+                            </span>
+                          </div>
+
+                          {/* Title */}
+                          <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                            {seminar.title}
+                          </h3>
+
+                          {/* Description */}
+                          <p className="text-gray-600 text-sm mb-4 line-clamp-2 sm:line-clamp-3">
+                            {seminar.shortDescription}
+                          </p>
+
+                          {/* Price & Sessions Info */}
+                          <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+                            <div>
+                              <p className="text-xs text-gray-600 mb-1">From</p>
+                              <p className="text-xl sm:text-2xl font-bold text-gray-900">
+                                {formatPrice(seminar.pricing?.price || 0)}
+                              </p>
+                            </div>
+                            {seminar.upcomingSessions &&
+                              seminar.upcomingSessions.length > 0 && (
+                                <div className="text-right">
+                                  <p className="text-xs text-gray-600 mb-1">
+                                    Next Session
+                                  </p>
+                                  <p className="text-sm font-semibold text-gray-900">
+                                    {new Date(
+                                      seminar.upcomingSessions[0].date
+                                    ).toLocaleDateString("en-GB", {
+                                      day: "numeric",
+                                      month: "short",
+                                    })}
+                                  </p>
+                                </div>
+                              )}
+                          </div>
+
+                          {/* CTA Button */}
+                          <button
+                            onClick={() => navigate(`seminars/${seminar.slug}`)}
+                            className="w-full py-2.5 sm:py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm sm:text-base font-semibold rounded-lg transition-colors shadow-sm hover:shadow-md"
+                          >
+                            View Details & Book
+                          </button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* View All Button */}
+                  <div className="text-center">
+                    <button
+                      onClick={() => navigate("seminars")}
+                      className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-gray-900 hover:bg-gray-800 text-white text-sm sm:text-base font-semibold rounded-xl transition-colors shadow-lg hover:shadow-xl"
+                    >
+                      View All Seminars
+                      <svg
+                        className="w-4 h-4 sm:w-5 sm:h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </section>
+            )}
 
           {/* Main Content - Only show if no location is selected */}
           {!selectedLocation && (
