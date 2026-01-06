@@ -24,7 +24,7 @@
     "@capacitor/ios": "^7.4.4",
     "@capacitor/share": "^7.0.2",
     "@capacitor/splash-screen": "^7.0.3",
-    "@capacitor/status-bar": "^7.0.3",
+    "@capacitor/status-bar": "^7.0.4",
     "@reduxjs/toolkit": "^2.2.5",
     "@stripe/stripe-js": "^8.6.1",
     "@stripe/terminal-js": "^0.26.0",
