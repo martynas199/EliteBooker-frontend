@@ -16,18 +16,20 @@ const Toggle = ({ enabled, onChange, disabled = false }) => {
       onClick={onChange}
       disabled={disabled}
       className={`
-        relative inline-flex h-6 w-11 items-center rounded-full
+        relative inline-flex h-7 w-12 sm:h-6 sm:w-11 items-center rounded-full
         transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2
         ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
         ${enabled ? "bg-black" : "bg-gray-200"}
+        touch-manipulation
       `}
+      style={{ minWidth: "48px", minHeight: "28px" }}
     >
       <motion.span
         layout
         className={`
-          inline-block h-4 w-4 transform rounded-full bg-white shadow-sm
+          inline-block h-5 w-5 sm:h-4 sm:w-4 transform rounded-full bg-white shadow-sm
           transition-transform duration-200 ease-in-out
-          ${enabled ? "translate-x-6" : "translate-x-1"}
+          ${enabled ? "translate-x-6 sm:translate-x-6" : "translate-x-1"}
         `}
       />
     </button>
@@ -44,10 +46,10 @@ const FeatureRow = ({
   disabledReason,
 }) => {
   return (
-    <div className="flex items-start justify-between py-3 sm:py-5 border-b border-gray-200 last:border-b-0">
-      <div className="flex-1 pr-3 sm:pr-8">
-        <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
-          <h3 className="text-xs sm:text-sm font-medium text-gray-900">
+    <div className="flex items-start justify-between py-4 sm:py-5 border-b border-gray-200 last:border-b-0 gap-4">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+          <h3 className="text-sm sm:text-sm font-medium text-gray-900">
             {title}
           </h3>
           {disabled && (
@@ -57,14 +59,14 @@ const FeatureRow = ({
             </span>
           )}
         </div>
-        <p className="text-xs sm:text-sm text-gray-500">{description}</p>
+        <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
+          {description}
+        </p>
         {disabled && disabledReason && (
-          <p className="mt-0.5 sm:mt-1 text-xs text-amber-600">
-            {disabledReason}
-          </p>
+          <p className="mt-1 text-xs text-amber-600">{disabledReason}</p>
         )}
       </div>
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0 flex items-start pt-0.5">
         <Toggle enabled={enabled} onChange={onChange} disabled={disabled} />
       </div>
     </div>
@@ -341,7 +343,7 @@ export default function FeaturesPage() {
 
     // Call API to persist change
     try {
-      await updateFeatureFlag(feature, newValue);
+      await updateFeatureFlag(feature, newValue, admin?.tenantId);
       toast.success(
         `${featureNames[feature] || feature} ${
           newValue ? "enabled" : "disabled"
@@ -349,7 +351,21 @@ export default function FeaturesPage() {
       );
     } catch (error) {
       console.error(`❌ Failed to update ${feature}:`, error);
-      toast.error("Failed to update feature setting");
+      console.error("Error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+
+      // More specific error message
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to update feature setting";
+
+      toast.error(errorMessage);
+
       // Revert on error
       setLocalFlags((prev) => ({
         ...prev,

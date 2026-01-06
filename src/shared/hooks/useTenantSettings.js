@@ -54,19 +54,21 @@ const useTenantSettingsStore = create((set, get) => ({
    * Update a single feature flag
    * @param {string} feature - Feature flag name
    * @param {boolean} value - New value
+   * @param {string} tenantId - Tenant ID (optional, will use stored if not provided)
    */
-  updateFeatureFlag: async (feature, value) => {
+  updateFeatureFlag: async (feature, value, tenantId = null) => {
     set({ loading: true });
 
     try {
-      // Get current admin info from API
-      const admin = await getCurrentAdmin();
-
-      if (!admin || !admin.tenantId) {
-        throw new Error("Authentication required");
+      // Use provided tenantId or get from store
+      const finalTenantId = tenantId || get().tenantId;
+      
+      if (!finalTenantId) {
+        console.error("[TenantSettings] No tenantId available");
+        throw new Error("Tenant ID required");
       }
 
-      const tenantId = admin.tenantId;
+      console.log("[TenantSettings] Using tenantId:", finalTenantId);
 
       // Map frontend feature names to backend schema
       const featureMapping = {
@@ -80,12 +82,13 @@ const useTenantSettingsStore = create((set, get) => ({
         frontendName: feature,
         backendName: backendFeatureName,
         value: value,
-        tenantId: tenantId,
+        tenantId: finalTenantId,
+        apiUrl: `${API_URL}/api/tenants/${finalTenantId}`,
       });
 
       // Update tenant features in database
       const updateResponse = await axios.put(
-        `${API_URL}/api/tenants/${tenantId}`,
+        `${API_URL}/api/tenants/${finalTenantId}`,
         {
           features: {
             [backendFeatureName]: value,
@@ -100,8 +103,8 @@ const useTenantSettingsStore = create((set, get) => ({
       );
 
       console.log(
-        "[TenantSettings] Update response features:",
-        updateResponse.data.tenant?.features
+        "[TenantSettings] Update response:",
+        updateResponse.data
       );
 
       set((state) => ({
@@ -118,7 +121,9 @@ const useTenantSettingsStore = create((set, get) => ({
       return { success: true };
     } catch (error) {
       set({ loading: false });
-      console.error("Failed to update feature flag:", error);
+      console.error("[TenantSettings] Failed to update feature flag:", error);
+      console.error("[TenantSettings] Error response:", error.response?.data);
+      console.error("[TenantSettings] Error status:", error.response?.status);
       throw error;
     }
   },
