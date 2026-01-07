@@ -576,12 +576,29 @@ export default function Dashboard() {
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-2">
-        <div>
-          <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
-            {t("dashboard", language)}
-          </h1>
-          <p className="text-gray-500 mt-2 text-base">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl">
+              <svg
+                className="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                />
+              </svg>
+            </div>
+            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
+              {t("dashboard", language)}
+            </h1>
+          </div>
+          <p className="text-gray-500 text-sm lg:text-base ml-14">
             {isSuperAdmin
               ? t("viewManageAllAppointments", language)
               : admin?.specialistId
@@ -592,12 +609,25 @@ export default function Dashboard() {
 
         {/* Specialist Filter - Only show for super admins */}
         {isSuperAdmin && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-xl border border-gray-200 shadow-sm">
+            <svg
+              className="w-5 h-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+              />
+            </svg>
             <label
               htmlFor="specialist-filter"
-              className="text-sm font-medium text-gray-700 hidden sm:inline"
+              className="text-sm font-medium text-gray-700 hidden sm:inline whitespace-nowrap"
             >
-              {t("filterByBeautician", language)}:
+              Filter:
             </label>
             <SelectButton
               onClick={() => setShowSpecialistDrawer(true)}
@@ -618,23 +648,25 @@ export default function Dashboard() {
         {!isSuperAdmin &&
           !admin?.specialistId &&
           admin?.role === "salon-admin" && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center gap-2">
-                <svg
-                  className="w-5 h-5 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+            <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-200 rounded-lg">
+                  <svg
+                    className="w-5 h-5 text-blue-700"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
                 <div>
-                  <p className="text-sm font-medium text-blue-900">
+                  <p className="text-sm font-semibold text-blue-900">
                     Welcome to your dashboard!
                   </p>
                   <p className="text-xs text-blue-700 mt-1">
@@ -697,20 +729,20 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Stats Cards */}
+      {/* Stats Cards - Redesigned with 4th Card */}
       {(isSuperAdmin || admin?.specialistId) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 animate-fade-in">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
           {/* Revenue Card */}
-          <div className="relative bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-brand-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-6">
-                <div className="p-4 bg-gradient-to-br from-brand-500 to-brand-600 rounded-2xl shadow-lg shadow-brand-500/20 group-hover:shadow-xl group-hover:shadow-brand-500/30 group-hover:scale-110 transition-all duration-300">
+          <div className="group relative bg-gradient-to-br from-brand-500 to-brand-600 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA2MCAwIEwgMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20"></div>
+            <div className="relative">
+              <div className="flex items-start justify-between mb-4">
+                <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
                   <svg
-                    className="w-7 h-7 text-white"
+                    className="w-6 h-6 text-white"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="2.5"
                     viewBox="0 0 24 24"
                   >
                     <path
@@ -720,161 +752,171 @@ export default function Dashboard() {
                     />
                   </svg>
                 </div>
-                <div className="flex items-center gap-2">
-                  {metricsLoading && (
-                    <span className="text-xs text-gray-400 animate-pulse">
-                      Updating…
-                    </span>
-                  )}
-                  {stats.revenueTrend !== 0 && (
-                    <div
-                      className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full ${
-                        stats.revenueTrend > 0
-                          ? "bg-green-50 text-green-600 border border-green-200"
-                          : "bg-red-50 text-red-600 border border-red-200"
+                {stats.revenueTrend !== 0 && (
+                  <div className="flex items-center gap-1 px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-lg">
+                    <svg
+                      className={`w-3.5 h-3.5 text-white ${
+                        stats.revenueTrend > 0 ? "" : "rotate-180"
                       }`}
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      viewBox="0 0 24 24"
                     >
-                      <svg
-                        className={`w-4 h-4 ${
-                          stats.revenueTrend > 0 ? "rotate-0" : "rotate-180"
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 10l7-7m0 0l7 7m-7-7v18"
-                        />
-                      </svg>
-                      <span>{Math.abs(stats.revenueTrend).toFixed(1)}%</span>
-                    </div>
-                  )}
-                </div>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 10l7-7m0 0l7 7m-7-7v18"
+                      />
+                    </svg>
+                    <span className="text-xs font-bold text-white">
+                      {Math.abs(stats.revenueTrend).toFixed(1)}%
+                    </span>
+                  </div>
+                )}
               </div>
-              <div className="space-y-2 mt-6">
-                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
-                  Monthly Revenue
+              <div className="mt-4">
+                <p className="text-white/80 text-xs font-medium uppercase tracking-wide mb-2">
+                  This Month
                 </p>
-                <p className="text-4xl font-bold text-gray-900 tracking-tight">
+                <p className="text-3xl lg:text-4xl font-bold text-white mb-1">
                   {formatCurrency(stats.thisMonthRevenue)}
                 </p>
-                <p className="text-gray-400 text-sm font-medium">
+                <p className="text-white/70 text-sm">
                   Total: {formatCurrency(stats.totalRevenue)}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Appointments Card */}
-          <div className="relative bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-6">
-                <div className="p-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg shadow-blue-500/20 group-hover:shadow-xl group-hover:shadow-blue-500/30 group-hover:scale-110 transition-all duration-300">
-                  <svg
-                    className="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
+          {/* Appointments Today Card */}
+          <div className="group relative bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100">
+            <div className="flex items-start justify-between mb-4">
+              <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
+                <svg
+                  className="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <div className="flex flex-col items-end gap-1">
+                {metricsLoading && (
+                  <span className="text-xs text-gray-400 animate-pulse">
+                    Updating...
+                  </span>
+                )}
+                {stats.appointmentsTrend !== 0 && (
+                  <div
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg ${
+                      stats.appointmentsTrend > 0
+                        ? "bg-green-50 text-green-700"
+                        : "bg-red-50 text-red-700"
+                    }`}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-                <div className="flex items-center gap-2">
-                  {metricsLoading && (
-                    <span className="text-xs text-gray-400 animate-pulse">
-                      Updating…
-                    </span>
-                  )}
-                  {stats.appointmentsTrend !== 0 && (
-                    <div
-                      className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full ${
-                        stats.appointmentsTrend > 0
-                          ? "bg-green-50 text-green-600 border border-green-200"
-                          : "bg-red-50 text-red-600 border border-red-200"
+                    <svg
+                      className={`w-3.5 h-3.5 ${
+                        stats.appointmentsTrend > 0 ? "" : "rotate-180"
                       }`}
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      viewBox="0 0 24 24"
                     >
-                      <svg
-                        className={`w-4 h-4 ${
-                          stats.appointmentsTrend > 0
-                            ? "rotate-0"
-                            : "rotate-180"
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 10l7-7m0 0l7 7m-7-7v18"
-                        />
-                      </svg>
-                      <span>
-                        {Math.abs(stats.appointmentsTrend).toFixed(1)}%
-                      </span>
-                    </div>
-                  )}
-                </div>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 10l7-7m0 0l7 7m-7-7v18"
+                      />
+                    </svg>
+                    <span className="text-xs font-bold">
+                      {Math.abs(stats.appointmentsTrend).toFixed(1)}%
+                    </span>
+                  </div>
+                )}
               </div>
-              <div className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-orange-50 text-orange-600 border border-orange-200">
-                <span>Today</span>
+            </div>
+            <div className="mt-4">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wide mb-2">
+                Today's Bookings
+              </p>
+              <p className="text-3xl lg:text-4xl font-bold text-gray-900 mb-1">
+                {stats.todayAppointments}
+              </p>
+              <p className="text-gray-500 text-sm">
+                Appointments scheduled
+              </p>
+            </div>
+          </div>
+
+          {/* Total Appointments Card */}
+          <div className="group relative bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100">
+            <div className="flex items-start justify-between mb-4">
+              <div className="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
+                <svg
+                  className="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                  />
+                </svg>
               </div>
-              <div className="space-y-2 mt-6">
-                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
-                  Appointments
-                </p>
-                <p className="text-4xl font-bold text-gray-900 tracking-tight">
-                  {stats.todayAppointments}
-                </p>
-                <p className="text-gray-400 text-sm font-medium">
-                  Scheduled for today
-                </p>
-              </div>
+            </div>
+            <div className="mt-4">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wide mb-2">
+                All Time
+              </p>
+              <p className="text-3xl lg:text-4xl font-bold text-gray-900 mb-1">
+                {stats.totalAppointments}
+              </p>
+              <p className="text-gray-500 text-sm">
+                Total bookings
+              </p>
             </div>
           </div>
 
           {/* Customers Card */}
-          <div className="relative bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-6">
-                <div className="p-4 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg shadow-green-500/20 group-hover:shadow-xl group-hover:shadow-green-500/30 group-hover:scale-110 transition-all duration-300">
-                  <svg
-                    className="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-                </div>
+          <div className="group relative bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100">
+            <div className="flex items-start justify-between mb-4">
+              <div className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
+                <svg
+                  className="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
               </div>
-              <div className="space-y-2 mt-6">
-                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
-                  Total Customers
-                </p>
-                <p className="text-4xl font-bold text-gray-900 tracking-tight">
-                  {stats.uniqueCustomers}
-                </p>
-                <p className="text-gray-400 text-sm font-medium">
-                  Unique clients served
-                </p>
-              </div>
+            </div>
+            <div className="mt-4">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wide mb-2">
+                Total Clients
+              </p>
+              <p className="text-3xl lg:text-4xl font-bold text-gray-900 mb-1">
+                {stats.uniqueCustomers}
+              </p>
+              <p className="text-gray-500 text-sm">
+                Unique customers
+              </p>
             </div>
           </div>
         </div>
@@ -902,39 +944,67 @@ export default function Dashboard() {
         if (todaysAppointments.length === 0) return null;
 
         return (
-          <div className="bg-gradient-to-r from-brand-50 to-brand-100 border border-brand-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center gap-2 mb-4">
-              <svg
-                className="w-5 h-5 text-brand-600"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              <h2 className="text-lg font-bold text-brand-900">
-                {t("todaysAppointments", language)} ({todaysAppointments.length}
-                )
-              </h2>
+          <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl">
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    {t("todaysAppointments", language)}
+                  </h2>
+                  <p className="text-sm text-gray-500">
+                    {todaysAppointments.length} {todaysAppointments.length === 1 ? 'appointment' : 'appointments'} scheduled
+                  </p>
+                </div>
+              </div>
+              <div className="px-3 py-1.5 bg-brand-50 text-brand-700 rounded-lg text-sm font-semibold">
+                {dayjs().format("MMM D, YYYY")}
+              </div>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {todaysAppointments.map((apt) => (
                 <div
                   key={apt._id}
-                  className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg hover:border-brand-200 transition-all duration-300 cursor-pointer hover:scale-[1.02]"
+                  className="group bg-gradient-to-br from-gray-50 to-white rounded-xl p-4 border border-gray-200 hover:border-brand-300 hover:shadow-lg transition-all duration-300 cursor-pointer"
                   onClick={() => openEditModal(apt)}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-semibold text-gray-900">
-                      {dayjs(apt.start).format("h:mm A")}
-                    </span>
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 bg-brand-100 rounded-lg group-hover:bg-brand-200 transition-colors">
+                        <svg
+                          className="w-4 h-4 text-brand-600"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      </div>
+                      <span className="text-base font-bold text-gray-900">
+                        {dayjs(apt.start).format("h:mm A")}
+                      </span>
+                    </div>
                     <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold ${
                         apt.status === "confirmed" || apt.status === "completed"
                           ? "bg-green-100 text-green-700"
                           : apt.status === "reserved_unpaid"
@@ -949,14 +1019,61 @@ export default function Dashboard() {
                       {formatStatus(apt.status)}
                     </span>
                   </div>
-                  <div className="text-sm font-medium text-gray-800 mb-1">
-                    {apt.client?.name || "Unknown"}
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    {apt.serviceId?.name || apt.variantName}
-                  </div>
-                  <div className="text-xs text-brand-600 font-medium mt-1">
-                    👤 {apt.specialistId?.name || "No specialist assigned"}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-gray-400 flex-shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      <span className="text-sm font-semibold text-gray-900 truncate">
+                        {apt.client?.name || "Unknown"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-gray-400 flex-shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                        />
+                      </svg>
+                      <span className="text-sm text-gray-600 truncate">
+                        {apt.serviceId?.name || apt.variantName}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 pt-1 border-t border-gray-100">
+                      <svg
+                        className="w-4 h-4 text-brand-500 flex-shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <span className="text-xs text-brand-600 font-medium truncate">
+                        {apt.specialistId?.name || "No specialist assigned"}
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -965,28 +1082,41 @@ export default function Dashboard() {
         );
       })()}
 
-      {/* Legend */}
-      <div className="flex flex-wrap items-center gap-6 text-sm bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-        <span className="font-semibold text-gray-700 uppercase text-xs tracking-wider">
-          Legend:
-        </span>
-        <div className="flex items-center gap-2.5">
-          <div className="w-4 h-4 rounded-full bg-green-500 shadow-sm"></div>
-          <span className="text-gray-600 font-medium">
-            Confirmed / Completed
+      {/* Legend - Compact and Modern */}
+      <div className="flex flex-wrap items-center gap-4 lg:gap-6 text-sm bg-white rounded-xl px-5 py-3.5 border border-gray-200 shadow-sm">
+        <div className="flex items-center gap-2">
+          <svg
+            className="w-4 h-4 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+            />
+          </svg>
+          <span className="font-semibold text-gray-600 text-xs uppercase tracking-wide">
+            Status:
           </span>
         </div>
-        <div className="flex items-center gap-2.5">
-          <div className="w-4 h-4 rounded-full bg-orange-500 shadow-sm"></div>
-          <span className="text-gray-600 font-medium">Unpaid</span>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-green-500 ring-2 ring-green-100"></div>
+          <span className="text-gray-700 font-medium">Confirmed</span>
         </div>
-        <div className="flex items-center gap-2.5">
-          <div className="w-4 h-4 rounded-full bg-red-500 shadow-sm"></div>
-          <span className="text-gray-600 font-medium">Cancelled</span>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-orange-500 ring-2 ring-orange-100"></div>
+          <span className="text-gray-700 font-medium">Unpaid</span>
         </div>
-        <div className="flex items-center gap-2.5">
-          <div className="w-4 h-4 rounded-full bg-gray-500 shadow-sm"></div>
-          <span className="text-gray-600 font-medium">No Show</span>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-red-500 ring-2 ring-red-100"></div>
+          <span className="text-gray-700 font-medium">Cancelled</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-gray-500 ring-2 ring-gray-100"></div>
+          <span className="text-gray-700 font-medium">No Show</span>
         </div>
       </div>
 
