@@ -274,22 +274,27 @@ export default function SeminarForm() {
         })),
       };
 
-      let seminar;
+      let result;
       if (isEditing) {
-        seminar = await SeminarsAPI.update(id, data);
+        result = await SeminarsAPI.update(id, data);
         toast.success("Seminar updated successfully");
       } else {
-        seminar = await SeminarsAPI.create(data);
+        result = await SeminarsAPI.create(data);
         toast.success("Seminar created successfully");
       }
 
+      // Extract seminar ID from response
+      const seminarId = result.seminar?._id || result._id || id;
+
       // Upload images
-      if (imageFile && seminar._id) {
-        await SeminarsAPI.uploadImage(seminar._id, imageFile);
+      if (imageFile && seminarId) {
+        await SeminarsAPI.uploadImage(seminarId, imageFile);
+        toast.success("Image uploaded successfully");
       }
 
-      if (galleryFiles.length > 0 && seminar._id) {
-        await SeminarsAPI.uploadImages(seminar._id, galleryFiles);
+      if (galleryFiles.length > 0 && seminarId) {
+        await SeminarsAPI.uploadImages(seminarId, galleryFiles);
+        toast.success("Gallery images uploaded successfully");
       }
 
       navigate("/admin/seminars");
