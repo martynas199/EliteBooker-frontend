@@ -34,6 +34,7 @@ export default function ClientProfilePage() {
 
   // Get the business slug from URL state if available
   const fromBusiness = location.state?.fromBusiness;
+  const fromSystem = location.state?.from === "/client/profile"; // Came from system login
   const [businessName, setBusinessName] = useState(null);
 
   // Edit form
@@ -43,6 +44,15 @@ export default function ClientProfilePage() {
   const [preferredCurrency, setPreferredCurrency] = useState("GBP");
   const [seminars, setSeminars] = useState([]);
   const [seminarsLoading, setSeminarsLoading] = useState(true);
+
+  // Handle back button - go to system landing if came from system routes
+  const handleBack = () => {
+    if (fromSystem || window.history.length <= 2) {
+      navigate("/");
+    } else {
+      navigate(-1);
+    }
+  };
 
   useEffect(() => {
     fetchProfile();
@@ -314,7 +324,7 @@ export default function ClientProfilePage() {
           {/* Mobile Header with Back Button */}
           <div className="md:hidden mb-6">
             <button
-              onClick={() => navigate(-1)}
+              onClick={handleBack}
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
             >
               <svg
