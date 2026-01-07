@@ -113,8 +113,21 @@ export default function SeminarForm() {
         }),
       });
 
-      setImagePreview(seminar.images?.main || null);
-      setExistingGalleryImages(seminar.images?.gallery || []);
+      // Set image preview - handle both string URL and object with url property
+      const mainImage = seminar.images?.main;
+      setImagePreview(
+        typeof mainImage === "string"
+          ? mainImage
+          : mainImage?.url || null
+      );
+
+      // Set gallery images - handle both string URLs and objects with url property
+      const galleryImages = seminar.images?.gallery || [];
+      setExistingGalleryImages(
+        galleryImages.map((img) =>
+          typeof img === "string" ? img : img?.url || img
+        )
+      );
     } catch (error) {
       console.error("Failed to load seminar:", error);
       console.error("Error details:", {
