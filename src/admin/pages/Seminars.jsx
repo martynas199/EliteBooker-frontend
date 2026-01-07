@@ -225,87 +225,118 @@ export default function Seminars() {
       ) : (
         <>
           {/* Mobile Cards View */}
-          <div className="block md:hidden space-y-4">
+          <div className="block md:hidden space-y-3">
             {seminars.map((seminar) => (
-              <Card key={seminar._id} className="p-4">
-                <div className="flex gap-3 mb-3">
-                  {seminar.images?.main && (
+              <Card
+                key={seminar._id}
+                className="overflow-hidden border-2 border-gray-100 hover:border-gray-200 transition-all shadow-sm hover:shadow-md"
+              >
+                {/* Image Header with Overlay Status */}
+                <div className="relative h-32 bg-gradient-to-br from-violet-50 to-purple-50">
+                  {seminar.images?.main ? (
                     <img
                       src={seminar.images.main}
                       alt={seminar.title}
-                      className="h-16 w-16 rounded-lg object-cover flex-shrink-0"
+                      className="w-full h-full object-cover"
                     />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <GraduationCap className="w-12 h-12 text-violet-300" />
+                    </div>
                   )}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-gray-900 truncate">
+                  {/* Status Badge Overlay */}
+                  <div className="absolute top-2 right-2">
+                    <span
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm backdrop-blur-sm ${getStatusBadge(
+                        seminar.status
+                      )}`}
+                    >
+                      {seminar.status}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content Section */}
+                <div className="p-4 space-y-3">
+                  {/* Title & Category */}
+                  <div>
+                    <h3 className="text-base font-bold text-gray-900 leading-tight mb-1.5 line-clamp-2">
                       {seminar.title}
                     </h3>
-                    <p className="text-xs text-gray-600">{seminar.level}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded">
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center text-xs font-medium px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-100">
                         {seminar.category}
                       </span>
-                      <span
-                        className={`text-xs px-2 py-0.5 rounded ${getStatusBadge(
-                          seminar.status
-                        )}`}
-                      >
-                        {seminar.status}
+                      <span className="text-xs text-gray-500 font-medium">
+                        {seminar.level}
                       </span>
                     </div>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
-                  <div>
-                    <span className="text-gray-600">Sessions: </span>
-                    <span className="font-medium">
-                      {getUpcomingSessions(seminar)} upcoming
-                    </span>
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 gap-3 py-3 border-t border-b border-gray-100">
+                    <div className="text-center">
+                      <div className="text-xs text-gray-500 mb-0.5">
+                        Sessions
+                      </div>
+                      <div className="text-lg font-bold text-gray-900">
+                        {getUpcomingSessions(seminar)}
+                      </div>
+                      <div className="text-[10px] text-gray-400">upcoming</div>
+                    </div>
+                    <div className="text-center border-l border-gray-100">
+                      <div className="text-xs text-gray-500 mb-0.5">Price</div>
+                      <div className="text-lg font-bold text-gray-900">
+                        {seminar.pricing.currency}
+                        {seminar.pricing.price}
+                      </div>
+                      <div className="text-[10px] text-gray-400">
+                        per person
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-gray-600">Price: </span>
-                    <span className="font-medium">
-                      {seminar.pricing.currency} {seminar.pricing.price}
-                    </span>
-                  </div>
-                </div>
 
-                <div className="flex flex-wrap gap-2">
-                  <Link
-                    to={`/admin/seminars/${seminar._id}/attendees`}
-                    className="flex-1 text-center px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded transition-colors"
-                  >
-                    Attendees
-                  </Link>
-                  <Link
-                    to={`/admin/seminars/${seminar._id}/edit`}
-                    className="flex-1 text-center px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded transition-colors"
-                  >
-                    Edit
-                  </Link>
-                  {seminar.status === "draft" && (
-                    <button
-                      onClick={() => handlePublish(seminar._id)}
-                      className="flex-1 px-3 py-1.5 text-xs font-medium text-green-600 bg-green-50 hover:bg-green-100 rounded transition-colors"
+                  {/* Primary Actions */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link
+                      to={`/admin/seminars/${seminar._id}/edit`}
+                      className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 rounded-lg transition-all shadow-sm hover:shadow touch-manipulation"
                     >
-                      Publish
-                    </button>
-                  )}
-                  {seminar.status === "published" && (
-                    <button
-                      onClick={() => handleArchive(seminar._id)}
-                      className="flex-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded transition-colors"
+                      Edit
+                    </Link>
+                    <Link
+                      to={`/admin/seminars/${seminar._id}/attendees`}
+                      className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-all touch-manipulation"
                     >
-                      Archive
+                      Attendees
+                    </Link>
+                  </div>
+
+                  {/* Secondary Actions */}
+                  <div className="flex gap-2 pt-1">
+                    {seminar.status === "draft" && (
+                      <button
+                        onClick={() => handlePublish(seminar._id)}
+                        className="flex-1 px-3 py-2 text-xs font-semibold text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-all touch-manipulation"
+                      >
+                        Publish
+                      </button>
+                    )}
+                    {seminar.status === "published" && (
+                      <button
+                        onClick={() => handleArchive(seminar._id)}
+                        className="flex-1 px-3 py-2 text-xs font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200 rounded-lg transition-all touch-manipulation"
+                      >
+                        Archive
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setDeleteModal({ open: true, seminar })}
+                      className="flex-1 px-3 py-2 text-xs font-semibold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-all touch-manipulation"
+                    >
+                      Delete
                     </button>
-                  )}
-                  <button
-                    onClick={() => setDeleteModal({ open: true, seminar })}
-                    className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded transition-colors"
-                  >
-                    Delete
-                  </button>
+                  </div>
                 </div>
               </Card>
             ))}
