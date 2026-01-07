@@ -1,22 +1,26 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import SEOHead from "../../shared/components/seo/SEOHead";
 
 export default function ClientLoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, isAuthenticated, loading } = useClientAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Get redirect path from location state, default to /client/profile if coming from system routes
+  const from = location.state?.from || "/client/profile";
+
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && !loading) {
-      navigate("/client/profile");
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, loading, navigate]);
+  }, [isAuthenticated, loading, navigate, from]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +29,7 @@ export default function ClientLoginPage() {
 
     try {
       await login(email, password);
-      navigate("/client/profile");
+      navigate(from, { replace: true });
     } catch (err) {
       setError(
         err.message || "Failed to login. Please check your credentials."
