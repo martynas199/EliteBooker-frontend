@@ -94,7 +94,6 @@ const navigationConfig = [
     condition: "seminarsEnabled",
     items: [
       { label: "All Seminars", path: "/admin/seminars" },
-      { label: "Create Seminar", path: "/admin/seminars/new" },
     ],
   },
   {
