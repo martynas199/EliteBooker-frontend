@@ -326,7 +326,11 @@ export default function SeminarForm() {
               : "Create a new educational event"}
           </p>
         </div>
-        <Button variant="secondary" onClick={() => navigate("/admin/seminars")}>
+        <Button 
+          variant="secondary" 
+          onClick={() => navigate("/admin/seminars")}
+          className="hidden md:flex"
+        >
           Cancel
         </Button>
       </div>
