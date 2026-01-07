@@ -9,11 +9,21 @@ export default function ClientLoginPage() {
   const { login, isAuthenticated, loading } = useClientAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Get redirect path from location state, default to /client/profile if coming from system routes
   const from = location.state?.from || "/client/profile";
+
+  // Load remembered email on mount
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -29,7 +39,15 @@ export default function ClientLoginPage() {
 
     try {
       await login(email, password);
-      navigate(from, { replace: true });
+      
+      // Handle remember me
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
+      
+      navigate(from, { replace: true});
     } catch (err) {
       setError(
         err.message || "Failed to login. Please check your credentials."
@@ -195,6 +213,8 @@ export default function ClientLoginPage() {
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label
