@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../shared/state/authSlice";
@@ -14,9 +14,19 @@ export default function AdminLogin() {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const loginMutation = useAdminLogin();
+
+  // Load remembered email on mount
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("adminRememberedEmail");
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +43,13 @@ export default function AdminLogin() {
           // Store admin data in Redux
           const { admin } = data;
           dispatch(setAuth({ token: null, admin })); // Token is in httpOnly cookie
+
+          // Handle remember me
+          if (rememberMe) {
+            localStorage.setItem("adminRememberedEmail", email);
+          } else {
+            localStorage.removeItem("adminRememberedEmail");
+          }
 
           toast.success("Login successful!");
 
@@ -215,6 +232,8 @@ export default function AdminLogin() {
                 <label className="flex items-center cursor-pointer">
                   <input
                     type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                     className="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500"
                   />
                   <span className="ml-2 text-gray-600">Remember me</span>

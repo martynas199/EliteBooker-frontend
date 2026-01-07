@@ -116,9 +116,7 @@ export default function SeminarForm() {
       // Set image preview - handle both string URL and object with url property
       const mainImage = seminar.images?.main;
       setImagePreview(
-        typeof mainImage === "string"
-          ? mainImage
-          : mainImage?.url || null
+        typeof mainImage === "string" ? mainImage : mainImage?.url || null
       );
 
       // Set gallery images - handle both string URLs and objects with url property

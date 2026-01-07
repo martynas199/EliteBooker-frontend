@@ -295,7 +295,11 @@ export default function SeminarBookingPage() {
               {/* Seminar Image */}
               {seminar.images?.main && (
                 <img
-                  src={typeof seminar.images.main === 'string' ? seminar.images.main : seminar.images.main.url}
+                  src={
+                    typeof seminar.images.main === "string"
+                      ? seminar.images.main
+                      : seminar.images.main.url
+                  }
                   alt={seminar.title}
                   className="w-full h-40 object-cover rounded-lg"
                 />

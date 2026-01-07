@@ -79,8 +79,14 @@ export default function SeminarDetailPage() {
 
   // Get all images (main + gallery)
   const allImages = [
-    seminar.images?.main ? (typeof seminar.images.main === 'string' ? seminar.images.main : seminar.images.main.url) : null,
-    ...(seminar.images?.gallery || []).map(img => typeof img === 'string' ? img : img.url),
+    seminar.images?.main
+      ? typeof seminar.images.main === "string"
+        ? seminar.images.main
+        : seminar.images.main.url
+      : null,
+    ...(seminar.images?.gallery || []).map((img) =>
+      typeof img === "string" ? img : img.url
+    ),
   ].filter(Boolean);
 
   const currentImage = allImages[selectedImageIndex];

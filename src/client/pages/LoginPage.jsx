@@ -39,15 +39,15 @@ export default function ClientLoginPage() {
 
     try {
       await login(email, password);
-      
+
       // Handle remember me
       if (rememberMe) {
         localStorage.setItem("rememberedEmail", email);
       } else {
         localStorage.removeItem("rememberedEmail");
       }
-      
-      navigate(from, { replace: true});
+
+      navigate(from, { replace: true });
     } catch (err) {
       setError(
         err.message || "Failed to login. Please check your credentials."

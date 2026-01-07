@@ -936,7 +936,11 @@ export default function SalonLandingLuxury() {
                         <div className="aspect-[16/9] sm:aspect-[4/3] overflow-hidden bg-gray-100">
                           {seminar.images?.main ? (
                             <img
-                              src={typeof seminar.images.main === 'string' ? seminar.images.main : seminar.images.main.url}
+                              src={
+                                typeof seminar.images.main === "string"
+                                  ? seminar.images.main
+                                  : seminar.images.main.url
+                              }
                               alt={seminar.title}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />

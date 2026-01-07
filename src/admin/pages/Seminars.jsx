@@ -235,7 +235,11 @@ export default function Seminars() {
                 <div className="relative h-32 bg-gradient-to-br from-violet-50 to-purple-50">
                   {seminar.images?.main ? (
                     <img
-                      src={typeof seminar.images.main === 'string' ? seminar.images.main : seminar.images.main.url}
+                      src={
+                        typeof seminar.images.main === "string"
+                          ? seminar.images.main
+                          : seminar.images.main.url
+                      }
                       alt={seminar.title}
                       className="w-full h-full object-cover"
                     />
@@ -375,7 +379,11 @@ export default function Seminars() {
                         <div className="flex items-center">
                           {seminar.images?.main && (
                             <img
-                              src={typeof seminar.images.main === 'string' ? seminar.images.main : seminar.images.main.url}
+                              src={
+                                typeof seminar.images.main === "string"
+                                  ? seminar.images.main
+                                  : seminar.images.main.url
+                              }
                               alt={seminar.title}
                               className="h-12 w-12 rounded object-cover mr-3"
                             />

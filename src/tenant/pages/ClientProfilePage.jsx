@@ -598,7 +598,12 @@ export default function ClientProfilePage() {
                       {booking.seminarInfo?.images?.main && (
                         <div className="w-full sm:w-24 h-32 sm:h-24 rounded-lg overflow-hidden flex-shrink-0">
                           <img
-                            src={typeof booking.seminarInfo.images.main === 'string' ? booking.seminarInfo.images.main : booking.seminarInfo.images.main.url}
+                            src={
+                              typeof booking.seminarInfo.images.main ===
+                              "string"
+                                ? booking.seminarInfo.images.main
+                                : booking.seminarInfo.images.main.url
+                            }
                             alt={booking.seminarInfo.title}
                             className="w-full h-full object-cover"
                           />

@@ -138,7 +138,11 @@ export default function MySeminarsPage() {
                     {booking.seminarInfo?.images?.main && (
                       <div className="lg:w-48 h-48 flex-shrink-0">
                         <img
-                          src={typeof booking.seminarInfo.images.main === 'string' ? booking.seminarInfo.images.main : booking.seminarInfo.images.main.url}
+                          src={
+                            typeof booking.seminarInfo.images.main === "string"
+                              ? booking.seminarInfo.images.main
+                              : booking.seminarInfo.images.main.url
+                          }
                           alt={booking.seminarInfo.title}
                           className="w-full h-full object-cover rounded-lg"
                         />
