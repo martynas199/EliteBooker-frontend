@@ -92,9 +92,7 @@ const navigationConfig = [
     label: "Seminars & Masterclasses",
     icon: "Package",
     condition: "seminarsEnabled",
-    items: [
-      { label: "All Seminars", path: "/admin/seminars" },
-    ],
+    items: [{ label: "All Seminars", path: "/admin/seminars" }],
   },
   {
     label: "Website Builder",

@@ -1,24 +1,27 @@
-/* Custom Calendar Styling */
+/* Custom Calendar Styling - Premium Design */
 .rbc-calendar {
   font-family: "Poppins", sans-serif;
 }
 
-/* Toolbar */
+/* Toolbar - Modern Design */
 .rbc-toolbar {
-  padding: 1.25rem;
-  background: transparent;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(to bottom, #ffffff, #f9fafb);
   border-radius: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .rbc-toolbar button {
   color: #374151;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #e5e7eb;
   background: white;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.25rem;
   border-radius: 0.5rem;
-  font-weight: 500;
-  transition: all 0.2s;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .rbc-toolbar button:hover {
@@ -26,110 +29,129 @@
   border-color: #3b82f6;
   color: #3b82f6;
   transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .rbc-toolbar button:active,
 .rbc-toolbar button.rbc-active {
-  background: #3b82f6 !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
   color: white !important;
   border-color: #3b82f6 !important;
-  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.5) !important;
+  transform: translateY(0);
 }
 
 .rbc-toolbar button:focus {
-  outline: 2px solid #3b82f6 !important;
+  outline: 2px solid #93c5fd !important;
   outline-offset: 2px;
 }
 
 .rbc-toolbar-label {
   color: #1f2937;
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
+  letter-spacing: -0.025em;
 }
 
-/* Header */
+/* Header - Clean Design */
 .rbc-header {
-  padding: 1rem 0.5rem;
+  padding: 0.875rem 0.5rem;
   font-weight: 600;
-  color: #374151;
-  background: #f9fafb;
+  color: #1f2937;
+  background: linear-gradient(to bottom, #f9fafb, #ffffff);
   border-bottom: 2px solid #e5e7eb;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .rbc-header + .rbc-header {
   border-left: 1px solid #e5e7eb;
 }
 
-/* Day cells */
+/* Day cells - Better Interaction */
 .rbc-day-bg {
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
+  border: 1px solid transparent;
 }
 
 .rbc-day-bg:hover {
   background-color: #f9fafb;
+  border-color: #e5e7eb;
 }
 
 .rbc-off-range-bg {
-  background-color: #f9fafb;
+  background-color: #fafafa;
+  opacity: 0.5;
 }
 
 .rbc-today {
-  background-color: #eff6ff;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
 }
 
 .rbc-day-bg.rbc-today {
-  border: 2px solid #3b82f6 !important;
-  border-left: 2px solid #3b82f6 !important;
+  border: 2px solid #60a5fa !important;
+  border-left: 2px solid #60a5fa !important;
+  box-shadow: inset 0 2px 4px 0 rgba(59, 130, 246, 0.1);
 }
 
-/* Date cells */
+/* Date cells - Modern Numbers */
 .rbc-date-cell {
   padding: 0.5rem;
   text-align: right;
 }
 
 .rbc-now .rbc-button-link {
-  color: #3b82f6;
+  color: white;
   font-weight: 700;
-  background: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.375rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px -2px rgba(59, 130, 246, 0.5);
 }
 
-/* Events */
+/* Events - Premium Cards */
 .rbc-event {
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.5rem;
   border: none;
-  font-size: 0.875rem;
-  font-weight: 500;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  transition: all 0.2s;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
 
 .rbc-event:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 10;
 }
 
 .rbc-event-label {
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .rbc-event-content {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: 500;
 }
 
-/* Selected event */
+/* Selected event - Premium Highlight */
 .rbc-selected {
   background-color: #1e40af !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4),
+    0 10px 15px -3px rgba(0, 0, 0, 0.2) !important;
+  transform: scale(1.05);
 }
 
-/* Time slots */
+/* Time slots - Cleaner Grid */
 .rbc-time-slot {
   border-top: 1px solid #f3f4f6;
 }
@@ -146,6 +168,7 @@
 .rbc-current-time-indicator {
   background-color: #ef4444;
   height: 2px;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
 }
 
 /* Agenda view */
