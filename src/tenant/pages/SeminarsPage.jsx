@@ -254,7 +254,7 @@ export default function SeminarsPage() {
                       {/* Image */}
                       {seminar.images?.main && (
                         <img
-                          src={seminar.images.main}
+                          src={typeof seminar.images.main === 'string' ? seminar.images.main : seminar.images.main.url}
                           alt={seminar.title}
                           className="w-full h-48 object-cover"
                         />
