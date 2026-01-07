@@ -130,11 +130,11 @@ export default function Modal({
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-white/80 rounded-lg transition-colors group flex-shrink-0"
+                  className="p-1.5 hover:bg-red-50 rounded-full transition-colors group flex-shrink-0 border border-red-500"
                   aria-label="Close modal"
                 >
                   <svg
-                    className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 group-hover:text-gray-700"
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 group-hover:text-red-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

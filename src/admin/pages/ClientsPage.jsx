@@ -178,75 +178,83 @@ export default function ClientsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="px-2 sm:px-3 py-3">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <Users className="h-8 w-8 text-black" />
+        <div className="mb-3">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Users className="h-6 w-6 text-black" />
             Clients
           </h1>
-          <p className="mt-2 text-gray-600">
-            Manage your client relationships and view their booking history
+          <p className="mt-0.5 text-xs text-gray-600">
+            Manage client relationships and booking history
           </p>
         </div>
 
         {/* Segments Overview */}
         {segments && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="flex items-center justify-between mb-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-3">
+            <div className="bg-white rounded-lg border border-gray-200 p-2.5">
+              <div className="flex items-center justify-between mb-1.5">
                 <div>
-                  <p className="text-sm text-gray-600 mb-0.5">VIP Clients</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-[10px] text-gray-600 mb-0.5 font-semibold uppercase tracking-wide">
+                    VIP Clients
+                  </p>
+                  <p className="text-[9px] text-gray-500">
                     £500+ spent, 10+ visits
                   </p>
                 </div>
-                <Star className="h-8 w-8 text-purple-600" />
+                <Star className="h-5 w-5 text-purple-600" />
               </div>
-              <p className="text-2xl font-bold text-purple-600">
+              <p className="text-xl font-bold text-purple-600">
                 {segments.vip?.count || 0}
               </p>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="flex items-center justify-between mb-2">
+            <div className="bg-white rounded-lg border border-gray-200 p-2.5">
+              <div className="flex items-center justify-between mb-1.5">
                 <div>
-                  <p className="text-sm text-gray-600 mb-0.5">At Risk</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-[10px] text-gray-600 mb-0.5 font-semibold uppercase tracking-wide">
+                    At Risk
+                  </p>
+                  <p className="text-[9px] text-gray-500">
                     90+ days inactive, 3+ visits
                   </p>
                 </div>
-                <AlertTriangle className="h-8 w-8 text-amber-600" />
+                <AlertTriangle className="h-5 w-5 text-amber-600" />
               </div>
-              <p className="text-2xl font-bold text-amber-600">
+              <p className="text-xl font-bold text-amber-600">
                 {segments.atRisk?.count || 0}
               </p>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="flex items-center justify-between mb-2">
+            <div className="bg-white rounded-lg border border-gray-200 p-2.5">
+              <div className="flex items-center justify-between mb-1.5">
                 <div>
-                  <p className="text-sm text-gray-600 mb-0.5">New Clients</p>
-                  <p className="text-xs text-gray-500">1 visit or less</p>
+                  <p className="text-[10px] text-gray-600 mb-0.5 font-semibold uppercase tracking-wide">
+                    New Clients
+                  </p>
+                  <p className="text-[9px] text-gray-500">1 visit or less</p>
                 </div>
-                <Sparkles className="h-8 w-8 text-green-600" />
+                <Sparkles className="h-5 w-5 text-green-600" />
               </div>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-xl font-bold text-green-600">
                 {segments.new?.count || 0}
               </p>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="flex items-center justify-between mb-2">
+            <div className="bg-white rounded-lg border border-gray-200 p-2.5">
+              <div className="flex items-center justify-between mb-1.5">
                 <div>
-                  <p className="text-sm text-gray-600 mb-0.5">Active</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-[10px] text-gray-600 mb-0.5 font-semibold uppercase tracking-wide">
+                    Active
+                  </p>
+                  <p className="text-[9px] text-gray-500">
                     Visited in last 90 days
                   </p>
                 </div>
-                <CheckCircle className="h-8 w-8 text-blue-600" />
+                <CheckCircle className="h-5 w-5 text-blue-600" />
               </div>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-xl font-bold text-blue-600">
                 {segments.active?.count || 0}
               </p>
             </div>
@@ -254,17 +262,17 @@ export default function ClientsPage() {
         )}
 
         {/* Filters */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-2.5 mb-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search by name or email..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-transparent"
               />
             </div>
 
@@ -335,7 +343,7 @@ export default function ClientsPage() {
             </div>
           </div>
 
-          <div className="mt-3 flex items-center justify-between text-sm text-gray-600">
+          <div className="mt-2 flex items-center justify-between text-xs text-gray-600">
             <span>
               Showing {clients.length} of {total} clients
             </span>
@@ -343,7 +351,7 @@ export default function ClientsPage() {
               onClick={() =>
                 setSortOrder(sortOrder === "desc" ? "asc" : "desc")
               }
-              className="text-black hover:underline"
+              className="text-black hover:underline font-medium"
             >
               {sortOrder === "desc" ? "Highest first" : "Lowest first"}
             </button>
@@ -368,55 +376,54 @@ export default function ClientsPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-2.5">
             {clients.map((client) => (
               <div
                 key={client.id}
                 onClick={() => handleClientClick(client)}
-                className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer relative"
+                className="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer relative"
               >
                 {/* Status badge - positioned in top right corner */}
-                <div className="absolute top-4 right-4">
+                <div className="absolute top-2.5 right-2.5">
                   {getStatusBadge(client.status)}
                 </div>
 
-                <div className="pr-20">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="h-10 w-10 rounded-full bg-gray-900 text-white flex items-center justify-center font-semibold flex-shrink-0">
+                <div className="pr-16">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="h-8 w-8 rounded-full bg-gray-900 text-white flex items-center justify-center font-semibold flex-shrink-0 text-xs">
                       {client.name?.charAt(0).toUpperCase() || "?"}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-sm font-semibold text-gray-900">
                         {client.name || "Unknown"}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-xs text-gray-600 truncate">
                         {client.email || "No email"}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-4 mt-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4 text-gray-400" />
-                      <span className="text-gray-900 font-medium">
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 mt-2 text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <TrendingUp className="h-3.5 w-3.5 text-gray-400" />
+                      <span className="text-gray-900 font-semibold">
                         {formatCurrency(client.totalSpend || 0)}
                       </span>
-                      <span className="text-gray-600">total spent</span>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-900 font-medium">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-gray-900 font-semibold">
                         {client.totalVisits || 0}
                       </span>
                       <span className="text-gray-600">visits</span>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-600">
+                    <div className="col-span-2 flex items-center gap-1.5 text-[11px]">
+                      <span className="text-gray-500">
                         {client.lastVisit &&
                         new Date(client.lastVisit) > new Date()
-                          ? "Next visit:"
-                          : "Last visit:"}
+                          ? "Next:"
+                          : "Last:"}
                       </span>
                       <span className="text-gray-900 font-medium">
                         {formatDate(client.lastVisit)}
@@ -425,11 +432,11 @@ export default function ClientsPage() {
                   </div>
 
                   {client.tags && client.tags.length > 0 && (
-                    <div className="flex gap-2 mt-3">
+                    <div className="flex gap-1.5 mt-2">
                       {client.tags.map((tag, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-md"
+                          className="px-1.5 py-0.5 text-[10px] bg-gray-100 text-gray-700 rounded font-medium"
                         >
                           {tag}
                         </span>

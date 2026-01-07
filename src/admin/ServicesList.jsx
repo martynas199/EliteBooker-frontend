@@ -121,13 +121,13 @@ export default function ServicesList({
   }
 
   return (
-    <div className="space-y-6 overflow-x-hidden">
+    <div className="px-2 sm:px-3 py-3 space-y-2 overflow-x-hidden">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg hidden sm:flex">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="p-2 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg shadow">
             <svg
-              className="w-6 h-6 text-white"
+              className="w-4 h-4 text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -140,34 +140,34 @@ export default function ServicesList({
               />
             </svg>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
             {t("services", language)}
           </h2>
         </div>
         <Button
           onClick={onCreate}
           variant="primary"
-          className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-blue-600 hover:bg-blue-700"
+          className="px-3 py-1.5 text-xs shadow bg-blue-600 hover:bg-blue-700"
         >
-          <Plus className="w-5 h-5 mr-2 inline-block" />
+          <Plus className="w-4 h-4 mr-1.5 inline-block" />
           {t("addService", language)}
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border-2 border-gray-100 p-6 space-y-4">
-        <div className="flex flex-col md:flex-row gap-4">
+      <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg shadow border border-gray-100 p-2.5 space-y-2">
+        <div className="flex flex-col md:flex-row gap-2">
           {/* Search */}
           <div className="flex-1 relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
+            <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-gray-400" />
             </div>
             <input
               type="text"
               placeholder={t("searchServices", language)}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+              className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
             />
           </div>
 
@@ -181,7 +181,7 @@ export default function ServicesList({
               { value: "inactive", label: t("inactiveOnly", language) },
             ]}
             onClick={() => setShowActiveDrawer(true)}
-            className="px-4 py-3 rounded-xl"
+            className="px-3 py-1.5 text-xs rounded-lg"
           />
 
           {/* Category Filter */}
@@ -193,11 +193,11 @@ export default function ServicesList({
               label: cat === "all" ? t("allCategories", language) : cat,
             }))}
             onClick={() => setShowCategoryDrawer(true)}
-            className="px-4 py-3 rounded-xl"
+            className="px-3 py-1.5 text-xs rounded-lg"
           />
         </div>
 
-        <div className="text-sm font-medium text-gray-600">
+        <div className="text-xs font-medium text-gray-600">
           {language === "LT"
             ? `Rodoma ${filteredServices.length} iš ${services.length} paslaugų`
             : `Showing ${filteredServices.length} of ${services.length} services`}
@@ -206,10 +206,10 @@ export default function ServicesList({
 
       {/* Services Table / Cards */}
       {filteredServices.length === 0 ? (
-        <div className="bg-white rounded-2xl shadow-2xl border-0 ring-1 ring-gray-900/5 p-16 text-center">
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center shadow-lg">
+        <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center">
+          <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center shadow">
             <svg
-              className="w-12 h-12 text-blue-500"
+              className="w-8 h-8 text-blue-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -222,10 +222,10 @@ export default function ServicesList({
               />
             </svg>
           </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-3">
+          <h3 className="text-lg font-bold text-gray-900 mb-1.5">
             {services.length === 0 ? "No Services Yet" : "No Services Found"}
           </h3>
-          <p className="text-gray-600 text-lg mb-8 max-w-md mx-auto">
+          <p className="text-gray-600 text-sm mb-4 max-w-md mx-auto">
             {services.length === 0
               ? "Start by creating your first service to offer to your clients"
               : "Try adjusting your filters to find what you're looking for"}
@@ -233,10 +233,10 @@ export default function ServicesList({
           {services.length === 0 && (
             <button
               onClick={onCreate}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold px-8 py-4 rounded-xl shadow-xl hover:shadow-2xl transition-all text-base"
+              className="inline-flex items-center gap-1.5 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-medium px-4 py-2 rounded-lg shadow transition-all text-sm"
             >
               <svg
-                className="w-5 h-5"
+                className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -255,35 +255,35 @@ export default function ServicesList({
       ) : (
         <>
           {/* Mobile Card View */}
-          <div className="block md:hidden space-y-4 overflow-x-hidden">
+          <div className="block md:hidden space-y-2 overflow-x-hidden">
             {filteredServices.map((service) => (
               <div
                 key={service._id}
                 data-testid="service-item"
-                className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden"
+                className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
               >
-                <div className="p-4">
+                <div className="p-3">
                   {/* Service Header with Image */}
-                  <div className="flex gap-3 mb-3">
+                  <div className="flex gap-2.5 mb-2">
                     {service.image && (
                       <img
                         src={service.image.url}
                         alt={service.image.alt || service.name}
-                        className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
+                        className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
                       />
                     )}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 mb-1 truncate">
+                      <h3 className="text-sm font-semibold text-gray-900 mb-0.5 truncate">
                         {service.name}
                       </h3>
                       {service.description && (
-                        <p className="text-sm text-gray-500 line-clamp-2 mb-2">
+                        <p className="text-xs text-gray-500 line-clamp-2 mb-1.5">
                           {service.description}
                         </p>
                       )}
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1.5">
                         <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          className={`inline-flex px-1.5 py-0.5 text-[10px] font-semibold rounded-full ${
                             service.active
                               ? "bg-green-100 text-green-800"
                               : "bg-gray-100 text-gray-800"
@@ -293,7 +293,7 @@ export default function ServicesList({
                         </span>
                         {service.fixedTimeSlots &&
                           service.fixedTimeSlots.length > 0 && (
-                            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold rounded-full bg-purple-100 text-purple-800">
                               🕐 Fixed Times
                             </span>
                           )}
@@ -302,22 +302,28 @@ export default function ServicesList({
                   </div>
 
                   {/* Service Details Grid */}
-                  <div className="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-gray-200">
+                  <div className="grid grid-cols-2 gap-2 mb-2 pt-2 border-t border-gray-200">
                     <div>
-                      <div className="text-xs text-gray-500 mb-1">Category</div>
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-[10px] text-gray-500 mb-0.5">
+                        Category
+                      </div>
+                      <div className="text-xs font-medium text-gray-900">
                         {service.category || "—"}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500 mb-1">Price</div>
-                      <div className="text-sm font-semibold text-brand-600">
+                      <div className="text-[10px] text-gray-500 mb-0.5">
+                        Price
+                      </div>
+                      <div className="text-xs font-semibold text-brand-600">
                         {formatPrice(getServicePrice(service))}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500 mb-1">Duration</div>
-                      <div className="text-sm text-gray-900">
+                      <div className="text-[10px] text-gray-500 mb-0.5">
+                        Duration
+                      </div>
+                      <div className="text-xs text-gray-900">
                         {service.durationMin ||
                           service.variants?.[0]?.durationMin ||
                           "—"}
@@ -327,8 +333,10 @@ export default function ServicesList({
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500 mb-1">Variants</div>
-                      <div className="text-sm text-gray-900">
+                      <div className="text-[10px] text-gray-500 mb-0.5">
+                        Variants
+                      </div>
+                      <div className="text-xs text-gray-900">
                         {service.variants?.length > 0 ? (
                           <span className="text-brand-600 font-medium">
                             {service.variants.length} variant(s)
@@ -341,12 +349,12 @@ export default function ServicesList({
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-2 pt-3 border-t border-gray-200">
+                  <div className="flex gap-1.5 pt-2 border-t border-gray-200">
                     <Button
                       onClick={() => onEdit(service)}
                       variant="outline"
                       size="sm"
-                      className="flex-1"
+                      className="flex-1 text-xs py-1.5"
                     >
                       Edit
                     </Button>
@@ -355,7 +363,7 @@ export default function ServicesList({
                         onClick={() => handleDeleteClick(service)}
                         variant="danger"
                         size="sm"
-                        className="flex-1"
+                        className="flex-1 text-xs py-1.5"
                       >
                         Delete
                       </Button>
@@ -367,30 +375,30 @@ export default function ServicesList({
           </div>
 
           {/* Desktop Table View */}
-          <div className="hidden md:block bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-gray-100">
+          <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden border border-gray-100">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
+                <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                       Service
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                       Category
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                       Price
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                       Duration
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                       Variants
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-2.5 text-right text-[10px] font-bold text-gray-700 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -402,34 +410,34 @@ export default function ServicesList({
                       data-testid="service-item"
                       className="hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0"
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-3">
                         <div className="flex items-center">
                           {service.image && (
                             <img
                               src={service.image.url}
                               alt={service.image.alt || service.name}
-                              className="w-12 h-12 rounded object-cover mr-3"
+                              className="w-10 h-10 rounded object-cover mr-2.5"
                             />
                           )}
                           <div>
-                            <div className="font-medium text-gray-900">
+                            <div className="text-sm font-medium text-gray-900">
                               {service.name}
                             </div>
                             {service.description && (
-                              <div className="text-sm text-gray-500 line-clamp-1">
+                              <div className="text-xs text-gray-500 line-clamp-1">
                                 {service.description}
                               </div>
                             )}
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
+                      <td className="px-4 py-3 text-xs text-gray-900">
                         {service.category || "—"}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
+                      <td className="px-4 py-3 text-xs text-gray-900">
                         {formatPrice(getServicePrice(service))}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
+                      <td className="px-4 py-3 text-xs text-gray-900">
                         {service.durationMin ||
                           service.variants?.[0]?.durationMin ||
                           "—"}
@@ -437,7 +445,7 @@ export default function ServicesList({
                           service.variants?.[0]?.durationMin) &&
                           " min"}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
+                      <td className="px-4 py-3 text-xs text-gray-900">
                         {service.variants?.length > 0 ? (
                           <span className="text-brand-600">
                             {service.variants.length} variant(s)
@@ -446,10 +454,10 @@ export default function ServicesList({
                           "—"
                         )}
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-wrap gap-2">
+                      <td className="px-4 py-3">
+                        <div className="flex flex-wrap gap-1.5">
                           <span
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            className={`inline-flex px-1.5 py-0.5 text-[10px] font-semibold rounded-full ${
                               service.active
                                 ? "bg-green-100 text-green-800"
                                 : "bg-gray-100 text-gray-800"
@@ -459,27 +467,27 @@ export default function ServicesList({
                           </span>
                           {service.fixedTimeSlots &&
                             service.fixedTimeSlots.length > 0 && (
-                              <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold rounded-full bg-purple-100 text-purple-800">
                                 🕐 Fixed Times
                               </span>
                             )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-right text-sm">
-                        <div className="flex items-center justify-end gap-2">
+                      <td className="px-4 py-3 text-right text-xs">
+                        <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => onEdit(service)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-600 hover:text-white hover:bg-brand-600 border border-brand-600 rounded-lg transition-all"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-brand-600 hover:text-white hover:bg-brand-600 border border-brand-600 rounded-lg transition-all"
                           >
-                            <Edit className="w-4 h-4" />
+                            <Edit className="w-3.5 h-3.5" />
                             Edit
                           </button>
                           {isSuperAdmin && (
                             <button
                               onClick={() => handleDeleteClick(service)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded-lg transition-all"
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded-lg transition-all"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="w-3.5 h-3.5" />
                               Delete
                             </button>
                           )}

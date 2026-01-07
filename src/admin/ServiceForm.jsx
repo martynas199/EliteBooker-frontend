@@ -79,10 +79,6 @@ export default function ServiceForm({
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Scroll to top when component mounts (especially useful when editing)
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Drawer state for mobile specialist selection
@@ -332,12 +328,12 @@ export default function ServiceForm({
   ).length;
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <>
       {errorCount > 0 && (
-        <div className="mb-6 p-5 bg-red-50 border-2 border-red-200 rounded-xl">
-          <div className="flex items-start gap-4">
+        <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-start gap-2">
             <svg
-              className="w-6 h-6 text-red-600 mt-0.5 flex-shrink-0"
+              className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -348,14 +344,14 @@ export default function ServiceForm({
               />
             </svg>
             <div>
-              <h3 className="text-base font-bold text-red-900">
+              <h3 className="text-sm font-bold text-red-900">
                 {t("pleaseFixErrors", language)} {errorCount}{" "}
                 {errorCount !== 1
                   ? t("errors", language)
                   : t("error", language)}
                 :
               </h3>
-              <ul className="mt-3 text-sm text-red-700 list-disc list-inside space-y-2">
+              <ul className="mt-1.5 text-xs text-red-700 list-disc list-inside space-y-1">
                 {Object.entries(errors)
                   .filter(([key]) => key !== "submit")
                   .map(([key, message]) => (
@@ -367,717 +363,718 @@ export default function ServiceForm({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-3">
         {/* Basic Info Section */}
-        <div className="bg-white rounded-2xl shadow-lg py-6 space-y-6">
-          <div className="flex items-center gap-3 pb-4 border-b-2 border-gray-100 px-6">
-            <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-              <Info className="w-5 h-5 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900">
-              {t("basicInformation", language)}
-            </h3>
-          </div>
+        <div className="space-y-3">
+          {/* Name */}
+          <FormField
+            label={t("serviceName", language)}
+            error={errors.name}
+            required
+            htmlFor="name"
+            hint={t("serviceNameHint", language)}
+          >
+            <input
+              type="text"
+              id="name"
+              value={formData.name}
+              onChange={(e) => handleChange("name", e.target.value)}
+              className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                errors.name ? "border-red-500" : "border-gray-300"
+              }`}
+              aria-invalid={!!errors.name}
+            />
+          </FormField>
 
-          <div className="px-6 space-y-6">
-            {/* Name */}
-            <FormField
-              label={t("serviceName", language)}
-              error={errors.name}
-              required
-              htmlFor="name"
-              hint={t("serviceNameHint", language)}
-            >
-              <input
-                type="text"
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleChange("name", e.target.value)}
-                className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                  errors.name ? "border-red-500" : "border-gray-300"
-                }`}
-                aria-invalid={!!errors.name}
-              />
-            </FormField>
+          {/* Category */}
+          <FormField
+            label={t("category", language)}
+            error={errors.category}
+            required
+            htmlFor="category"
+            hint={t("categoryHint", language)}
+          >
+            <input
+              type="text"
+              id="category"
+              value={formData.category}
+              onChange={(e) => handleChange("category", e.target.value)}
+              className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                errors.category ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="e.g., Hair, Nails, Spa"
+              aria-invalid={!!errors.category}
+            />
+          </FormField>
 
-            {/* Category */}
-            <FormField
-              label={t("category", language)}
-              error={errors.category}
-              required
-              htmlFor="category"
-              hint={t("categoryHint", language)}
-            >
-              <input
-                type="text"
-                id="category"
-                value={formData.category}
-                onChange={(e) => handleChange("category", e.target.value)}
-                className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                  errors.category ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="e.g., Hair, Nails, Spa"
-                aria-invalid={!!errors.category}
-              />
-            </FormField>
+          {/* Description */}
+          <FormField
+            label={t("description", language)}
+            htmlFor="description"
+            hint={t("descriptionHint", language)}
+          >
+            <textarea
+              id="description"
+              value={formData.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+              rows={4}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors resize-none"
+            />
+          </FormField>
 
-            {/* Description */}
-            <FormField
-              label={t("description", language)}
-              htmlFor="description"
-              hint={t("descriptionHint", language)}
-            >
-              <textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => handleChange("description", e.target.value)}
-                rows={4}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors resize-none"
-              />
-            </FormField>
-
-            {/* Primary Specialist */}
-            <FormField
-              label={t("primaryBeautician", language)}
-              error={errors.primaryBeauticianId}
-              required
-              htmlFor="primaryBeauticianId"
-              hint={t("primaryBeauticianHint", language)}
-            >
-              <SelectButton
-                id="primaryBeauticianId"
-                value={formData.primaryBeauticianId}
-                placeholder={t("selectBeautician", language)}
-                options={specialists.map((b) => ({
-                  value: b._id,
-                  label: b.name,
-                }))}
-                onClick={() => isSuperAdmin && setShowSpecialistDrawer(true)}
-                disabled={!isSuperAdmin}
-                className={`w-full px-4 py-3 rounded-xl ${
-                  errors.primaryBeauticianId ? "border-red-500" : ""
-                } ${!isSuperAdmin ? "bg-gray-100 cursor-not-allowed" : ""}`}
-              />
-              {!isSuperAdmin && !admin?.specialistId && (
-                <p className="text-sm text-red-600 mt-1 font-medium">
-                  ⚠️ Your admin account is not linked to a specialist. Please
-                  contact your administrator to link your account before
-                  creating services.
-                </p>
-              )}
-              {!isSuperAdmin && admin?.specialistId && (
-                <p className="text-sm text-gray-500 mt-1">
-                  {t("youCanOnlyCreateForYourself", language)}
-                </p>
-              )}
-            </FormField>
-
-            {/* Locations Multi-Select (only if multi-location is enabled) */}
-            {isMultiLocationEnabled && (
-              <FormField
-                label="Available at Locations"
-                htmlFor="availableAt"
-                hint="Select which locations offer this service. Leave empty for all locations."
-              >
-                {loadingLocations ? (
-                  <p className="text-sm text-gray-500">Loading locations...</p>
-                ) : locations.length === 0 ? (
-                  <p className="text-sm text-gray-500">
-                    No locations available. Create locations first in the
-                    Locations page.
-                  </p>
-                ) : (
-                  <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
-                    {locations.map((location) => (
-                      <label
-                        key={location._id}
-                        className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={formData.availableAt.includes(location._id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              handleChange("availableAt", [
-                                ...formData.availableAt,
-                                location._id,
-                              ]);
-                            } else {
-                              handleChange(
-                                "availableAt",
-                                formData.availableAt.filter(
-                                  (id) => id !== location._id
-                                )
-                              );
-                            }
-                          }}
-                          className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
-                        />
-                        <span className="text-sm flex items-center gap-2">
-                          {location.name}
-                          {location.isPrimary && (
-                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                              Primary
-                            </span>
-                          )}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                )}
-                {formData.availableAt.length === 0 && locations.length > 0 && (
-                  <p className="text-xs text-amber-600 mt-1">
-                    No locations selected - service will be available at all
-                    locations
-                  </p>
-                )}
-              </FormField>
+          {/* Primary Specialist */}
+          <FormField
+            label={t("primaryBeautician", language)}
+            error={errors.primaryBeauticianId}
+            required
+            htmlFor="primaryBeauticianId"
+            hint={t("primaryBeauticianHint", language)}
+          >
+            <SelectButton
+              id="primaryBeauticianId"
+              value={formData.primaryBeauticianId}
+              placeholder={t("selectBeautician", language)}
+              options={specialists.map((b) => ({
+                value: b._id,
+                label: b.name,
+              }))}
+              onClick={() => isSuperAdmin && setShowSpecialistDrawer(true)}
+              disabled={!isSuperAdmin}
+              className={`w-full px-3 py-2 text-sm rounded-lg ${
+                errors.primaryBeauticianId ? "border-red-500" : ""
+              } ${!isSuperAdmin ? "bg-gray-100 cursor-not-allowed" : ""}`}
+            />
+            {!isSuperAdmin && !admin?.specialistId && (
+              <p className="text-sm text-red-600 mt-1 font-medium">
+                ⚠️ Your admin account is not linked to a specialist. Please
+                contact your administrator to link your account before creating
+                services.
+              </p>
             )}
+            {!isSuperAdmin && admin?.specialistId && (
+              <p className="text-sm text-gray-500 mt-1">
+                {t("youCanOnlyCreateForYourself", language)}
+              </p>
+            )}
+          </FormField>
 
-            {/* Image Upload */}
+          {/* Locations Multi-Select (only if multi-location is enabled) */}
+          {isMultiLocationEnabled && (
             <FormField
-              label={t("serviceImage", language)}
-              error={errors.image}
-              htmlFor="image"
-              hint={
-                isUploadingImage
-                  ? t("uploading", language)
-                  : t("serviceImageHint", language)
-              }
+              label="Available at Locations"
+              htmlFor="availableAt"
+              hint="Select which locations offer this service. Leave empty for all locations."
             >
+              {loadingLocations ? (
+                <p className="text-sm text-gray-500">Loading locations...</p>
+              ) : locations.length === 0 ? (
+                <p className="text-sm text-gray-500">
+                  No locations available. Create locations first in the
+                  Locations page.
+                </p>
+              ) : (
+                <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
+                  {locations.map((location) => (
+                    <label
+                      key={location._id}
+                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={formData.availableAt.includes(location._id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            handleChange("availableAt", [
+                              ...formData.availableAt,
+                              location._id,
+                            ]);
+                          } else {
+                            handleChange(
+                              "availableAt",
+                              formData.availableAt.filter(
+                                (id) => id !== location._id
+                              )
+                            );
+                          }
+                        }}
+                        className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
+                      />
+                      <span className="text-sm flex items-center gap-2">
+                        {location.name}
+                        {location.isPrimary && (
+                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                            Primary
+                          </span>
+                        )}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
+              {formData.availableAt.length === 0 && locations.length > 0 && (
+                <p className="text-xs text-amber-600 mt-1">
+                  No locations selected - service will be available at all
+                  locations
+                </p>
+              )}
+            </FormField>
+          )}
+
+          {/* Image Upload */}
+          <FormField
+            label={t("serviceImage", language)}
+            error={errors.image}
+            htmlFor="image"
+            hint={
+              isUploadingImage
+                ? t("uploading", language)
+                : "Recommended: 800x600px, max 2MB. JPG, PNG or WebP format."
+            }
+          >
+            <div className="space-y-3">
+              {/* Image Preview or Upload Area */}
+              {formData.image && !isUploadingImage ? (
+                <div className="relative">
+                  <img
+                    src={formData.image.url}
+                    alt={formData.image.alt || "Service image"}
+                    className="w-full h-48 object-cover rounded-lg border-2 border-gray-200"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        image: null,
+                      }));
+                      toast.success("Image removed");
+                    }}
+                    className="absolute top-2 right-2 px-2.5 py-1 bg-white text-red-600 text-xs font-semibold rounded-lg shadow-md hover:bg-red-50 border border-red-200 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ) : (
+                <label
+                  htmlFor="image"
+                  className={`flex flex-col items-center justify-center w-full h-56 sm:h-48 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+                    isUploadingImage
+                      ? "border-brand-400 bg-brand-50"
+                      : "border-gray-300 hover:border-brand-400 bg-gray-50 hover:bg-brand-50"
+                  }`}
+                >
+                  <div className="flex flex-col items-center justify-center py-6">
+                    <svg
+                      className={`w-10 h-10 mb-3 ${
+                        isUploadingImage ? "text-brand-500" : "text-gray-400"
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      />
+                    </svg>
+                    {isUploadingImage ? (
+                      <>
+                        <p className="mb-2 text-sm font-semibold text-brand-600">
+                          Uploading... {progress}%
+                        </p>
+                        <div className="w-48 bg-gray-200 rounded-full h-2 overflow-hidden">
+                          <div
+                            className="bg-brand-600 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p className="mb-1 text-sm font-semibold text-gray-700">
+                          Click to upload service image
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          PNG, JPG or WebP (MAX. 2MB)
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </label>
+              )}
+
               <input
                 type="file"
                 id="image"
                 accept="image/*"
                 onChange={handleImageChange}
                 disabled={isUploadingImage}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 file:cursor-pointer"
+                className="hidden"
               />
+            </div>
+          </FormField>
 
-              {/* Upload Progress Bar */}
-              {isUploadingImage && progress > 0 && (
-                <div className="mt-2">
-                  <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                    <div
-                      className="bg-brand-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {progress}% uploaded
-                  </p>
-                </div>
-              )}
+          {/* Active Status */}
+          <div className="flex flex-col gap-2 p-3 sm:p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="active"
+                checked={formData.active}
+                onChange={(e) => handleChange("active", e.target.checked)}
+                className="w-6 h-6 text-brand-600 rounded focus:ring-brand-500 cursor-pointer"
+              />
+              <label
+                htmlFor="active"
+                className="text-sm font-semibold text-gray-900 cursor-pointer"
+              >
+                {t("activeVisible", language)}
+              </label>
+            </div>
+            <p className="text-xs text-gray-600 ml-8">
+              {t("activeHint", language)}
+            </p>
+          </div>
 
-              {/* Image Preview */}
-              {formData.image && !isUploadingImage && (
-                <div className="mt-3 relative inline-block">
-                  <img
-                    src={formData.image.url}
-                    alt={formData.image.alt || "Service image"}
-                    className="w-48 h-32 object-cover rounded-xl shadow-md"
+          {/* Price Varies */}
+          <div className="flex flex-col gap-2 p-3 sm:p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="priceVaries"
+                checked={formData.priceVaries}
+                onChange={(e) => handleChange("priceVaries", e.target.checked)}
+                className="w-6 h-6 text-brand-600 rounded focus:ring-brand-500 cursor-pointer"
+              />
+              <label
+                htmlFor="priceVaries"
+                className="text-sm font-semibold text-gray-900 cursor-pointer"
+              >
+                Price Varies
+              </label>
+            </div>
+            <p className="text-xs text-gray-600 ml-8">
+              Check this if the service price varies (will show "Up to" instead
+              of "From")
+            </p>
+          </div>
+
+          {/* Fixed Time Slots */}
+          <div className="flex flex-col gap-3 p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border-2 border-purple-200">
+            <div className="flex items-start gap-2 sm:gap-3">
+              <input
+                type="checkbox"
+                id="useFixedSlots"
+                checked={formData.useFixedSlots}
+                onChange={(e) => {
+                  handleChange("useFixedSlots", e.target.checked);
+                  if (!e.target.checked) {
+                    handleChange("fixedTimeSlots", []);
+                  }
+                }}
+                className="w-6 h-6 text-purple-600 rounded focus:ring-purple-500 cursor-pointer flex-shrink-0 mt-0.5"
+              />
+              <div className="flex-1 min-w-0">
+                <label
+                  htmlFor="useFixedSlots"
+                  className="text-sm font-semibold text-gray-900 cursor-pointer block"
+                >
+                  🕐 Use Fixed Time Slots
+                </label>
+                <p className="text-xs text-gray-600 mt-1">
+                  Set specific times for appointments
+                  <span className="hidden sm:inline">
+                    {" "}
+                    instead of automatic slot generation
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {formData.useFixedSlots && (
+              <div className="space-y-3 mt-1">
+                {/* Add Time Input */}
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="time"
+                    value={newTimeSlot}
+                    onChange={(e) => setNewTimeSlot(e.target.value)}
+                    className="w-full sm:flex-1 px-3 py-2.5 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base"
+                    placeholder="09:15"
                   />
                   <button
                     type="button"
                     onClick={() => {
-                      toast(
-                        (t) => (
-                          <span className="flex items-center gap-3">
-                            <span>Remove this image?</span>
-                            <button
-                              className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                              onClick={() => {
-                                setFormData((prev) => ({
-                                  ...prev,
-                                  image: null,
-                                }));
-                                toast.dismiss(t.id);
-                                toast.success("Image removed");
-                              }}
-                            >
-                              Remove
-                            </button>
-                            <button
-                              className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300"
-                              onClick={() => toast.dismiss(t.id)}
-                            >
-                              Cancel
-                            </button>
-                          </span>
-                        ),
-                        { duration: 6000 }
-                      );
+                      const time = newTimeSlot.trim();
+                      if (!time) {
+                        toast.error("Please enter a time");
+                        return;
+                      }
+                      if (formData.fixedTimeSlots.includes(time)) {
+                        toast.error("This time is already added");
+                        return;
+                      }
+                      const updated = [...formData.fixedTimeSlots, time].sort();
+                      handleChange("fixedTimeSlots", updated);
+                      setNewTimeSlot("");
+                      toast.success("Time added");
                     }}
-                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 shadow-lg"
+                    className="w-full sm:w-auto px-6 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-colors active:scale-95"
                   >
-                    ×
+                    Add Time
                   </button>
                 </div>
-              )}
-            </FormField>
 
-            {/* Active Status */}
-            <div className="flex flex-col gap-2 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="active"
-                  checked={formData.active}
-                  onChange={(e) => handleChange("active", e.target.checked)}
-                  className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500 cursor-pointer"
-                />
-                <label
-                  htmlFor="active"
-                  className="text-sm font-semibold text-gray-900 cursor-pointer"
-                >
-                  {t("activeVisible", language)}
-                </label>
-              </div>
-              <p className="text-xs text-gray-600 ml-8">
-                {t("activeHint", language)}
-              </p>
-            </div>
-
-            {/* Price Varies */}
-            <div className="flex flex-col gap-2 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="priceVaries"
-                  checked={formData.priceVaries}
-                  onChange={(e) =>
-                    handleChange("priceVaries", e.target.checked)
-                  }
-                  className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500 cursor-pointer"
-                />
-                <label
-                  htmlFor="priceVaries"
-                  className="text-sm font-semibold text-gray-900 cursor-pointer"
-                >
-                  Price Varies
-                </label>
-              </div>
-              <p className="text-xs text-gray-600 ml-8">
-                Check this if the service price varies (will show "Up to"
-                instead of "From")
-              </p>
-            </div>
-
-            {/* Fixed Time Slots */}
-            <div className="flex flex-col gap-3 p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border-2 border-purple-200">
-              <div className="flex items-start gap-2 sm:gap-3">
-                <input
-                  type="checkbox"
-                  id="useFixedSlots"
-                  checked={formData.useFixedSlots}
-                  onChange={(e) => {
-                    handleChange("useFixedSlots", e.target.checked);
-                    if (!e.target.checked) {
-                      handleChange("fixedTimeSlots", []);
-                    }
-                  }}
-                  className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 cursor-pointer flex-shrink-0 mt-0.5"
-                />
-                <div className="flex-1 min-w-0">
-                  <label
-                    htmlFor="useFixedSlots"
-                    className="text-sm font-semibold text-gray-900 cursor-pointer block"
-                  >
-                    🕐 Use Fixed Time Slots
-                  </label>
-                  <p className="text-xs text-gray-600 mt-1">
-                    Set specific times for appointments
-                    <span className="hidden sm:inline">
-                      {" "}
-                      instead of automatic slot generation
-                    </span>
+                {/* Configured Times List */}
+                {formData.fixedTimeSlots.length > 0 ? (
+                  <div className="space-y-2">
+                    <p className="text-xs sm:text-sm font-medium text-gray-700">
+                      {formData.fixedTimeSlots.length} time
+                      {formData.fixedTimeSlots.length !== 1 ? "s" : ""}{" "}
+                      configured:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {formData.fixedTimeSlots.map((time) => (
+                        <div
+                          key={time}
+                          className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-purple-200 shadow-sm"
+                        >
+                          <span className="font-mono text-sm sm:text-base font-semibold text-purple-900">
+                            {time}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleChange(
+                                "fixedTimeSlots",
+                                formData.fixedTimeSlots.filter(
+                                  (t) => t !== time
+                                )
+                              );
+                              toast.success("Removed");
+                            }}
+                            className="text-xs sm:text-sm text-red-600 hover:text-red-800 font-medium px-2 py-1 hover:bg-red-50 rounded transition-colors active:scale-95"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs sm:text-sm text-gray-500 italic py-2">
+                    Add your first time slot above
                   </p>
-                </div>
-              </div>
+                )}
 
-              {formData.useFixedSlots && (
-                <div className="space-y-3 mt-1">
-                  {/* Add Time Input */}
+                {/* Quick Presets */}
+                <div className="p-2.5 sm:p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-xs font-medium text-blue-900 mb-2">
+                    💡 Quick Presets:
+                  </p>
                   <div className="flex flex-col sm:flex-row gap-2">
-                    <input
-                      type="time"
-                      value={newTimeSlot}
-                      onChange={(e) => setNewTimeSlot(e.target.value)}
-                      className="w-full sm:flex-1 px-3 py-2.5 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base"
-                      placeholder="09:15"
-                    />
                     <button
                       type="button"
                       onClick={() => {
-                        const time = newTimeSlot.trim();
-                        if (!time) {
-                          toast.error("Please enter a time");
-                          return;
-                        }
-                        if (formData.fixedTimeSlots.includes(time)) {
-                          toast.error("This time is already added");
-                          return;
-                        }
-                        const updated = [
-                          ...formData.fixedTimeSlots,
-                          time,
-                        ].sort();
-                        handleChange("fixedTimeSlots", updated);
-                        setNewTimeSlot("");
-                        toast.success("Time added");
+                        handleChange("fixedTimeSlots", [
+                          "09:00",
+                          "12:00",
+                          "15:00",
+                          "18:00",
+                        ]);
+                        toast.success("Preset applied");
                       }}
-                      className="w-full sm:w-auto px-6 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-colors active:scale-95"
+                      className="text-xs px-3 py-2 bg-white border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors active:scale-95 font-medium"
                     >
-                      Add Time
+                      Every 3hrs (9-6)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleChange("fixedTimeSlots", [
+                          "10:00",
+                          "14:00",
+                          "16:00",
+                        ]);
+                        toast.success("Preset applied");
+                      }}
+                      className="text-xs px-3 py-2 bg-white border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors active:scale-95 font-medium"
+                    >
+                      Morning+Afternoon
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleChange("fixedTimeSlots", []);
+                        toast.success("Cleared");
+                      }}
+                      className="text-xs px-3 py-2 bg-white border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors active:scale-95 font-medium"
+                    >
+                      Clear All
                     </button>
                   </div>
-
-                  {/* Configured Times List */}
-                  {formData.fixedTimeSlots.length > 0 ? (
-                    <div className="space-y-2">
-                      <p className="text-xs sm:text-sm font-medium text-gray-700">
-                        {formData.fixedTimeSlots.length} time
-                        {formData.fixedTimeSlots.length !== 1 ? "s" : ""}{" "}
-                        configured:
-                      </p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {formData.fixedTimeSlots.map((time) => (
-                          <div
-                            key={time}
-                            className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-purple-200 shadow-sm"
-                          >
-                            <span className="font-mono text-sm sm:text-base font-semibold text-purple-900">
-                              {time}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                handleChange(
-                                  "fixedTimeSlots",
-                                  formData.fixedTimeSlots.filter(
-                                    (t) => t !== time
-                                  )
-                                );
-                                toast.success("Removed");
-                              }}
-                              className="text-xs sm:text-sm text-red-600 hover:text-red-800 font-medium px-2 py-1 hover:bg-red-50 rounded transition-colors active:scale-95"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <p className="text-xs sm:text-sm text-gray-500 italic py-2">
-                      Add your first time slot above
-                    </p>
-                  )}
-
-                  {/* Quick Presets */}
-                  <div className="p-2.5 sm:p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-xs font-medium text-blue-900 mb-2">
-                      💡 Quick Presets:
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleChange("fixedTimeSlots", [
-                            "09:00",
-                            "12:00",
-                            "15:00",
-                            "18:00",
-                          ]);
-                          toast.success("Preset applied");
-                        }}
-                        className="text-xs px-3 py-2 bg-white border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors active:scale-95 font-medium"
-                      >
-                        Every 3hrs (9-6)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleChange("fixedTimeSlots", [
-                            "10:00",
-                            "14:00",
-                            "16:00",
-                          ]);
-                          toast.success("Preset applied");
-                        }}
-                        className="text-xs px-3 py-2 bg-white border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors active:scale-95 font-medium"
-                      >
-                        Morning+Afternoon
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleChange("fixedTimeSlots", []);
-                          toast.success("Cleared");
-                        }}
-                        className="text-xs px-3 py-2 bg-white border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors active:scale-95 font-medium"
-                      >
-                        Clear All
-                      </button>
-                    </div>
-                  </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Variants Section */}
-        <div className="bg-white rounded-2xl shadow-lg py-6 space-y-6 overflow-hidden">
-          <div className="flex flex-col gap-4 px-4 sm:px-6 sm:flex-row sm:items-center sm:justify-between pb-4 border-b-2 border-gray-100">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg">
-                <Layers className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900">
-                  {t("serviceVariants", language)}
-                </h3>
-                {errors.variants && (
-                  <p className="text-red-500 text-sm mt-1">{errors.variants}</p>
-                )}
-              </div>
-            </div>
-            <Button
-              type="button"
-              onClick={addVariant}
-              variant="outline"
-              size="sm"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl border-2 border-brand-200 bg-white px-4 py-2.5 text-sm font-semibold text-brand-700 shadow-sm hover:border-brand-400"
-            >
-              <span className="text-base leading-none">＋</span>
-              <span>{t("addVariant", language)}</span>
-            </Button>
-          </div>
-
-          <div className="space-y-4 px-4 sm:px-6">
-            {formData.variants.map((variant, index) => (
-              <div
-                key={index}
-                className="p-4 sm:p-5 border-2 border-gray-200 rounded-2xl space-y-4 bg-gradient-to-br from-gray-50 to-white hover:border-gray-300 transition-colors"
-              >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <h4 className="font-bold text-gray-900 text-base">
-                    {t("variantName", language)} {index + 1}
-                  </h4>
-                  {formData.variants.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeVariant(index)}
-                      className="px-3 py-1.5 text-sm font-medium text-red-600 hover:text-white hover:bg-red-600 border-2 border-red-600 rounded-lg transition-colors"
-                    >
-                      {t("remove", language)}
-                    </button>
+        <div className="space-y-3">
+          <div className="pb-2 border-b border-gray-200">
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg">
+                  <Layers className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900">
+                    {t("serviceVariants", language)}
+                  </h3>
+                  {errors.variants && (
+                    <p className="text-red-500 text-xs mt-0.5">
+                      {errors.variants}
+                    </p>
                   )}
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                  <FormField
-                    label={t("variantName", language)}
-                    error={errors[`variant_${index}_name`]}
-                    required
-                    htmlFor={`variant-${index}-name`}
-                    hint={t("variantNameHint", language)}
-                  >
-                    <input
-                      type="text"
-                      id={`variant-${index}-name`}
-                      value={variant.name}
-                      onChange={(e) =>
-                        handleVariantChange(index, "name", e.target.value)
-                      }
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                        errors[`variant_${index}_name`]
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      placeholder="e.g., Standard"
-                    />
-                  </FormField>
-
-                  <FormField
-                    label={t("duration", language)}
-                    error={errors[`variant_${index}_duration`]}
-                    required
-                    htmlFor={`variant-${index}-duration`}
-                    hint={t("durationHint", language)}
-                  >
-                    <input
-                      type="number"
-                      id={`variant-${index}-duration`}
-                      value={variant.durationMin}
-                      onChange={(e) =>
-                        handleVariantChange(
-                          index,
-                          "durationMin",
-                          parseInt(e.target.value) || 0
-                        )
-                      }
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                        errors[`variant_${index}_duration`]
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      min="1"
-                    />
-                  </FormField>
-
-                  <FormField
-                    label={t("price", language)}
-                    error={errors[`variant_${index}_price`]}
-                    required
-                    htmlFor={`variant-${index}-price`}
-                    hint={t("priceHint", language)}
-                  >
-                    <input
-                      type="text"
-                      id={`variant-${index}-price`}
-                      inputMode="decimal"
-                      value={variant.price}
-                      onChange={(e) =>
-                        handleVariantChange(
-                          index,
-                          "price",
-                          parseFloat(e.target.value) || 0
-                        )
-                      }
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                        errors[`variant_${index}_price`]
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      placeholder="0.00"
-                    />
-                  </FormField>
-
-                  <FormField
-                    label="Promo Price (Optional)"
-                    error={errors[`variant_${index}_promoPrice`]}
-                    htmlFor={`variant-${index}-promo-price`}
-                    hint="Special promotional price - if set, this service will display 'Special offer' label"
-                  >
-                    <input
-                      type="text"
-                      id={`variant-${index}-promo-price`}
-                      inputMode="decimal"
-                      value={variant.promoPrice || ""}
-                      onChange={(e) =>
-                        handleVariantChange(
-                          index,
-                          "promoPrice",
-                          e.target.value ? parseFloat(e.target.value) : null
-                        )
-                      }
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                        errors[`variant_${index}_promoPrice`]
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      placeholder="0.00"
-                    />
-                  </FormField>
-
-                  <FormField
-                    label={t("bufferBefore", language)}
-                    htmlFor={`variant-${index}-buffer-before`}
-                    hint={t("bufferBeforeHint", language)}
-                  >
-                    <input
-                      type="number"
-                      id={`variant-${index}-buffer-before`}
-                      value={variant.bufferBeforeMin}
-                      onChange={(e) =>
-                        handleVariantChange(
-                          index,
-                          "bufferBeforeMin",
-                          parseInt(e.target.value) || 0
-                        )
-                      }
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
-                      min="0"
-                    />
-                  </FormField>
-
-                  <FormField
-                    label={t("bufferAfter", language)}
-                    htmlFor={`variant-${index}-buffer-after`}
-                    hint={t("bufferAfterHint", language)}
-                  >
-                    <input
-                      type="number"
-                      id={`variant-${index}-buffer-after`}
-                      value={variant.bufferAfterMin}
-                      onChange={(e) =>
-                        handleVariantChange(
-                          index,
-                          "bufferAfterMin",
-                          parseInt(e.target.value) || 0
-                        )
-                      }
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
-                      min="0"
-                    />
-                  </FormField>
-                </div>
               </div>
-            ))}
+              <Button
+                type="button"
+                onClick={addVariant}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1.5 rounded-lg border border-brand-200 bg-white px-3 py-1.5 text-xs font-semibold text-brand-700 hover:border-brand-400"
+              >
+                <span className="text-sm leading-none">＋</span>
+                <span>{t("addVariant", language)}</span>
+              </Button>
+            </div>
+            <p className="text-xs text-gray-600">
+              Create different versions of this service with unique durations
+              and prices. For example: "Quick Trim (15 min, £20)" and "Full Cut
+              & Style (45 min, £45)".
+            </p>
           </div>
 
+          {/* Variant Cards */}
+          {formData.variants.map((variant, index) => (
+            <div
+              key={index}
+              className="p-3 border border-gray-200 rounded-lg space-y-3 bg-gradient-to-br from-gray-50 to-white"
+            >
+              <div className="flex items-center justify-between">
+                <h4 className="font-bold text-gray-900 text-sm">
+                  {t("variantName", language)} {index + 1}
+                </h4>
+                {formData.variants.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeVariant(index)}
+                    className="px-2.5 py-1 text-xs font-medium text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded-lg transition-colors"
+                  >
+                    {t("remove", language)}
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <FormField
+                  label={t("variantName", language)}
+                  error={errors[`variant_${index}_name`]}
+                  required
+                  htmlFor={`variant-${index}-name`}
+                  hint={t("variantNameHint", language)}
+                >
+                  <input
+                    type="text"
+                    id={`variant-${index}-name`}
+                    value={variant.name}
+                    onChange={(e) =>
+                      handleVariantChange(index, "name", e.target.value)
+                    }
+                    className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                      errors[`variant_${index}_name`]
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    placeholder="e.g., Standard"
+                  />
+                </FormField>
+
+                <FormField
+                  label={t("duration", language)}
+                  error={errors[`variant_${index}_duration`]}
+                  required
+                  htmlFor={`variant-${index}-duration`}
+                  hint={t("durationHint", language)}
+                >
+                  <input
+                    type="number"
+                    id={`variant-${index}-duration`}
+                    inputMode="numeric"
+                    value={variant.durationMin}
+                    onChange={(e) =>
+                      handleVariantChange(
+                        index,
+                        "durationMin",
+                        parseInt(e.target.value) || 0
+                      )
+                    }
+                    className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                      errors[`variant_${index}_duration`]
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    min="1"
+                  />
+                </FormField>
+
+                <FormField
+                  label={t("price", language)}
+                  error={errors[`variant_${index}_price`]}
+                  required
+                  htmlFor={`variant-${index}-price`}
+                  hint={t("priceHint", language)}
+                >
+                  <input
+                    type="number"
+                    id={`variant-${index}-price`}
+                    inputMode="decimal"
+                    step="0.01"
+                    min="0"
+                    value={variant.price}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      handleVariantChange(
+                        index,
+                        "price",
+                        value === "" ? 0 : parseFloat(value)
+                      );
+                    }}
+                    className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                      errors[`variant_${index}_price`]
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    placeholder="0.00"
+                  />
+                </FormField>
+
+                <FormField
+                  label="Promo Price (Optional)"
+                  error={errors[`variant_${index}_promoPrice`]}
+                  htmlFor={`variant-${index}-promo-price`}
+                  hint="Special promotional price - if set, this service will display 'Special offer' label"
+                >
+                  <input
+                    type="number"
+                    id={`variant-${index}-promo-price`}
+                    inputMode="decimal"
+                    step="0.01"
+                    min="0"
+                    value={variant.promoPrice || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      handleVariantChange(
+                        index,
+                        "promoPrice",
+                        value === "" ? null : parseFloat(value)
+                      );
+                    }}
+                    className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                      errors[`variant_${index}_promoPrice`]
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    placeholder="0.00"
+                  />
+                </FormField>
+
+                <FormField
+                  label={t("bufferBefore", language)}
+                  htmlFor={`variant-${index}-buffer-before`}
+                  hint={t("bufferBeforeHint", language)}
+                >
+                  <input
+                    type="number"
+                    id={`variant-${index}-buffer-before`}
+                    inputMode="numeric"
+                    value={variant.bufferBeforeMin}
+                    onChange={(e) =>
+                      handleVariantChange(
+                        index,
+                        "bufferBeforeMin",
+                        parseInt(e.target.value) || 0
+                      )
+                    }
+                    className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                    min="0"
+                  />
+                </FormField>
+
+                <FormField
+                  label={t("bufferAfter", language)}
+                  htmlFor={`variant-${index}-buffer-after`}
+                  hint={t("bufferAfterHint", language)}
+                >
+                  <input
+                    type="number"
+                    id={`variant-${index}-buffer-after`}
+                    inputMode="numeric"
+                    value={variant.bufferAfterMin}
+                    onChange={(e) =>
+                      handleVariantChange(
+                        index,
+                        "bufferAfterMin",
+                        parseInt(e.target.value) || 0
+                      )
+                    }
+                    className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                    min="0"
+                  />
+                </FormField>
+              </div>
+            </div>
+          ))}
+
           {errors.variants && (
-            <p className="text-red-500 text-sm">{errors.variants}</p>
+            <p className="text-red-500 text-xs mt-1">{errors.variants}</p>
           )}
         </div>
 
         {/* Form Actions */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-6">
-          <div>
-            {isEditMode && onDelete && (
-              <Button
-                type="button"
-                onClick={handleDeleteClick}
-                disabled={isSubmitting}
-                variant="danger"
-                className="w-full sm:w-auto"
-              >
-                {t("deleteService", language)}
-              </Button>
-            )}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button
-              type="button"
-              onClick={onCancel}
-              disabled={isSubmitting}
-              variant="outline"
-              className="w-full sm:w-auto"
-            >
-              {t("cancel", language)}
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting || isUploadingImage}
-              loading={isSubmitting}
-              variant="brand"
-              className="w-full sm:w-auto"
-            >
-              {isEditMode
-                ? t("saveService", language)
-                : t("createService", language)}
-            </Button>
-          </div>
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-200">
+          <Button
+            type="button"
+            onClick={onCancel}
+            disabled={isSubmitting}
+            variant="outline"
+            size="sm"
+            className="text-xs"
+          >
+            {t("cancel", language)}
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting || isUploadingImage}
+            loading={isSubmitting}
+            variant="brand"
+            size="sm"
+            className="text-xs"
+          >
+            {isEditMode
+              ? t("saveService", language)
+              : t("createService", language)}
+          </Button>
         </div>
 
         {errors.submit && (
-          <div className="mt-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
-            <div className="flex items-start gap-3">
+          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div className="flex items-start gap-2">
               <svg
-                className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0"
+                className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -1088,10 +1085,10 @@ export default function ServiceForm({
                 />
               </svg>
               <div>
-                <h3 className="text-sm font-bold text-red-900 mb-1">
+                <h3 className="text-xs font-bold text-red-900 mb-0.5">
                   Error saving service
                 </h3>
-                <p className="text-sm text-red-700">{errors.submit}</p>
+                <p className="text-xs text-red-700">{errors.submit}</p>
               </div>
             </div>
           </div>
@@ -1120,6 +1117,6 @@ export default function ServiceForm({
         onCancel={() => setShowDeleteConfirm(false)}
         isDeleting={isSubmitting}
       />
-    </div>
+    </>
   );
 }

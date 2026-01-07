@@ -13,6 +13,7 @@ import {
 import ServiceForm from "../ServiceForm";
 import ServicesList from "../ServicesList";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
+import Modal from "../../shared/components/ui/Modal";
 import { testApiConnection } from "../../shared/utils/apiTest";
 
 export default function Services() {
@@ -265,7 +266,7 @@ export default function Services() {
 
   if (showForm) {
     return (
-      <div>
+      <>
         {/* Background refresh indicator */}
         {servicesFetching && (
           <div className="fixed top-4 right-4 z-50 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
@@ -276,22 +277,44 @@ export default function Services() {
           </div>
         )}
 
-        <ServiceForm
-          service={editingService}
-          specialists={specialists}
-          onSave={handleSave}
-          onCancel={handleCancel}
-          onDelete={
-            editingService ? () => handleDelete(editingService._id) : undefined
-          }
+        {/* Services List in background */}
+        <ServicesList
+          services={services}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onCreate={handleCreate}
+          isLoading={isLoading}
           isSuperAdmin={isSuperAdmin}
-          admin={admin}
-          saving={
-            createServiceMutation.isPending || updateServiceMutation.isPending
-          }
-          deleting={deleteServiceMutation.isPending}
+          isBeautician={isBeautician}
         />
-      </div>
+
+        {/* Service Form in Modal */}
+        <Modal
+          open={showForm}
+          onClose={handleCancel}
+          title={editingService ? "Edit Service" : "Create New Service"}
+          size="xl"
+          variant="dashboard"
+        >
+          <ServiceForm
+            service={editingService}
+            specialists={specialists}
+            onSave={handleSave}
+            onCancel={handleCancel}
+            onDelete={
+              editingService
+                ? () => handleDelete(editingService._id)
+                : undefined
+            }
+            isSuperAdmin={isSuperAdmin}
+            admin={admin}
+            saving={
+              createServiceMutation.isPending || updateServiceMutation.isPending
+            }
+            deleting={deleteServiceMutation.isPending}
+          />
+        </Modal>
+      </>
     );
   }
 
