@@ -97,7 +97,20 @@ export default function SeminarForm() {
         whatYouWillLearn: Array.isArray(seminar.whatYouWillLearn)
           ? seminar.whatYouWillLearn.join("\n")
           : "",
-        sessions: seminar.sessions || [],
+        sessions: (seminar.sessions || []).map((session) => {
+          // Parse the date and times correctly for the form inputs
+          const sessionDate = new Date(session.date);
+          const startTime = session.startTime || "";
+          const endTime = session.endTime || "";
+
+          return {
+            date: sessionDate.toISOString().split("T")[0], // YYYY-MM-DD format
+            startTime: startTime.length === 5 ? startTime : "", // HH:MM format
+            endTime: endTime.length === 5 ? endTime : "", // HH:MM format
+            maxAttendees: session.maxAttendees?.toString() || "",
+            currentAttendees: session.currentAttendees || 0,
+          };
+        }),
       });
 
       setImagePreview(seminar.images?.main || null);
@@ -109,12 +122,13 @@ export default function SeminarForm() {
         response: error.response?.data,
         status: error.response?.status,
       });
-      
-      const errorMessage = error.response?.data?.message 
-        || error.response?.data?.error
-        || error.message 
-        || "Failed to load seminar";
-        
+
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to load seminar";
+
       toast.error(errorMessage);
       navigate("/admin/seminars");
     } finally {
