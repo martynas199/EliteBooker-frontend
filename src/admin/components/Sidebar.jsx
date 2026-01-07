@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -266,6 +266,15 @@ const SidebarItem = ({ item, isNested = false, onClose, userRole }) => {
 };
 
 export default function Sidebar({ tenant, admin, onLogout, onClose }) {
+  const { loadSettings } = useTenantSettings();
+
+  // Load tenant settings when sidebar mounts
+  useEffect(() => {
+    loadSettings().catch((err) => {
+      console.error("Failed to load tenant settings in Sidebar:", err);
+    });
+  }, []);
+
   return (
     <aside className="w-64 min-h-screen bg-slate-50 border-r border-gray-200 flex flex-col overflow-hidden">
       {/* Header */}
