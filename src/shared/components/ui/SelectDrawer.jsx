@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 
 /**
  * SelectDrawer - A mobile-friendly bottom drawer for select inputs
@@ -46,10 +47,10 @@ export function SelectDrawer({
 
   const selectedOption = options.find((opt) => opt.value === value);
 
-  return (
+  const drawerContent = (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
+        <div className="fixed inset-0 z-[100000] flex items-end justify-center sm:items-center sm:p-4">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -160,6 +161,8 @@ export function SelectDrawer({
       )}
     </AnimatePresence>
   );
+
+  return createPortal(drawerContent, document.body);
 }
 
 /**
