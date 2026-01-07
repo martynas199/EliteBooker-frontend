@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectAdmin } from "../../shared/state/authSlice";
@@ -19,6 +20,7 @@ import {
   SelectDrawer,
   SelectButton,
 } from "../../shared/components/ui/SelectDrawer";
+import DateTimePicker from "../../shared/components/DateTimePicker";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -74,6 +76,8 @@ export default function Dashboard() {
   const [showCreateSpecialistDrawer, setShowCreateSpecialistDrawer] =
     useState(false);
   const [showCreateServiceDrawer, setShowCreateServiceDrawer] = useState(false);
+  const [showCreateTimePicker, setShowCreateTimePicker] = useState(false);
+  const [creatingAppointment, setCreatingAppointment] = useState(false);
   const [createFormData, setCreateFormData] = useState({
     clientName: "",
     clientPhone: "",
@@ -84,6 +88,89 @@ export default function Dashboard() {
     endDateTime: "",
     notes: "",
   });
+
+  // Handle slot selection from DateTimePicker for create appointment
+  const handleCreateSlotSelect = (slot) => {
+    setCreateFormData({
+      ...createFormData,
+      startDateTime: slot.startISO,
+      endDateTime: slot.endISO,
+    });
+    setShowCreateTimePicker(false);
+  };
+
+  // Handle create appointment submission
+  const handleCreateAppointment = async () => {
+    // Validation
+    if (!createFormData.clientName || !createFormData.clientPhone) {
+      toast.error("Client name and phone are required");
+      return;
+    }
+    if (!createFormData.specialistId || !createFormData.serviceId) {
+      toast.error("Specialist and service are required");
+      return;
+    }
+    if (!createFormData.startDateTime) {
+      toast.error("Please select a date and time");
+      return;
+    }
+
+    setCreatingAppointment(true);
+
+    try {
+      const selectedService = services.find(
+        (s) => s._id === createFormData.serviceId
+      );
+      const variantName = selectedService?.variants?.[0]?.name || "Standard";
+
+      const response = await api.post("/appointments", {
+        client: {
+          name: createFormData.clientName,
+          email: createFormData.clientEmail,
+          phone: createFormData.clientPhone,
+          notes: createFormData.notes,
+        },
+        specialistId: createFormData.specialistId,
+        serviceId: createFormData.serviceId,
+        variantName: variantName,
+        startISO: createFormData.startDateTime,
+        mode: "pay_in_salon",
+        paymentStatus: "paid",
+      });
+
+      if (response.data.ok) {
+        // Refresh data to show new appointment
+        const controller = new AbortController();
+        await fetchData(controller.signal);
+
+        setShowCreateAppointmentModal(false);
+        // Reset form
+        setCreateFormData({
+          clientName: "",
+          clientPhone: "",
+          clientEmail: "",
+          specialistId: "",
+          serviceId: "",
+          startDateTime: "",
+          endDateTime: "",
+          notes: "",
+        });
+        toast.success("Appointment created successfully");
+      }
+    } catch (e) {
+      setShowCreateAppointmentModal(false);
+      setTimeout(() => {
+        toast.error(
+          e.response?.data?.error ||
+            e.message ||
+            "Failed to create appointment",
+          { duration: 5000 }
+        );
+      }, 100);
+    } finally {
+      setCreatingAppointment(false);
+    }
+  };
 
   const fetchData = useCallback(
     async (signal) => {
@@ -669,26 +756,13 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Header - Modern & Compact */}
+      {/* Header - Specialist Filter */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-        <div className="flex-1">
-          <h1 className="text-2xl lg:text-3xl font-black text-gray-900 tracking-tight mb-1">
-            {t("dashboard", language)}
-          </h1>
-          <p className="text-gray-500 text-xs lg:text-sm">
-            {isSuperAdmin
-              ? t("viewManageAllAppointments", language)
-              : admin?.specialistId
-              ? t("viewAppointmentsLinkedBeautician", language)
-              : t("noBeauticianLinked", language)}
-          </p>
-        </div>
-
         {/* Specialist Filter - Only show for super admins */}
         {isSuperAdmin && (
-          <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-gray-200 shadow-sm">
+          <div className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border-2 border-gray-200 shadow-sm hover:border-brand-300 transition-all">
             <svg
-              className="w-4 h-4 text-gray-400"
+              className="w-5 h-5 text-brand-600"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
@@ -702,7 +776,7 @@ export default function Dashboard() {
             </svg>
             <label
               htmlFor="specialist-filter"
-              className="text-xs font-medium text-gray-700 hidden sm:inline whitespace-nowrap"
+              className="text-sm font-semibold text-gray-700 whitespace-nowrap"
             >
               Filter:
             </label>
@@ -2836,13 +2910,13 @@ export default function Dashboard() {
           size="lg"
           variant="dashboard"
         >
-          <div className="space-y-6">
-            {/* Client Information */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="p-1.5 bg-brand-100 rounded-lg">
+          <div className="space-y-5">
+            {/* Client Information Section */}
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-5 border border-gray-200 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2.5 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl shadow-md">
                   <svg
-                    className="w-4 h-4 text-brand-600"
+                    className="w-5 h-5 text-white"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2.5"
@@ -2855,67 +2929,139 @@ export default function Dashboard() {
                     />
                   </svg>
                 </div>
-                <h3 className="font-bold text-gray-900">Client Information</h3>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base">
+                    Client Information
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    Who is this appointment for?
+                  </p>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <FormField label="Client Name *" htmlFor="client-name-create">
-                  <input
-                    type="text"
-                    id="client-name-create"
-                    className="border border-gray-300 rounded-lg w-full px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                    placeholder="John Doe"
-                    value={createFormData.clientName}
-                    onChange={(e) =>
-                      setCreateFormData({
-                        ...createFormData,
-                        clientName: e.target.value,
-                      })
-                    }
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <FormField
+                    label="Client Name"
+                    htmlFor="client-name-create"
                     required
-                  />
-                </FormField>
-                <FormField label="Phone Number *" htmlFor="client-phone-create">
-                  <input
-                    type="tel"
-                    id="client-phone-create"
-                    className="border border-gray-300 rounded-lg w-full px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                    placeholder="+44 7700 900000"
-                    value={createFormData.clientPhone}
-                    onChange={(e) =>
-                      setCreateFormData({
-                        ...createFormData,
-                        clientPhone: e.target.value,
-                      })
-                    }
+                  >
+                    <div className="relative">
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                      </div>
+                      <input
+                        type="text"
+                        id="client-name-create"
+                        className="border-2 border-gray-200 rounded-xl w-full pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all"
+                        placeholder="John Doe"
+                        value={createFormData.clientName}
+                        onChange={(e) =>
+                          setCreateFormData({
+                            ...createFormData,
+                            clientName: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                  </FormField>
+
+                  <FormField
+                    label="Phone Number"
+                    htmlFor="client-phone-create"
                     required
-                  />
+                  >
+                    <div className="relative">
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                          />
+                        </svg>
+                      </div>
+                      <input
+                        type="tel"
+                        id="client-phone-create"
+                        className="border-2 border-gray-200 rounded-xl w-full pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all"
+                        placeholder="+44 7700 900000"
+                        value={createFormData.clientPhone}
+                        onChange={(e) =>
+                          setCreateFormData({
+                            ...createFormData,
+                            clientPhone: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                  </FormField>
+                </div>
+
+                <FormField
+                  label="Email Address (Optional)"
+                  htmlFor="client-email-create"
+                >
+                  <div className="relative">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      type="email"
+                      id="client-email-create"
+                      className="border-2 border-gray-200 rounded-xl w-full pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all"
+                      placeholder="john.doe@example.com"
+                      value={createFormData.clientEmail}
+                      onChange={(e) =>
+                        setCreateFormData({
+                          ...createFormData,
+                          clientEmail: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
                 </FormField>
               </div>
-
-              <FormField label="Email Address" htmlFor="client-email-create">
-                <input
-                  type="email"
-                  id="client-email-create"
-                  className="border border-gray-300 rounded-lg w-full px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                  placeholder="john.doe@example.com"
-                  value={createFormData.clientEmail}
-                  onChange={(e) =>
-                    setCreateFormData({
-                      ...createFormData,
-                      clientEmail: e.target.value,
-                    })
-                  }
-                />
-              </FormField>
             </div>
 
-            {/* Appointment Details */}
-            <div className="space-y-3 pt-3 border-t border-gray-200">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="p-1.5 bg-purple-100 rounded-lg">
+            {/* Appointment Details Section */}
+            <div className="bg-gradient-to-br from-white to-purple-50 rounded-xl p-5 border border-purple-200 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2.5 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-md">
                   <svg
-                    className="w-4 h-4 text-purple-600"
+                    className="w-5 h-5 text-white"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2.5"
@@ -2928,99 +3074,163 @@ export default function Dashboard() {
                     />
                   </svg>
                 </div>
-                <h3 className="font-bold text-gray-900">Appointment Details</h3>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base">
+                    Appointment Details
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    When and what service?
+                  </p>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <FormField label="Specialist *" htmlFor="specialist-create">
-                  <SelectButton
-                    onClick={() => setShowCreateSpecialistDrawer(true)}
-                    placeholder="Select Specialist"
-                    value={createFormData.specialistId}
-                    options={specialists.map((s) => ({
-                      value: s._id,
-                      label: s.name,
-                    }))}
-                  />
-                </FormField>
-
-                <FormField label="Service *" htmlFor="service-create">
-                  <SelectButton
-                    onClick={() => setShowCreateServiceDrawer(true)}
-                    placeholder="Select Service"
-                    value={createFormData.serviceId}
-                    options={services.map((s) => ({
-                      value: s._id,
-                      label: s.name,
-                    }))}
-                  />
-                </FormField>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <FormField
-                  label="Start Date & Time *"
-                  htmlFor="start-datetime-create"
-                >
-                  <input
-                    type="datetime-local"
-                    id="start-datetime-create"
-                    className="border border-gray-300 rounded-lg w-full px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                    value={createFormData.startDateTime}
-                    onChange={(e) =>
-                      setCreateFormData({
-                        ...createFormData,
-                        startDateTime: e.target.value,
-                      })
-                    }
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <FormField
+                    label="Specialist"
+                    htmlFor="specialist-create"
                     required
-                  />
-                </FormField>
+                  >
+                    <SelectButton
+                      onClick={() => setShowCreateSpecialistDrawer(true)}
+                      placeholder="Choose specialist"
+                      value={createFormData.specialistId}
+                      options={specialists.map((s) => ({
+                        value: s._id,
+                        label: s.name,
+                      }))}
+                      className="border-2 border-gray-200 hover:border-purple-300"
+                    />
+                  </FormField>
 
-                <FormField
-                  label="End Date & Time *"
-                  htmlFor="end-datetime-create"
-                >
-                  <input
-                    type="datetime-local"
-                    id="end-datetime-create"
-                    className="border border-gray-300 rounded-lg w-full px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                    value={createFormData.endDateTime}
-                    onChange={(e) =>
-                      setCreateFormData({
-                        ...createFormData,
-                        endDateTime: e.target.value,
-                      })
-                    }
+                  <FormField label="Service" htmlFor="service-create" required>
+                    <SelectButton
+                      onClick={() => setShowCreateServiceDrawer(true)}
+                      placeholder="Choose service"
+                      value={createFormData.serviceId}
+                      options={services.map((s) => ({
+                        value: s._id,
+                        label: s.name,
+                      }))}
+                      className="border-2 border-gray-200 hover:border-purple-300"
+                    />
+                  </FormField>
+                </div>
+
+                {/* Date & Time Selection with Slot Picker */}
+                {createFormData.specialistId && createFormData.serviceId && (
+                  <FormField
+                    label="Date & Time"
+                    htmlFor="datetime-create"
                     required
-                  />
+                  >
+                    {createFormData.startDateTime ? (
+                      <div className="space-y-2">
+                        <div className="border-2 border-purple-200 rounded-xl p-4 bg-gradient-to-br from-purple-50 to-white">
+                          <p className="text-xs font-medium text-gray-600 mb-1">
+                            Selected Time:
+                          </p>
+                          <p className="text-base font-bold text-gray-900">
+                            {new Date(
+                              createFormData.startDateTime
+                            ).toLocaleString("en-GB", {
+                              weekday: "short",
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          className="w-full px-4 py-2.5 text-sm border-2 border-gray-200 rounded-xl hover:border-purple-300 hover:bg-purple-50 transition-all font-medium"
+                          onClick={() => setShowCreateTimePicker(true)}
+                        >
+                          Change Time
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        className="w-full px-4 py-2.5 border-2 border-purple-500 text-purple-600 rounded-xl hover:bg-purple-50 transition-all font-semibold flex items-center justify-center gap-2"
+                        onClick={() => setShowCreateTimePicker(true)}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        Select Available Time Slot
+                      </button>
+                    )}
+                  </FormField>
+                )}
+
+                <FormField label="Notes (Optional)" htmlFor="notes-create">
+                  <div className="relative">
+                    <div className="absolute left-3 top-3 text-gray-400 pointer-events-none">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                    </div>
+                    <textarea
+                      id="notes-create"
+                      className="border-2 border-gray-200 rounded-xl w-full pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all resize-none"
+                      rows="3"
+                      placeholder="Add any special notes or requirements..."
+                      value={createFormData.notes}
+                      onChange={(e) =>
+                        setCreateFormData({
+                          ...createFormData,
+                          notes: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
                 </FormField>
               </div>
-
-              <FormField label="Notes" htmlFor="notes-create">
-                <textarea
-                  id="notes-create"
-                  className="border border-gray-300 rounded-lg w-full px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                  rows="3"
-                  placeholder="Add any special notes or requirements..."
-                  value={createFormData.notes}
-                  onChange={(e) =>
-                    setCreateFormData({
-                      ...createFormData,
-                      notes: e.target.value,
-                    })
-                  }
-                />
-              </FormField>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4 border-t border-gray-200">
+            <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
               <Button
                 variant="outline"
                 onClick={() => setShowCreateAppointmentModal(false)}
-                className="w-full sm:flex-1 order-2 sm:order-1"
+                className="w-full sm:flex-1 border-2 hover:bg-gray-50"
               >
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
                 Cancel
               </Button>
               <Button
@@ -3031,13 +3241,13 @@ export default function Dashboard() {
                   );
                   setShowCreateAppointmentModal(false);
                 }}
-                className="w-full sm:flex-1 order-1 sm:order-2"
+                className="w-full sm:flex-1 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 shadow-lg hover:shadow-xl"
               >
                 <svg
                   className="w-4 h-4 mr-2"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="2.5"
                   viewBox="0 0 24 24"
                 >
                   <path
@@ -3077,6 +3287,88 @@ export default function Dashboard() {
           setShowCreateServiceDrawer(false);
         }}
       />
+
+      {/* DateTimePicker Modal for Create Appointment */}
+      {showCreateTimePicker &&
+        createFormData.specialistId &&
+        createFormData.serviceId &&
+        createPortal(
+          <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={() => setShowCreateTimePicker(false)}
+            />
+
+            {/* Modal Content */}
+            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-auto overflow-hidden max-h-[90vh] flex flex-col">
+              <div className="p-4 border-b flex items-center justify-between bg-gradient-to-r from-purple-50 to-white">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl">
+                    <svg
+                      className="w-5 h-5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h2 className="text-lg font-bold text-gray-900">
+                    Select Date & Time
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setShowCreateTimePicker(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="p-6 overflow-y-auto">
+                <DateTimePicker
+                  specialistId={createFormData.specialistId}
+                  serviceId={createFormData.serviceId}
+                  variantName={
+                    services.find((s) => s._id === createFormData.serviceId)
+                      ?.variants?.[0]?.name || "Standard"
+                  }
+                  salonTz="Europe/London"
+                  stepMin={15}
+                  beauticianWorkingHours={
+                    specialists.find(
+                      (s) => s._id === createFormData.specialistId
+                    )?.workingHours
+                  }
+                  customSchedule={
+                    specialists.find(
+                      (s) => s._id === createFormData.specialistId
+                    )?.customSchedule
+                  }
+                  onSelect={handleCreateSlotSelect}
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

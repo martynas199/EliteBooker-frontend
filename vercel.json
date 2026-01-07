@@ -1,6 +1,18 @@
 {
   "buildCommand": "node node_modules/vite/bin/vite.js build",
   "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "http://elitebooker.co.uk/:path*",
+      "destination": "https://www.elitebooker.co.uk/:path*",
+      "permanent": true
+    },
+    {
+      "source": "https://elitebooker.co.uk/:path*",
+      "destination": "https://www.elitebooker.co.uk/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -9,6 +21,21 @@
     {
       "source": "/(.*)",
       "destination": "/"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        }
+      ]
     }
   ]
 }

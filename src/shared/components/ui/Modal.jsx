@@ -84,7 +84,7 @@ export default function Modal({
     },
     dashboard: {
       headerBg: "bg-white",
-      titleColor: "text-gray-900",
+      titleColor: "text-gray-900 font-bold tracking-tight",
     },
   };
 
