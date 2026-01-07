@@ -68,6 +68,11 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [newSpecialty, setNewSpecialty] = useState("");
 
+  // Scroll to top when component mounts (especially useful when editing)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const daysOfWeek = [
     { value: 0, label: "Sunday" },
     { value: 1, label: "Monday" },

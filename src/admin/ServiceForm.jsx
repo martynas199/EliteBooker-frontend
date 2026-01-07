@@ -78,6 +78,11 @@ export default function ServiceForm({
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Scroll to top when component mounts (especially useful when editing)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Drawer state for mobile specialist selection
