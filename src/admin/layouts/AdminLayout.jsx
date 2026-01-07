@@ -262,32 +262,124 @@ export default function AdminLayout() {
         {/* Mobile Sidebar with Overlay */}
         {mobileMenuOpen && (
           <>
+            {/* Full Screen Mobile Menu */}
             <div
-              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-              style={{ touchAction: "none" }}
-              onClick={() => setMobileMenuOpen(false)}
-              onTouchMove={(e) => e.preventDefault()}
-            />
-            <div
-              className="fixed lg:hidden top-0 left-0 h-screen w-64 z-50 overflow-y-auto transform transition-transform duration-300 ease-in-out translate-x-0"
+              className="fixed inset-0 bg-white z-50 lg:hidden overflow-y-auto"
               style={{
                 touchAction: "pan-y",
                 WebkitOverflowScrolling: "touch",
-                overscrollBehavior: "contain",
               }}
             >
-              <Sidebar
-                tenant={{ name: admin?.name || "Elite Booker" }}
-                admin={admin}
-                onLogout={handleLogout}
-                onClose={() => setMobileMenuOpen(false)}
-              />
+              {/* Mobile Menu Header */}
+              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between z-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center">
+                    <span className="text-white text-lg font-bold">
+                      {admin?.name?.[0]?.toUpperCase() || "B"}
+                    </span>
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-gray-900">
+                      {admin?.name || "Elite Booker"}
+                    </h2>
+                    <p className="text-xs text-gray-500">Admin Panel</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+                  aria-label="Close menu"
+                >
+                  <svg
+                    className="w-6 h-6 text-gray-900"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Mobile Navigation */}
+              <nav className="px-6 py-6 space-y-1">
+                <Sidebar
+                  tenant={{ name: admin?.name || "Elite Booker" }}
+                  admin={admin}
+                  onLogout={handleLogout}
+                  onClose={() => setMobileMenuOpen(false)}
+                  isMobile={true}
+                />
+              </nav>
+
+              {/* Mobile Menu Footer */}
+              <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 mt-8">
+                <Link
+                  to="/admin/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors mb-2"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center">
+                    <span className="text-white text-sm font-bold">
+                      {getInitials(admin?.name)}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-gray-900 truncate">
+                      Account Settings
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      Manage your profile
+                    </div>
+                  </div>
+                  <svg
+                    className="w-5 h-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </Link>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors font-medium"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  Logout
+                </button>
+              </div>
             </div>
           </>
         )}
 
         {/* Main Content */}
-        <section className="p-4 lg:p-10 pb-52 lg:pb-10 min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-50/50 via-blue-50/10 to-purple-50/10 relative">
+        <section className="p-0 pb-52 lg:pb-10 min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-50/50 via-blue-50/10 to-purple-50/10 relative">
           {/* Subtle grain texture overlay */}
           <div
             className="absolute inset-0 opacity-[0.015] pointer-events-none"

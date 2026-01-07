@@ -1789,7 +1789,6 @@ export default function Dashboard() {
           </div>
         }
         size="lg"
-        variant="dashboard"
         footer={
           <div className="flex gap-3">
             <button
@@ -2541,7 +2540,6 @@ export default function Dashboard() {
             setSelectedAppointment(null);
           }}
           title=""
-          variant="dashboard"
         >
           <div className="space-y-5">
             {/* Header */}

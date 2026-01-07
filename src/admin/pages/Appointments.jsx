@@ -637,35 +637,18 @@ export default function Appointments() {
       <SlowRequestWarning isLoading={loading} threshold={2000} />
 
       {/* Header Section */}
-      <div className="mb-6 lg:mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2.5 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl shadow-lg">
-            <svg
-              className="w-6 h-6 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-          </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">
-            {t("appointments", language)}
-          </h1>
-        </div>
+      <div className="mb-4 lg:mb-6">
+        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 tracking-tight">
+          {t("appointments", language)}
+        </h1>
 
         {/* Show subtitle for different admin types */}
         {isSuperAdmin ? (
-          <p className="text-sm sm:text-base text-gray-600 ml-[52px]">
+          <p className="text-sm text-gray-600 mt-1">
             View and manage all appointments from all specialists
           </p>
         ) : admin?.specialistId ? (
-          <p className="text-sm sm:text-base text-gray-600 ml-[52px]">
+          <p className="text-sm text-gray-600 mt-1">
             {t("viewAppointmentsLinkedBeauticianOnly", language)}
           </p>
         ) : null}
@@ -702,13 +685,13 @@ export default function Appointments() {
 
       {/* Action Buttons - only show if admin has access */}
       {(isSuperAdmin || admin?.specialistId) && (
-        <div className="mb-6 flex flex-col sm:flex-row gap-3">
+        <div className="mb-4 flex flex-col sm:flex-row gap-2">
           <button
             onClick={openCreateModal}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-5 py-3 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-sm group"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-colors text-sm"
           >
             <svg
-              className="w-5 h-5 transition-transform group-hover:rotate-90 duration-300"
+              className="w-4 h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -725,10 +708,10 @@ export default function Appointments() {
           {admin?.specialistId && (
             <button
               onClick={() => handleDeleteAll()}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-5 py-3 bg-white hover:bg-red-50 border-2 border-red-200 hover:border-red-300 text-red-600 hover:text-red-700 font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 text-sm group"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white hover:bg-red-50 border border-red-200 hover:border-red-300 text-red-600 font-medium rounded-lg transition-colors text-sm"
             >
               <svg
-                className="w-5 h-5 transition-transform group-hover:scale-110 duration-200"
+                className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -748,12 +731,12 @@ export default function Appointments() {
 
       {/* Filters - only show if admin has access */}
       {(isSuperAdmin || admin?.specialistId) && (
-        <div className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl shadow-md p-4 sm:p-5 mb-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 mb-4 space-y-3">
           {/* Search Bar */}
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg
-                className="h-5 w-5 text-gray-400"
+                className="h-4 w-4 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -769,7 +752,7 @@ export default function Appointments() {
             <input
               type="text"
               placeholder="Search by name, email, phone, service..."
-              className="w-full pl-11 pr-10 py-3 border-2 border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all placeholder:text-gray-400"
+              className="w-full pl-9 pr-9 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all placeholder:text-gray-400"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -795,11 +778,11 @@ export default function Appointments() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {/* Specialist Filter */}
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
-                Filter by Specialist
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Specialist
               </label>
               <SelectButton
                 value={selectedSpecialistId}
@@ -833,8 +816,8 @@ export default function Appointments() {
             </div>
 
             {/* Date Filter */}
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
                 Date Range
               </label>
               <SelectButton
@@ -1017,44 +1000,41 @@ export default function Appointments() {
 
       {/* Loading State with Skeletons */}
       {loading && (
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-3 sm:space-y-4">
           {/* Mobile Cards Skeleton */}
-          <div className="lg:hidden space-y-3 sm:space-y-4">
+          <div className="lg:hidden space-y-3">
             {Array.from({ length: 5 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5 space-y-4"
+                className="bg-white rounded-lg border border-gray-200 p-3 space-y-3"
               >
                 {/* Header skeleton */}
-                <div className="flex justify-between items-start">
-                  <div className="space-y-2 flex-1">
-                    <SkeletonBox className="w-32 sm:w-40 h-5 sm:h-6" />
-                    <SkeletonBox className="w-24 sm:w-32 h-4" />
+                <div className="flex justify-between items-start pb-2 border-b border-gray-100">
+                  <div className="space-y-1.5 flex-1">
+                    <SkeletonBox className="w-32 h-4" />
+                    <SkeletonBox className="w-24 h-3" />
                   </div>
-                  <SkeletonBox className="w-16 sm:w-20 h-6 sm:h-7 rounded-lg" />
+                  <SkeletonBox className="w-14 h-5 rounded-md" />
                 </div>
 
                 {/* Details skeleton */}
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {[1, 2, 3].map((j) => (
-                    <div key={j} className="flex items-start gap-3">
-                      <SkeletonBox className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex-shrink-0" />
-                      <div className="flex-1 space-y-1.5">
-                        <SkeletonBox className="w-12 h-3" />
-                        <SkeletonBox className="w-full h-4" />
-                        <SkeletonBox className="w-3/4 h-3.5" />
+                    <div key={j} className="flex items-start gap-2">
+                      <SkeletonBox className="w-7 h-7 rounded-md flex-shrink-0" />
+                      <div className="flex-1 space-y-1">
+                        <SkeletonBox className="w-10 h-2.5" />
+                        <SkeletonBox className="w-full h-3.5" />
                       </div>
                     </div>
                   ))}
                 </div>
 
                 {/* Buttons skeleton */}
-                <div className="pt-4 border-t border-gray-100 space-y-2.5">
-                  <SkeletonBox className="w-full h-11 sm:h-12 rounded-xl" />
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <SkeletonBox className="h-11 sm:h-12 rounded-xl" />
-                    <SkeletonBox className="h-11 sm:h-12 rounded-xl" />
-                  </div>
+                <div className="pt-2 border-t border-gray-100 flex gap-2">
+                  <SkeletonBox className="flex-1 h-9 rounded-lg" />
+                  <SkeletonBox className="w-9 h-9 rounded-lg" />
+                  <SkeletonBox className="w-9 h-9 rounded-lg" />
                 </div>
               </div>
             ))}
@@ -1537,464 +1517,11 @@ export default function Appointments() {
 
       {/* Empty State for Desktop */}
       {!loading && sortedRows.length === 0 && (
-        <div className="hidden lg:block bg-white rounded-xl shadow-sm border border-gray-200 p-12">
+        <div className="hidden lg:block bg-white rounded-lg border border-gray-200 p-12">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-brand-50 to-brand-100 mb-6">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-5">
               <svg
-                className="w-10 h-10 text-brand-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No appointments found
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              {searchQuery || selectedSpecialistId || dateFilter !== "all"
-                ? "Try adjusting your filters or search criteria to find appointments."
-                : "Get started by creating your first appointment."}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Mobile Card View */}
-      {!loading && sortedRows.length > 0 && (
-        <div className="lg:hidden space-y-4">
-          {sortedRows.map((r) => (
-            <div
-              key={r._id}
-              className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-all"
-            >
-              {/* Header with gradient background */}
-              <div className="bg-gradient-to-br from-brand-50 to-brand-100/50 px-4 py-3 border-b border-brand-200">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-lg text-gray-900 truncate">
-                      {r.client?.name}
-                    </div>
-                    <div className="text-sm text-gray-600 mt-0.5 truncate">
-                      {r.client?.email}
-                    </div>
-                  </div>
-                  <span
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase whitespace-nowrap ml-2 ${
-                      r.status === "confirmed"
-                        ? "bg-green-100 text-green-800"
-                        : r.status === "reserved_unpaid"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : String(r.status).startsWith("cancelled")
-                        ? "bg-red-100 text-red-800"
-                        : r.status === "no_show"
-                        ? "bg-gray-100 text-gray-800"
-                        : "bg-blue-100 text-blue-800"
-                    }`}
-                  >
-                    {r.status?.replace(/_/g, " ")}
-                  </span>
-                </div>
-              </div>
-
-              {/* Appointment Details */}
-              <div className="px-4 py-4 space-y-4">
-                {/* Staff */}
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-semibold text-base shadow-sm">
-                    {(r.specialist?.name || r.specialistId || "?")
-                      .charAt(0)
-                      .toUpperCase()}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs text-gray-500">Staff</div>
-                    <div className="font-medium text-sm text-gray-900">
-                      {r.specialist?.name || r.specialistId}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Service */}
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center">
-                    <svg
-                      className="w-5 h-5 text-brand-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs text-gray-500">
-                      {r.services && r.services.length > 1
-                        ? "Services"
-                        : "Service"}
-                    </div>
-                    {r.services && r.services.length > 0 ? (
-                      <div className="space-y-2">
-                        {r.services.map((svc, idx) => (
-                          <div key={idx}>
-                            <div className="font-semibold text-base text-gray-900">
-                              {svc.service?.name || svc.serviceId || "Service"}
-                            </div>
-                            <div className="text-sm text-gray-600 mt-0.5">
-                              {svc.variantName} •{" "}
-                              {svc.duration || svc.durationMin || 0} min
-                            </div>
-                          </div>
-                        ))}
-                        {r.services.length > 1 && (
-                          <div className="text-xs text-gray-500 font-medium mt-1">
-                            Total: {r.services.length} services
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div>
-                        <div className="font-semibold text-base text-gray-900">
-                          {r.service?.name || r.serviceId}
-                        </div>
-                        {r.variantName && (
-                          <div className="text-sm text-gray-600 mt-0.5">
-                            {r.variantName}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Date & Time */}
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <svg
-                      className="w-5 h-5 text-blue-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-xs text-gray-500">Date & Time</div>
-                    <div className="font-medium text-base text-gray-900">
-                      {new Date(r.start).toLocaleString("en-GB", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {new Date(r.start).toLocaleString("en-GB", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Price & Payment */}
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <div className="text-xs text-green-700 font-medium">
-                        Total Price
-                      </div>
-                      <div className="font-bold text-2xl text-green-700 mt-0.5">
-                        £{Number(r.price || 0).toFixed(2)}
-                      </div>
-                    </div>
-                    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                      <svg
-                        className="w-6 h-6 text-green-700"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-
-                  {/* Payment Details */}
-                  {(() => {
-                    const paymentType = r.payment?.type || r.payment?.mode;
-                    if (!paymentType) return null;
-
-                    const isDeposit = paymentType === "deposit";
-                    const isFullPayment = paymentType === "full_payment";
-                    const isPayNow = paymentType === "pay_now";
-                    const isPayInSalon = paymentType === "pay_in_salon";
-
-                    return (
-                      <div className="pt-3 border-t border-green-200">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold ${
-                              isDeposit
-                                ? "bg-purple-100 text-purple-800"
-                                : isFullPayment || isPayNow
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-amber-100 text-amber-800"
-                            }`}
-                          >
-                            {isDeposit ? (
-                              <>
-                                <svg
-                                  className="w-3.5 h-3.5"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                                  />
-                                </svg>
-                                Deposit
-                              </>
-                            ) : isFullPayment || isPayNow ? (
-                              <>
-                                <svg
-                                  className="w-3.5 h-3.5"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                  />
-                                </svg>
-                                Full Payment
-                              </>
-                            ) : (
-                              <>
-                                <svg
-                                  className="w-3.5 h-3.5"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                                  />
-                                </svg>
-                                Pay in Salon
-                              </>
-                            )}
-                          </span>
-                        </div>
-                        {isDeposit && r.payment && (
-                          <div className="mt-2 space-y-1">
-                            {(() => {
-                              const depositAmount =
-                                r.payment.depositAmount ||
-                                (r.payment.amountTotal
-                                  ? (r.payment.amountTotal - 50) / 100
-                                  : null);
-                              const totalPrice = Number(r.price || 0);
-                              const balance = depositAmount
-                                ? totalPrice - depositAmount
-                                : null;
-
-                              return (
-                                <>
-                                  {depositAmount && (
-                                    <div className="text-xs text-green-800">
-                                      <span className="font-medium">
-                                        Deposit Paid:
-                                      </span>{" "}
-                                      £{depositAmount.toFixed(2)}
-                                    </div>
-                                  )}
-                                  {balance && balance > 0 && (
-                                    <div className="text-xs text-green-800">
-                                      <span className="font-medium">
-                                        Balance Due:
-                                      </span>{" "}
-                                      £{balance.toFixed(2)}
-                                    </div>
-                                  )}
-                                </>
-                              );
-                            })()}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
-                </div>
-
-                {/* Payment Error Details */}
-                {r.payment?.stripe?.lastPaymentError && (
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-red-50 flex items-center justify-center">
-                      <svg
-                        className="w-4 h-4 sm:w-5 sm:h-5 text-red-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                        />
-                      </svg>
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-xs text-red-500 font-medium mb-0.5">
-                        Payment Failed
-                      </div>
-                      <div className="text-xs sm:text-sm text-red-700 font-medium">
-                        {r.payment.stripe.lastPaymentError.message}
-                      </div>
-                      {r.payment.stripe.lastPaymentError.declineCode && (
-                        <div className="text-xs text-red-600 mt-1">
-                          Code: {r.payment.stripe.lastPaymentError.declineCode}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="px-4 pb-4 space-y-2.5">
-                <button
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all active:scale-[0.98] group"
-                  onClick={() => openEditModal(r)}
-                >
-                  <svg
-                    className="w-4 h-4 group-hover:scale-110 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                  Edit Appointment
-                </button>
-                <div className="grid grid-cols-2 gap-2.5">
-                  <button
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-3 text-sm font-semibold text-red-700 bg-red-50 hover:bg-red-100 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] group"
-                    disabled={
-                      String(r.status || "").startsWith("cancelled") ||
-                      r.status === "no_show"
-                    }
-                    onClick={() => openCancelModal(r._id)}
-                  >
-                    <svg
-                      className="w-4 h-4 group-hover:scale-110 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                    Cancel
-                  </button>
-                  <button
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-3 text-sm font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] group"
-                    disabled={
-                      String(r.status || "").startsWith("cancelled") ||
-                      r.status === "no_show"
-                    }
-                    onClick={() => markAsNoShow(r._id)}
-                  >
-                    <svg
-                      className="w-4 h-4 group-hover:scale-110 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                      />
-                    </svg>
-                    No Show
-                  </button>
-                </div>
-                {String(r.status || "").startsWith("cancelled") && (
-                  <button
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-red-700 bg-white border-2 border-red-200 hover:border-red-300 hover:bg-red-50 rounded-xl transition-all active:scale-[0.98] group"
-                    onClick={() => deleteAppointment(r._id)}
-                  >
-                    <svg
-                      className="w-4 h-4 group-hover:scale-110 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                    Delete
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Empty State for Mobile */}
-      {!loading && sortedRows.length === 0 && (
-        <div className="lg:hidden bg-white rounded-xl shadow-md border border-gray-200 p-8">
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-brand-50 to-brand-100 mb-4">
-              <svg
-                className="w-8 h-8 text-brand-500"
+                className="w-8 h-8 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -2010,7 +1537,372 @@ export default function Appointments() {
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
               No appointments found
             </h3>
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              {searchQuery || selectedSpecialistId || dateFilter !== "all"
+                ? "Try adjusting your filters or search criteria to find appointments."
+                : "Get started by creating your first appointment."}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Card View */}
+      {!loading && sortedRows.length > 0 && (
+        <div className="lg:hidden space-y-3">
+          {sortedRows.map((r) => (
+            <div
+              key={r._id}
+              className="bg-white rounded-lg border border-gray-200 overflow-hidden"
+            >
+              {/* Compact Header */}
+              <div className="px-3 py-2.5 border-b border-gray-100 flex items-center justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-sm text-gray-900 truncate">
+                    {r.client?.name}
+                  </div>
+                  {r.client?.email && (
+                    <div className="text-xs text-gray-500 truncate">
+                      {r.client.email}
+                    </div>
+                  )}
+                </div>
+                <span
+                  className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase whitespace-nowrap ${
+                    r.status === "confirmed"
+                      ? "bg-green-100 text-green-700"
+                      : r.status === "reserved_unpaid"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : String(r.status).startsWith("cancelled")
+                      ? "bg-red-100 text-red-700"
+                      : r.status === "no_show"
+                      ? "bg-gray-100 text-gray-700"
+                      : "bg-blue-100 text-blue-700"
+                  }`}
+                >
+                  {r.status?.replace(/_/g, " ")}
+                </span>
+              </div>
+
+              {/* Compact Details */}
+              <div className="px-3 py-3 space-y-2.5">
+                {/* Staff */}
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-full bg-gray-900 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                    {(r.specialist?.name || r.specialistId || "?")
+                      .charAt(0)
+                      .toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] text-gray-500 uppercase tracking-wide font-medium">
+                      Staff
+                    </div>
+                    <div className="font-medium text-sm text-gray-900 truncate">
+                      {r.specialist?.name || r.specialistId}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Service & Date/Time - Combined Row */}
+                <div className="grid grid-cols-2 gap-2">
+                  {/* Service */}
+                  <div className="flex items-start gap-1.5">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-md bg-gray-100 flex items-center justify-center">
+                      <svg
+                        className="w-3.5 h-3.5 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[9px] text-gray-500 uppercase tracking-wide font-medium">
+                        {r.services && r.services.length > 1
+                          ? "Services"
+                          : "Service"}
+                      </div>
+                      {r.services && r.services.length > 0 ? (
+                        <div className="space-y-0.5">
+                          {r.services.map((svc, idx) => (
+                            <div key={idx}>
+                              <div className="font-medium text-xs text-gray-900 truncate">
+                                {svc.service?.name ||
+                                  svc.serviceId ||
+                                  "Service"}
+                              </div>
+                              {idx === 0 && (
+                                <div className="text-[10px] text-gray-600 truncate">
+                                  {svc.variantName}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                          {r.services.length > 1 && (
+                            <div className="text-[9px] text-gray-500">
+                              +{r.services.length - 1} more
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="font-medium text-xs text-gray-900 truncate">
+                            {r.service?.name || r.serviceId}
+                          </div>
+                          {r.variantName && (
+                            <div className="text-[10px] text-gray-600 truncate">
+                              {r.variantName}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Date & Time */}
+                  <div className="flex items-start gap-1.5">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-md bg-gray-100 flex items-center justify-center">
+                      <svg
+                        className="w-3.5 h-3.5 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[9px] text-gray-500 uppercase tracking-wide font-medium">
+                        Date
+                      </div>
+                      <div className="font-medium text-xs text-gray-900 truncate">
+                        {new Date(r.start).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                        })}
+                      </div>
+                      <div className="text-[10px] text-gray-600">
+                        {new Date(r.start).toLocaleTimeString("en-GB", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Price & Payment - Compact */}
+                <div className="flex items-center justify-between pt-1.5 border-t border-gray-100">
+                  <div>
+                    <div className="text-[10px] text-gray-500 uppercase tracking-wide font-medium">
+                      Price
+                    </div>
+                    <div className="font-bold text-lg text-gray-900">
+                      £{Number(r.price || 0).toFixed(2)}
+                    </div>
+                  </div>
+
+                  {/* Payment Type Badge */}
+                  {(() => {
+                    const paymentType = r.payment?.type || r.payment?.mode;
+                    if (!paymentType) return null;
+
+                    const isDeposit = paymentType === "deposit";
+                    const isFullPayment = paymentType === "full_payment";
+                    const isPayNow = paymentType === "pay_now";
+
+                    return (
+                      <div className="text-right">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-bold uppercase ${
+                            isDeposit
+                              ? "bg-purple-100 text-purple-700"
+                              : isFullPayment || isPayNow
+                              ? "bg-green-100 text-green-700"
+                              : "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {isDeposit
+                            ? "Deposit"
+                            : isFullPayment || isPayNow
+                            ? "Paid"
+                            : "In Salon"}
+                        </span>
+                        {isDeposit &&
+                          r.payment &&
+                          (() => {
+                            const depositAmount =
+                              r.payment.depositAmount ||
+                              (r.payment.amountTotal
+                                ? (r.payment.amountTotal - 50) / 100
+                                : null);
+                            return depositAmount ? (
+                              <div className="text-[10px] text-gray-600 mt-0.5">
+                                £{depositAmount.toFixed(2)} paid
+                              </div>
+                            ) : null;
+                          })()}
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                {/* Payment Error */}
+                {r.payment?.stripe?.lastPaymentError && (
+                  <div className="flex items-start gap-2 p-2 bg-red-50 border border-red-100 rounded-md">
+                    <svg
+                      className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-medium text-red-700 truncate">
+                        {r.payment.stripe.lastPaymentError.message}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="px-3 pb-3 space-y-2">
+                <button
+                  className="w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-colors"
+                  onClick={() => openEditModal(r)}
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                  Edit Appointment
+                </button>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={
+                      String(r.status || "").startsWith("cancelled") ||
+                      r.status === "no_show"
+                    }
+                    onClick={() => openCancelModal(r._id)}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                    Cancel
+                  </button>
+                  <button
+                    className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={
+                      String(r.status || "").startsWith("cancelled") ||
+                      r.status === "no_show"
+                    }
+                    onClick={() => markAsNoShow(r._id)}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                      />
+                    </svg>
+                    No Show
+                  </button>
+                </div>
+
+                {String(r.status || "").startsWith("cancelled") && (
+                  <button
+                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-medium text-red-700 bg-white border border-red-200 hover:bg-red-50 hover:border-red-300 rounded-lg transition-colors"
+                    onClick={() => deleteAppointment(r._id)}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                    Delete Appointment
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Empty State for Mobile */}
+      {!loading && sortedRows.length === 0 && (
+        <div className="lg:hidden bg-white rounded-lg border border-gray-200 p-8">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gray-100 mb-4">
+              <svg
+                className="w-7 h-7 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-base font-semibold text-gray-900 mb-1">
+              No appointments found
+            </h3>
+            <p className="text-sm text-gray-600 mb-5">
               {searchQuery || selectedSpecialistId || dateFilter !== "all"
                 ? "Try adjusting your filters or search criteria."
                 : "Get started by creating your first appointment."}
@@ -2018,10 +1910,10 @@ export default function Appointments() {
             {(isSuperAdmin || admin?.specialistId) && (
               <button
                 onClick={openCreateModal}
-                className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-colors"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -2201,6 +2093,19 @@ function EditModal({
   const [showSpecialistDrawer, setShowSpecialistDrawer] = useState(false);
   const [showServiceDrawer, setShowServiceDrawer] = useState(false);
   const [showVariantDrawer, setShowVariantDrawer] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  // Prevent body scroll when DateTimePicker modal is open
+  useEffect(() => {
+    if (showTimePicker) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [showTimePicker]);
 
   const updateField = (field, value) => {
     setAppointment((prev) => ({ ...prev, [field]: value }));
@@ -2209,6 +2114,20 @@ function EditModal({
   const selectedService = services.find((s) => s._id === appointment.serviceId);
   const variants = selectedService?.variants || [];
 
+  // Get specialist's working hours for DateTimePicker
+  const selectedSpecialist = specialists.find(
+    (b) => b._id === appointment.specialistId
+  );
+  const beauticianWorkingHours = selectedSpecialist?.workingHours || [];
+  const customSchedule = selectedSpecialist?.customSchedule || {};
+
+  // Handle slot selection from DateTimePicker
+  const handleSlotSelect = (slot) => {
+    updateField("start", slot.startISO);
+    updateField("end", slot.endISO);
+    setShowTimePicker(false);
+  };
+
   return (
     <Modal
       open={open}
@@ -2216,75 +2135,111 @@ function EditModal({
       title="Edit Appointment"
       variant="dashboard"
     >
-      <div className="space-y-4">
+      <div className="space-y-6">
         {/* Client Information */}
-        <div className="space-y-3">
-          <h3 className="font-semibold text-gray-900">Client Information</h3>
+        <div className="space-y-3 sm:space-y-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-100">
+          <div className="flex items-center gap-2">
+            <svg
+              className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+            <h3 className="font-bold text-gray-900 text-base sm:text-lg">
+              Client Information
+            </h3>
+          </div>
           <FormField label="Name" htmlFor="client-name">
             <input
               type="text"
               id="client-name"
-              className="border rounded w-full px-3 py-2"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400"
+              style={{ fontSize: "16px" }}
               value={appointment.clientName}
               onChange={(e) => updateField("clientName", e.target.value)}
+              placeholder="Enter client's full name"
             />
           </FormField>
           <FormField label="Email" htmlFor="client-email">
             <input
               type="email"
               id="client-email"
-              className="border rounded w-full px-3 py-2"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400"
+              style={{ fontSize: "16px" }}
               value={appointment.clientEmail}
               onChange={(e) => updateField("clientEmail", e.target.value)}
+              placeholder="client@example.com"
             />
           </FormField>
           <FormField label="Phone" htmlFor="client-phone">
             <input
               type="tel"
               id="client-phone"
-              className="border rounded w-full px-3 py-2"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400"
+              style={{ fontSize: "16px" }}
               value={appointment.clientPhone}
               onChange={(e) => updateField("clientPhone", e.target.value)}
+              placeholder="+44 7700 900000"
             />
           </FormField>
           <FormField label="Notes" htmlFor="client-notes">
             <textarea
               id="client-notes"
-              className="border rounded w-full px-3 py-2"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900 placeholder-gray-400"
+              style={{ fontSize: "16px" }}
               rows="2"
               value={appointment.clientNotes}
               onChange={(e) => updateField("clientNotes", e.target.value)}
+              placeholder="Any special requests or notes..."
             />
           </FormField>
         </div>
 
         {/* Appointment Details */}
-        <div className="space-y-3 pt-3 border-t">
-          <h3 className="font-semibold text-gray-900">Appointment Details</h3>
+        <div className="space-y-3 sm:space-y-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-purple-100">
+          <div className="flex items-center gap-2">
+            <svg
+              className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <h3 className="font-bold text-gray-900 text-base sm:text-lg">
+              Appointment Details
+            </h3>
+          </div>
           <FormField label="Specialist" htmlFor="specialist-select">
             <SelectButton
               value={appointment.specialistId}
               placeholder="Select Specialist"
-              options={[
-                { label: "Select Specialist", value: "" },
-                ...specialists.map((b) => ({
-                  label: b.name,
-                  value: b._id,
-                })),
-              ]}
+              options={specialists.map((b) => ({
+                label: b.name,
+                value: b._id,
+              }))}
               onClick={() => setShowSpecialistDrawer(true)}
             />
             <SelectDrawer
               open={showSpecialistDrawer}
               onClose={() => setShowSpecialistDrawer(false)}
               title="Select Specialist"
-              options={[
-                { label: "Select Specialist", value: "" },
-                ...specialists.map((b) => ({
-                  label: b.name,
-                  value: b._id,
-                })),
-              ]}
+              options={specialists.map((b) => ({
+                label: b.name,
+                value: b._id,
+              }))}
               value={appointment.specialistId}
               onChange={(value) => {
                 updateField("specialistId", value);
@@ -2299,11 +2254,11 @@ function EditModal({
               <label className="block text-sm font-medium text-gray-700">
                 Services Booked ({appointment.services.length})
               </label>
-              <div className="space-y-2 bg-gray-50 border border-gray-200 rounded-lg p-3">
+              <div className="space-y-2 bg-white border border-gray-200 rounded-lg p-3">
                 {appointment.services.map((svc, idx) => (
                   <div
                     key={idx}
-                    className="bg-white border border-gray-200 rounded p-3"
+                    className="bg-gray-50 border border-gray-200 rounded-lg p-3"
                   >
                     <div className="font-medium text-gray-900">
                       {svc.service?.name || svc.serviceName || "Service"}
@@ -2314,7 +2269,7 @@ function EditModal({
                     </div>
                   </div>
                 ))}
-                <div className="pt-2 border-t border-gray-200 text-sm font-medium text-gray-700">
+                <div className="pt-2 border-t border-gray-200 text-sm font-medium text-gray-900">
                   Total:{" "}
                   {appointment.services.reduce(
                     (sum, s) => sum + (s.duration || 0),
@@ -2333,26 +2288,20 @@ function EditModal({
                 <SelectButton
                   value={appointment.serviceId}
                   placeholder="Select Service"
-                  options={[
-                    { label: "Select Service", value: "" },
-                    ...services.map((s) => ({
-                      label: s.name,
-                      value: s._id,
-                    })),
-                  ]}
+                  options={services.map((s) => ({
+                    label: s.name,
+                    value: s._id,
+                  }))}
                   onClick={() => setShowServiceDrawer(true)}
                 />
                 <SelectDrawer
                   open={showServiceDrawer}
                   onClose={() => setShowServiceDrawer(false)}
                   title="Select Service"
-                  options={[
-                    { label: "Select Service", value: "" },
-                    ...services.map((s) => ({
-                      label: s.name,
-                      value: s._id,
-                    })),
-                  ]}
+                  options={services.map((s) => ({
+                    label: s.name,
+                    value: s._id,
+                  }))}
                   value={appointment.serviceId}
                   onChange={(value) => {
                     updateField("serviceId", value);
@@ -2365,13 +2314,10 @@ function EditModal({
                 <SelectButton
                   value={appointment.variantName}
                   placeholder="Select Variant"
-                  options={[
-                    { label: "Select Variant", value: "" },
-                    ...variants.map((v) => ({
-                      label: `${v.name} - £${v.price} (${v.durationMin}min)`,
-                      value: v.name,
-                    })),
-                  ]}
+                  options={variants.map((v) => ({
+                    label: `${v.name} - £${v.price} (${v.durationMin}min)`,
+                    value: v.name,
+                  }))}
                   onClick={() => setShowVariantDrawer(true)}
                   disabled={!appointment.serviceId}
                 />
@@ -2379,13 +2325,10 @@ function EditModal({
                   open={showVariantDrawer}
                   onClose={() => setShowVariantDrawer(false)}
                   title="Select Variant"
-                  options={[
-                    { label: "Select Variant", value: "" },
-                    ...variants.map((v) => ({
-                      label: `${v.name} - £${v.price} (${v.durationMin}min)`,
-                      value: v.name,
-                    })),
-                  ]}
+                  options={variants.map((v) => ({
+                    label: `${v.name} - £${v.price} (${v.durationMin}min)`,
+                    value: v.name,
+                  }))}
                   value={appointment.variantName}
                   onChange={(value) => {
                     updateField("variantName", value);
@@ -2396,17 +2339,112 @@ function EditModal({
               </FormField>
             </>
           )}
-          <div className="w-full max-w-full overflow-hidden">
-            <div
-              className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-full"
-              style={{ minWidth: 0 }}
-            >
+
+          {/* Date & Time Selection with DateTimePicker */}
+          {appointment.specialistId &&
+            appointment.serviceId &&
+            appointment.variantName && (
+              <div className="space-y-3">
+                <FormField label="Select Date & Time" htmlFor="datetime-picker">
+                  {appointment.start ? (
+                    <div className="space-y-2">
+                      <div className="border-2 border-gray-300 rounded-lg p-3 bg-gray-50">
+                        <p className="text-sm font-medium text-gray-700">
+                          Selected Time:
+                        </p>
+                        <p className="text-lg font-semibold text-brand-600">
+                          {new Date(appointment.start).toLocaleString("en-GB", {
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        className="w-full px-4 py-2.5 text-sm font-medium border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                        onClick={() => setShowTimePicker(true)}
+                      >
+                        Change Time
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="w-full px-4 py-2.5 text-sm font-medium border-2 border-brand-500 text-brand-600 rounded-lg hover:bg-brand-50 transition-colors"
+                      onClick={() => setShowTimePicker(true)}
+                    >
+                      Select Available Time Slot
+                    </button>
+                  )}
+                </FormField>
+
+                {/* DateTimePicker Modal */}
+                {showTimePicker && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    {/* Backdrop */}
+                    <div
+                      className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                      onClick={() => setShowTimePicker(false)}
+                    />
+
+                    {/* Modal Content */}
+                    <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-auto overflow-hidden max-h-[90vh] flex flex-col">
+                      <div className="p-4 border-b flex items-center justify-between">
+                        <h2 className="text-lg font-semibold">
+                          Select Date & Time
+                        </h2>
+                        <button
+                          onClick={() => setShowTimePicker(false)}
+                          className="text-gray-400 hover:text-gray-600 transition-colors"
+                        >
+                          <svg
+                            className="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <div className="p-6 overflow-y-auto">
+                        <DateTimePicker
+                          specialistId={appointment.specialistId}
+                          serviceId={appointment.serviceId}
+                          variantName={appointment.variantName}
+                          salonTz="Europe/London"
+                          stepMin={15}
+                          beauticianWorkingHours={beauticianWorkingHours}
+                          customSchedule={customSchedule}
+                          onSelect={handleSlotSelect}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+          {/* Manual time inputs as fallback */}
+          {(!appointment.specialistId ||
+            !appointment.serviceId ||
+            !appointment.variantName) && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FormField label="Start Time" htmlFor="start-time">
                 <input
                   type="datetime-local"
                   id="start-time"
-                  className="appearance-none box-border w-full max-w-full border rounded px-2 py-1.5 text-[16px] focus:ring-2 focus:ring-brand-500 focus:border-brand-500 overflow-hidden"
-                  style={{ minWidth: 0, maxWidth: "100%" }}
+                  className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 transition-all text-gray-900"
+                  style={{ fontSize: "16px" }}
                   value={appointment.start}
                   onChange={(e) => updateField("start", e.target.value)}
                 />
@@ -2415,20 +2453,22 @@ function EditModal({
                 <input
                   type="datetime-local"
                   id="end-time"
-                  className="appearance-none box-border w-full max-w-full border rounded px-2 py-1.5 text-[16px] focus:ring-2 focus:ring-brand-500 focus:border-brand-500 overflow-hidden"
-                  style={{ minWidth: 0, maxWidth: "100%" }}
+                  className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 transition-all text-gray-900"
+                  style={{ fontSize: "16px" }}
                   value={appointment.end}
                   onChange={(e) => updateField("end", e.target.value)}
                 />
               </FormField>
             </div>
-          </div>
+          )}
+
           <FormField label="Price (£)" htmlFor="price">
             <input
               type="number"
               id="price"
               step="0.01"
-              className="border rounded w-full px-3 py-2"
+              className="border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 rounded-lg w-full px-3 py-2 sm:px-4 sm:py-2.5 transition-all text-gray-900"
+              style={{ fontSize: "16px" }}
               value={appointment.price}
               onChange={(e) => updateField("price", e.target.value)}
             />
@@ -2436,8 +2476,8 @@ function EditModal({
 
           {/* Payment Type & Details */}
           {appointment.payment && (
-            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-              <div className="text-sm font-semibold text-purple-900 mb-2 flex items-center gap-2">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200 p-4">
+              <div className="text-sm font-semibold text-green-900 mb-2 flex items-center gap-2">
                 <svg
                   className="w-4 h-4"
                   fill="none"

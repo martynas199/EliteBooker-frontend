@@ -126,7 +126,13 @@ const navigationConfig = [
   },
 ];
 
-const SidebarItem = ({ item, isNested = false, onClose, userRole }) => {
+const SidebarItem = ({
+  item,
+  isNested = false,
+  onClose,
+  userRole,
+  isMobile = false,
+}) => {
   const location = useLocation();
   const { ecommerceEnabled, multiLocation, seminarsEnabled, payOnTapEnabled } =
     useTenantSettings();
@@ -173,22 +179,100 @@ const SidebarItem = ({ item, isNested = false, onClose, userRole }) => {
     hasItems && item.items.some((child) => child.path === location.pathname);
 
   if (hasItems) {
+    // Mobile: Clean minimal design
+    if (isMobile) {
+      return (
+        <div className="mb-2">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="w-full flex items-center justify-between px-4 py-3 text-sm text-gray-900 bg-gray-50 rounded-xl transition-all duration-200"
+          >
+            <div className="flex items-center gap-3">
+              {Icon && <Icon className="w-5 h-5 text-gray-700" />}
+              <span className="font-semibold">{item.label}</span>
+            </div>
+            <ChevronDown
+              className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+                isExpanded ? "rotate-0" : "-rotate-90"
+              }`}
+            />
+          </button>
+
+          <AnimatePresence initial={false}>
+            {isExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div className="mt-1 space-y-1 pl-4">
+                  {item.items
+                    .filter((child) => {
+                      if (
+                        child.condition === "multiLocation" &&
+                        !multiLocation
+                      ) {
+                        return false;
+                      }
+                      if (
+                        child.condition === "ecommerceEnabled" &&
+                        !ecommerceEnabled
+                      ) {
+                        return false;
+                      }
+                      return true;
+                    })
+                    .map((child, idx) => (
+                      <SidebarItem
+                        key={idx}
+                        item={child}
+                        isNested
+                        onClose={onClose}
+                        userRole={userRole}
+                        isMobile={isMobile}
+                      />
+                    ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      );
+    }
+
+    // Desktop: Gradient design
     return (
       <div className="mb-1">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-all duration-150 group"
+          className={`w-full flex items-center justify-between px-3 py-2.5 text-sm rounded-lg transition-all duration-200 group ${
+            hasActiveChild
+              ? "bg-gray-50 text-gray-900"
+              : "text-gray-700 hover:bg-gray-50"
+          }`}
         >
           <div className="flex items-center gap-3">
             {Icon && (
-              <Icon className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-colors" />
+              <Icon
+                className={`w-5 h-5 transition-colors ${
+                  hasActiveChild
+                    ? "text-gray-900"
+                    : "text-gray-600 group-hover:text-gray-900"
+                }`}
+              />
             )}
-            <span className="font-medium">{item.label}</span>
+            <span
+              className={`font-medium ${hasActiveChild ? "font-semibold" : ""}`}
+            >
+              {item.label}
+            </span>
           </div>
           <ChevronDown
-            className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-              isExpanded ? "rotate-0" : "-rotate-90"
-            }`}
+            className={`w-4 h-4 transition-all duration-200 ${
+              hasActiveChild ? "text-gray-700" : "text-gray-400"
+            } ${isExpanded ? "rotate-0" : "-rotate-90"}`}
           />
         </button>
 
@@ -201,10 +285,9 @@ const SidebarItem = ({ item, isNested = false, onClose, userRole }) => {
               transition={{ duration: 0.2, ease: "easeInOut" }}
               className="overflow-hidden"
             >
-              <div className="ml-7 mt-1 space-y-0.5 border-l border-gray-200 pl-3">
+              <div className="ml-7 mt-1.5 space-y-0.5 border-l-2 border-gray-200 pl-4">
                 {item.items
                   .filter((child) => {
-                    // Filter out items based on feature flags
                     if (child.condition === "multiLocation" && !multiLocation) {
                       return false;
                     }
@@ -223,6 +306,7 @@ const SidebarItem = ({ item, isNested = false, onClose, userRole }) => {
                       isNested
                       onClose={onClose}
                       userRole={userRole}
+                      isMobile={isMobile}
                     />
                   ))}
               </div>
@@ -233,36 +317,68 @@ const SidebarItem = ({ item, isNested = false, onClose, userRole }) => {
     );
   }
 
-  // Leaf item
+  // Leaf item - Mobile clean design
+  if (isMobile) {
+    return (
+      <Link
+        to={item.path}
+        onClick={onClose}
+        className={`
+          flex items-center gap-3 px-4 py-3 text-sm rounded-xl transition-all duration-200
+          ${
+            isActive
+              ? "bg-gray-900 text-white font-semibold"
+              : "text-gray-700 hover:bg-gray-50"
+          }
+          ${isNested ? "text-[13px]" : ""}
+        `}
+      >
+        {!isNested && Icon && (
+          <Icon
+            className={`w-5 h-5 flex-shrink-0 ${
+              isActive ? "text-white" : "text-gray-500"
+            }`}
+          />
+        )}
+        <span className="truncate">{item.label}</span>
+      </Link>
+    );
+  }
+
+  // Leaf item - Desktop gradient design
   return (
     <Link
       to={item.path}
       onClick={onClose}
       className={`
-        block px-3 py-2 text-sm rounded-md transition-all duration-150
+        flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-200 group
         ${
           isActive
-            ? "bg-gray-100 text-black font-medium"
+            ? "bg-gray-900 text-white font-semibold"
             : "text-gray-700 hover:bg-gray-50"
         }
-        ${isNested ? "text-[13px]" : ""}
+        ${isNested ? "text-[13px] py-2" : ""}
       `}
     >
-      <div className="flex items-center gap-3">
-        {!isNested && Icon && (
-          <Icon
-            className={`w-4 h-4 transition-colors ${
-              isActive ? "text-black" : "text-gray-500"
-            }`}
-          />
-        )}
-        <span>{item.label}</span>
-      </div>
+      {!isNested && Icon && (
+        <Icon
+          className={`w-5 h-5 transition-colors flex-shrink-0 ${
+            isActive ? "text-white" : "text-gray-600 group-hover:text-gray-900"
+          }`}
+        />
+      )}
+      <span className="truncate">{item.label}</span>
     </Link>
   );
 };
 
-export default function Sidebar({ tenant, admin, onLogout, onClose }) {
+export default function Sidebar({
+  tenant,
+  admin,
+  onLogout,
+  onClose,
+  isMobile = false,
+}) {
   const { loadSettings } = useTenantSettings();
 
   // Load tenant settings when sidebar mounts
@@ -272,42 +388,62 @@ export default function Sidebar({ tenant, admin, onLogout, onClose }) {
     });
   }, []);
 
+  // Mobile: Return navigation items only (no wrapper, header, or footer)
+  if (isMobile) {
+    return (
+      <>
+        {navigationConfig.map((section, idx) => (
+          <SidebarItem
+            key={idx}
+            item={section}
+            onClose={onClose}
+            userRole={admin?.role}
+            isMobile={true}
+          />
+        ))}
+      </>
+    );
+  }
+
+  // Desktop: Full sidebar with wrapper
   return (
-    <aside className="w-64 min-h-screen bg-slate-50 border-r border-gray-200 flex flex-col overflow-hidden">
+    <aside className="w-64 min-h-screen bg-white border-r border-gray-200 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200 flex-shrink-0">
+      <div className="p-5 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center gap-3">
           {tenant?.branding?.logo?.url ? (
-            <img
-              src={tenant.branding.logo.url}
-              alt={tenant.name}
-              className="w-8 h-8 rounded-md object-cover"
-            />
+            <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-200">
+              <img
+                src={tenant.branding.logo.url}
+                alt={tenant.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
           ) : (
-            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-              <span className="text-white text-sm font-bold">
+            <div className="w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+              <span className="text-white text-base font-bold">
                 {tenant?.name?.[0]?.toUpperCase() || "B"}
               </span>
             </div>
           )}
-          <div>
-            <h2 className="text-sm font-semibold text-gray-900 truncate">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-sm font-bold text-gray-900 truncate">
               {tenant?.name || "Elite Booker"}
             </h2>
-            <p className="text-xs text-gray-500">Admin Panel</p>
+            <p className="text-[11px] text-gray-500 font-medium">Admin Panel</p>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
       <nav
-        className="flex-1 p-4 overflow-y-auto"
+        className="flex-1 p-3 overflow-y-auto"
         style={{
           WebkitOverflowScrolling: "touch",
           overscrollBehavior: "contain",
         }}
       >
-        <div className="space-y-6">
+        <div className="space-y-1">
           {navigationConfig.map((section, idx) => (
             <div key={idx}>
               <SidebarItem
@@ -321,25 +457,25 @@ export default function Sidebar({ tenant, admin, onLogout, onClose }) {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 pb-52 lg:pb-4 border-t border-gray-200 flex-shrink-0 bg-slate-50 space-y-1">
+      <div className="p-3 pb-52 lg:pb-3 border-t border-gray-200 flex-shrink-0 space-y-1">
         <Link
           to="/admin/profile"
-          className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-all duration-150"
+          className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-all duration-200 group"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center">
-              <span className="text-white text-xs font-semibold">A</span>
-            </div>
-            <span className="text-sm">Account Settings</span>
+          <div className="w-7 h-7 rounded-lg bg-gray-900 flex items-center justify-center">
+            <span className="text-white text-xs font-bold">
+              {admin?.name?.[0]?.toUpperCase() || "A"}
+            </span>
           </div>
+          <span className="text-sm font-medium">Account Settings</span>
         </Link>
         {onLogout && (
           <button
             onClick={onLogout}
-            className="w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-all duration-150 flex items-center gap-3"
+            className="w-full px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 flex items-center gap-3 group"
           >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
+            <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="font-medium">Logout</span>
           </button>
         )}
       </div>

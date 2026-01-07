@@ -187,26 +187,40 @@ export default function Revenue() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 px-4 sm:px-0">
+    <div className="px-2 sm:px-3 space-y-2">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+      <div className="mb-1.5">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
           Revenue Analytics
         </h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">
-          Track your salon's revenue and performance from confirmed and
-          completed appointments
+        <p className="text-xs text-gray-500 mt-0.5">
+          Track performance and booking revenue
         </p>
       </div>
 
-      {/* Date Range Picker */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-        <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
-          Date Range
-        </h2>
+      {/* Date Range Card */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5">
+        <div className="flex items-center gap-2 mb-2">
+          <svg
+            className="w-4 h-4 text-gray-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+          <h2 className="text-xs font-bold text-gray-900 uppercase tracking-wide">
+            Date Range
+          </h2>
+        </div>
 
         {/* Quick Range Buttons */}
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="flex flex-wrap gap-1 mb-2">
           {[
             { label: "Today", value: "today" },
             { label: "Yesterday", value: "yesterday" },
@@ -218,7 +232,7 @@ export default function Revenue() {
             <button
               key={range.value}
               onClick={() => setQuickRange(range.value)}
-              className="px-3 py-2 text-xs sm:text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 rounded-lg transition-colors touch-manipulation"
+              className="px-2.5 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 rounded-md transition-colors"
             >
               {range.label}
             </button>
@@ -226,9 +240,9 @@ export default function Revenue() {
         </div>
 
         {/* Custom Date Inputs */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative date-picker-container">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="relative date-picker-container">
+            <label className="block text-[10px] font-semibold text-gray-600 mb-1 uppercase tracking-wide">
               Start Date
             </label>
             <button
@@ -236,13 +250,13 @@ export default function Revenue() {
                 setShowStartPicker(!showStartPicker);
                 setShowEndPicker(false);
               }}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm text-left bg-white hover:bg-gray-50 transition-colors flex items-center justify-between"
+              className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-xs text-left bg-white hover:bg-gray-50 transition-colors flex items-center justify-between"
             >
-              <span className="text-gray-900">
+              <span className="text-gray-900 font-medium">
                 {dayjs(startDate).format("MMM DD, YYYY")}
               </span>
               <svg
-                className="w-5 h-5 text-gray-400"
+                className="w-4 h-4 text-gray-400 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -282,8 +296,8 @@ export default function Revenue() {
               </div>
             )}
           </div>
-          <div className="flex-1 relative date-picker-container">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="relative date-picker-container">
+            <label className="block text-[10px] font-semibold text-gray-600 mb-1 uppercase tracking-wide">
               End Date
             </label>
             <button
@@ -291,13 +305,13 @@ export default function Revenue() {
                 setShowEndPicker(!showEndPicker);
                 setShowStartPicker(false);
               }}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm text-left bg-white hover:bg-gray-50 transition-colors flex items-center justify-between"
+              className="w-full px-2.5 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-xs text-left bg-white hover:bg-gray-50 transition-colors flex items-center justify-between"
             >
-              <span className="text-gray-900">
+              <span className="text-gray-900 font-medium">
                 {dayjs(endDate).format("MMM DD, YYYY")}
               </span>
               <svg
-                className="w-5 h-5 text-gray-400"
+                className="w-4 h-4 text-gray-400 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -363,16 +377,20 @@ export default function Revenue() {
 
       {/* Error State */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
           <div className="flex items-center gap-2 text-red-800">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <svg
+              className="w-4 h-4 flex-shrink-0"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                 clipRule="evenodd"
               />
             </svg>
-            <span className="font-medium">{error}</span>
+            <span className="text-sm font-medium">{error}</span>
           </div>
         </div>
       )}
@@ -392,15 +410,12 @@ export default function Revenue() {
           filteredSpecialists.length > 0 ? (
             <>
               {/* Summary Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
                 {/* Total Revenue */}
-                <div className="bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl shadow-lg p-6 text-white">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-brand-100">
-                      Total Revenue
-                    </span>
+                <div className="col-span-2 lg:col-span-1 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg shadow-sm p-2.5">
+                  <div className="flex items-center gap-2 mb-1.5">
                     <svg
-                      className="w-8 h-8 text-brand-200"
+                      className="w-4 h-4 text-gray-400"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -412,26 +427,26 @@ export default function Revenue() {
                         d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
+                      Total Revenue
+                    </span>
                   </div>
-                  <div className="text-3xl font-bold">
+                  <div className="text-2xl font-bold text-white mb-1">
                     {formatCurrency(
                       data.platform?.bookingsRevenue || filteredTotalRevenue
                     )}
                   </div>
-                  <div className="text-xs text-brand-100 mt-1">
+                  <div className="text-[9px] text-gray-500">
                     {dayjs(startDate).format("MMM D")} -{" "}
-                    {dayjs(endDate).format("MMM D, YYYY")}
+                    {dayjs(endDate).format("MMM D, YY")}
                   </div>
                 </div>
 
                 {/* Total Bookings */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-600">
-                      Total Bookings
-                    </span>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5">
+                  <div className="flex items-center gap-2 mb-1.5">
                     <svg
-                      className="w-8 h-8 text-gray-400"
+                      className="w-4 h-4 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -443,23 +458,21 @@ export default function Revenue() {
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                       />
                     </svg>
+                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-wide">
+                      Bookings
+                    </span>
                   </div>
-                  <div className="text-3xl font-bold text-gray-900">
+                  <div className="text-2xl font-bold text-gray-900 mb-1">
                     {data.platform?.totalBookings || filteredTotalBookings}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    Completed appointments
-                  </div>
+                  <div className="text-[9px] text-gray-500">Completed</div>
                 </div>
 
                 {/* Average Per Booking */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-600">
-                      Average Per Booking
-                    </span>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5">
+                  <div className="flex items-center gap-2 mb-1.5">
                     <svg
-                      className="w-8 h-8 text-gray-400"
+                      className="w-4 h-4 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -471,8 +484,11 @@ export default function Revenue() {
                         d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
                       />
                     </svg>
+                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-wide">
+                      Average
+                    </span>
                   </div>
-                  <div className="text-3xl font-bold text-gray-900">
+                  <div className="text-2xl font-bold text-gray-900 mb-1">
                     {(data.platform?.totalBookings || filteredTotalBookings) > 0
                       ? formatCurrency(
                           (data.platform?.bookingsRevenue ||
@@ -482,18 +498,57 @@ export default function Revenue() {
                         )
                       : formatCurrency(0)}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    Revenue per appointment
+                  <div className="text-[9px] text-gray-500">Per booking</div>
+                </div>
+
+                {/* Specialist Count */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <svg
+                      className="w-4 h-4 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-wide">
+                      Specialists
+                    </span>
                   </div>
+                  <div className="text-2xl font-bold text-gray-900 mb-1">
+                    {filteredSpecialists.length}
+                  </div>
+                  <div className="text-[9px] text-gray-500">Active team</div>
                 </div>
               </div>
 
               {/* Specialist Filter */}
               {data.specialists.length > 1 && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Filter by Specialist
-                  </label>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg
+                      className="w-4 h-4 text-gray-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                      />
+                    </svg>
+                    <label className="text-xs font-bold text-gray-900 uppercase tracking-wide">
+                      Filter Specialist
+                    </label>
+                  </div>
                   <SelectButton
                     onClick={() => setShowSpecialistDrawer(true)}
                     placeholder="Filter by Specialist"
@@ -512,10 +567,25 @@ export default function Revenue() {
 
               {/* Bar Chart */}
               {filteredSpecialists.length > 0 && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 overflow-x-auto">
-                  <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">
-                    Revenue by Specialist
-                  </h2>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5 overflow-x-auto">
+                  <div className="flex items-center gap-2 mb-2.5">
+                    <svg
+                      className="w-4 h-4 text-gray-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                      />
+                    </svg>
+                    <h2 className="text-xs font-bold text-gray-900 uppercase tracking-wide">
+                      Revenue by Specialist
+                    </h2>
+                  </div>
                   <div className="min-w-full">
                     <BarChart
                       width={Math.max(800, filteredSpecialists.length * 150)}
@@ -607,184 +677,134 @@ export default function Revenue() {
 
               {/* Table / Cards - Only show if there's specialist breakdown data */}
               {filteredSpecialists.length > 0 && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                  <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-900">
-                      Detailed Breakdown
-                    </h2>
-                  </div>
-
-                  {/* Mobile Card View */}
-                  <div className="block md:hidden divide-y divide-gray-200">
-                    {filteredSpecialists.map((specialist) => (
-                      <div
-                        key={specialist.specialistId}
-                        className="p-4 hover:bg-gray-50 transition-colors"
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                  <div className="px-3 py-2.5 border-b border-gray-200 bg-gray-50">
+                    <div className="flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        {/* Specialist Header */}
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="flex-shrink-0 h-12 w-12 rounded-full bg-brand-100 flex items-center justify-center">
-                            <span className="text-brand-700 font-medium text-sm">
-                              {specialist.specialist
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
-                            </span>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="text-sm font-semibold text-gray-900 truncate">
-                              {specialist.specialist}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Stats Grid */}
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-gray-50 rounded-lg p-3">
-                            <div className="text-xs text-gray-500 mb-1">
-                              Revenue
-                            </div>
-                            <div className="text-base font-bold text-gray-900">
-                              {formatCurrency(specialist.revenue)}
-                            </div>
-                          </div>
-                          <div className="bg-gray-50 rounded-lg p-3">
-                            <div className="text-xs text-gray-500 mb-1">
-                              Bookings
-                            </div>
-                            <div className="text-base font-bold text-gray-900">
-                              {specialist.bookings}
-                            </div>
-                          </div>
-                          <div className="bg-gray-50 rounded-lg p-3">
-                            <div className="text-xs text-gray-500 mb-1">
-                              Avg/Booking
-                            </div>
-                            <div className="text-sm font-semibold text-gray-700">
-                              {formatCurrency(
-                                specialist.revenue / specialist.bookings
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-
-                    {/* Mobile Total */}
-                    <div className="p-4 bg-gray-50 border-t-2 border-gray-300">
-                      <div className="font-bold text-gray-900 mb-3">Total</div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <div className="text-xs text-gray-500 mb-1">
-                            Revenue
-                          </div>
-                          <div className="text-base font-bold text-gray-900">
-                            {formatCurrency(filteredTotalRevenue)}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500 mb-1">
-                            Bookings
-                          </div>
-                          <div className="text-base font-bold text-gray-900">
-                            {filteredTotalBookings}
-                          </div>
-                        </div>
-                      </div>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                        />
+                      </svg>
+                      <h2 className="text-xs font-bold text-gray-900 uppercase tracking-wide">
+                        Detailed Breakdown
+                      </h2>
                     </div>
                   </div>
 
-                  {/* Desktop Table View */}
-                  <div className="hidden md:block overflow-x-auto">
-                    <table className="w-full">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Specialist
-                          </th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Revenue
-                          </th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Bookings
-                          </th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Avg per Booking
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredSpecialists.map((specialist) => (
-                          <tr
-                            key={specialist.specialistId}
-                            className="hover:bg-gray-50 transition-colors"
-                          >
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center">
-                                  <span className="text-brand-700 font-medium text-sm">
-                                    {specialist.specialist
-                                      .split(" ")
-                                      .map((n) => n[0])
-                                      .join("")}
-                                  </span>
-                                </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900">
-                                    {specialist.specialist}
-                                  </div>
-                                </div>
+                  {/* Card Grid View */}
+                  <div className="p-2.5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                      {filteredSpecialists.map((specialist) => (
+                        <div
+                          key={specialist.specialistId}
+                          className="bg-white border border-gray-200 rounded-lg p-2.5 hover:shadow-md transition-shadow"
+                        >
+                          {/* Specialist Header */}
+                          <div className="flex items-center gap-2 mb-2.5">
+                            <div className="flex-shrink-0 h-9 w-9 rounded-full bg-gray-900 flex items-center justify-center">
+                              <span className="text-white font-bold text-xs">
+                                {specialist.specialist
+                                  .split(" ")
+                                  .map((n) => n[0])
+                                  .join("")}
+                              </span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs font-bold text-gray-900 truncate">
+                                {specialist.specialist}
                               </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right">
-                              <div className="text-sm text-gray-900">
+                            </div>
+                          </div>
+
+                          {/* Stats */}
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                              <span className="text-[10px] text-gray-500 uppercase tracking-wide font-semibold">
+                                Revenue
+                              </span>
+                              <span className="text-sm font-bold text-gray-900">
                                 {formatCurrency(specialist.revenue)}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right">
-                              <div className="text-sm text-gray-900">
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                              <span className="text-[10px] text-gray-500 uppercase tracking-wide font-semibold">
+                                Bookings
+                              </span>
+                              <span className="text-sm font-bold text-gray-900">
                                 {specialist.bookings}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right">
-                              <div className="text-sm text-gray-600">
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between py-1">
+                              <span className="text-[10px] text-gray-500 uppercase tracking-wide font-semibold">
+                                Average
+                              </span>
+                              <span className="text-xs font-semibold text-gray-700">
                                 {formatCurrency(
                                   specialist.revenue / specialist.bookings
                                 )}
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                      <tfoot className="bg-gray-50 font-semibold">
-                        <tr>
-                          <td className="px-6 py-4 text-sm text-gray-900">
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Total Summary */}
+                    <div className="mt-2.5 bg-gray-900 rounded-lg p-2.5">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-xs font-bold text-white uppercase tracking-wide mb-1">
                             Total
-                          </td>
-                          <td className="px-6 py-4 text-right text-sm text-gray-900">
-                            {formatCurrency(filteredTotalRevenue)}
-                          </td>
-                          <td className="px-6 py-4 text-right text-sm text-gray-900">
-                            {filteredTotalBookings}
-                          </td>
-                          <td className="px-6 py-4 text-right text-sm text-gray-600">
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <div>
+                              <span className="text-[9px] text-gray-400 uppercase tracking-wide font-semibold block">
+                                Revenue
+                              </span>
+                              <span className="text-sm font-bold text-white">
+                                {formatCurrency(filteredTotalRevenue)}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-[9px] text-gray-400 uppercase tracking-wide font-semibold block">
+                                Bookings
+                              </span>
+                              <span className="text-sm font-bold text-white">
+                                {filteredTotalBookings}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[9px] text-gray-400 uppercase tracking-wide font-semibold block">
+                            Average
+                          </span>
+                          <span className="text-lg font-bold text-white">
                             {filteredTotalBookings > 0
                               ? formatCurrency(
                                   filteredTotalRevenue / filteredTotalBookings
                                 )
                               : formatCurrency(0)}
-                          </td>
-                        </tr>
-                      </tfoot>
-                    </table>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
             </>
           ) : (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
               <svg
-                className="w-16 h-16 text-gray-400 mx-auto mb-4"
+                className="w-12 h-12 text-gray-400 mx-auto mb-3"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -796,10 +816,10 @@ export default function Revenue() {
                   d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                 />
               </svg>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-base font-semibold text-gray-900 mb-1">
                 No Revenue Data
               </h3>
-              <p className="text-gray-600">
+              <p className="text-sm text-gray-600">
                 No completed bookings found for the selected date range.
               </p>
             </div>
