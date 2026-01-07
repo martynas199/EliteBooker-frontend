@@ -1,7 +1,5 @@
 import { create } from "zustand";
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+import { api } from "../lib/apiClient";
 
 /**
  * Get current admin info from API
@@ -9,9 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
  */
 const getCurrentAdmin = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/auth/me`, {
-      withCredentials: true,
-    });
+    const response = await api.get("/auth/me");
     return response.data.admin;
   } catch (error) {
     console.error("Failed to get current admin:", error);
@@ -62,7 +58,7 @@ const useTenantSettingsStore = create((set, get) => ({
     try {
       // Use provided tenantId or get from store
       const finalTenantId = tenantId || get().tenantId;
-      
+
       if (!finalTenantId) {
         console.error("[TenantSettings] No tenantId available");
         throw new Error("Tenant ID required");
@@ -83,29 +79,16 @@ const useTenantSettingsStore = create((set, get) => ({
         backendName: backendFeatureName,
         value: value,
         tenantId: finalTenantId,
-        apiUrl: `${API_URL}/api/tenants/${finalTenantId}`,
       });
 
       // Update tenant features in database
-      const updateResponse = await axios.put(
-        `${API_URL}/api/tenants/${finalTenantId}`,
-        {
-          features: {
-            [backendFeatureName]: value,
-          },
+      const updateResponse = await api.put(`/tenants/${finalTenantId}`, {
+        features: {
+          [backendFeatureName]: value,
         },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      });
 
-      console.log(
-        "[TenantSettings] Update response:",
-        updateResponse.data
-      );
+      console.log("[TenantSettings] Update response:", updateResponse.data);
 
       set((state) => ({
         featureFlags: {
@@ -145,9 +128,7 @@ const useTenantSettingsStore = create((set, get) => ({
 
       const tenantId = admin.tenantId;
 
-      const response = await axios.get(`${API_URL}/api/tenants/${tenantId}`, {
-        withCredentials: true,
-      });
+      const response = await api.get(`/tenants/${tenantId}`);
 
       const tenant = response.data.tenant || response.data;
 
