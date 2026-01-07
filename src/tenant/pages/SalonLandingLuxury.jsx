@@ -903,13 +903,6 @@ export default function SalonLandingLuxury() {
             </section>
           )}
 
-          {/* Toggle - Only show if multiple specialists and no location selected */}
-          {hasMultipleSpecialists && !selectedLocation && (
-            <div className="flex justify-center mb-12">
-              <ProfessionalToggle value={viewMode} onChange={setViewMode} />
-            </div>
-          )}
-
           {/* Featured Seminars Section */}
           {!selectedLocation &&
             isSeminarsEnabled &&
@@ -1051,6 +1044,13 @@ export default function SalonLandingLuxury() {
                 </div>
               </section>
             )}
+
+          {/* Toggle - Only show if multiple specialists and no location selected */}
+          {hasMultipleSpecialists && !selectedLocation && (
+            <div className="flex justify-center mb-12">
+              <ProfessionalToggle value={viewMode} onChange={setViewMode} />
+            </div>
+          )}
 
           {/* Main Content - Only show if no location is selected */}
           {!selectedLocation && (
