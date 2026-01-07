@@ -104,7 +104,18 @@ export default function SeminarForm() {
       setExistingGalleryImages(seminar.images?.gallery || []);
     } catch (error) {
       console.error("Failed to load seminar:", error);
-      toast.error("Failed to load seminar");
+      console.error("Error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+      
+      const errorMessage = error.response?.data?.message 
+        || error.response?.data?.error
+        || error.message 
+        || "Failed to load seminar";
+        
+      toast.error(errorMessage);
       navigate("/admin/seminars");
     } finally {
       setLoading(false);
