@@ -92,13 +92,13 @@ export default function BookingPoliciesPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-0 sm:mx-auto space-y-2 sm:space-y-6 -m-4 sm:m-0 sm:p-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
       {/* Page Header */}
-      <div className="mb-1 sm:mb-6 px-2 sm:px-0">
-        <h1 className="text-lg sm:text-3xl font-bold text-gray-900 mb-0.5 sm:mb-2">
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
           Booking & Cancellation Policies
         </h1>
-        <p className="text-xs sm:text-base text-gray-600">
+        <p className="text-sm sm:text-base text-gray-600">
           Configure cancellation windows, refund policies, and rescheduling
           rules for your business
         </p>

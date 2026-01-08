@@ -194,7 +194,7 @@ export default function TimeOff() {
   }
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto">
       {/* Hero Header */}
       <div className="relative overflow-hidden bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 rounded-2xl shadow-2xl p-4 sm:p-8">
         <div className="absolute inset-0 bg-black/10"></div>

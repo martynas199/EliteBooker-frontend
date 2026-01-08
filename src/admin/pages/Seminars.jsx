@@ -113,7 +113,7 @@ export default function Seminars() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6 overflow-x-hidden px-2 sm:px-0">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 overflow-x-hidden">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
         <div className="flex items-center gap-2 sm:gap-3">

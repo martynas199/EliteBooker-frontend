@@ -446,7 +446,7 @@ export default function WorkingHoursCalendar() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
           Working Hours Calendar

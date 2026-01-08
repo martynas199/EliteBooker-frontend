@@ -593,7 +593,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-5 pb-6 md:pb-0">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-5 pb-6 md:pb-0">
       {/* Quick Stats Bar - Premium Info Strip */}
       {(isSuperAdmin || admin?.specialistId) && (
         <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 rounded-xl p-3 shadow-lg overflow-x-auto">

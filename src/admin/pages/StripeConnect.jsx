@@ -6,7 +6,7 @@ export default function StripeConnect() {
   const admin = useSelector(selectAdmin);
 
   return (
-    <div className="max-w-4xl">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl">
       <div className="mb-6">
         <h1 className="text-2xl font-serif font-bold text-gray-900 tracking-wide mb-2">
           Stripe Connect
