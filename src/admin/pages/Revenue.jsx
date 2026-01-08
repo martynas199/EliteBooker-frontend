@@ -187,13 +187,13 @@ export default function Revenue() {
   };
 
   return (
-    <div className="px-2 sm:px-3 space-y-2">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       {/* Header */}
-      <div className="mb-1.5">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
           Revenue Analytics
         </h1>
-        <p className="text-xs text-gray-500 mt-0.5">
+        <p className="text-sm text-gray-600 mt-1">
           Track performance and booking revenue
         </p>
       </div>
