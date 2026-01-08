@@ -23,30 +23,25 @@ export default function AdminLayout() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  // Prevent body scroll when mobile menu is open (including touch events)
+  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      
       // Prevent scrolling on body
       document.body.style.overflow = "hidden";
       document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
       document.body.style.width = "100%";
-      document.body.style.height = "100%";
-
-      // Prevent touch move events
-      const preventScroll = (e) => {
-        // Allow scrolling within the mobile menu or sidebar
-        if (e.target.closest("[data-mobile-menu]") || e.target.closest("aside")) return;
-        e.preventDefault();
-      };
-
-      document.addEventListener("touchmove", preventScroll, { passive: false });
 
       return () => {
+        // Restore scroll position
         document.body.style.overflow = "";
         document.body.style.position = "";
+        document.body.style.top = "";
         document.body.style.width = "";
-        document.body.style.height = "";
-        document.removeEventListener("touchmove", preventScroll);
+        window.scrollTo(0, scrollY);
       };
     }
   }, [mobileMenuOpen]);
