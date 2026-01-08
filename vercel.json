@@ -1,18 +1,6 @@
 {
   "buildCommand": "node node_modules/vite/bin/vite.js build",
   "outputDirectory": "dist",
-  "redirects": [
-    {
-      "source": "http://elitebooker.co.uk/:path*",
-      "destination": "https://www.elitebooker.co.uk/:path*",
-      "permanent": true
-    },
-    {
-      "source": "https://elitebooker.co.uk/:path*",
-      "destination": "https://www.elitebooker.co.uk/:path*",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
