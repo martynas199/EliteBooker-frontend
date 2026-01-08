@@ -493,7 +493,8 @@ export default function Appointments() {
       clientEmail: appointment.client?.email || "",
       clientPhone: appointment.client?.phone || "",
       clientNotes: appointment.client?.notes || "",
-      specialistId: appointment.specialistId?._id || appointment.specialistId || "", // Handle both populated and unpopulated
+      specialistId:
+        appointment.specialistId?._id || appointment.specialistId || "", // Handle both populated and unpopulated
       serviceId: appointment.serviceId?._id || appointment.serviceId || "", // Handle both populated and unpopulated
       variantName: appointment.variantName || "",
       start: appointment.start
@@ -635,7 +636,7 @@ export default function Appointments() {
   }
 
   return (
-    <div>
+    <div className="p-4 sm:p-6 lg:p-8">
       <SlowRequestWarning isLoading={loading} threshold={2000} />
 
       {/* Header Section */}
@@ -685,90 +686,35 @@ export default function Appointments() {
         </div>
       )}
 
-      {/* Action Buttons - only show if admin has access */}
-      {(isSuperAdmin || admin?.specialistId) && (
-        <div className="mb-6 flex flex-col sm:flex-row gap-3">
-          <button
-            onClick={openCreateModal}
-            className="group relative overflow-hidden px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5"
-          >
-            <div className="flex items-center justify-center gap-2">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              <span>Create Appointment</span>
-            </div>
-          </button>
-          {admin?.specialistId && (
-            <button
-              onClick={() => handleDeleteAll()}
-              className="group relative overflow-hidden px-6 py-3 bg-white hover:bg-red-50 border-2 border-red-500 text-red-600 font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
-            >
-              <div className="flex items-center justify-center gap-2">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                  />
-                </svg>
-                <span className="whitespace-nowrap">Delete All My Appointments</span>
-              </div>
-            </button>
-          )}
-        </div>
-      )}
-
       {/* Filters - only show if admin has access */}
       {(isSuperAdmin || admin?.specialistId) && (
         <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 mb-4 space-y-3">
-          {/* Search Bar */}
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          {/* Create Appointment Button & Search Bar */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <button
+              onClick={openCreateModal}
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium rounded-lg transition-colors"
+            >
               <svg
-                className="h-4 w-4 text-gray-400"
+                className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
+                strokeWidth={2}
                 viewBox="0 0 24 24"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  d="M12 4v16m8-8H4"
                 />
               </svg>
-            </div>
-            <input
-              type="text"
-              placeholder="Search by name, email, phone, service..."
-              className="w-full pl-9 pr-9 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all placeholder:text-gray-400"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
-              >
+              <span>New Appointment</span>
+            </button>
+
+            <div className="relative flex-1">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg
-                  className="h-5 w-5"
+                  className="h-4 w-4 text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -777,11 +723,38 @@ export default function Appointments() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-              </button>
-            )}
+              </div>
+              <input
+                type="text"
+                placeholder="Search by name, email, phone, service..."
+                className="w-full pl-9 pr-9 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all placeholder:text-gray-400"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

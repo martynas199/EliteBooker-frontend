@@ -131,7 +131,7 @@ export default function StaffList({
   }
 
   return (
-    <div className="space-y-6 overflow-x-hidden">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 overflow-x-hidden">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
         <div className="flex items-center gap-3">

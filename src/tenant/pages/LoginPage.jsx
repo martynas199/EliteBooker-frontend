@@ -22,7 +22,7 @@ const LoginPage = () => {
 
   // Get redirect path from location state or query param or default to home
   const searchParams = new URLSearchParams(location.search);
-  const redirectParam = searchParams.get('redirect');
+  const redirectParam = searchParams.get("redirect");
   const from = location.state?.from || redirectParam || "/";
 
   const handleChange = (e) => {
