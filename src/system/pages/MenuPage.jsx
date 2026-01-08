@@ -15,10 +15,10 @@ export default function MenuPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
-        <h1 className="text-lg font-semibold">{client?.name || "Menu"}</h1>
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
+        <h1 className="text-lg font-semibold">Menu</h1>
         <button
           onClick={() => navigate(-1)}
           className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -40,13 +40,15 @@ export default function MenuPage() {
         </button>
       </div>
 
-      {/* Profile Menu Content */}
-      <ProfileMenu
-        client={client}
-        onLogout={handleLogout}
-        variant="mobile"
-        onGiftCardClick={() => setShowGiftCardModal(true)}
-      />
+      {/* Scrollable Profile Menu Content */}
+      <div className="flex-1 overflow-y-auto">
+        <ProfileMenu
+          client={client}
+          onLogout={handleLogout}
+          variant="mobile"
+          onGiftCardClick={() => setShowGiftCardModal(true)}
+        />
+      </div>
 
       {/* Gift Card Modal */}
       <GiftCardModal

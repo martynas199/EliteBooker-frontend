@@ -231,7 +231,7 @@ export default function Navigation() {
             ) : (
               <>
                 <Link
-                  to="/client/login"
+                  to={`/client/login?redirect=${encodeURIComponent(location.pathname)}`}
                   className="px-5 py-2 text-sm font-bold text-white bg-black hover:bg-gray-800 rounded-lg transition-all"
                 >
                   Sign In
@@ -346,7 +346,7 @@ export default function Navigation() {
                 <>
                   <div className="border-t border-gray-200 my-2"></div>
                   <Link
-                    to="/client/login"
+                    to={`/client/login?redirect=${encodeURIComponent(location.pathname)}`}
                     onClick={() => setMobileMenuOpen(false)}
                     className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
                   >

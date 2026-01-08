@@ -16,6 +16,7 @@ import { createPortal } from "react-dom";
  * @param {boolean} props.closeOnBackdrop - Close when clicking backdrop
  * @param {boolean} props.closeOnEsc - Close when pressing Escape
  * @param {string} props.variant - Color variant: 'system' (violet/fuchsia) or 'dashboard' (blue)
+ * @param {boolean} props.fullScreen - Make modal fullscreen on mobile
  */
 export default function Modal({
   open,
@@ -28,6 +29,7 @@ export default function Modal({
   closeOnBackdrop = true,
   closeOnEsc = true,
   variant = "system",
+  fullScreen = false,
 }) {
   // Handle escape key
   useEffect(() => {
@@ -111,7 +113,11 @@ export default function Modal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`relative bg-white md:rounded-2xl shadow-2xl w-full ${sizeClasses[size]} mx-auto overflow-hidden h-[100dvh] md:h-auto md:max-h-[90vh] flex flex-col`}
+            className={`relative bg-white md:rounded-2xl shadow-2xl w-full mx-auto overflow-hidden flex flex-col ${
+              fullScreen
+                ? "h-[100dvh] max-h-none"
+                : "h-[100dvh] md:h-auto md:max-h-[90vh]"
+            } ${sizeClasses[size]}`}
             style={{ paddingTop: "env(safe-area-inset-top)" }}
             onClick={(e) => e.stopPropagation()}
           >

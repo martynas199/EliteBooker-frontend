@@ -493,8 +493,8 @@ export default function Appointments() {
       clientEmail: appointment.client?.email || "",
       clientPhone: appointment.client?.phone || "",
       clientNotes: appointment.client?.notes || "",
-      specialistId: appointment.specialistId || "", // Map specialistId from API to specialistId for UI
-      serviceId: appointment.serviceId || "",
+      specialistId: appointment.specialistId?._id || appointment.specialistId || "", // Handle both populated and unpopulated
+      serviceId: appointment.serviceId?._id || appointment.serviceId || "", // Handle both populated and unpopulated
       variantName: appointment.variantName || "",
       start: appointment.start
         ? new Date(appointment.start).toISOString().slice(0, 16)
@@ -503,6 +503,8 @@ export default function Appointments() {
         ? new Date(appointment.end).toISOString().slice(0, 16)
         : "",
       price: appointment.price || 0,
+      services: appointment.services || [], // Preserve multi-service data
+      payment: appointment.payment || null, // Preserve payment data
     });
     setEditModalOpen(true);
   }
@@ -1548,7 +1550,7 @@ export default function Appointments() {
 
       {/* Mobile Card View */}
       {!loading && sortedRows.length > 0 && (
-        <div className="lg:hidden space-y-3">
+        <div className="lg:hidden space-y-3 px-3 sm:px-0">
           {sortedRows.map((r) => (
             <div
               key={r._id}
@@ -2134,6 +2136,8 @@ function EditModal({
       onClose={onClose}
       title="Edit Appointment"
       variant="dashboard"
+      size="xl"
+      fullScreen
     >
       <div className="space-y-6">
         {/* Client Information */}
@@ -2384,7 +2388,7 @@ function EditModal({
 
                 {/* DateTimePicker Modal */}
                 {showTimePicker && (
-                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                  <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
                     {/* Backdrop */}
                     <div
                       className="absolute inset-0 bg-black/40 backdrop-blur-sm"
@@ -2870,7 +2874,7 @@ function CreateModal({
 
                 {/* DateTimePicker Modal */}
                 {showTimePicker && (
-                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                  <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
                     {/* Backdrop */}
                     <div
                       className="absolute inset-0 bg-black/40 backdrop-blur-sm"

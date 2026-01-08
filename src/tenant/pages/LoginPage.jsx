@@ -20,8 +20,10 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Get redirect path from location state or default to home
-  const from = location.state?.from || "/";
+  // Get redirect path from location state or query param or default to home
+  const searchParams = new URLSearchParams(location.search);
+  const redirectParam = searchParams.get('redirect');
+  const from = location.state?.from || redirectParam || "/";
 
   const handleChange = (e) => {
     setFormData({
