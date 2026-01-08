@@ -16,6 +16,10 @@ import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Modal from "../../shared/components/ui/Modal";
 import { testApiConnection } from "../../shared/utils/apiTest";
 
+/**
+ * Services Page - Manage services with modal form overlay
+ * Updated: Jan 2026 - Mobile UX improvements
+ */
 export default function Services() {
   const [editingService, setEditingService] = useState(null);
   const [showForm, setShowForm] = useState(false);
