@@ -248,9 +248,7 @@ export default function AdminLayout() {
               {/* Mobile Menu Header */}
               <div className="bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between flex-shrink-0">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    Menu
-                  </h2>
+                  <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
                 </div>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
@@ -274,11 +272,11 @@ export default function AdminLayout() {
               </div>
 
               {/* Mobile Navigation */}
-              <div 
-                className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain" 
-                style={{ 
-                  WebkitOverflowScrolling: 'touch',
-                  touchAction: 'pan-y'
+              <div
+                className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain"
+                style={{
+                  WebkitOverflowScrolling: "touch",
+                  touchAction: "pan-y",
                 }}
               >
                 <nav className="px-6 py-6 space-y-1">

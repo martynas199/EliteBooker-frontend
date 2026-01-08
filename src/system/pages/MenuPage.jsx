@@ -41,7 +41,10 @@ export default function MenuPage() {
       </div>
 
       {/* Scrollable Profile Menu Content */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div
+        className="flex-1 overflow-y-auto overflow-x-hidden"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
         <div className="pb-safe">
           <ProfileMenu
             client={client}
