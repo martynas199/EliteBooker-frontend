@@ -246,7 +246,7 @@ export default function AdminLayout() {
               data-mobile-menu
             >
               {/* Mobile Menu Header */}
-              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between z-10">
+              <div className="bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between flex-shrink-0">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900">
                     Menu
