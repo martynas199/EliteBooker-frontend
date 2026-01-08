@@ -34,8 +34,8 @@ export default function AdminLayout() {
 
       // Prevent touch move events
       const preventScroll = (e) => {
-        // Allow scrolling within the sidebar
-        if (e.target.closest("aside")) return;
+        // Allow scrolling within the mobile menu or sidebar
+        if (e.target.closest("[data-mobile-menu]") || e.target.closest("aside")) return;
         e.preventDefault();
       };
 
@@ -261,6 +261,7 @@ export default function AdminLayout() {
             {/* Full Screen Mobile Menu */}
             <div
               className="fixed inset-0 bg-white z-50 lg:hidden flex flex-col"
+              data-mobile-menu
             >
               {/* Mobile Menu Header */}
               <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between z-10">
