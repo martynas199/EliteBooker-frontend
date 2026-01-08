@@ -26,22 +26,9 @@ export default function AdminLayout() {
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
-      // Save current scroll position
-      const scrollY = window.scrollY;
-      
-      // Prevent scrolling on body
       document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
-
       return () => {
-        // Restore scroll position
         document.body.style.overflow = "";
-        document.body.style.position = "";
-        document.body.style.top = "";
-        document.body.style.width = "";
-        window.scrollTo(0, scrollY);
       };
     }
   }, [mobileMenuOpen]);
@@ -287,7 +274,13 @@ export default function AdminLayout() {
               </div>
 
               {/* Mobile Navigation */}
-              <div className="flex-1 overflow-y-auto overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <div 
+                className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain" 
+                style={{ 
+                  WebkitOverflowScrolling: 'touch',
+                  touchAction: 'pan-y'
+                }}
+              >
                 <nav className="px-6 py-6 space-y-1">
                   <Sidebar
                     tenant={{ name: admin?.name || "Elite Booker" }}
