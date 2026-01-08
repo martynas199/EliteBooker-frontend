@@ -86,11 +86,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div
-      className={`min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 ${
-        mobileMenuOpen ? "overflow-hidden h-screen" : ""
-      }`}
-    >
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Mobile Header */}
       <header className="lg:hidden bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-white shadow-lg px-4 py-4 flex items-center justify-between sticky top-0 z-20">
         <div className="flex items-center gap-3">
@@ -264,26 +260,14 @@ export default function AdminLayout() {
           <>
             {/* Full Screen Mobile Menu */}
             <div
-              className="fixed inset-0 bg-white z-50 lg:hidden overflow-y-auto"
-              style={{
-                touchAction: "pan-y",
-                WebkitOverflowScrolling: "touch",
-              }}
+              className="fixed inset-0 bg-white z-50 lg:hidden flex flex-col"
             >
               {/* Mobile Menu Header */}
               <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between z-10">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center">
-                    <span className="text-white text-lg font-bold">
-                      {admin?.name?.[0]?.toUpperCase() || "B"}
-                    </span>
-                  </div>
-                  <div>
-                    <h2 className="text-base font-bold text-gray-900">
-                      {admin?.name || "Elite Booker"}
-                    </h2>
-                    <p className="text-xs text-gray-500">Admin Panel</p>
-                  </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Menu
+                  </h2>
                 </div>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
@@ -307,15 +291,17 @@ export default function AdminLayout() {
               </div>
 
               {/* Mobile Navigation */}
-              <nav className="px-6 py-6 space-y-1">
-                <Sidebar
-                  tenant={{ name: admin?.name || "Elite Booker" }}
-                  admin={admin}
-                  onLogout={handleLogout}
-                  onClose={() => setMobileMenuOpen(false)}
-                  isMobile={true}
-                />
-              </nav>
+              <div className="flex-1 overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <nav className="px-6 py-6 space-y-1">
+                  <Sidebar
+                    tenant={{ name: admin?.name || "Elite Booker" }}
+                    admin={admin}
+                    onLogout={handleLogout}
+                    onClose={() => setMobileMenuOpen(false)}
+                    isMobile={true}
+                  />
+                </nav>
+              </div>
 
               {/* Mobile Menu Footer */}
               <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 mt-8">

@@ -136,7 +136,7 @@ const SidebarItem = ({
   const location = useLocation();
   const { ecommerceEnabled, multiLocation, seminarsEnabled, payOnTapEnabled } =
     useTenantSettings();
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Check if section should be hidden based on conditions
   if (item.condition === "ecommerceEnabled" && !ecommerceEnabled) {
