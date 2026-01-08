@@ -687,33 +687,14 @@ export default function Appointments() {
 
       {/* Action Buttons - only show if admin has access */}
       {(isSuperAdmin || admin?.specialistId) && (
-        <div className="mb-4 flex flex-col sm:flex-row gap-2">
+        <div className="mb-6 flex flex-col sm:flex-row gap-3">
           <button
             onClick={openCreateModal}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-colors text-sm"
+            className="group relative overflow-hidden px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            <span>Create Appointment</span>
-          </button>
-          {admin?.specialistId && (
-            <button
-              onClick={() => handleDeleteAll()}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white hover:bg-red-50 border border-red-200 hover:border-red-300 text-red-600 font-medium rounded-lg transition-colors text-sm"
-            >
+            <div className="flex items-center justify-center gap-2">
               <svg
-                className="w-4 h-4"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -722,10 +703,33 @@ export default function Appointments() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  d="M12 4v16m8-8H4"
                 />
               </svg>
-              <span>Delete All My Appointments</span>
+              <span>Create Appointment</span>
+            </div>
+          </button>
+          {admin?.specialistId && (
+            <button
+              onClick={() => handleDeleteAll()}
+              className="group relative overflow-hidden px-6 py-3 bg-white hover:bg-red-50 border-2 border-red-500 text-red-600 font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
+            >
+              <div className="flex items-center justify-center gap-2">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+                <span className="whitespace-nowrap">Delete All My Appointments</span>
+              </div>
             </button>
           )}
         </div>

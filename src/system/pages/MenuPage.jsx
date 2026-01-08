@@ -42,12 +42,14 @@ export default function MenuPage() {
 
       {/* Scrollable Profile Menu Content */}
       <div className="flex-1 overflow-y-auto">
-        <ProfileMenu
-          client={client}
-          onLogout={handleLogout}
-          variant="mobile"
-          onGiftCardClick={() => setShowGiftCardModal(true)}
-        />
+        <div className="pb-safe">
+          <ProfileMenu
+            client={client}
+            onLogout={handleLogout}
+            variant="mobile"
+            onGiftCardClick={() => setShowGiftCardModal(true)}
+          />
+        </div>
       </div>
 
       {/* Gift Card Modal */}
