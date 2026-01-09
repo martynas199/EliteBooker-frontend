@@ -43,7 +43,18 @@ export default function RescheduleModal({
 
       // If specialist data is already in booking, use it
       if (booking.specialistId && typeof booking.specialistId === 'object') {
+        console.log('[RescheduleModal] Using specialist from booking:', booking.specialistId);
         setSpecialist(booking.specialistId);
+        
+        // If tenant data is already in booking, use it
+        if (booking.tenantId && typeof booking.tenantId === 'object') {
+          console.log('[RescheduleModal] Using tenant from booking:', booking.tenantId);
+          setTenant(booking.tenantId);
+        } else {
+          // Fetch tenant info for context
+          const tenantResponse = await api.get(`/tenants/${tenantId}`);
+          setTenant(tenantResponse.data);
+        }
       } else {
         // Fetch specialist with tenant context
         const response = await api.get(`/specialists/${specialistId}`, {
@@ -52,20 +63,20 @@ export default function RescheduleModal({
           },
         });
         setSpecialist(response.data);
-      }
 
-      // If tenant data is already in booking, use it
-      if (booking.tenantId && typeof booking.tenantId === 'object') {
-        setTenant(booking.tenantId);
-      } else {
-        // Fetch tenant info for context
-        const tenantResponse = await api.get(`/tenants/${tenantId}`);
-        setTenant(tenantResponse.data);
+        // If tenant data is already in booking, use it
+        if (booking.tenantId && typeof booking.tenantId === 'object') {
+          setTenant(booking.tenantId);
+        } else {
+          // Fetch tenant info for context
+          const tenantResponse = await api.get(`/tenants/${tenantId}`);
+          setTenant(tenantResponse.data);
+        }
       }
     } catch (err) {
       console.error("Failed to fetch specialist:", err);
-      // Don't set error if we have data from booking
-      if (!specialist && !tenant) {
+      // Only show error if we don't have the data
+      if (!booking.specialistId || typeof booking.specialistId !== 'object') {
         setError("Failed to load specialist details: " + (err.response?.data?.error || err.message));
       }
     } finally {
