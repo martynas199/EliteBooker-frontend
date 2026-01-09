@@ -231,49 +231,54 @@ export default function AdminLayout() {
 
         {/* Mobile Sidebar with Overlay */}
         {mobileMenuOpen && (
-          <>
-            {/* Full Screen Mobile Menu */}
-            <div
-              className="fixed inset-0 bg-white z-50 lg:hidden"
-              style={{ display: "flex", flexDirection: "column", height: "100vh" }}
-              data-mobile-menu
+          <div
+            className="fixed inset-0 bg-white z-50 lg:hidden"
+            style={{ 
+              display: "flex", 
+              flexDirection: "column",
+              touchAction: "none"
+            }}
+            data-mobile-menu
+          >
+            {/* Mobile Menu Header */}
+            <div 
+              className="bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between"
+              style={{ flexShrink: 0 }}
             >
-              {/* Mobile Menu Header */}
-              <div className="bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between flex-shrink-0">
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
-                </div>
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
-                  aria-label="Close menu"
-                >
-                  <svg
-                    className="w-6 h-6 text-gray-900"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2.5}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
               </div>
-
-              {/* Mobile Navigation - Scrollable Area */}
-              <div 
-                style={{ 
-                  flex: "1 1 auto",
-                  overflowY: "auto",
-                  WebkitOverflowScrolling: "touch",
-                  minHeight: 0
-                }}
-                className="px-6 py-6"
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+                aria-label="Close menu"
               >
+                <svg
+                  className="w-6 h-6 text-gray-900"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Mobile Navigation - Scrollable Area */}
+            <div 
+              style={{ 
+                flex: "1",
+                overflow: "auto",
+                touchAction: "pan-y",
+                WebkitOverflowScrolling: "touch"
+              }}
+              className="px-6 py-6"
+            >
                 <Sidebar
                   tenant={{ name: admin?.name || "Elite Booker" }}
                   admin={admin}
@@ -341,7 +346,7 @@ export default function AdminLayout() {
                 </div>
               </div>
             </div>
-          </>
+          </div>
         )}
 
         {/* Main Content */}
