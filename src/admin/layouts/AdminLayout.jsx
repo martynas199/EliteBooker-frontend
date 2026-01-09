@@ -235,15 +235,13 @@ export default function AdminLayout() {
             className="fixed inset-0 bg-white z-50 lg:hidden"
             style={{ 
               display: "flex", 
-              flexDirection: "column",
-              touchAction: "none"
+              flexDirection: "column"
             }}
             data-mobile-menu
           >
             {/* Mobile Menu Header */}
             <div 
               className="bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between"
-              style={{ flexShrink: 0 }}
             >
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
@@ -272,10 +270,9 @@ export default function AdminLayout() {
             {/* Mobile Navigation - Scrollable Area */}
             <div 
               style={{ 
-                flex: "1",
-                overflow: "auto",
-                touchAction: "pan-y",
-                WebkitOverflowScrolling: "touch"
+                flex: 1,
+                overflowY: "scroll",
+                overflowX: "hidden"
               }}
               className="px-6 py-6"
             >
