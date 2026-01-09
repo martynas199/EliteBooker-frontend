@@ -37,7 +37,8 @@ api.interceptors.request.use(
 
     // Add Authorization header for client routes (like beauty salon app)
     // Also add for homepage and other routes if clientToken exists
-    const clientToken = localStorage.getItem("clientToken");
+    // Try localStorage first, fallback to sessionStorage for mobile Safari
+    const clientToken = localStorage.getItem("clientToken") || sessionStorage.getItem("clientToken");
     if (clientToken && !config.headers["Authorization"]) {
       // Add for /client routes OR for /api/client endpoints OR for favorites endpoints
       if (

@@ -195,7 +195,8 @@ export default function RescheduleModal({
                   </div>
                   <div className="text-xs text-red-700 bg-red-100 rounded p-2 mt-2 space-y-1">
                     <div className="font-semibold mb-1">Debug Info:</div>
-                    <div>Token: {localStorage.getItem("clientToken") ? "✓ Present (" + localStorage.getItem("clientToken").substring(0, 20) + "...)" : "✗ Missing"}</div>
+                    <div>localStorage: {localStorage.getItem("clientToken") ? "✓ Present (" + localStorage.getItem("clientToken").substring(0, 20) + "...)" : "✗ Missing"}</div>
+                    <div>sessionStorage: {sessionStorage.getItem("clientToken") ? "✓ Present" : "✗ Missing"}</div>
                     <div>Booking: {booking._id}</div>
                     <div>Tenant: {booking.tenantId?._id || booking.tenantId || "N/A"}</div>
                   </div>

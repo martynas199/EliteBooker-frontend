@@ -40,6 +40,10 @@ export default function ClientLoginPage() {
     try {
       await login(email, password);
 
+      // Verify token was stored for debugging
+      const tokenCheck = localStorage.getItem("clientToken");
+      console.log("[Login] Token after login:", tokenCheck ? "✓ Present" : "✗ Missing");
+
       // Handle remember me
       if (rememberMe) {
         localStorage.setItem("rememberedEmail", email);

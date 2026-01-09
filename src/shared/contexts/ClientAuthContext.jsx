@@ -89,10 +89,26 @@ export function ClientAuthProvider({ children }) {
     const response = await api.post("/client/login", { email, password });
     const { client: clientData, token } = response.data;
     
-    // Store token in localStorage for persistence
+    // Store token in BOTH localStorage and sessionStorage for cross-domain reliability
     if (token) {
       console.log("[ClientAuth] Storing token from login:", token.substring(0, 20) + "...");
-      localStorage.setItem("clientToken", token);
+      
+      // Try multiple storage methods for mobile Safari compatibility
+      try {
+        localStorage.setItem("clientToken", token);
+        sessionStorage.setItem("clientToken", token);
+        
+        // Verify it was stored
+        const verify = localStorage.getItem("clientToken");
+        if (!verify) {
+          console.error("[ClientAuth] localStorage failed to store token!");
+          localStorage.setItem("clientToken", token);
+        }
+        console.log("[ClientAuth] Token stored:", verify ? "✓ localStorage" : "✓ sessionStorage");
+      } catch (e) {
+        console.error("[ClientAuth] Storage error:", e);
+        sessionStorage.setItem("clientToken", token);
+      }
     } else {
       console.warn("[ClientAuth] No token received from login response");
     }
