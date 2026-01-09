@@ -426,14 +426,14 @@ export default function ClientAppointmentsPage() {
 
                         {/* Price */}
                         <div className="flex-shrink-0">
-                          <div className="inline-flex flex-col items-end bg-gray-900 rounded-xl sm:rounded-2xl px-5 py-3 sm:py-4 shadow-md">
-                            <p className="text-2xl sm:text-3xl font-bold text-white">
+                          <div className="inline-flex flex-col items-end justify-center bg-gray-100 rounded-lg px-3 border border-gray-200" style={{ paddingTop: '6px', paddingBottom: '6px' }}>
+                            <p className="font-bold text-gray-900" style={{ fontSize: '20px', lineHeight: '1.2', margin: 0 }}>
                               {formatPrice(
                                 booking.price || booking.serviceId?.price || 0
                               )}
                             </p>
                             {booking.serviceId?.duration && (
-                              <p className="text-xs sm:text-sm font-medium text-gray-300 mt-1">
+                              <p className="text-xs font-medium text-gray-600" style={{ lineHeight: '1.2', margin: 0, marginTop: '2px' }}>
                                 {booking.serviceId.duration} min
                               </p>
                             )}
