@@ -34,26 +34,40 @@ export default function RescheduleModal({
   const fetchSpecialistDetails = async () => {
     try {
       setLoadingSpecialist(true);
+      setError(null);
       const specialistId = booking.specialistId?._id || booking.specialistId;
       const tenantId = booking.tenantId?._id || booking.tenantId;
 
       // Set tenant header globally for this session
       api.defaults.headers.common['x-tenant-id'] = tenantId;
 
-      // Fetch specialist with tenant context
-      const response = await api.get(`/specialists/${specialistId}`, {
-        headers: {
-          "x-tenant-id": tenantId,
-        },
-      });
-      setSpecialist(response.data);
+      // If specialist data is already in booking, use it
+      if (booking.specialistId && typeof booking.specialistId === 'object') {
+        setSpecialist(booking.specialistId);
+      } else {
+        // Fetch specialist with tenant context
+        const response = await api.get(`/specialists/${specialistId}`, {
+          headers: {
+            "x-tenant-id": tenantId,
+          },
+        });
+        setSpecialist(response.data);
+      }
 
-      // Fetch tenant info for context
-      const tenantResponse = await api.get(`/tenants/${tenantId}`);
-      setTenant(tenantResponse.data);
+      // If tenant data is already in booking, use it
+      if (booking.tenantId && typeof booking.tenantId === 'object') {
+        setTenant(booking.tenantId);
+      } else {
+        // Fetch tenant info for context
+        const tenantResponse = await api.get(`/tenants/${tenantId}`);
+        setTenant(tenantResponse.data);
+      }
     } catch (err) {
       console.error("Failed to fetch specialist:", err);
-      setError("Failed to load specialist details");
+      // Don't set error if we have data from booking
+      if (!specialist && !tenant) {
+        setError("Failed to load specialist details: " + (err.response?.data?.error || err.message));
+      }
     } finally {
       setLoadingSpecialist(false);
     }
