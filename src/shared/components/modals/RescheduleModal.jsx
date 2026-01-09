@@ -41,44 +41,29 @@ export default function RescheduleModal({
       // Set tenant header globally for this session
       api.defaults.headers.common['x-tenant-id'] = tenantId;
 
-      // If specialist data is already in booking, use it
-      if (booking.specialistId && typeof booking.specialistId === 'object') {
-        console.log('[RescheduleModal] Using specialist from booking:', booking.specialistId);
-        setSpecialist(booking.specialistId);
-        
-        // If tenant data is already in booking, use it
-        if (booking.tenantId && typeof booking.tenantId === 'object') {
-          console.log('[RescheduleModal] Using tenant from booking:', booking.tenantId);
-          setTenant(booking.tenantId);
-        } else {
-          // Fetch tenant info for context
-          const tenantResponse = await api.get(`/tenants/${tenantId}`);
-          setTenant(tenantResponse.data);
-        }
-      } else {
-        // Fetch specialist with tenant context
-        const response = await api.get(`/specialists/${specialistId}`, {
-          headers: {
-            "x-tenant-id": tenantId,
-          },
-        });
-        setSpecialist(response.data);
+      // Always fetch specialist to ensure we have working hours
+      // The booking object might not have working hours populated
+      const response = await api.get(`/specialists/${specialistId}`, {
+        headers: {
+          "x-tenant-id": tenantId,
+        },
+      });
+      
+      console.log('[RescheduleModal] Fetched specialist with working hours:', response.data);
+      setSpecialist(response.data);
 
-        // If tenant data is already in booking, use it
-        if (booking.tenantId && typeof booking.tenantId === 'object') {
-          setTenant(booking.tenantId);
-        } else {
-          // Fetch tenant info for context
-          const tenantResponse = await api.get(`/tenants/${tenantId}`);
-          setTenant(tenantResponse.data);
-        }
+      // If tenant data is already in booking, use it
+      if (booking.tenantId && typeof booking.tenantId === 'object') {
+        console.log('[RescheduleModal] Using tenant from booking:', booking.tenantId);
+        setTenant(booking.tenantId);
+      } else {
+        // Fetch tenant info for context
+        const tenantResponse = await api.get(`/tenants/${tenantId}`);
+        setTenant(tenantResponse.data);
       }
     } catch (err) {
       console.error("Failed to fetch specialist:", err);
-      // Only show error if we don't have the data
-      if (!booking.specialistId || typeof booking.specialistId !== 'object') {
-        setError("Failed to load specialist details: " + (err.response?.data?.error || err.message));
-      }
+      setError("Failed to load specialist details: " + (err.response?.data?.error || err.message));
     } finally {
       setLoadingSpecialist(false);
     }
