@@ -18,13 +18,28 @@ export default function AdminLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const scrollContainerRef = useRef(null);
+  const previousBodyOverflowRef = useRef();
 
   // Scroll to top when route changes
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  // Lock body scroll while mobile menu is open to prevent bounce/scroll conflicts
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    previousBodyOverflowRef.current = prev;
 
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = previousBodyOverflowRef.current || "";
+    }
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflowRef.current || "";
+    };
+  }, [mobileMenuOpen]);
 
   const isSuperAdmin = useMemo(
     () => admin?.role === "super_admin",
@@ -234,7 +249,12 @@ export default function AdminLayout() {
         {mobileMenuOpen && (
           <div
             className="fixed inset-0 bg-white z-50 lg:hidden flex flex-col"
-            style={{ height: "100vh" }}
+            style={{
+              height: "100vh",
+              minHeight: "100vh",
+              maxHeight: "100dvh",
+              overflow: "hidden",
+            }}
             data-mobile-menu
           >
             {/* Mobile Menu Header */}
@@ -268,10 +288,14 @@ export default function AdminLayout() {
               ref={scrollContainerRef}
               style={{
                 flex: 1,
-                overflowY: "scroll",
+                minHeight: 0,
+                overflowY: "auto",
                 overflowX: "hidden",
                 WebkitOverflowScrolling: "touch",
+                overscrollBehavior: "contain",
+                touchAction: "pan-y",
                 position: "relative",
+                paddingBottom: "env(safe-area-inset-bottom)",
               }}
               className="px-6 py-6"
             >
@@ -341,7 +365,7 @@ export default function AdminLayout() {
                 </button>
               </div>
             </div>
-            </div>
+          </div>
         )}
 
         {/* Main Content */}
