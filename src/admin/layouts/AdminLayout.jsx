@@ -238,9 +238,7 @@ export default function AdminLayout() {
             data-mobile-menu
           >
             {/* Mobile Menu Header */}
-            <div 
-              className="bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between"
-            >
+            <div className="bg-white border-b border-gray-200 px-6 py-5 flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
               </div>
@@ -249,14 +247,16 @@ export default function AdminLayout() {
                 className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
                 aria-label="Close menu"
               >
-                <div
-                  className="px-6 py-6 flex-1 overflow-y-auto overflow-x-hidden"
-                  style={{
-                    WebkitOverflowScrolling: "touch",
-                    overscrollBehavior: "auto",
-                    height: "100%",
-                  }}
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
@@ -264,83 +264,83 @@ export default function AdminLayout() {
             </div>
 
             {/* Mobile Navigation - Scrollable Area */}
-            <div 
+            <div
               ref={scrollContainerRef}
-              style={{ 
+              style={{
                 flex: 1,
                 overflowY: "scroll",
                 overflowX: "hidden",
                 WebkitOverflowScrolling: "touch",
-                position: "relative"
+                position: "relative",
               }}
               className="px-6 py-6"
             >
-                <Sidebar
-                  tenant={{ name: admin?.name || "Elite Booker" }}
-                  admin={admin}
-                  onLogout={handleLogout}
-                  onClose={() => setMobileMenuOpen(false)}
-                  isMobile={true}
-                />
+              <Sidebar
+                tenant={{ name: admin?.name || "Elite Booker" }}
+                admin={admin}
+                onLogout={handleLogout}
+                onClose={() => setMobileMenuOpen(false)}
+                isMobile={true}
+              />
 
-                {/* Mobile Menu Footer */}
-                <div className="border-t border-gray-200 pt-4 mt-8">
-                  <Link
-                    to="/admin/profile"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors mb-2"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center">
-                      <span className="text-white text-sm font-bold">
-                        {getInitials(admin?.name)}
-                      </span>
+              {/* Mobile Menu Footer */}
+              <div className="border-t border-gray-200 pt-4 mt-8">
+                <Link
+                  to="/admin/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors mb-2"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center">
+                    <span className="text-white text-sm font-bold">
+                      {getInitials(admin?.name)}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-gray-900 truncate">
+                      Account Settings
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-semibold text-gray-900 truncate">
-                        Account Settings
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        Manage your profile
-                      </div>
+                    <div className="text-xs text-gray-500">
+                      Manage your profile
                     </div>
-                    <svg
-                      className="w-5 h-5 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </Link>
-                  <button
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      handleLogout();
-                    }}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors font-medium"
+                  </div>
+                  <svg
+                    className="w-5 h-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
-                    Logout
-                  </button>
-                </div>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </Link>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors font-medium"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  Logout
+                </button>
               </div>
+            </div>
             </div>
         )}
 
