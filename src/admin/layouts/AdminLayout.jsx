@@ -250,10 +250,10 @@ export default function AdminLayout() {
           <div
             className="fixed inset-0 bg-white z-50 lg:hidden flex flex-col"
             style={{
-              height: "100vh",
+              height: "100dvh",
               minHeight: "100vh",
               maxHeight: "100dvh",
-              overflow: "hidden",
+              overflow: "auto",
             }}
             data-mobile-menu
           >
@@ -289,13 +289,14 @@ export default function AdminLayout() {
               style={{
                 flex: 1,
                 minHeight: 0,
-                overflowY: "auto",
+                overflowY: "scroll",
                 overflowX: "hidden",
                 WebkitOverflowScrolling: "touch",
-                overscrollBehavior: "contain",
+                overscrollBehavior: "auto",
                 touchAction: "pan-y",
                 position: "relative",
                 paddingBottom: "env(safe-area-inset-bottom)",
+                height: "100%",
               }}
               className="px-6 py-6"
             >
