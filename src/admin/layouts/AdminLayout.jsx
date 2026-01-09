@@ -264,26 +264,17 @@ export default function AdminLayout() {
               </div>
 
               {/* Mobile Navigation - Scrollable Area */}
-              <div
-                className="flex-1 overflow-auto"
-                style={{
-                  WebkitOverflowScrolling: "touch",
-                  position: "relative",
-                  overflowY: "scroll",
-                }}
-              >
-                <nav className="px-6 py-6 space-y-1">
-                  <Sidebar
-                    tenant={{ name: admin?.name || "Elite Booker" }}
-                    admin={admin}
-                    onLogout={handleLogout}
-                    onClose={() => setMobileMenuOpen(false)}
-                    isMobile={true}
-                  />
-                </nav>
+              <div className="flex-1 overflow-y-auto px-6 py-6">
+                <Sidebar
+                  tenant={{ name: admin?.name || "Elite Booker" }}
+                  admin={admin}
+                  onLogout={handleLogout}
+                  onClose={() => setMobileMenuOpen(false)}
+                  isMobile={true}
+                />
 
                 {/* Mobile Menu Footer */}
-                <div className="bg-white border-t border-gray-200 px-6 py-4 mt-8">
+                <div className="border-t border-gray-200 pt-4 mt-8">
                   <Link
                     to="/admin/profile"
                     onClick={() => setMobileMenuOpen(false)}
