@@ -233,11 +233,8 @@ export default function AdminLayout() {
         {/* Mobile Sidebar with Overlay */}
         {mobileMenuOpen && (
           <div
-            className="fixed inset-0 bg-white z-50 lg:hidden"
-            style={{ 
-              display: "flex", 
-              flexDirection: "column"
-            }}
+            className="fixed inset-0 bg-white z-50 lg:hidden flex flex-col"
+            style={{ height: "100vh" }}
             data-mobile-menu
           >
             {/* Mobile Menu Header */}
@@ -252,16 +249,14 @@ export default function AdminLayout() {
                 className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
                 aria-label="Close menu"
               >
-                <svg
-                  className="w-6 h-6 text-gray-900"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                <div
+                  className="px-6 py-6 flex-1 overflow-y-auto overflow-x-hidden"
+                  style={{
+                    WebkitOverflowScrolling: "touch",
+                    overscrollBehavior: "auto",
+                    height: "100%",
+                  }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
