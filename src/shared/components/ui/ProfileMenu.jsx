@@ -148,7 +148,7 @@ export default function ProfileMenu({
   if (isMobile) {
     // Mobile full-screen layout
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col bg-white min-h-full">
         {/* Wallet Card */}
         <div className="m-4 p-6 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-2xl text-white">
           <p className="text-sm opacity-90 mb-1">Wallet balance</p>
