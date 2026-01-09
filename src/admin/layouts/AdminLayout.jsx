@@ -23,25 +23,6 @@ export default function AdminLayout() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  // Prevent background body scroll when mobile menu is open (but allow menu scroll)
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      // Store original styles
-      const originalOverflow = document.body.style.overflow;
-      const originalPosition = document.body.style.position;
-      
-      // Lock body but allow menu to scroll
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
-      
-      return () => {
-        document.body.style.overflow = originalOverflow;
-        document.body.style.position = originalPosition;
-        document.body.style.width = "";
-      };
-    }
-  }, [mobileMenuOpen]);
 
 
   const isSuperAdmin = useMemo(
@@ -253,7 +234,7 @@ export default function AdminLayout() {
           <>
             {/* Full Screen Mobile Menu */}
             <div
-              className="fixed inset-0 bg-white z-50 lg:hidden flex flex-col overflow-hidden"
+              className="fixed inset-0 bg-white z-50 lg:hidden flex flex-col"
               data-mobile-menu
             >
               {/* Mobile Menu Header */}
@@ -284,10 +265,11 @@ export default function AdminLayout() {
 
               {/* Mobile Navigation - Scrollable Area */}
               <div
-                className="flex-1 overflow-y-scroll overflow-x-hidden"
+                className="flex-1 overflow-auto"
                 style={{
                   WebkitOverflowScrolling: "touch",
-                  overscrollBehavior: "contain",
+                  position: "relative",
+                  overflowY: "scroll",
                 }}
               >
                 <nav className="px-6 py-6 space-y-1">
