@@ -200,34 +200,27 @@ export default function RescheduleModal({
                     </p>
                   </div>
                 ) : specialist ? (
-                  <div>
-                    <div className="mb-2 p-2 bg-blue-50 rounded text-xs">
-                      <p>Specialist ID: {specialist._id || 'MISSING'}</p>
-                      <p>Service ID: {booking.serviceId?._id || booking.serviceId || 'MISSING'}</p>
-                      <p>Working Hours: {specialist.workingHours?.length || 0}</p>
-                    </div>
-                    <DateTimePicker
-                      specialistId={specialist._id || specialist.id}
-                      serviceId={booking.serviceId?._id || booking.serviceId}
-                      variantName={booking.variantName}
-                      totalDuration={
-                        booking.totalDuration ||
-                        booking.serviceId?.duration ||
-                        60
-                      }
-                      salonTz="Europe/London"
-                      stepMin={15}
-                      beauticianWorkingHours={(
-                        specialist.workingHours || []
-                      ).filter((wh) => wh && wh.dayOfWeek != null)}
-                      customSchedule={specialist.customSchedule || {}}
-                      onSelect={handleSlotSelect}
-                    />
-                  </div>
+                  <DateTimePicker
+                    specialistId={specialist._id || specialist.id}
+                    serviceId={booking.serviceId?._id || booking.serviceId}
+                    variantName={booking.variantName}
+                    totalDuration={
+                      booking.totalDuration ||
+                      booking.serviceId?.duration ||
+                      60
+                    }
+                    salonTz="Europe/London"
+                    stepMin={15}
+                    beauticianWorkingHours={(
+                      specialist.workingHours || []
+                    ).filter((wh) => wh && wh.dayOfWeek != null)}
+                    customSchedule={specialist.customSchedule || {}}
+                    onSelect={handleSlotSelect}
+                  />
                 ) : (
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
                     <p className="text-sm text-gray-600">
-                      Unable to load availability (specialist: {specialist ? 'exists' : 'null'})
+                      Unable to load availability
                     </p>
                   </div>
                 )}
