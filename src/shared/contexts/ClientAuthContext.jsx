@@ -91,7 +91,10 @@ export function ClientAuthProvider({ children }) {
     
     // Store token in localStorage for persistence
     if (token) {
+      console.log("[ClientAuth] Storing token from login:", token.substring(0, 20) + "...");
       localStorage.setItem("clientToken", token);
+    } else {
+      console.warn("[ClientAuth] No token received from login response");
     }
     
     setClient(clientData);

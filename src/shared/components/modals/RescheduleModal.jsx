@@ -79,8 +79,7 @@ export default function RescheduleModal({
       setLoading(true);
       setError(null);
 
-      // Get client token for authentication
-      const clientToken = localStorage.getItem("clientToken");
+      const tenantId = booking.tenantId?._id || booking.tenantId;
       
       const response = await api.post(
         `/client/bookings/${booking._id}/reschedule`,
@@ -90,7 +89,7 @@ export default function RescheduleModal({
         },
         {
           headers: {
-            Authorization: `Bearer ${clientToken}`,
+            'x-tenant-id': tenantId,
           },
         }
       );
@@ -189,9 +188,17 @@ export default function RescheduleModal({
 
               {/* Error Message */}
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-red-800">{error}</p>
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-start gap-3 mb-3">
+                    <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-800 font-semibold">{error}</p>
+                  </div>
+                  <div className="text-xs text-red-700 bg-red-100 rounded p-2 mt-2 space-y-1">
+                    <div className="font-semibold mb-1">Debug Info:</div>
+                    <div>Token: {localStorage.getItem("clientToken") ? "✓ Present (" + localStorage.getItem("clientToken").substring(0, 20) + "...)" : "✗ Missing"}</div>
+                    <div>Booking: {booking._id}</div>
+                    <div>Tenant: {booking.tenantId?._id || booking.tenantId || "N/A"}</div>
+                  </div>
                 </div>
               )}
 
