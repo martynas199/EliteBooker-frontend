@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectAdmin, clearAuth } from "../../shared/state/authSlice";
@@ -17,6 +17,7 @@ export default function AdminLayout() {
   const { language, toggleLanguage } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const scrollContainerRef = useRef(null);
 
   // Scroll to top when route changes
   useEffect(() => {
@@ -269,10 +270,13 @@ export default function AdminLayout() {
 
             {/* Mobile Navigation - Scrollable Area */}
             <div 
+              ref={scrollContainerRef}
               style={{ 
                 flex: 1,
                 overflowY: "scroll",
-                overflowX: "hidden"
+                overflowX: "hidden",
+                WebkitOverflowScrolling: "touch",
+                position: "relative"
               }}
               className="px-6 py-6"
             >
