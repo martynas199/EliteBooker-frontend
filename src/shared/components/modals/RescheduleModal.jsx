@@ -180,25 +180,23 @@ export default function RescheduleModal({
                     </p>
                   </div>
                 ) : specialist ? (
-                  <div className="border border-gray-200 rounded-lg p-4">
-                    <DateTimePicker
-                      specialistId={specialist._id}
-                      serviceId={booking.serviceId?._id || booking.serviceId}
-                      variantName={booking.variantName}
-                      totalDuration={
-                        booking.totalDuration ||
-                        booking.serviceId?.duration ||
-                        60
-                      }
-                      salonTz="Europe/London"
-                      stepMin={15}
-                      beauticianWorkingHours={(
-                        specialist.workingHours || []
-                      ).filter((wh) => wh && wh.dayOfWeek != null)}
-                      customSchedule={specialist.customSchedule || {}}
-                      onSelect={handleSlotSelect}
-                    />
-                  </div>
+                  <DateTimePicker
+                    specialistId={specialist._id}
+                    serviceId={booking.serviceId?._id || booking.serviceId}
+                    variantName={booking.variantName}
+                    totalDuration={
+                      booking.totalDuration ||
+                      booking.serviceId?.duration ||
+                      60
+                    }
+                    salonTz="Europe/London"
+                    stepMin={15}
+                    beauticianWorkingHours={(
+                      specialist.workingHours || []
+                    ).filter((wh) => wh && wh.dayOfWeek != null)}
+                    customSchedule={specialist.customSchedule || {}}
+                    onSelect={handleSlotSelect}
+                  />
                 ) : (
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
                     <p className="text-sm text-gray-600">
@@ -225,7 +223,7 @@ export default function RescheduleModal({
                     Rescheduling...
                   </>
                 ) : (
-                  "Confirm Reschedule"
+                  "Confirm"
                 )}
               </Button>
             </div>
