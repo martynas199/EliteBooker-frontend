@@ -392,7 +392,7 @@ export default function Sidebar({
   // Mobile: Return navigation items only (no wrapper, header, or footer)
   if (isMobile) {
     return (
-      <>
+      <div className="space-y-1">
         {navigationConfig.map((section, idx) => (
           <SidebarItem
             key={idx}
@@ -402,7 +402,7 @@ export default function Sidebar({
             isMobile={true}
           />
         ))}
-      </>
+      </div>
     );
   }
 
