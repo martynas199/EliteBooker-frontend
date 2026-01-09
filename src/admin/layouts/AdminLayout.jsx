@@ -234,7 +234,8 @@ export default function AdminLayout() {
           <>
             {/* Full Screen Mobile Menu */}
             <div
-              className="fixed inset-0 bg-white z-50 lg:hidden flex flex-col"
+              className="fixed inset-0 bg-white z-50 lg:hidden"
+              style={{ display: "flex", flexDirection: "column", height: "100vh" }}
               data-mobile-menu
             >
               {/* Mobile Menu Header */}
@@ -264,7 +265,15 @@ export default function AdminLayout() {
               </div>
 
               {/* Mobile Navigation - Scrollable Area */}
-              <div className="flex-1 overflow-y-auto px-6 py-6">
+              <div 
+                style={{ 
+                  flex: "1 1 auto",
+                  overflowY: "auto",
+                  WebkitOverflowScrolling: "touch",
+                  minHeight: 0
+                }}
+                className="px-6 py-6"
+              >
                 <Sidebar
                   tenant={{ name: admin?.name || "Elite Booker" }}
                   admin={admin}
