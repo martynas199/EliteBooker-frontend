@@ -273,10 +273,9 @@ export default function AdminLayout() {
 
               {/* Mobile Navigation */}
               <div
-                className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain"
+                className="flex-1 overflow-y-auto overflow-x-hidden"
                 style={{
                   WebkitOverflowScrolling: "touch",
-                  touchAction: "pan-y",
                 }}
               >
                 <nav className="px-6 py-6 space-y-1">
