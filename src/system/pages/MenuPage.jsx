@@ -5,47 +5,21 @@ import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 
 export default function MenuPage() {
-  const navigate = useNavigate();
-  const { client, logout } = useClientAuth();
-  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/");
-  };
-
-  // Simple test render first
+  // Test with no hooks first
   return (
     <div style={{ 
       position: 'fixed', 
-      inset: 0, 
-      backgroundColor: 'white', 
-      zIndex: 9999,
-      padding: '20px'
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'red', 
+      zIndex: 99999,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
     }}>
-      <div style={{ 
-        padding: '20px', 
-        backgroundColor: '#f0f0f0',
-        marginBottom: '20px',
-        borderRadius: '8px'
-      }}>
-        <h1 style={{ fontSize: '24px', marginBottom: '10px' }}>Menu Page Test</h1>
-        <p style={{ marginBottom: '10px' }}>Client exists: {client ? 'YES' : 'NO'}</p>
-        {client && <p>Client name: {client.name}</p>}
-        <button 
-          onClick={() => navigate(-1)}
-          style={{
-            marginTop: '10px',
-            padding: '10px 20px',
-            backgroundColor: '#6366f1',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px'
-          }}
-        >
-          Go Back
-        </button>
-      </div>
+      <h1 style={{ color: 'white', fontSize: '32px' }}>MENU PAGE LOADED</h1>
     </div>
   );
 }
