@@ -22,6 +22,13 @@ export default function RescheduleModal({
     if (isOpen && booking) {
       fetchSpecialistDetails();
     }
+    
+    // Cleanup: remove tenant header when modal closes
+    return () => {
+      if (!isOpen && api.defaults.headers.common['x-tenant-id']) {
+        delete api.defaults.headers.common['x-tenant-id'];
+      }
+    };
   }, [isOpen, booking]);
 
   const fetchSpecialistDetails = async () => {
@@ -29,6 +36,9 @@ export default function RescheduleModal({
       setLoadingSpecialist(true);
       const specialistId = booking.specialistId?._id || booking.specialistId;
       const tenantId = booking.tenantId?._id || booking.tenantId;
+
+      // Set tenant header globally for this session
+      api.defaults.headers.common['x-tenant-id'] = tenantId;
 
       // Fetch specialist with tenant context
       const response = await api.get(`/specialists/${specialistId}`, {
