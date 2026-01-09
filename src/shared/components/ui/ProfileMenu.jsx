@@ -225,6 +225,17 @@ export default function ProfileMenu({
             );
           })}
         </div>
+
+        {/* For Businesses Link */}
+        <div className="px-4 py-4 border-t border-gray-200">
+          <button
+            onClick={() => handleNavigation(businessItem.path)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+          >
+            <span className="text-base font-medium text-gray-900">{businessItem.label}</span>
+            <ArrowRight className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
       </div>
     );
   } else if (isSidebar) {
