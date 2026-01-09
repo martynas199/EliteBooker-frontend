@@ -79,11 +79,19 @@ export default function RescheduleModal({
       setLoading(true);
       setError(null);
 
+      // Get client token for authentication
+      const clientToken = localStorage.getItem("clientToken");
+      
       const response = await api.post(
         `/client/bookings/${booking._id}/reschedule`,
         {
           newStart: selectedSlot.startISO,
           newEnd: selectedSlot.endISO,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${clientToken}`,
+          },
         }
       );
 
