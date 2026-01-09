@@ -73,6 +73,7 @@ const navigationConfig = [
       { label: "Custom Working Hours", path: "/admin/schedule" },
       { label: "Time Off", path: "/admin/timeoff" },
       { label: "Booking Policies", path: "/admin/cancellation" },
+      { label: "Consent Forms", path: "/admin/consent-templates" },
     ],
   },
   {

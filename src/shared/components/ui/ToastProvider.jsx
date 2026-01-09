@@ -11,7 +11,7 @@ export default function ToastProvider() {
       reverseOrder={false}
       gutter={8}
       containerStyle={{
-        zIndex: 9999,
+        zIndex: 100001,
       }}
       toastOptions={{
         // Default options

@@ -112,6 +112,20 @@ const TakePaymentPage = lazy(() => import("../tenant/pages/TakePaymentPage"));
 const Seminars = lazy(() => import("../admin/pages/Seminars"));
 const SeminarForm = lazy(() => import("../admin/pages/SeminarForm"));
 const SeminarAttendees = lazy(() => import("../admin/pages/SeminarAttendees"));
+const ConsentTemplates = lazy(() => import("../admin/pages/ConsentTemplates"));
+const ConsentTemplateBuilder = lazy(() =>
+  import("../admin/pages/ConsentTemplateBuilder")
+);
+const ConsentTemplateView = lazy(() =>
+  import("../admin/pages/ConsentTemplateView")
+);
+const ConsentSigningPage = lazy(() =>
+  import("../client/pages/ConsentSigningPage")
+);
+const ConsentInitiatePage = lazy(() =>
+  import("../client/pages/ConsentInitiatePage")
+);
+const ClientFormsPage = lazy(() => import("../client/pages/ClientFormsPage"));
 
 function CustomerLayout() {
   const dispatch = useDispatch();
@@ -209,6 +223,14 @@ export default function AppRoutes() {
           path="/client/appointments"
           element={<ClientAppointmentsPage />}
         />
+        <Route
+          path="/client/forms"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <ClientFormsPage />
+            </Suspense>
+          }
+        />
 
         {/* Mobile Menu */}
         <Route path="/menu" element={<MenuPage />} />
@@ -224,6 +246,26 @@ export default function AppRoutes() {
 
         {/* Help & Support */}
         <Route path="/help" element={<HelpPage />} />
+
+        {/* Public Consent Signing */}
+        <Route
+          path="/consent/:token"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <ConsentSigningPage />
+            </Suspense>
+          }
+        />
+
+        {/* Consent Initiation (authenticated) */}
+        <Route
+          path="/appointments/consent"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <ConsentInitiatePage />
+            </Suspense>
+          }
+        />
 
         {/* Tenant-specific routes with slug parameter */}
         <Route
@@ -528,6 +570,38 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
                 <SeminarAttendees />
+              </Suspense>
+            }
+          />
+          <Route
+            path="consent-templates"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <ConsentTemplates />
+              </Suspense>
+            }
+          />
+          <Route
+            path="consent-templates/:id"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <ConsentTemplateView />
+              </Suspense>
+            }
+          />
+          <Route
+            path="consent-templates/new"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <ConsentTemplateBuilder />
+              </Suspense>
+            }
+          />
+          <Route
+            path="consent-templates/:id/edit"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <ConsentTemplateBuilder />
               </Suspense>
             }
           />

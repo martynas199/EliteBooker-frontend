@@ -12,6 +12,7 @@ import {
   Phone,
   Mail,
   RefreshCw,
+  FileText,
 } from "lucide-react";
 import { api } from "../../shared/lib/apiClient";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
@@ -34,11 +35,19 @@ export default function ClientAppointmentsPage() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [error, setError] = useState(null);
   const [rescheduleMinHours, setRescheduleMinHours] = useState(2); // Default 2 hours
+  const [consentRequirements, setConsentRequirements] = useState({}); // Map of serviceId -> requires consent
 
   useEffect(() => {
     fetchBookings();
     fetchReschedulePolicy();
   }, []);
+
+  // Re-check consent requirements when client is available
+  useEffect(() => {
+    if (client?.id && bookings.length > 0) {
+      checkConsentRequirements(bookings);
+    }
+  }, [client?.id, bookings.length]);
 
   const fetchBookings = async () => {
     try {
@@ -51,6 +60,12 @@ export default function ClientAppointmentsPage() {
       const sortedBookings = (response.data.bookings || []).sort((a, b) => {
         return new Date(a.start) - new Date(b.start);
       });
+
+      // Get clientId from the first booking if available
+      const clientIdFromBooking = sortedBookings[0]?.clientId;
+
+      // Check which services require consent
+      await checkConsentRequirements(sortedBookings, clientIdFromBooking);
       setBookings(sortedBookings);
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
@@ -73,6 +88,51 @@ export default function ClientAppointmentsPage() {
     } catch (error) {
       console.error("Failed to fetch reschedule policy:", error);
       // Keep default of 2 hours if fetch fails
+    }
+  };
+
+  const checkConsentRequirements = async (bookings, clientId = null) => {
+    try {
+      // Get unique service IDs
+      const serviceIds = [
+        ...new Set(bookings.map((b) => b.serviceId?._id).filter(Boolean)),
+      ];
+
+      // Use clientId from parameter, or from client context, or from first booking
+      const effectiveClientId = clientId || client?.id || bookings[0]?.clientId;
+
+      if (serviceIds.length === 0) return;
+      if (!effectiveClientId) return;
+
+      // Check each service for consent requirements
+      const requirements = {};
+      await Promise.all(
+        serviceIds.map(async (serviceId) => {
+          try {
+            const response = await api.get(
+              `/consent-templates/check-required/${serviceId}`,
+              {
+                params: { clientId: effectiveClientId },
+              }
+            );
+            const data = response.data.data;
+            requirements[serviceId] = {
+              required: data?.required || false,
+              signed: !data?.required || false, // If not required, consider it "complete"
+            };
+          } catch (error) {
+            console.error(
+              `Failed to check consent for service ${serviceId}:`,
+              error
+            );
+            requirements[serviceId] = { required: false, signed: false };
+          }
+        })
+      );
+
+      setConsentRequirements(requirements);
+    } catch (error) {
+      console.error("Failed to check consent requirements:", error);
     }
   };
 
@@ -127,29 +187,29 @@ export default function ClientAppointmentsPage() {
   const getStatusBadge = (status) => {
     const styles = {
       confirmed: {
-        bg: "bg-green-100",
-        text: "text-green-800",
+        bg: "bg-green-50",
+        text: "text-green-900",
         border: "border-green-200",
         icon: CheckCircle,
         label: "Confirmed",
       },
       pending: {
-        bg: "bg-amber-100",
-        text: "text-amber-800",
+        bg: "bg-amber-50",
+        text: "text-amber-900",
         border: "border-amber-200",
         icon: Clock,
         label: "Pending",
       },
       cancelled: {
-        bg: "bg-red-100",
-        text: "text-red-800",
+        bg: "bg-red-50",
+        text: "text-red-900",
         border: "border-red-200",
         icon: XCircle,
         label: "Cancelled",
       },
       completed: {
-        bg: "bg-blue-100",
-        text: "text-blue-800",
+        bg: "bg-blue-50",
+        text: "text-blue-900",
         border: "border-blue-200",
         icon: CheckCircle,
         label: "Completed",
@@ -157,8 +217,8 @@ export default function ClientAppointmentsPage() {
     };
 
     const style = styles[status] || {
-      bg: "bg-gray-100",
-      text: "text-gray-800",
+      bg: "bg-gray-50",
+      text: "text-gray-900",
       border: "border-gray-200",
       icon: AlertCircle,
       label: status,
@@ -167,9 +227,9 @@ export default function ClientAppointmentsPage() {
 
     return (
       <span
-        className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full border ${style.bg} ${style.text} ${style.border}`}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border ${style.bg} ${style.text} ${style.border}`}
       >
-        <Icon className="h-3.5 w-3.5" />
+        <Icon className="h-3.5 w-3.5" strokeWidth={2} />
         {style.label}
       </span>
     );
@@ -286,157 +346,272 @@ export default function ClientAppointmentsPage() {
 
           {/* Bookings List */}
           {filteredBookings.length === 0 ? (
-            <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
-              <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 p-8 sm:p-12 text-center shadow-lg">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Calendar className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400" />
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                 No appointments found
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-base sm:text-lg text-gray-600 mb-8 max-w-md mx-auto">
                 {filter === "all"
                   ? "You haven't made any bookings yet"
                   : `No ${filter} appointments`}
               </p>
-              <Button onClick={() => navigate("/")}>Find a Business</Button>
+              <button
+                onClick={() => navigate("/")}
+                className="inline-flex items-center px-6 py-3 text-base font-semibold text-white bg-gray-900 rounded-xl hover:bg-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                Find a Business
+              </button>
             </div>
           ) : (
-            <div className="space-y-4">
-              {filteredBookings.map((booking) => (
-                <div
-                  key={booking._id}
-                  className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {booking.serviceId?.name || "Service"}
-                        </h3>
-                        {getStatusBadge(booking.status)}
+            <div className="space-y-4 sm:space-y-5">
+              {filteredBookings.map((booking) => {
+                const isUpcoming =
+                  new Date(booking.start) > new Date() &&
+                  booking.status !== "cancelled";
+                const needsConsent =
+                  booking.serviceId?._id &&
+                  consentRequirements[booking.serviceId._id]?.required &&
+                  !consentRequirements[booking.serviceId._id]?.signed;
+
+                return (
+                  <div
+                    key={booking._id}
+                    className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+                  >
+                    {/* Status indicator bar */}
+                    <div
+                      className={`h-1 ${
+                        booking.status === "confirmed"
+                          ? "bg-green-500"
+                          : booking.status === "pending"
+                          ? "bg-amber-500"
+                          : booking.status === "cancelled"
+                          ? "bg-red-500"
+                          : "bg-blue-500"
+                      }`}
+                    />
+
+                    <div className="p-5 sm:p-6">
+                      {/* Top section - Service name, badges, and price */}
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 leading-tight">
+                            {booking.serviceId?.name || "Service"}
+                          </h3>
+
+                          {/* Status badges */}
+                          <div className="flex flex-wrap items-center gap-2">
+                            {getStatusBadge(booking.status)}
+
+                            {needsConsent && (
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-900 text-white border border-gray-900">
+                                <FileText className="h-3.5 w-3.5" />
+                                Consent Required
+                              </span>
+                            )}
+
+                            {booking.serviceId?._id &&
+                              consentRequirements[booking.serviceId._id]
+                                ?.signed && (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-green-50 text-green-900 border border-green-200">
+                                  <CheckCircle className="h-3.5 w-3.5" />
+                                  Consent Signed
+                                </span>
+                              )}
+                          </div>
+                        </div>
+
+                        {/* Price */}
+                        <div className="flex-shrink-0">
+                          <div className="inline-flex flex-col items-end bg-gray-900 rounded-xl sm:rounded-2xl px-5 py-3 sm:py-4 shadow-md">
+                            <p className="text-2xl sm:text-3xl font-bold text-white">
+                              {formatPrice(
+                                booking.price || booking.serviceId?.price || 0
+                              )}
+                            </p>
+                            {booking.serviceId?.duration && (
+                              <p className="text-xs sm:text-sm font-medium text-gray-300 mt-1">
+                                {booking.serviceId.duration} min
+                              </p>
+                            )}
+                          </div>
+                        </div>
                       </div>
 
-                      {/* Business Info */}
-                      <div className="flex items-center gap-2 text-gray-600 mb-1">
-                        <Store className="h-4 w-4" />
-                        <span className="text-sm">
-                          {booking.tenantId?.name || "Business"}
-                        </span>
-                      </div>
-
-                      {/* Specialist Info */}
-                      {booking.specialistId && (
-                        <div className="flex items-center gap-2 text-gray-600 mb-1">
-                          <User className="h-4 w-4" />
-                          <span className="text-sm">
-                            {booking.specialistId.name}
-                          </span>
+                      {/* Info grid */}
+                      <div className="space-y-3 mb-5">
+                        {/* Business */}
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                          <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Store className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium text-gray-500 mb-0.5">
+                              Business
+                            </p>
+                            <p className="text-sm font-semibold text-gray-900 truncate">
+                              {booking.tenantId?.name || "Business"}
+                            </p>
+                          </div>
                         </div>
-                      )}
 
-                      {/* Date and Time */}
-                      <div className="flex items-center gap-4 mt-3">
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <Calendar className="h-4 w-4" />
-                          <span className="text-sm font-medium">
-                            {formatDate(booking.start)}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <Clock className="h-4 w-4" />
-                          <span className="text-sm">
-                            {formatTime(booking.start)} -{" "}
-                            {formatTime(booking.end)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Price */}
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-gray-900">
-                        {formatPrice(
-                          booking.price || booking.serviceId?.price || 0
-                        )}
-                      </p>
-                      {booking.serviceId?.duration && (
-                        <p className="text-sm text-gray-600">
-                          {booking.serviceId.duration} min
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Contact Info */}
-                  {booking.contactInfo && (
-                    <div className="border-t border-gray-100 pt-4 mt-4">
-                      <div className="flex items-center gap-6 text-sm text-gray-600">
-                        {booking.contactInfo.phone && (
-                          <div className="flex items-center gap-2">
-                            <Phone className="h-4 w-4" />
-                            <span>{booking.contactInfo.phone}</span>
+                        {/* Specialist */}
+                        {booking.specialistId && (
+                          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <User className="h-5 w-5 text-white" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-medium text-gray-500 mb-0.5">
+                                Specialist
+                              </p>
+                              <p className="text-sm font-semibold text-gray-900 truncate">
+                                {booking.specialistId.name}
+                              </p>
+                            </div>
                           </div>
                         )}
-                        {booking.contactInfo.email && (
-                          <div className="flex items-center gap-2">
-                            <Mail className="h-4 w-4" />
-                            <span>{booking.contactInfo.email}</span>
+
+                        {/* Date and Time */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <Calendar className="h-5 w-5 text-white" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-xs font-medium text-gray-500 mb-0.5">
+                                Date
+                              </p>
+                              <p className="text-sm font-semibold text-gray-900">
+                                {formatDate(booking.start)}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <Clock className="h-5 w-5 text-white" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-xs font-medium text-gray-500 mb-0.5">
+                                Time
+                              </p>
+                              <p className="text-sm font-semibold text-gray-900">
+                                {formatTime(booking.start)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Contact Info */}
+                      {booking.contactInfo &&
+                        (booking.contactInfo.phone ||
+                          booking.contactInfo.email) && (
+                          <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200">
+                            <div className="flex flex-col sm:flex-row gap-3">
+                              {booking.contactInfo.phone && (
+                                <div className="flex items-center gap-2 text-sm">
+                                  <Phone className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                                  <span className="font-medium text-gray-900">
+                                    {booking.contactInfo.phone}
+                                  </span>
+                                </div>
+                              )}
+                              {booking.contactInfo.email && (
+                                <div className="flex items-center gap-2 text-sm">
+                                  <Mail className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                                  <span className="font-medium text-gray-900 truncate">
+                                    {booking.contactInfo.email}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         )}
-                      </div>
-                    </div>
-                  )}
 
-                  {/* Notes */}
-                  {booking.notes && (
-                    <div className="border-t border-gray-100 pt-4 mt-4">
-                      <p className="text-sm text-gray-600">
-                        <span className="font-medium">Notes:</span>{" "}
-                        {booking.notes}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Actions */}
-                  <div className="border-t border-gray-100 pt-4 mt-4">
-                    <div className="flex gap-3">
-                      {booking.tenantId?.slug && (
-                        <Button
-                          variant="secondary"
-                          onClick={() =>
-                            navigate(`/salon/${booking.tenantId.slug}`)
-                          }
-                        >
-                          View Business
-                        </Button>
-                      )}
-                      {booking.status === "confirmed" &&
-                        new Date(booking.start) > new Date() &&
-                        canReschedule(booking) && (
-                          <Button
-                            variant="secondary"
-                            onClick={() => handleRescheduleClick(booking)}
-                          >
-                            <RefreshCw className="h-4 w-4 mr-1.5" />
-                            Reschedule
-                          </Button>
-                        )}
-                    </div>
-
-                    {/* Show message if appointment is too close to reschedule */}
-                    {booking.status === "confirmed" &&
-                      new Date(booking.start) > new Date() &&
-                      !canReschedule(booking) && (
-                        <div className="mt-3 flex items-start gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3">
-                          <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                          <p>
-                            This appointment cannot be rescheduled online
-                            because it is less than {rescheduleMinHours} hours
-                            away.
+                      {/* Notes */}
+                      {booking.notes && (
+                        <div className="bg-blue-50 border-l-4 border-blue-500 rounded-r-xl p-4 mb-4">
+                          <p className="text-sm text-gray-700">
+                            <span className="font-bold text-blue-900">
+                              Note:
+                            </span>{" "}
+                            {booking.notes}
                           </p>
                         </div>
                       )}
+
+                      {/* Actions - Mobile optimized buttons */}
+                      <div className="border-t-2 border-gray-100 pt-4 mt-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {booking.tenantId?.slug && (
+                            <button
+                              onClick={() =>
+                                navigate(`/salon/${booking.tenantId.slug}`)
+                              }
+                              className="inline-flex items-center justify-center px-4 py-3 text-sm font-bold text-violet-700 bg-violet-50 border-2 border-violet-200 rounded-xl hover:bg-violet-100 hover:border-violet-300 transition-all duration-200 shadow-sm hover:shadow-md touch-manipulation"
+                            >
+                              <Store className="h-4 w-4 mr-2" />
+                              View Business
+                            </button>
+                          )}
+
+                          {booking.status === "confirmed" &&
+                            isUpcoming &&
+                            canReschedule(booking) && (
+                              <button
+                                onClick={() => handleRescheduleClick(booking)}
+                                className="inline-flex items-center justify-center px-4 py-3 text-sm font-bold text-blue-700 bg-blue-50 border-2 border-blue-200 rounded-xl hover:bg-blue-100 hover:border-blue-300 transition-all duration-200 shadow-sm hover:shadow-md touch-manipulation"
+                              >
+                                <RefreshCw className="h-4 w-4 mr-2" />
+                                Reschedule
+                              </button>
+                            )}
+
+                          {needsConsent && (
+                            <button
+                              onClick={() =>
+                                navigate("/appointments/consent", {
+                                  state: {
+                                    bookingId: booking._id,
+                                    serviceId: booking.serviceId._id,
+                                    serviceName: booking.serviceId.name,
+                                    businessName: booking.tenantId?.name,
+                                  },
+                                })
+                              }
+                              className="inline-flex items-center justify-center px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-amber-600 to-orange-600 rounded-xl hover:from-amber-700 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 touch-manipulation sm:col-span-2"
+                            >
+                              <FileText className="h-4 w-4 mr-2" />
+                              Sign Consent Form
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Show message if appointment is too close to reschedule */}
+                        {booking.status === "confirmed" &&
+                          isUpcoming &&
+                          !canReschedule(booking) && (
+                            <div className="mt-3 flex items-start gap-3 text-sm bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-xl p-4 shadow-sm">
+                              <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <AlertCircle className="h-5 w-5 text-white" />
+                              </div>
+                              <p className="text-amber-900 font-medium leading-relaxed">
+                                This appointment cannot be rescheduled online
+                                because it is less than {rescheduleMinHours}{" "}
+                                hours away.
+                              </p>
+                            </div>
+                          )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

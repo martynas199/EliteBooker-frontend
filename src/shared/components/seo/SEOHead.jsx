@@ -18,14 +18,14 @@ export default function SEOHead({
   description,
   keywords,
   canonical,
-  ogImage = "/src/assets/logo.svg",
+  ogImage = "/android-chrome-512x512.png",
   ogType = "website",
   noindex = false,
   schema,
 }) {
   const siteName = "Elite Booker";
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
-  const baseUrl = "https://www.elitebooker.com";
+  const baseUrl = "https://www.elitebooker.co.uk";
   const canonicalUrl = canonical || window.location.href;
 
   // Default keywords focused on appointment booking software - optimized for ranking #1
@@ -71,12 +71,21 @@ export default function SEOHead({
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:site_name" content={siteName} />
       {ogImage && (
-        <meta
-          property="og:image"
-          content={
-            ogImage.startsWith("http") ? ogImage : `${baseUrl}${ogImage}`
-          }
-        />
+        <>
+          <meta
+            property="og:image"
+            content={
+              ogImage.startsWith("http") ? ogImage : `${baseUrl}${ogImage}`
+            }
+          />
+          <meta property="og:image:type" content="image/png" />
+          <meta property="og:image:width" content="512" />
+          <meta property="og:image:height" content="512" />
+          <meta
+            property="og:image:alt"
+            content="Elite Booker - Appointment Booking Software"
+          />
+        </>
       )}
 
       {/* Twitter Card */}

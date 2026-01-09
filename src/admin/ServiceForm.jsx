@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Info, Settings, Image as ImageIcon, Layers } from "lucide-react";
+import {
+  Info,
+  Settings,
+  Image as ImageIcon,
+  Layers,
+  Sparkles,
+} from "lucide-react";
 import { useImageUpload } from "../shared/hooks/useImageUpload";
 import { useTenantSettings } from "../shared/hooks/useTenantSettings";
 import { api } from "../shared/lib/apiClient";
@@ -80,6 +86,10 @@ export default function ServiceForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // AI description generation state
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [isAIGenerated, setIsAIGenerated] = useState(false);
 
   // Drawer state for mobile specialist selection
   const [showSpecialistDrawer, setShowSpecialistDrawer] = useState(false);
@@ -323,6 +333,48 @@ export default function ServiceForm({
     }
   };
 
+  // Generate AI description
+  const handleGenerateAIDescription = async () => {
+    if (!formData.name.trim() || formData.name.trim().length <= 3) {
+      toast.error("Please enter a service name first (at least 4 characters)");
+      return;
+    }
+
+    setIsGeneratingAI(true);
+    setIsAIGenerated(false);
+
+    try {
+      const response = await api.post("/services/generate-description", {
+        serviceTitle: formData.name,
+        businessType: "beauty",
+        serviceCategory: formData.category || undefined,
+        serviceDuration: formData.variants[0]?.durationMin || undefined,
+        country: "UK",
+      });
+
+      if (response.data.success) {
+        handleChange("description", response.data.data.description);
+        setIsAIGenerated(true);
+        toast.success("AI description generated successfully!");
+
+        // Show info if fallback was used
+        if (response.data.data.source === "fallback") {
+          toast(response.data.data.warning, { icon: "⚠️" });
+        }
+      } else {
+        toast.error(response.data.message || "Failed to generate description");
+      }
+    } catch (error) {
+      console.error("AI generation error:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to generate AI description. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
   const errorCount = Object.keys(errors).filter(
     (key) => key !== "submit"
   ).length;
@@ -413,13 +465,47 @@ export default function ServiceForm({
             htmlFor="description"
             hint={t("descriptionHint", language)}
           >
-            <textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleChange("description", e.target.value)}
-              rows={4}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors resize-none"
-            />
+            <div className="space-y-2">
+              <div className="relative">
+                <textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => {
+                    handleChange("description", e.target.value);
+                    setIsAIGenerated(false); // Clear AI flag when manually edited
+                  }}
+                  rows={4}
+                  className="w-full px-3 py-2 pr-12 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors resize-none"
+                />
+                <button
+                  type="button"
+                  onClick={handleGenerateAIDescription}
+                  disabled={
+                    isGeneratingAI ||
+                    !formData.name ||
+                    formData.name.trim().length <= 3
+                  }
+                  className="absolute bottom-3 right-3 p-2 bg-white border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-400 shadow-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group"
+                  title={
+                    isAIGenerated
+                      ? "Regenerate AI description"
+                      : "Generate AI description"
+                  }
+                >
+                  {isGeneratingAI ? (
+                    <div className="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Sparkles className="w-5 h-5 text-purple-600 group-hover:scale-110 transition-transform" />
+                  )}
+                </button>
+              </div>
+              {isAIGenerated && (
+                <p className="text-xs text-purple-600 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  AI-generated, editable
+                </p>
+              )}
+            </div>
           </FormField>
 
           {/* Primary Specialist */}
