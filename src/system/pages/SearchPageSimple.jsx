@@ -1,6 +1,29 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../../shared/lib/apiClient";
+
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
+const loadGoogleMapsScript = (apiKey) => {
+  return new Promise((resolve, reject) => {
+    if (window.google && window.google.maps) {
+      resolve(window.google.maps);
+      return;
+    }
+    const existingScript = document.querySelector('script[src*="maps.googleapis.com/maps/api"]');
+    if (existingScript) {
+      existingScript.addEventListener("load", () => resolve(window.google.maps));
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve(window.google.maps);
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+};
 
 export default function SearchPageSimple() {
   console.log('[SearchPageSimple] Component executing');
@@ -9,6 +32,9 @@ export default function SearchPageSimple() {
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const mapRef = useRef(null);
+  const googleMapRef = useRef(null);
+  const markersRef = useRef([]);
 
   useEffect(() => {
     console.log('[SearchPageSimple] Mounted');
@@ -18,12 +44,76 @@ export default function SearchPageSimple() {
     document.body.style.overflow = 'hidden';
     
     fetchVenues();
+    initMap();
     
     return () => {
       console.log('[SearchPageSimple] Unmounting');
       document.body.style.overflow = '';
     };
   }, []);
+
+  const initMap = async () => {
+    if (!GOOGLE_MAPS_API_KEY) return;
+    
+    try {
+      await loadGoogleMapsScript(GOOGLE_MAPS_API_KEY);
+      
+      const defaultLat = parseFloat(import.meta.env.VITE_DEFAULT_LAT || "51.5074");
+      const defaultLng = parseFloat(import.meta.env.VITE_DEFAULT_LNG || "-0.1278");
+      
+      googleMapRef.current = new window.google.maps.Map(mapRef.current, {
+        center: { lat: defaultLat, lng: defaultLng },
+        zoom: 12,
+        styles: [
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }]
+          }
+        ]
+      });
+    } catch (error) {
+      console.error("Failed to load Google Maps:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!googleMapRef.current || venues.length === 0) return;
+    
+    // Clear existing markers
+    markersRef.current.forEach(marker => marker.setMap(null));
+    markersRef.current = [];
+    
+    // Add markers for venues
+    const bounds = new window.google.maps.LatLngBounds();
+    
+    filteredVenues.forEach((venue) => {
+      if (!venue.location?.coordinates) return;
+      
+      const [lng, lat] = venue.location.coordinates;
+      const position = { lat, lng };
+      
+      const marker = new window.google.maps.Marker({
+        position,
+        map: googleMapRef.current,
+        title: venue.businessName
+      });
+      
+      marker.addListener('click', () => {
+        const venueElement = document.getElementById(`venue-${venue._id}`);
+        if (venueElement) {
+          venueElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+      
+      markersRef.current.push(marker);
+      bounds.extend(position);
+    });
+    
+    if (filteredVenues.length > 0) {
+      googleMapRef.current.fitBounds(bounds);
+    }
+  }, [venues, search]);
 
   const fetchVenues = async () => {
     try {
@@ -111,14 +201,32 @@ export default function SearchPageSimple() {
         />
       </div>
 
-      {/* Content */}
+      {/* Main Content - Map and List */}
       <div style={{
         flex: 1,
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        WebkitOverflowScrolling: 'touch',
-        padding: '16px'
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden'
       }}>
+        {/* Map Section */}
+        <div 
+          ref={mapRef}
+          style={{
+            width: '100%',
+            height: '40%',
+            minHeight: '200px',
+            backgroundColor: '#e5e7eb'
+          }}
+        />
+
+        {/* List Section */}
+        <div style={{
+          flex: 1,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          WebkitOverflowScrolling: 'touch',
+          padding: '16px'
+        }}>
         {loading ? (
           <div style={{
             display: 'flex',
@@ -150,6 +258,7 @@ export default function SearchPageSimple() {
             {filteredVenues.map((venue) => (
               <Link
                 key={venue._id}
+                id={`venue-${venue._id}`}
                 to={`/salon/${venue.slug}`}
                 style={{
                   display: 'block',
@@ -188,6 +297,7 @@ export default function SearchPageSimple() {
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   );

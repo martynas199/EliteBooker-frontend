@@ -59,7 +59,15 @@ export default function SearchPage() {
   // Add console log to debug
   useEffect(() => {
     console.log('[SearchPage] Component mounted');
-    return () => console.log('[SearchPage] Component unmounted');
+    
+    // Force page to top and prevent body scroll
+    window.scrollTo(0, 0);
+    document.body.style.overflow = 'hidden';
+    
+    return () => {
+      console.log('[SearchPage] Component unmounted');
+      document.body.style.overflow = '';
+    };
   }, []);
 
   const getUserLocation = useCallback(() => {
