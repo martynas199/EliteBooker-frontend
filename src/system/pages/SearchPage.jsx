@@ -56,6 +56,12 @@ export default function SearchPage() {
   const cardContainerRef = useRef(null);
   const scrollTimerRef = useRef(null);
 
+  // Add console log to debug
+  useEffect(() => {
+    console.log('[SearchPage] Component mounted');
+    return () => console.log('[SearchPage] Component unmounted');
+  }, []);
+
   const getUserLocation = useCallback(() => {
     const defaultLat = parseFloat(import.meta.env.VITE_DEFAULT_LAT || "51.5074");
     const defaultLng = parseFloat(import.meta.env.VITE_DEFAULT_LNG || "-0.1278");
@@ -564,6 +570,41 @@ export default function SearchPage() {
         <Link to="/" style={{ padding: '10px 20px', backgroundColor: '#333', color: 'white', borderRadius: '5px', textDecoration: 'none' }}>
           Go Back Home
         </Link>
+      </div>
+    );
+  }
+
+  // Simple loading state with inline styles
+  if (loading && venues.length === 0) {
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999
+      }}>
+        <div style={{
+          width: '48px',
+          height: '48px',
+          border: '4px solid #f3f3f3',
+          borderTop: '4px solid #7c3aed',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }} />
+        <p style={{ marginTop: '20px', color: '#666' }}>Loading venues...</p>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
       </div>
     );
   }
