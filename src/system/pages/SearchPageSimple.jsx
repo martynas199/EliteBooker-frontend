@@ -54,25 +54,12 @@ export default function SearchPageSimple() {
       left: 0,
       width: '100vw',
       height: '100vh',
-      backgroundColor: '#ff0000',
+      backgroundColor: 'white',
       display: 'flex',
       flexDirection: 'column',
       zIndex: 9999,
       overflow: 'hidden'
     }}>
-      <h1 style={{ 
-        color: 'white', 
-        fontSize: '48px', 
-        padding: '50px',
-        textAlign: 'center',
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        zIndex: 10000
-      }}>
-        SEARCH PAGE TEST
-      </h1>
       {/* Header */}
       <div style={{
         display: 'flex',
