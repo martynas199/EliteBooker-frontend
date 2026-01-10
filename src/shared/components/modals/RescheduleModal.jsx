@@ -22,11 +22,11 @@ export default function RescheduleModal({
     if (isOpen && booking) {
       fetchSpecialistDetails();
     }
-    
+
     // Cleanup: remove tenant header when modal closes
     return () => {
-      if (!isOpen && api.defaults.headers.common['x-tenant-id']) {
-        delete api.defaults.headers.common['x-tenant-id'];
+      if (!isOpen && api.defaults.headers.common["x-tenant-id"]) {
+        delete api.defaults.headers.common["x-tenant-id"];
       }
     };
   }, [isOpen, booking]);
@@ -39,7 +39,7 @@ export default function RescheduleModal({
       const tenantId = booking.tenantId?._id || booking.tenantId;
 
       // Set tenant header globally for this session
-      api.defaults.headers.common['x-tenant-id'] = tenantId;
+      api.defaults.headers.common["x-tenant-id"] = tenantId;
 
       // Always fetch specialist to ensure we have working hours
       // The booking object might not have working hours populated
@@ -48,13 +48,19 @@ export default function RescheduleModal({
           "x-tenant-id": tenantId,
         },
       });
-      
-      console.log('[RescheduleModal] Fetched specialist with working hours:', response.data);
+
+      console.log(
+        "[RescheduleModal] Fetched specialist with working hours:",
+        response.data
+      );
       setSpecialist(response.data);
 
       // If tenant data is already in booking, use it
-      if (booking.tenantId && typeof booking.tenantId === 'object') {
-        console.log('[RescheduleModal] Using tenant from booking:', booking.tenantId);
+      if (booking.tenantId && typeof booking.tenantId === "object") {
+        console.log(
+          "[RescheduleModal] Using tenant from booking:",
+          booking.tenantId
+        );
         setTenant(booking.tenantId);
       } else {
         // Fetch tenant info for context
@@ -63,7 +69,10 @@ export default function RescheduleModal({
       }
     } catch (err) {
       console.error("Failed to fetch specialist:", err);
-      setError("Failed to load specialist details: " + (err.response?.data?.error || err.message));
+      setError(
+        "Failed to load specialist details: " +
+          (err.response?.data?.error || err.message)
+      );
     } finally {
       setLoadingSpecialist(false);
     }
@@ -80,7 +89,7 @@ export default function RescheduleModal({
       setError(null);
 
       const tenantId = booking.tenantId?._id || booking.tenantId;
-      
+
       const response = await api.post(
         `/client/bookings/${booking._id}/reschedule`,
         {
@@ -89,7 +98,7 @@ export default function RescheduleModal({
         },
         {
           headers: {
-            'x-tenant-id': tenantId,
+            "x-tenant-id": tenantId,
           },
         }
       );
@@ -191,14 +200,31 @@ export default function RescheduleModal({
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                   <div className="flex items-start gap-3 mb-3">
                     <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-red-800 font-semibold">{error}</p>
+                    <p className="text-sm text-red-800 font-semibold">
+                      {error}
+                    </p>
                   </div>
                   <div className="text-xs text-red-700 bg-red-100 rounded p-2 mt-2 space-y-1">
                     <div className="font-semibold mb-1">Debug Info:</div>
-                    <div>localStorage: {localStorage.getItem("clientToken") ? "✓ Present (" + localStorage.getItem("clientToken").substring(0, 20) + "...)" : "✗ Missing"}</div>
-                    <div>sessionStorage: {sessionStorage.getItem("clientToken") ? "✓ Present" : "✗ Missing"}</div>
+                    <div>
+                      localStorage:{" "}
+                      {localStorage.getItem("clientToken")
+                        ? "✓ Present (" +
+                          localStorage.getItem("clientToken").substring(0, 20) +
+                          "...)"
+                        : "✗ Missing"}
+                    </div>
+                    <div>
+                      sessionStorage:{" "}
+                      {sessionStorage.getItem("clientToken")
+                        ? "✓ Present"
+                        : "✗ Missing"}
+                    </div>
                     <div>Booking: {booking._id}</div>
-                    <div>Tenant: {booking.tenantId?._id || booking.tenantId || "N/A"}</div>
+                    <div>
+                      Tenant:{" "}
+                      {booking.tenantId?._id || booking.tenantId || "N/A"}
+                    </div>
                   </div>
                 </div>
               )}
@@ -221,9 +247,7 @@ export default function RescheduleModal({
                     serviceId={booking.serviceId?._id || booking.serviceId}
                     variantName={booking.variantName}
                     totalDuration={
-                      booking.totalDuration ||
-                      booking.serviceId?.duration ||
-                      60
+                      booking.totalDuration || booking.serviceId?.duration || 60
                     }
                     salonTz="Europe/London"
                     stepMin={15}

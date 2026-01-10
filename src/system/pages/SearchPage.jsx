@@ -47,6 +47,10 @@ export default function SearchPage() {
   });
   const [userLocation, setUserLocation] = useState(null);
   const [mapsLoaded, setMapsLoaded] = useState(false);
+  const [drawerHeight, setDrawerHeight] = useState(60); // percentage of viewport height
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartY = useRef(0);
+  const dragStartHeight = useRef(0);
   const mapRef = useRef(null);
   const googleMapRef = useRef(null);
   const overlayRef = useRef(null);
@@ -555,6 +559,35 @@ export default function SearchPage() {
     }, 120);
   }, [activeVenueId, filteredVenuesWithDistance.length]);
 
+  const handleTouchStart = useCallback((e) => {
+    const touch = e.touches[0];
+    dragStartY.current = touch.clientY;
+    dragStartHeight.current = drawerHeight;
+    setIsDragging(true);
+  }, [drawerHeight]);
+
+  const handleTouchMove = useCallback((e) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const deltaY = dragStartY.current - touch.clientY;
+    const vh = window.innerHeight;
+    const deltaPercent = (deltaY / vh) * 100;
+    const newHeight = Math.max(25, Math.min(95, dragStartHeight.current + deltaPercent));
+    setDrawerHeight(newHeight);
+  }, [isDragging]);
+
+  const handleTouchEnd = useCallback(() => {
+    setIsDragging(false);
+    // Snap to nearest position
+    if (drawerHeight < 42.5) {
+      setDrawerHeight(25); // collapsed
+    } else if (drawerHeight < 77.5) {
+      setDrawerHeight(60); // mid
+    } else {
+      setDrawerHeight(95); // expanded
+    }
+  }, [drawerHeight]);
+
   // Error state with inline styles for mobile compatibility
   if (error) {
     return (
@@ -626,10 +659,10 @@ export default function SearchPage() {
       <div className="fixed inset-0 bg-white flex flex-col"
         style={{ minHeight: '100vh', minHeight: '100dvh' }}
       >
-        <header className="bg-white border-b border-gray-100 z-[110] flex-shrink-0">
+        <header className={`absolute top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 ${drawerHeight > 80 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <div className="px-4 lg:px-6 xl:px-8 py-4 lg:py-5">
             <div className="flex items-center gap-3 lg:gap-4 max-w-screen-2xl mx-auto">
-              <Link to="/" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 transition-colors flex-shrink-0">
+              <Link to="/" className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors flex-shrink-0">
                 <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -638,9 +671,9 @@ export default function SearchPage() {
                 <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <input type="text" placeholder="Search treatments or businesses" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} className="w-full pl-11 pr-4 py-3 lg:py-3.5 border border-gray-300 rounded-full focus:ring-1 focus:ring-black focus:border-black text-sm lg:text-base transition-all hover:shadow-md" style={{ fontSize: "16px", touchAction: "manipulation" }} />
+                <input type="text" placeholder="Search treatments or businesses" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} className="w-full pl-11 pr-4 py-3 lg:py-3.5 bg-white border border-gray-300 rounded-full focus:ring-1 focus:ring-black focus:border-black text-sm lg:text-base transition-all shadow-lg" style={{ fontSize: "16px", touchAction: "manipulation" }} />
               </div>
-              <Link to="/client/profile" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0 border border-gray-200">
+              <Link to="/client/profile" className="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0 border border-gray-200 shadow-lg">
                 <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
@@ -702,53 +735,60 @@ export default function SearchPage() {
               </div>
             )}
           </div>
-          <div className="lg:hidden">
-            <BottomDrawer initialSnap="mid" header={
-                <div>
-                  <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3">
-                    <FilterChip label="All distances" active={filters.distance === "all"} onClick={() => setFilters((p) => ({ ...p, distance: "all" }))} />
-                    <FilterChip label="Within 5 mi" active={filters.distance === "5"} onClick={() => setFilters((p) => ({ ...p, distance: "5" }))} />
-                    <FilterChip label="Within 10 mi" active={filters.distance === "10"} onClick={() => setFilters((p) => ({ ...p, distance: "10" }))} />
-                    <FilterChip label="4+ stars" active={filters.rating === "4"} onClick={() => setFilters((p) => ({ ...p, rating: p.rating === "4" ? "all" : "4" }))} />
-                    <FilterChip label="4.5+ stars" active={filters.rating === "4.5"} onClick={() => setFilters((p) => ({ ...p, rating: p.rating === "4.5" ? "all" : "4.5" }))} />
+        </div>
+        <div 
+          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-[20px] shadow-lg z-[100] transition-all"
+          style={{ 
+            height: `${drawerHeight}vh`,
+            transition: isDragging ? 'none' : 'height 0.3s ease-out'
+          }}
+        >
+          <div 
+            className="flex items-center justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div className={`w-10 h-1 rounded-full ${isDragging ? 'bg-gray-400' : 'bg-gray-300'}`} />
+          </div>
+          <div className="px-4 py-3 border-b border-gray-200">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3">
+              <FilterChip label="All distances" active={filters.distance === "all"} onClick={() => setFilters((p) => ({ ...p, distance: "all" }))} />
+              <FilterChip label="Within 5 mi" active={filters.distance === "5"} onClick={() => setFilters((p) => ({ ...p, distance: "5" }))} />
+              <FilterChip label="Within 10 mi" active={filters.distance === "10"} onClick={() => setFilters((p) => ({ ...p, distance: "10" }))} />
+              <FilterChip label="4+ stars" active={filters.rating === "4"} onClick={() => setFilters((p) => ({ ...p, rating: p.rating === "4" ? "all" : "4" }))} />
+              <FilterChip label="4.5+ stars" active={filters.rating === "4.5"} onClick={() => setFilters((p) => ({ ...p, rating: p.rating === "4.5" ? "all" : "4.5" }))} />
+            </div>
+            <div className="py-2 border-t border-gray-100">
+              <p className="text-sm text-gray-600">
+                <strong className="font-semibold text-gray-900">{filteredVenuesWithDistance.length}</strong> venues found
+              </p>
+            </div>
+          </div>
+          <div className="h-full overflow-y-auto px-4 py-4 space-y-4 pb-32" style={{ WebkitOverflowScrolling: 'touch' }}>
+            {loading ? (
+              <div className="space-y-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="rounded-2xl border border-gray-100 overflow-hidden">
+                    <div className="h-36 bg-gray-100 animate-pulse" />
+                    <div className="p-4 space-y-3">
+                      <div className="h-4 w-2/3 bg-gray-100 animate-pulse rounded" />
+                      <div className="h-3 w-1/2 bg-gray-100 animate-pulse rounded" />
+                      <div className="h-10 w-full bg-gray-100 animate-pulse rounded-xl" />
+                    </div>
                   </div>
-                  <div className="py-2 border-t border-gray-100">
-                    <p className="text-sm text-gray-600">
-                      <strong className="font-semibold text-gray-900">{filteredVenuesWithDistance.length}</strong> venues found
-                    </p>
-                  </div>
-                </div>
-              }>
-              <div className="px-4 py-4 space-y-4">
-                {loading ? (
-                  <div className="space-y-4">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <div key={i} className="rounded-2xl border border-gray-100 overflow-hidden">
-                        <div className="h-36 bg-gray-100 animate-pulse" />
-                        <div className="p-4 space-y-3">
-                          <div className="h-4 w-2/3 bg-gray-100 animate-pulse rounded" />
-                          <div className="h-3 w-1/2 bg-gray-100 animate-pulse rounded" />
-                          <div className="h-10 w-full bg-gray-100 animate-pulse rounded-xl" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : filteredVenuesWithDistance.length === 0 ? (
-                  <div className="text-center py-20">
-                    <p className="text-gray-900 font-medium mb-2">No venues found</p>
-                    <p className="text-sm text-gray-500">Try adjusting your search or filters</p>
-                  </div>
-                ) : (
-                  <AnimatePresence>
-                    {filteredVenuesWithDistance.map((venue, index) => (
-                      <motion.div key={venue._id} data-venue-id={venue._id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }} transition={{ delay: index * 0.03, type: "spring", stiffness: 280, damping: 24 }}>
-                        <VenueCard venue={venue} active={venue._id === activeVenueId} onClick={() => { setActiveVenueId(venue._id); setSelectedVenueId(venue._id); }} />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                )}
+                ))}
               </div>
-            </BottomDrawer>
+            ) : filteredVenuesWithDistance.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-gray-900 font-medium mb-2">No venues found</p>
+                <p className="text-sm text-gray-500">Try adjusting your search or filters</p>
+              </div>
+            ) : (
+              filteredVenuesWithDistance.map((venue) => (
+                <VenueCard key={venue._id} venue={venue} active={venue._id === activeVenueId} onClick={() => { setActiveVenueId(venue._id); setSelectedVenueId(venue._id); }} />
+              ))
+            )}
           </div>
         </div>
       </div>
