@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { api } from "../../shared/lib/apiClient";
 
 export default function SearchPageSimple() {
+  console.log('[SearchPageSimple] Component executing');
+  
   const navigate = useNavigate();
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +12,17 @@ export default function SearchPageSimple() {
 
   useEffect(() => {
     console.log('[SearchPageSimple] Mounted');
+    
+    // Force page to top and prevent scroll
+    window.scrollTo(0, 0);
+    document.body.style.overflow = 'hidden';
+    
     fetchVenues();
+    
+    return () => {
+      console.log('[SearchPageSimple] Unmounting');
+      document.body.style.overflow = '';
+    };
   }, []);
 
   const fetchVenues = async () => {
@@ -42,12 +54,25 @@ export default function SearchPageSimple() {
       left: 0,
       width: '100vw',
       height: '100vh',
-      backgroundColor: 'white',
+      backgroundColor: '#ff0000',
       display: 'flex',
       flexDirection: 'column',
       zIndex: 9999,
       overflow: 'hidden'
     }}>
+      <h1 style={{ 
+        color: 'white', 
+        fontSize: '48px', 
+        padding: '50px',
+        textAlign: 'center',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 10000
+      }}>
+        SEARCH PAGE TEST
+      </h1>
       {/* Header */}
       <div style={{
         display: 'flex',
@@ -55,7 +80,8 @@ export default function SearchPageSimple() {
         gap: '12px',
         padding: '16px',
         borderBottom: '1px solid #e5e7eb',
-        flexShrink: 0
+        flexShrink: 0,
+        backgroundColor: 'white'
       }}>
         <button
           onClick={() => navigate(-1)}
