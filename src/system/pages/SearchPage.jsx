@@ -658,7 +658,7 @@ export default function SearchPage() {
     } else if (drawerHeight < 77.5) {
       setDrawerHeight(60); // mid
     } else {
-      setDrawerHeight(88); // expanded - leave room for browser chrome
+      setDrawerHeight(83); // expanded - leave room for browser chrome
     }
   }, [drawerHeight]);
 
