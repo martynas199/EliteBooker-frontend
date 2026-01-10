@@ -35,6 +35,7 @@ export default function SearchPage() {
   const [searchParams] = useSearchParams();
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeVenueId, setActiveVenueId] = useState(null);
   const [selectedVenueId, setSelectedVenueId] = useState(null);
   const [filters, setFilters] = useState({
@@ -150,6 +151,7 @@ export default function SearchPage() {
       }
     } catch (error) {
       console.error("Failed to fetch venues:", error);
+      setError(error.message || "Failed to load venues");
       setVenues([]);
     } finally {
       setLoading(false);
@@ -539,13 +541,42 @@ export default function SearchPage() {
     }, 120);
   }, [activeVenueId, filteredVenuesWithDistance.length]);
 
+  // Error state with inline styles for mobile compatibility
+  if (error) {
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#fee',
+        padding: '20px',
+        overflow: 'auto',
+        zIndex: 9999,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <h1 style={{ color: 'red', marginBottom: '10px' }}>Error loading search page</h1>
+        <p style={{ marginBottom: '20px' }}>{error}</p>
+        <Link to="/" style={{ padding: '10px 20px', backgroundColor: '#333', color: 'white', borderRadius: '5px', textDecoration: 'none' }}>
+          Go Back Home
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <>
       <SEOHead
         title="Discover Beauty & Wellness - EliteBooker"
         description="Find and book beauty salons, spas, and wellness businesses near you"
       />
-      <div className="fixed inset-0 bg-white flex flex-col">
+      <div className="fixed inset-0 bg-white flex flex-col"
+        style={{ minHeight: '100vh', minHeight: '100dvh' }}
+      >
         <header className="bg-white border-b border-gray-100 z-[110] flex-shrink-0">
           <div className="px-4 lg:px-6 xl:px-8 py-4 lg:py-5">
             <div className="flex items-center gap-3 lg:gap-4 max-w-screen-2xl mx-auto">
