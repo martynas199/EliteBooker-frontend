@@ -136,6 +136,10 @@ export default function SpecialistSelectionPage() {
       const res = await api.get("/services", {
         params: { limit: 1000 }, // Fetch all services
       });
+      
+      console.log(`[BeauticiansPage] Selected specialist: ${specialist.name} (${specialist._id})`);
+      console.log(`[BeauticiansPage] Total services fetched:`, res.data.length);
+      
       const specialistServices = res.data.filter((service) => {
         // Helper to get ID from either string or object
         const getId = (field) => {
@@ -145,34 +149,25 @@ export default function SpecialistSelectionPage() {
 
         // Check primary specialist (can be populated object or ID string)
         const primaryId = getId(service.primaryBeauticianId);
-        if (primaryId === specialist._id) return true;
+        const primaryMatch = primaryId === specialist._id;
+        
+        console.log(`[Service Filter] "${service.name}" - Primary: ${primaryId} (${primaryMatch ? 'MATCH' : 'no match'})`);
+        
+        if (primaryMatch) return true;
 
         // Check legacy single specialist field
         const legacyId = getId(service.specialistId);
-        if (legacyId === specialist._id) return true;
-
-        // Check additional specialists array
-        if (
-          service.additionalBeauticianIds &&
-          Array.isArray(service.additionalBeauticianIds)
-        ) {
-          const hasMatch = service.additionalBeauticianIds.some(
-            (id) => getId(id) === specialist._id
-          );
-          if (hasMatch) return true;
+        const legacyMatch = legacyId === specialist._id;
+        if (legacyMatch) {
+          console.log(`[Service Filter] "${service.name}" - Legacy specialist match: ${legacyId}`);
+          return true;
         }
 
-        // Check legacy specialists array
-        if (service.beauticianIds && Array.isArray(service.beauticianIds)) {
-          const hasMatch = service.beauticianIds.some(
-            (id) => getId(id) === specialist._id
-          );
-          if (hasMatch) return true;
-        }
-
+        // Don't check additional specialists - only show if they're the PRIMARY specialist
         return false;
       });
 
+      console.log(`[BeauticiansPage] Filtered to ${specialistServices.length} services for ${specialist.name}`);
       setServices(specialistServices);
     } catch (err) {
       console.error("Failed to fetch services:", err);

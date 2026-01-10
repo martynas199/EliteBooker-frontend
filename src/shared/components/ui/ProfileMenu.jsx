@@ -117,6 +117,12 @@ export default function ProfileMenu({
       section: "bottom",
     },
     {
+      icon: Globe,
+      label: "Find a business",
+      path: "/search",
+      section: "bottom",
+    },
+    {
       icon: Download,
       label: "Download the app",
       path: "/download",
