@@ -15,9 +15,13 @@ const loadGoogleMapsScript = (apiKey) => {
       resolve(window.google.maps);
       return;
     }
-    const existingScript = document.querySelector('script[src*="maps.googleapis.com/maps/api"]');
+    const existingScript = document.querySelector(
+      'script[src*="maps.googleapis.com/maps/api"]'
+    );
     if (existingScript) {
-      existingScript.addEventListener("load", () => resolve(window.google.maps));
+      existingScript.addEventListener("load", () =>
+        resolve(window.google.maps)
+      );
       existingScript.addEventListener("error", reject);
       return;
     }
@@ -62,21 +66,25 @@ export default function SearchPage() {
 
   // Add console log to debug
   useEffect(() => {
-    console.log('[SearchPage] Component mounted');
-    
+    console.log("[SearchPage] Component mounted");
+
     // Force page to top and prevent body scroll
     window.scrollTo(0, 0);
-    document.body.style.overflow = 'hidden';
-    
+    document.body.style.overflow = "hidden";
+
     return () => {
-      console.log('[SearchPage] Component unmounted');
-      document.body.style.overflow = '';
+      console.log("[SearchPage] Component unmounted");
+      document.body.style.overflow = "";
     };
   }, []);
 
   const getUserLocation = useCallback(() => {
-    const defaultLat = parseFloat(import.meta.env.VITE_DEFAULT_LAT || "51.5074");
-    const defaultLng = parseFloat(import.meta.env.VITE_DEFAULT_LNG || "-0.1278");
+    const defaultLat = parseFloat(
+      import.meta.env.VITE_DEFAULT_LAT || "51.5074"
+    );
+    const defaultLng = parseFloat(
+      import.meta.env.VITE_DEFAULT_LNG || "-0.1278"
+    );
     if (!navigator.geolocation) {
       setUserLocation({ lat: defaultLat, lng: defaultLng });
       return;
@@ -112,58 +120,73 @@ export default function SearchPage() {
     try {
       setLoading(true);
       const response = await api.get("/tenants/public");
-      console.log('Fetched venues:', response.data);
+      console.log("Fetched venues:", response.data);
       if (response.data.success && Array.isArray(response.data.tenants)) {
         // Geocode venues that don't have coordinates
         const venuesWithCoords = await Promise.all(
           response.data.tenants.map(async (venue) => {
             // Check if venue already has valid coordinates
-            if (Array.isArray(venue.location?.coordinates) && venue.location.coordinates.length === 2) {
+            if (
+              Array.isArray(venue.location?.coordinates) &&
+              venue.location.coordinates.length === 2
+            ) {
               return venue;
             }
-            
+
             // Try to geocode from address
             if (venue.address) {
               try {
-                const addressStr = typeof venue.address === 'string' 
-                  ? venue.address 
-                  : [venue.address.street, venue.address.city, venue.address.postalCode, venue.address.country]
-                    .filter(Boolean)
-                    .join(', ');
-                
+                const addressStr =
+                  typeof venue.address === "string"
+                    ? venue.address
+                    : [
+                        venue.address.street,
+                        venue.address.city,
+                        venue.address.postalCode,
+                        venue.address.country,
+                      ]
+                        .filter(Boolean)
+                        .join(", ");
+
                 if (addressStr && window.google?.maps) {
                   const geocoder = new window.google.maps.Geocoder();
                   const result = await new Promise((resolve) => {
-                    geocoder.geocode({ address: addressStr }, (results, status) => {
-                      if (status === 'OK' && results?.[0]) {
-                        const location = results[0].geometry.location;
-                        resolve({
-                          ...venue,
-                          location: {
-                            type: 'Point',
-                            coordinates: [location.lng(), location.lat()]
-                          }
-                        });
-                      } else {
-                        resolve(venue);
+                    geocoder.geocode(
+                      { address: addressStr },
+                      (results, status) => {
+                        if (status === "OK" && results?.[0]) {
+                          const location = results[0].geometry.location;
+                          resolve({
+                            ...venue,
+                            location: {
+                              type: "Point",
+                              coordinates: [location.lng(), location.lat()],
+                            },
+                          });
+                        } else {
+                          resolve(venue);
+                        }
                       }
-                    });
+                    );
                   });
                   return result;
                 }
               } catch (err) {
-                console.warn('Geocoding failed for venue:', venue.name, err);
+                console.warn("Geocoding failed for venue:", venue.name, err);
               }
             }
-            
+
             return venue;
           })
         );
-        
+
         setVenues(venuesWithCoords);
-        console.log('Set venues:', venuesWithCoords.length);
+        console.log("Set venues:", venuesWithCoords.length);
         const firstVenue = venuesWithCoords[0];
-        console.log('First venue location after geocoding:', firstVenue?.location);
+        console.log(
+          "First venue location after geocoding:",
+          firstVenue?.location
+        );
       } else {
         setVenues([]);
       }
@@ -209,21 +232,27 @@ export default function SearchPage() {
         .map((venue) => {
           if (userLocation) {
             let venueLat, venueLng;
-            
+
             // Support multiple location formats
             if (Array.isArray(venue.location?.coordinates)) {
               [venueLng, venueLat] = venue.location.coordinates;
-            } else if (venue.location?.lat != null && venue.location?.lng != null) {
+            } else if (
+              venue.location?.lat != null &&
+              venue.location?.lng != null
+            ) {
               venueLat = venue.location.lat;
               venueLng = venue.location.lng;
-            } else if (venue.location?.latitude != null && venue.location?.longitude != null) {
+            } else if (
+              venue.location?.latitude != null &&
+              venue.location?.longitude != null
+            ) {
               venueLat = venue.location.latitude;
               venueLng = venue.location.longitude;
             } else if (venue.lat != null && venue.lng != null) {
               venueLat = venue.lat;
               venueLng = venue.lng;
             }
-            
+
             if (venueLat != null && venueLng != null) {
               const distance = calculateDistance(
                 userLocation.lat,
@@ -252,24 +281,32 @@ export default function SearchPage() {
     [filteredVenues, userLocation, filters.distance, calculateDistance]
   );
 
-  const { index: superclusterIndex } = useSuperclusterVenues(filteredVenuesWithDistance);
+  const { index: superclusterIndex } = useSuperclusterVenues(
+    filteredVenuesWithDistance
+  );
   const selectedVenue = useMemo(() => {
     if (!selectedVenueId) return null;
-    return filteredVenuesWithDistance.find((v) => v._id === selectedVenueId) || null;
+    return (
+      filteredVenuesWithDistance.find((v) => v._id === selectedVenueId) || null
+    );
   }, [selectedVenueId, filteredVenuesWithDistance]);
 
   const initializeMap = useCallback(async () => {
-    console.log('initializeMap called', { hasMapRef: !!mapRef.current });
+    console.log("initializeMap called", { hasMapRef: !!mapRef.current });
     if (!mapRef.current) return;
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-    console.log('Google Maps API Key:', apiKey ? 'present' : 'missing');
+    console.log("Google Maps API Key:", apiKey ? "present" : "missing");
     if (!apiKey) return;
     await loadGoogleMapsScript(apiKey);
     if (!window.google?.maps) return;
-    const defaultLat = parseFloat(import.meta.env.VITE_DEFAULT_LAT || "51.5074");
-    const defaultLng = parseFloat(import.meta.env.VITE_DEFAULT_LNG || "-0.1278");
+    const defaultLat = parseFloat(
+      import.meta.env.VITE_DEFAULT_LAT || "51.5074"
+    );
+    const defaultLng = parseFloat(
+      import.meta.env.VITE_DEFAULT_LNG || "-0.1278"
+    );
     const mapCenter = userLocation || { lat: defaultLat, lng: defaultLng };
-    console.log('Creating map with center:', mapCenter);
+    console.log("Creating map with center:", mapCenter);
     const map = new window.google.maps.Map(mapRef.current, {
       center: mapCenter,
       zoom: 12,
@@ -279,17 +316,23 @@ export default function SearchPage() {
       streetViewControl: false,
       fullscreenControl: false,
       gestureHandling: "greedy",
-      styles: [{ featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] }],
+      styles: [
+        {
+          featureType: "poi",
+          elementType: "labels",
+          stylers: [{ visibility: "off" }],
+        },
+      ],
     });
     googleMapRef.current = map;
-    console.log('Map created successfully', map);
+    console.log("Map created successfully", map);
     const overlay = new window.google.maps.OverlayView();
     overlay.onAdd = function () {};
     overlay.draw = function () {};
     overlay.onRemove = function () {};
     overlay.setMap(map);
     overlayRef.current = overlay;
-    console.log('Overlay created and set to map');
+    console.log("Overlay created and set to map");
   }, [userLocation]);
 
   const getMapBBox = useCallback(() => {
@@ -316,11 +359,12 @@ export default function SearchPage() {
     div.style.top = `${point.y}px`;
   }, []);
 
-  const updateMarkerAppearance = useCallback((div, venueId) => {
-    const isActive = venueId === activeVenueId;
-    const size = isActive ? 52 : 38;
-    const fill = isActive ? "#EF4444" : "#111111";
-    div.innerHTML = `
+  const updateMarkerAppearance = useCallback(
+    (div, venueId) => {
+      const isActive = venueId === activeVenueId;
+      const size = isActive ? 52 : 38;
+      const fill = isActive ? "#EF4444" : "#111111";
+      div.innerHTML = `
       <svg width="${size}" height="${size}" viewBox="0 0 32 32" style="filter: drop-shadow(0 8px 12px rgba(0,0,0,0.25));">
         <path
           d="M16 0C10.477 0 6 4.477 6 10c0 8.5 10 22 10 22s10-13.5 10-22c0-5.523-4.477-10-10-10z"
@@ -331,18 +375,24 @@ export default function SearchPage() {
         <circle cx="16" cy="10" r="4" fill="#ffffff" />
       </svg>
     `;
-  }, [activeVenueId]);
+    },
+    [activeVenueId]
+  );
 
   const renderClusterMarkers = useCallback(() => {
     const map = googleMapRef.current;
     const overlay = overlayRef.current;
-    console.log('renderClusterMarkers called', { map: !!map, overlay: !!overlay, superclusterIndex: !!superclusterIndex });
+    console.log("renderClusterMarkers called", {
+      map: !!map,
+      overlay: !!overlay,
+      superclusterIndex: !!superclusterIndex,
+    });
     if (!map || !overlay || !superclusterIndex) return;
     const bbox = getMapBBox();
     if (!bbox) return;
     const zoom = Math.round(map.getZoom() || 12);
     const clusters = superclusterIndex.getClusters(bbox, zoom);
-    console.log('Clusters found:', clusters.length, clusters);
+    console.log("Clusters found:", clusters.length, clusters);
     const keys = clusters
       .map((c) =>
         c.properties.cluster
@@ -355,7 +405,9 @@ export default function SearchPage() {
     const nextKeys = new Set();
     clusters.forEach((feature) => {
       const isCluster = feature.properties.cluster;
-      const key = isCluster ? `cluster:${feature.id}` : `venue:${feature.properties.venueId}`;
+      const key = isCluster
+        ? `cluster:${feature.id}`
+        : `venue:${feature.properties.venueId}`;
       nextKeys.add(key);
       const existing = markerMapRef.current.get(key);
       if (existing) {
@@ -368,7 +420,9 @@ export default function SearchPage() {
       }
       const div = document.createElement("div");
       div.style.position = "absolute";
-      div.style.transform = isCluster ? "translate(-50%, -50%)" : "translate(-50%, -100%)";
+      div.style.transform = isCluster
+        ? "translate(-50%, -50%)"
+        : "translate(-50%, -100%)";
       div.style.cursor = "pointer";
       if (isCluster) {
         const count = feature.properties.point_count;
@@ -404,7 +458,10 @@ export default function SearchPage() {
           setSelectedVenueId(venueId);
           const cardElement = cardRefs.current[venueId];
           if (cardElement && cardContainerRef.current) {
-            cardElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            cardElement.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest",
+            });
           }
         });
       }
@@ -440,7 +497,7 @@ export default function SearchPage() {
     const venue = selectedVenue;
     const popEl = popoverRef.current;
     if (!map || !overlay || !venue || !popEl) return;
-    
+
     let venueLat, venueLng;
     // Support multiple location formats
     if (Array.isArray(venue.location?.coordinates)) {
@@ -448,7 +505,10 @@ export default function SearchPage() {
     } else if (venue.location?.lat != null && venue.location?.lng != null) {
       venueLat = venue.location.lat;
       venueLng = venue.location.lng;
-    } else if (venue.location?.latitude != null && venue.location?.longitude != null) {
+    } else if (
+      venue.location?.latitude != null &&
+      venue.location?.longitude != null
+    ) {
       venueLat = venue.location.latitude;
       venueLng = venue.location.longitude;
     } else if (venue.lat != null && venue.lng != null) {
@@ -457,7 +517,7 @@ export default function SearchPage() {
     } else {
       return; // No valid location
     }
-    
+
     const projection = overlay.getProjection();
     if (!projection) return;
     const point = projection.fromLatLngToDivPixel(
@@ -499,7 +559,12 @@ export default function SearchPage() {
   }, [mapsLoaded, fetchVenues]);
 
   useEffect(() => {
-    if (mapsLoaded && filteredVenuesWithDistance.length && mapRef.current && !googleMapRef.current) {
+    if (
+      mapsLoaded &&
+      filteredVenuesWithDistance.length &&
+      mapRef.current &&
+      !googleMapRef.current
+    ) {
       initializeMap();
     }
   }, [mapsLoaded, filteredVenuesWithDistance.length, initializeMap]);
@@ -559,22 +624,31 @@ export default function SearchPage() {
     }, 120);
   }, [activeVenueId, filteredVenuesWithDistance.length]);
 
-  const handleTouchStart = useCallback((e) => {
-    const touch = e.touches[0];
-    dragStartY.current = touch.clientY;
-    dragStartHeight.current = drawerHeight;
-    setIsDragging(true);
-  }, [drawerHeight]);
+  const handleTouchStart = useCallback(
+    (e) => {
+      const touch = e.touches[0];
+      dragStartY.current = touch.clientY;
+      dragStartHeight.current = drawerHeight;
+      setIsDragging(true);
+    },
+    [drawerHeight]
+  );
 
-  const handleTouchMove = useCallback((e) => {
-    if (!isDragging) return;
-    const touch = e.touches[0];
-    const deltaY = dragStartY.current - touch.clientY;
-    const vh = window.innerHeight;
-    const deltaPercent = (deltaY / vh) * 100;
-    const newHeight = Math.max(25, Math.min(95, dragStartHeight.current + deltaPercent));
-    setDrawerHeight(newHeight);
-  }, [isDragging]);
+  const handleTouchMove = useCallback(
+    (e) => {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      const deltaY = dragStartY.current - touch.clientY;
+      const vh = window.innerHeight;
+      const deltaPercent = (deltaY / vh) * 100;
+      const newHeight = Math.max(
+        25,
+        Math.min(88, dragStartHeight.current + deltaPercent)
+      );
+      setDrawerHeight(newHeight);
+    },
+    [isDragging]
+  );
 
   const handleTouchEnd = useCallback(() => {
     setIsDragging(false);
@@ -584,31 +658,44 @@ export default function SearchPage() {
     } else if (drawerHeight < 77.5) {
       setDrawerHeight(60); // mid
     } else {
-      setDrawerHeight(95); // expanded
+      setDrawerHeight(88); // expanded - leave room for browser chrome
     }
   }, [drawerHeight]);
 
   // Error state with inline styles for mobile compatibility
   if (error) {
     return (
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#fee',
-        padding: '20px',
-        overflow: 'auto',
-        zIndex: 9999,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <h1 style={{ color: 'red', marginBottom: '10px' }}>Error loading search page</h1>
-        <p style={{ marginBottom: '20px' }}>{error}</p>
-        <Link to="/" style={{ padding: '10px 20px', backgroundColor: '#333', color: 'white', borderRadius: '5px', textDecoration: 'none' }}>
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "#fee",
+          padding: "20px",
+          overflow: "auto",
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <h1 style={{ color: "red", marginBottom: "10px" }}>
+          Error loading search page
+        </h1>
+        <p style={{ marginBottom: "20px" }}>{error}</p>
+        <Link
+          to="/"
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#333",
+            color: "white",
+            borderRadius: "5px",
+            textDecoration: "none",
+          }}
+        >
           Go Back Home
         </Link>
       </div>
@@ -618,28 +705,32 @@ export default function SearchPage() {
   // Simple loading state with inline styles
   if (loading && venues.length === 0) {
     return (
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'white',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999
-      }}>
-        <div style={{
-          width: '48px',
-          height: '48px',
-          border: '4px solid #f3f3f3',
-          borderTop: '4px solid #7c3aed',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite'
-        }} />
-        <p style={{ marginTop: '20px', color: '#666' }}>Loading venues...</p>
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "white",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 9999,
+        }}
+      >
+        <div
+          style={{
+            width: "48px",
+            height: "48px",
+            border: "4px solid #f3f3f3",
+            borderTop: "4px solid #7c3aed",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+          }}
+        />
+        <p style={{ marginTop: "20px", color: "#666" }}>Loading venues...</p>
         <style>{`
           @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -656,26 +747,76 @@ export default function SearchPage() {
         title="Discover Beauty & Wellness - EliteBooker"
         description="Find and book beauty salons, spas, and wellness businesses near you"
       />
-      <div className="fixed inset-0 bg-white flex flex-col"
-        style={{ minHeight: '100vh', minHeight: '100dvh' }}
+      <div
+        className="fixed inset-0 bg-white flex flex-col"
+        style={{ minHeight: "100vh", minHeight: "100dvh" }}
       >
-        <header className={`absolute top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 ${drawerHeight > 80 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        <header
+          className={`absolute top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 ${
+            drawerHeight > 80 ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
+        >
           <div className="px-4 lg:px-6 xl:px-8 py-4 lg:py-5">
             <div className="flex items-center gap-3 lg:gap-4 max-w-screen-2xl mx-auto">
-              <Link to="/" className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors flex-shrink-0">
-                <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              <Link
+                to="/"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors flex-shrink-0"
+              >
+                <svg
+                  className="w-5 h-5 text-gray-900"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
                 </svg>
               </Link>
               <div className="flex-1 max-w-2xl relative">
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
-                <input type="text" placeholder="Search treatments or businesses" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} className="w-full pl-11 pr-4 py-3 lg:py-3.5 bg-white border border-gray-300 rounded-full focus:ring-1 focus:ring-black focus:border-black text-sm lg:text-base transition-all shadow-lg" style={{ fontSize: "16px", touchAction: "manipulation" }} />
+                <input
+                  type="text"
+                  placeholder="Search treatments or businesses"
+                  value={filters.search}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, search: e.target.value }))
+                  }
+                  className="w-full pl-11 pr-4 py-3 lg:py-3.5 bg-white border border-gray-300 rounded-full focus:ring-1 focus:ring-black focus:border-black text-sm lg:text-base transition-all shadow-lg"
+                  style={{ fontSize: "16px", touchAction: "manipulation" }}
+                />
               </div>
-              <Link to="/client/profile" className="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0 border border-gray-200 shadow-lg">
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              <Link
+                to="/client/profile"
+                className="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0 border border-gray-200 shadow-lg"
+              >
+                <svg
+                  className="w-5 h-5 text-gray-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
                 </svg>
               </Link>
             </div>
@@ -685,23 +826,68 @@ export default function SearchPage() {
           <div className="hidden lg:flex lg:flex-col lg:w-[440px] xl:w-[480px] 2xl:w-[520px] h-full border-r border-gray-100 bg-white overflow-hidden">
             <div className="flex-shrink-0 px-6 xl:px-8 py-5 border-b border-gray-100">
               <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-                <FilterChip label="All distances" active={filters.distance === "all"} onClick={() => setFilters((p) => ({ ...p, distance: "all" }))} />
-                <FilterChip label="Within 5 mi" active={filters.distance === "5"} onClick={() => setFilters((p) => ({ ...p, distance: "5" }))} />
-                <FilterChip label="Within 10 mi" active={filters.distance === "10"} onClick={() => setFilters((p) => ({ ...p, distance: "10" }))} />
-                <FilterChip label="4+ stars" active={filters.rating === "4"} onClick={() => setFilters((p) => ({ ...p, rating: p.rating === "4" ? "all" : "4" }))} />
-                <FilterChip label="4.5+ stars" active={filters.rating === "4.5"} onClick={() => setFilters((p) => ({ ...p, rating: p.rating === "4.5" ? "all" : "4.5" }))} />
+                <FilterChip
+                  label="All distances"
+                  active={filters.distance === "all"}
+                  onClick={() => setFilters((p) => ({ ...p, distance: "all" }))}
+                />
+                <FilterChip
+                  label="Within 5 mi"
+                  active={filters.distance === "5"}
+                  onClick={() => setFilters((p) => ({ ...p, distance: "5" }))}
+                />
+                <FilterChip
+                  label="Within 10 mi"
+                  active={filters.distance === "10"}
+                  onClick={() => setFilters((p) => ({ ...p, distance: "10" }))}
+                />
+                <FilterChip
+                  label="4+ stars"
+                  active={filters.rating === "4"}
+                  onClick={() =>
+                    setFilters((p) => ({
+                      ...p,
+                      rating: p.rating === "4" ? "all" : "4",
+                    }))
+                  }
+                />
+                <FilterChip
+                  label="4.5+ stars"
+                  active={filters.rating === "4.5"}
+                  onClick={() =>
+                    setFilters((p) => ({
+                      ...p,
+                      rating: p.rating === "4.5" ? "all" : "4.5",
+                    }))
+                  }
+                />
               </div>
               <div className="mt-3.5">
                 <p className="text-sm lg:text-base text-gray-600">
-                  <strong className="font-semibold text-gray-900">{filteredVenuesWithDistance.length}</strong> {filteredVenuesWithDistance.length === 1 ? "venue" : "venues"} found
+                  <strong className="font-semibold text-gray-900">
+                    {filteredVenuesWithDistance.length}
+                  </strong>{" "}
+                  {filteredVenuesWithDistance.length === 1 ? "venue" : "venues"}{" "}
+                  found
                 </p>
               </div>
             </div>
-            <div ref={cardContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-4 xl:px-5 py-4 space-y-4 custom-scrollbar" style={{ scrollbarWidth: "thin", scrollbarColor: "#e5e7eb #f9fafb" }}>
+            <div
+              ref={cardContainerRef}
+              onScroll={handleScroll}
+              className="flex-1 overflow-y-auto px-4 xl:px-5 py-4 space-y-4 custom-scrollbar"
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "#e5e7eb #f9fafb",
+              }}
+            >
               {loading ? (
                 <div className="space-y-4 py-2">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="rounded-2xl border border-gray-100 overflow-hidden">
+                    <div
+                      key={i}
+                      className="rounded-2xl border border-gray-100 overflow-hidden"
+                    >
                       <div className="h-36 bg-gray-100 animate-pulse" />
                       <div className="p-4 space-y-3">
                         <div className="h-4 w-2/3 bg-gray-100 animate-pulse rounded" />
@@ -713,14 +899,39 @@ export default function SearchPage() {
                 </div>
               ) : filteredVenuesWithDistance.length === 0 ? (
                 <div className="text-center py-20">
-                  <p className="text-gray-900 font-medium mb-2">No venues found</p>
-                  <p className="text-sm text-gray-500">Try adjusting your search or filters</p>
+                  <p className="text-gray-900 font-medium mb-2">
+                    No venues found
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Try adjusting your search or filters
+                  </p>
                 </div>
               ) : (
                 <AnimatePresence>
                   {filteredVenuesWithDistance.map((venue, index) => (
-                    <motion.div key={venue._id} ref={(el) => (cardRefs.current[venue._id] = el)} data-venue-id={venue._id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }} transition={{ delay: index * 0.03, type: "spring", stiffness: 280, damping: 24 }} onMouseEnter={() => setActiveVenueId(venue._id)}>
-                      <VenueCard venue={venue} active={venue._id === activeVenueId} onClick={() => { setActiveVenueId(venue._id); setSelectedVenueId(venue._id); }} />
+                    <motion.div
+                      key={venue._id}
+                      ref={(el) => (cardRefs.current[venue._id] = el)}
+                      data-venue-id={venue._id}
+                      initial={{ opacity: 0, y: 14 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -14 }}
+                      transition={{
+                        delay: index * 0.03,
+                        type: "spring",
+                        stiffness: 280,
+                        damping: 24,
+                      }}
+                      onMouseEnter={() => setActiveVenueId(venue._id)}
+                    >
+                      <VenueCard
+                        venue={venue}
+                        active={venue._id === activeVenueId}
+                        onClick={() => {
+                          setActiveVenueId(venue._id);
+                          setSelectedVenueId(venue._id);
+                        }}
+                      />
                     </motion.div>
                   ))}
                 </AnimatePresence>
@@ -730,46 +941,96 @@ export default function SearchPage() {
           <div className="absolute lg:relative inset-0 lg:inset-auto lg:flex-1 h-full w-full bg-gray-100">
             <div ref={mapRef} className="w-full h-full" />
             {selectedVenue && (
-              <div ref={popoverRef} className="absolute z-[1000]" style={{ left: 0, top: 0 }}>
-                <MapPopoverCard venue={selectedVenue} onClose={() => setSelectedVenueId(null)} />
+              <div
+                ref={popoverRef}
+                className="absolute z-[1000]"
+                style={{ left: 0, top: 0 }}
+              >
+                <MapPopoverCard
+                  venue={selectedVenue}
+                  onClose={() => setSelectedVenueId(null)}
+                />
               </div>
             )}
           </div>
         </div>
-        <div 
+        <div
           className="lg:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-[20px] shadow-lg z-[100] transition-all"
-          style={{ 
+          style={{
             height: `${drawerHeight}vh`,
-            transition: isDragging ? 'none' : 'height 0.3s ease-out'
+            transition: isDragging ? "none" : "height 0.3s ease-out",
           }}
         >
-          <div 
+          <div
             className="flex items-center justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            <div className={`w-10 h-1 rounded-full ${isDragging ? 'bg-gray-400' : 'bg-gray-300'}`} />
+            <div
+              className={`w-10 h-1 rounded-full ${
+                isDragging ? "bg-gray-400" : "bg-gray-300"
+              }`}
+            />
           </div>
           <div className="px-4 py-3 border-b border-gray-200">
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3">
-              <FilterChip label="All distances" active={filters.distance === "all"} onClick={() => setFilters((p) => ({ ...p, distance: "all" }))} />
-              <FilterChip label="Within 5 mi" active={filters.distance === "5"} onClick={() => setFilters((p) => ({ ...p, distance: "5" }))} />
-              <FilterChip label="Within 10 mi" active={filters.distance === "10"} onClick={() => setFilters((p) => ({ ...p, distance: "10" }))} />
-              <FilterChip label="4+ stars" active={filters.rating === "4"} onClick={() => setFilters((p) => ({ ...p, rating: p.rating === "4" ? "all" : "4" }))} />
-              <FilterChip label="4.5+ stars" active={filters.rating === "4.5"} onClick={() => setFilters((p) => ({ ...p, rating: p.rating === "4.5" ? "all" : "4.5" }))} />
+              <FilterChip
+                label="All distances"
+                active={filters.distance === "all"}
+                onClick={() => setFilters((p) => ({ ...p, distance: "all" }))}
+              />
+              <FilterChip
+                label="Within 5 mi"
+                active={filters.distance === "5"}
+                onClick={() => setFilters((p) => ({ ...p, distance: "5" }))}
+              />
+              <FilterChip
+                label="Within 10 mi"
+                active={filters.distance === "10"}
+                onClick={() => setFilters((p) => ({ ...p, distance: "10" }))}
+              />
+              <FilterChip
+                label="4+ stars"
+                active={filters.rating === "4"}
+                onClick={() =>
+                  setFilters((p) => ({
+                    ...p,
+                    rating: p.rating === "4" ? "all" : "4",
+                  }))
+                }
+              />
+              <FilterChip
+                label="4.5+ stars"
+                active={filters.rating === "4.5"}
+                onClick={() =>
+                  setFilters((p) => ({
+                    ...p,
+                    rating: p.rating === "4.5" ? "all" : "4.5",
+                  }))
+                }
+              />
             </div>
             <div className="py-2 border-t border-gray-100">
               <p className="text-sm text-gray-600">
-                <strong className="font-semibold text-gray-900">{filteredVenuesWithDistance.length}</strong> venues found
+                <strong className="font-semibold text-gray-900">
+                  {filteredVenuesWithDistance.length}
+                </strong>{" "}
+                venues found
               </p>
             </div>
           </div>
-          <div className="h-full overflow-y-auto px-4 py-4 space-y-4 pb-32" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div
+            className="h-full overflow-y-auto px-4 py-4 space-y-4 pb-32"
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
             {loading ? (
               <div className="space-y-4">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="rounded-2xl border border-gray-100 overflow-hidden">
+                  <div
+                    key={i}
+                    className="rounded-2xl border border-gray-100 overflow-hidden"
+                  >
                     <div className="h-36 bg-gray-100 animate-pulse" />
                     <div className="p-4 space-y-3">
                       <div className="h-4 w-2/3 bg-gray-100 animate-pulse rounded" />
@@ -781,12 +1042,24 @@ export default function SearchPage() {
               </div>
             ) : filteredVenuesWithDistance.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-gray-900 font-medium mb-2">No venues found</p>
-                <p className="text-sm text-gray-500">Try adjusting your search or filters</p>
+                <p className="text-gray-900 font-medium mb-2">
+                  No venues found
+                </p>
+                <p className="text-sm text-gray-500">
+                  Try adjusting your search or filters
+                </p>
               </div>
             ) : (
               filteredVenuesWithDistance.map((venue) => (
-                <VenueCard key={venue._id} venue={venue} active={venue._id === activeVenueId} onClick={() => { setActiveVenueId(venue._id); setSelectedVenueId(venue._id); }} />
+                <VenueCard
+                  key={venue._id}
+                  venue={venue}
+                  active={venue._id === activeVenueId}
+                  onClick={() => {
+                    setActiveVenueId(venue._id);
+                    setSelectedVenueId(venue._id);
+                  }}
+                />
               ))
             )}
           </div>

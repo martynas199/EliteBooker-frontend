@@ -136,10 +136,12 @@ export default function SpecialistSelectionPage() {
       const res = await api.get("/services", {
         params: { limit: 1000 }, // Fetch all services
       });
-      
-      console.log(`[BeauticiansPage] Selected specialist: ${specialist.name} (${specialist._id})`);
+
+      console.log(
+        `[BeauticiansPage] Selected specialist: ${specialist.name} (${specialist._id})`
+      );
       console.log(`[BeauticiansPage] Total services fetched:`, res.data.length);
-      
+
       const specialistServices = res.data.filter((service) => {
         // Helper to get ID from either string or object
         const getId = (field) => {
@@ -150,16 +152,22 @@ export default function SpecialistSelectionPage() {
         // Check primary specialist (can be populated object or ID string)
         const primaryId = getId(service.primaryBeauticianId);
         const primaryMatch = primaryId === specialist._id;
-        
-        console.log(`[Service Filter] "${service.name}" - Primary: ${primaryId} (${primaryMatch ? 'MATCH' : 'no match'})`);
-        
+
+        console.log(
+          `[Service Filter] "${service.name}" - Primary: ${primaryId} (${
+            primaryMatch ? "MATCH" : "no match"
+          })`
+        );
+
         if (primaryMatch) return true;
 
         // Check legacy single specialist field
         const legacyId = getId(service.specialistId);
         const legacyMatch = legacyId === specialist._id;
         if (legacyMatch) {
-          console.log(`[Service Filter] "${service.name}" - Legacy specialist match: ${legacyId}`);
+          console.log(
+            `[Service Filter] "${service.name}" - Legacy specialist match: ${legacyId}`
+          );
           return true;
         }
 
@@ -167,7 +175,9 @@ export default function SpecialistSelectionPage() {
         return false;
       });
 
-      console.log(`[BeauticiansPage] Filtered to ${specialistServices.length} services for ${specialist.name}`);
+      console.log(
+        `[BeauticiansPage] Filtered to ${specialistServices.length} services for ${specialist.name}`
+      );
       setServices(specialistServices);
     } catch (err) {
       console.error("Failed to fetch services:", err);

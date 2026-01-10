@@ -38,7 +38,7 @@ export default function ProfileMenu({
 
   const handleNavigation = (path, action) => {
     if (onItemClick) onItemClick();
-    
+
     // Handle special actions
     if (action === "gift-card") {
       if (onGiftCardClick) {
@@ -48,7 +48,7 @@ export default function ProfileMenu({
       }
       return;
     }
-    
+
     navigate(path);
   };
 
@@ -238,7 +238,9 @@ export default function ProfileMenu({
             onClick={() => handleNavigation(businessItem.path)}
             className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
           >
-            <span className="text-base font-medium text-gray-900">{businessItem.label}</span>
+            <span className="text-base font-medium text-gray-900">
+              {businessItem.label}
+            </span>
             <ArrowRight className="w-5 h-5 text-gray-600" />
           </button>
         </div>
