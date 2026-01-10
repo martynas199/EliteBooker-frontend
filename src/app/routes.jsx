@@ -6,6 +6,7 @@ import logo from "../assets/logo.svg";
 import LandingPage from "../system/pages/LandingPage";
 import BusinessesLandingPage from "../system/pages/BusinessesLandingPage";
 import SearchPage from "../system/pages/SearchPage";
+import SearchPageSimple from "../system/pages/SearchPageSimple";
 import HelpPage from "../system/pages/HelpPage";
 import SalonDetails from "../tenant/pages/SalonDetails";
 import TimeSlots from "../tenant/pages/TimeSlotsPage";
@@ -235,8 +236,8 @@ export default function AppRoutes() {
         {/* Mobile Menu */}
         <Route path="/menu" element={<MenuPage />} />
 
-        {/* Search Page */}
-        <Route path="/search" element={<SearchPage />} />
+        {/* Search Page - Use simple version for mobile compatibility */}
+        <Route path="/search" element={<SearchPageSimple />} />
 
         {/* Browse Businesses */}
         <Route path="/business" element={<LandingPage />} />
