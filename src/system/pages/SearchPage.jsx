@@ -78,6 +78,7 @@ export default function SearchPage() {
   const cardContainerRef = useRef(null);
   const scrollTimerRef = useRef(null);
   const pendingRecenterRef = useRef(false);
+  const userLocationMarkerRef = useRef(null);
 
   // Add console log to debug
   useEffect(() => {
@@ -108,6 +109,13 @@ export default function SearchPage() {
         } catch {}
       }
       nativeMarkersRef.current.clear();
+
+      if (userLocationMarkerRef.current) {
+        try {
+          userLocationMarkerRef.current.setMap(null);
+        } catch {}
+        userLocationMarkerRef.current = null;
+      }
     };
   }, []);
 
@@ -538,12 +546,8 @@ export default function SearchPage() {
 
   const locationButtonBottom = useMemo(() => {
     if (viewportWidth >= 1024) return "24px"; // desktop: keep near bottom right
-    const vh = viewportHeight || 0;
-    if (!vh) return "72px";
-    const px = (drawerHeight / 100) * vh + 16; // just above drawer top
-    const capped = Math.min(px, Math.max(vh - 96, 48)); // avoid pushing off the top
-    return `${capped}px`;
-  }, [viewportWidth, viewportHeight, drawerHeight]);
+    return `calc(${drawerHeight}vh + 12px)`; // sit just above the drawer on mobile
+  }, [viewportWidth, drawerHeight]);
 
   const recenterToUser = useCallback(() => {
     const map = googleMapRef.current;
@@ -784,6 +788,47 @@ export default function SearchPage() {
       if (onIdle) onIdle.remove();
     };
   }, [positionPopover, selectedVenueId]);
+
+  useEffect(() => {
+    const map = googleMapRef.current;
+    if (!map || !window.google?.maps) return;
+
+    if (!userLocation) {
+      if (userLocationMarkerRef.current) {
+        try {
+          userLocationMarkerRef.current.setMap(null);
+        } catch {}
+        userLocationMarkerRef.current = null;
+      }
+      return;
+    }
+
+    const icon = {
+      path: window.google.maps.SymbolPath.CIRCLE,
+      scale: 8,
+      fillColor: "#2563eb",
+      fillOpacity: 1,
+      strokeColor: "#ffffff",
+      strokeWeight: 3,
+    };
+
+    if (!userLocationMarkerRef.current) {
+      try {
+        userLocationMarkerRef.current = new window.google.maps.Marker({
+          position: userLocation,
+          map,
+          icon,
+          zIndex: 1200,
+        });
+      } catch {}
+    } else {
+      try {
+        userLocationMarkerRef.current.setPosition(userLocation);
+        userLocationMarkerRef.current.setIcon(icon);
+        userLocationMarkerRef.current.setMap(map);
+      } catch {}
+    }
+  }, [userLocation, mapReady]);
 
   useEffect(() => {
     if (pendingRecenterRef.current && userLocation && googleMapRef.current) {
@@ -1170,7 +1215,7 @@ export default function SearchPage() {
             <button
               type="button"
               onClick={recenterToUser}
-              className="absolute right-4 z-[160] w-11 h-11 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform"
+              className="absolute right-4 z-[200] w-11 h-11 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform"
               style={{ bottom: locationButtonBottom }}
               aria-label="Center on your location"
             >

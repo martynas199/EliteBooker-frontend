@@ -50,6 +50,8 @@ export default function Dashboard() {
   const [showCreateStaffModal, setShowCreateStaffModal] = useState(false);
   const [metrics, setMetrics] = useState(null);
   const [metricsLoading, setMetricsLoading] = useState(false);
+  const [salonData, setSalonData] = useState(null);
+  const [manualTaskCompletions, setManualTaskCompletions] = useState({});
 
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -200,7 +202,7 @@ export default function Dashboard() {
 
         let appointments = [];
         let specialistsData = [];
-        let salonData = {};
+        let salonInfo = {};
 
         if (appointmentsResult.status === "fulfilled") {
           appointments = appointmentsResult.value.data || [];
@@ -221,7 +223,7 @@ export default function Dashboard() {
         }
 
         if (salonResult.status === "fulfilled") {
-          salonData = salonResult.value.data || {};
+          salonInfo = salonResult.value.data || {};
         } else {
           requestErrors.push({
             endpoint: "/salon",
@@ -241,9 +243,9 @@ export default function Dashboard() {
         // Store salon slug for booking page link
         // Priority: use slug first, then generate from name, never use ID
         const slug =
-          salonData.slug ||
-          (salonData.name
-            ? salonData.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+          salonInfo.slug ||
+          (salonInfo.name
+            ? salonInfo.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
             : null);
 
         if (slug) {
@@ -251,9 +253,11 @@ export default function Dashboard() {
         } else {
           console.warn(
             "[Dashboard] No salon slug found in response",
-            salonData
+            salonInfo
           );
         }
+
+        setSalonData(salonInfo);
 
         // Filter appointments based on admin role and linked specialist
         if (isSuperAdmin) {
@@ -411,6 +415,89 @@ export default function Dashboard() {
       (stripeSpecialist.stripeStatus !== "connected" ||
         !stripeSpecialist.stripeAccountId)
   );
+
+  const onboardingTasks = useMemo(() => {
+    const hasService = (services || []).length > 0;
+    const hasStripe = Boolean(
+      stripeSpecialist &&
+        stripeSpecialist.stripeStatus === "connected" &&
+        stripeSpecialist.stripeAccountId
+    );
+    const hasHero = Boolean(
+      salonData?.heroSections?.length ||
+        salonData?.heroSectionConfigured ||
+        salonData?.heroImages?.length
+    );
+    const hasAbout = Boolean(
+      salonData?.aboutUsContent ||
+        salonData?.about ||
+        salonData?.aboutUs?.content
+    );
+    const hasContact = Boolean(
+      salonData?.salonEmail || salonData?.salonPhone || salonData?.contactEmail
+    );
+
+    const baseTasks = [
+      {
+        id: "service",
+        title: "Add a service",
+        description: "Open the service creator",
+        action: "Start",
+        type: "modal",
+        completedAutomatically: hasService,
+      },
+      {
+        id: "stripe",
+        title: "Connect Stripe",
+        description: "Enable payments and payouts",
+        action: "Go",
+        to: "/admin/stripe-connect",
+        completedAutomatically: hasStripe,
+      },
+      {
+        id: "hero",
+        title: "Update hero",
+        description: "Add imagery and headlines",
+        action: "Go",
+        to: "/admin/hero-sections",
+        completedAutomatically: hasHero,
+      },
+      {
+        id: "about",
+        title: "Update About Us",
+        description: "Tell clients who you are",
+        action: "Go",
+        to: "/admin/about-us",
+        completedAutomatically: hasAbout,
+      },
+      {
+        id: "contact",
+        title: "Update Contact Us",
+        description: "Set phone, email, and hours",
+        action: "Go",
+        to: "/admin/settings",
+        completedAutomatically: hasContact,
+      },
+    ];
+
+    return baseTasks.map((task) => ({
+      ...task,
+      completed:
+        task.completedAutomatically || manualTaskCompletions[task.id] === true,
+    }));
+  }, [
+    services,
+    stripeSpecialist,
+    salonData,
+    manualTaskCompletions,
+  ]);
+
+  const toggleManualTask = (id) => {
+    setManualTaskCompletions((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   useEffect(() => {
     if (!admin) {
@@ -1181,6 +1268,189 @@ export default function Dashboard() {
               </div>
             </Link>
           </div>
+
+          {/* Onboarding Tasks */}
+          {!onboardingTasks.every((task) => task.completed) && (
+            <div className="mt-6 bg-white rounded-2xl border border-gray-100 shadow-lg p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-600">
+                    Your tasks
+                  </p>
+                  <h3 className="text-lg font-black text-gray-900">
+                    Get your booking site ready
+                  </h3>
+                </div>
+                <span className="text-xs text-gray-500">{onboardingTasks.length} steps</span>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-3">
+                {onboardingTasks.map((task) => {
+                  const content = (
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`p-2 rounded-lg bg-white border shadow-sm ${
+                          task.completed
+                            ? "text-green-700 border-green-100"
+                            : task.id === "service"
+                            ? "text-brand-700 border-brand-100"
+                            : task.id === "stripe"
+                            ? "text-indigo-700 border-indigo-100"
+                            : task.id === "hero"
+                            ? "text-orange-700 border-orange-100"
+                            : task.id === "about"
+                            ? "text-amber-700 border-amber-100"
+                            : "text-teal-700 border-teal-100"
+                        }`}
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          viewBox="0 0 24 24"
+                        >
+                          {task.id === "service" && (
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4v16m8-8H4"
+                            />
+                          )}
+                          {task.id === "stripe" && (
+                            <>
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M12 6v6l4 2"
+                              />
+                              <circle cx="12" cy="12" r="9" />
+                            </>
+                          )}
+                          {task.id === "hero" && (
+                            <>
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M12 6l7 4-7 4-7-4 7-4z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 10v4l7 4 7-4v-4"
+                              />
+                            </>
+                          )}
+                          {task.id === "about" && (
+                            <>
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5.5 20a6.5 6.5 0 0113 0"
+                              />
+                            </>
+                          )}
+                          {task.id === "contact" && (
+                            <>
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M21 10V6a2 2 0 00-2-2H5a2 2 0 00-2 2v4m18 0v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8m18 0H3"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M7 14h.01M12 14h.01M17 14h.01M7 17h10"
+                              />
+                            </>
+                          )}
+                        </svg>
+                      </div>
+                      <div className="text-left">
+                        <p className="text-sm font-semibold text-gray-900">{task.title}</p>
+                        <p className="text-xs text-gray-500">{task.description}</p>
+                      </div>
+                    </div>
+                  );
+
+                  const ActionWrapper = task.to ? Link : "button";
+                  const actionProps = task.to
+                    ? { to: task.to }
+                    : { type: "button", onClick: () => setShowCreateServiceModal(true) };
+
+                  return (
+                    <div
+                      key={task.id}
+                      className={`group flex items-center justify-between w-full px-4 py-3 rounded-xl border transition-all text-left ${
+                        task.completed
+                          ? "border-green-200 bg-green-50/60"
+                          : task.id === "service"
+                          ? "border-brand-100 bg-brand-50/60 hover:bg-brand-50 hover:shadow-md"
+                          : task.id === "stripe"
+                          ? "border-indigo-100 bg-indigo-50/70 hover:bg-indigo-50 hover:shadow-md"
+                          : task.id === "hero"
+                          ? "border-orange-100 bg-orange-50/70 hover:bg-orange-50 hover:shadow-md"
+                          : task.id === "about"
+                          ? "border-amber-100 bg-amber-50/70 hover:bg-amber-50 hover:shadow-md"
+                          : "border-teal-100 bg-teal-50/70 hover:bg-teal-50 hover:shadow-md"
+                      }`}
+                    >
+                      <ActionWrapper className="flex-1 flex items-center gap-3" {...actionProps}>
+                        {content}
+                      </ActionWrapper>
+
+                      <div className="flex items-center gap-2 ml-3">
+                        <span
+                          className={`text-xs font-bold ${
+                            task.completed ? "text-green-700" : "text-gray-500"
+                          }`}
+                        >
+                          {task.completed ? "Done" : task.action}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleManualTask(task.id);
+                          }}
+                          className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all ${
+                            task.completed
+                              ? "bg-green-500 border-green-500 text-white"
+                              : "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
+                          }`}
+                          aria-label={`Mark ${task.title} as complete`}
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            viewBox="0 0 24 24"
+                          >
+                            {task.completed ? (
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            ) : (
+                              <circle cx="12" cy="12" r="8" />
+                            )}
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </>
       )}
 
