@@ -51,6 +51,7 @@ export default function SearchPage() {
   });
   const [userLocation, setUserLocation] = useState(null);
   const [mapsLoaded, setMapsLoaded] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
   const [drawerHeight, setDrawerHeight] = useState(60); // percentage of viewport height
   const [viewportHeight, setViewportHeight] = useState(() =>
     typeof window !== "undefined" ? window.innerHeight : 0
@@ -59,7 +60,6 @@ export default function SearchPage() {
   const [isContentAtTop, setIsContentAtTop] = useState(true);
   const dragStartY = useRef(0);
   const dragStartHeight = useRef(0);
-  const scrollTouchStartY = useRef(0);
   const contentScrollRef = useRef(null);
   const mapRef = useRef(null);
   const googleMapRef = useRef(null);
@@ -360,6 +360,7 @@ export default function SearchPage() {
     overlay.setMap(map);
     overlayRef.current = overlay;
     console.log("Overlay created and set to map");
+    setMapReady(true);
   }, [userLocation]);
 
   const getMapBBox = useCallback(() => {
@@ -618,6 +619,7 @@ export default function SearchPage() {
   // render basic Google Maps markers so venues are always visible on the map.
   useEffect(() => {
     const map = googleMapRef.current;
+    if (!mapsLoaded || !mapReady) return;
     if (!map || !window.google?.maps) return;
 
     // If the custom overlay markers are present, don't render duplicates.
@@ -687,7 +689,7 @@ export default function SearchPage() {
         nativeMarkersRef.current.delete(id);
       }
     }
-  }, [filteredVenuesWithDistance]);
+  }, [filteredVenuesWithDistance, mapsLoaded, mapReady]);
 
   useEffect(() => {
     if (!googleMapRef.current) return;
@@ -852,32 +854,15 @@ export default function SearchPage() {
           }
         `}</style>
       </div>
-    );
+            className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-4 pb-32"
   }
 
-  return (
+              overflowY: "auto",
     <>
       <SEOHead
         title="Discover Beauty & Wellness - EliteBooker"
         description="Find and book beauty salons, spas, and wellness businesses near you"
       />
-      <div
-        className="fixed inset-0 bg-white flex flex-col"
-        style={{ minHeight: "100vh", height: "100dvh" }}
-      >
-        <header
-          className={`absolute top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 ${
-            drawerHeight > 80 ? "opacity-0 pointer-events-none" : "opacity-100"
-          }`}
-        >
-          <div className="px-4 lg:px-6 xl:px-8 py-4 lg:py-5">
-            <div className="flex items-center gap-3 lg:gap-4 max-w-screen-2xl mx-auto">
-              <Link
-                to="/"
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors flex-shrink-0"
-              >
-                <svg
-                  className="w-5 h-5 text-gray-900"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
