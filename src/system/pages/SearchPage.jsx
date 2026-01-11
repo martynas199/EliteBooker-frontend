@@ -1187,10 +1187,18 @@ export default function SearchPage() {
               WebkitOverflowScrolling: "touch",
               overflowY: "auto",
               overscrollBehaviorY: "contain",
-              touchAction: "pan-y",
+              touchAction: "auto",
               position: "relative",
             }}
             onScroll={handleContentScroll}
+            onTouchStartCapture={(e) => {
+              // Keep scroll gestures inside the list; don't let them bubble to the drawer drag handlers.
+              e.stopPropagation();
+              if (isDragging) setIsDragging(false);
+            }}
+            onTouchMoveCapture={(e) => {
+              e.stopPropagation();
+            }}
           >
             {loading ? (
               <div className="space-y-4">
