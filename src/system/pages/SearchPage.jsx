@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../../shared/lib/apiClient";
 import SEOHead from "../../shared/components/seo/SEOHead";
@@ -8,6 +8,7 @@ import React from "react";
 import { useSuperclusterVenues } from "../hooks/useSuperclusterVenues";
 import VenueCard from "../components/search/VenueCard";
 import MapPopoverCard from "../components/search/MapPopoverCard";
+import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 
 const loadGoogleMapsScript = (apiKey) => {
   return new Promise((resolve, reject) => {
@@ -36,6 +37,8 @@ const loadGoogleMapsScript = (apiKey) => {
 };
 
 export default function SearchPage() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useClientAuth();
   const [searchParams] = useSearchParams();
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -961,24 +964,48 @@ export default function SearchPage() {
                   style={{ fontSize: "16px", touchAction: "manipulation" }}
                 />
               </div>
-              <Link
-                to="/client/profile"
-                className="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0 border border-gray-200 shadow-lg"
-              >
-                <svg
-                  className="w-5 h-5 text-gray-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              {isAuthenticated ? (
+                <Link
+                  to="/client/profile"
+                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0 border border-gray-200 shadow-lg"
+                  aria-label="Profile"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-              </Link>
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => navigate("/menu")}
+                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0 border border-gray-200 shadow-lg"
+                  aria-label="Open menu"
+                >
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  </svg>
+                </button>
+              )}
             </div>
           </div>
         </header>

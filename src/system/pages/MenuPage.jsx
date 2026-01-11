@@ -6,7 +6,7 @@ import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 
 export default function MenuPage() {
   const navigate = useNavigate();
-  const { client, logout } = useClientAuth();
+  const { client, isAuthenticated, logout } = useClientAuth();
   const [showGiftCardModal, setShowGiftCardModal] = useState(false);
   const [error, setError] = useState(null);
 
@@ -55,6 +55,148 @@ export default function MenuPage() {
     );
   }
 
+  const handleLogin = () => {
+    navigate("/client/login");
+  };
+
+  const customerLinks = isAuthenticated
+    ? []
+    : [
+        {
+          label: "Log in or sign up",
+          onClick: handleLogin,
+          primary: true,
+        },
+        {
+          label: "Find a business",
+          href: "/search",
+        },
+        {
+          label: "Help and support",
+          href: "/help",
+        },
+      ];
+
+  const businessLinks = [
+    {
+      label: "List your business",
+      href: "/signup",
+    },
+    {
+      label: "Business log in",
+      href: "/admin/login",
+    },
+  ];
+
+  // Public (not logged in) menu
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: "white",
+          display: "flex",
+          flexDirection: "column",
+          zIndex: 9999,
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "16px",
+            borderBottom: "1px solid #e5e7eb",
+            flexShrink: 0,
+          }}
+        >
+          <h1 style={{ fontSize: "18px", fontWeight: 600 }}>Menu</h1>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              padding: "8px",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              borderRadius: "999px",
+            }}
+          >
+            <svg
+              style={{ width: "24px", height: "24px" }}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            overflowX: "hidden",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          <nav className="px-4 py-4 space-y-3">
+            <div className="pt-3 border-t border-gray-200">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                For Customers
+              </p>
+              {customerLinks.map((link, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    if (link.onClick) {
+                      link.onClick();
+                    } else if (link.href) {
+                      navigate(link.href);
+                    }
+                  }}
+                  className={`w-full text-left py-2 font-medium transition-colors ${
+                    link.primary
+                      ? "text-violet-600 hover:text-violet-700"
+                      : "text-gray-600 hover:text-violet-600"
+                  }`}
+                >
+                  {link.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="pt-3 border-t border-gray-200">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                For Businesses
+              </p>
+              {businessLinks.map((link, index) => (
+                <button
+                  key={index}
+                  onClick={() => navigate(link.href)}
+                  className="w-full text-left py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
+                >
+                  {link.label}
+                </button>
+              ))}
+            </div>
+          </nav>
+        </div>
+      </div>
+    );
+  }
+
+  // Authenticated menu (profile)
   return (
     <div
       style={{
