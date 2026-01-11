@@ -637,14 +637,8 @@ export default function SearchPage() {
     const touch = e.touches[0];
     dragStartY.current = touch.clientY;
     dragStartHeight.current = drawerHeight;
-    
-    // Only allow dragging from handle area
-    const target = e.currentTarget;
-    const isHandle = target.closest('.drawer-handle');
-    if (isHandle || isContentAtTop) {
-      setIsDragging(true);
-    }
-  }, [drawerHeight, isContentAtTop]);
+    setIsDragging(true);
+  }, [drawerHeight]);
 
   const handleTouchMove = useCallback(
     (e) => {
@@ -1035,7 +1029,12 @@ export default function SearchPage() {
           <div
             ref={contentScrollRef}
             className="h-full overflow-y-auto px-4 py-4 space-y-4 pb-32"
-            style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-y" }}
+            style={{ 
+              WebkitOverflowScrolling: "touch",
+              overflowY: "auto",
+              touchAction: "pan-y",
+              position: "relative"
+            }}
             onScroll={handleContentScroll}
           >
             {loading ? (
