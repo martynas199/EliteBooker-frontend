@@ -53,8 +53,10 @@ export default function SearchPage() {
   const [mapsLoaded, setMapsLoaded] = useState(false);
   const [drawerHeight, setDrawerHeight] = useState(60); // percentage of viewport height
   const [isDragging, setIsDragging] = useState(false);
+  const [isContentAtTop, setIsContentAtTop] = useState(true);
   const dragStartY = useRef(0);
   const dragStartHeight = useRef(0);
+  const contentScrollRef = useRef(null);
   const mapRef = useRef(null);
   const googleMapRef = useRef(null);
   const overlayRef = useRef(null);
@@ -624,15 +626,25 @@ export default function SearchPage() {
     }, 120);
   }, [activeVenueId, filteredVenuesWithDistance.length]);
 
-  const handleTouchStart = useCallback(
-    (e) => {
-      const touch = e.touches[0];
-      dragStartY.current = touch.clientY;
-      dragStartHeight.current = drawerHeight;
+  }, [activeVenueId, filteredVenuesWithDistance.length]);
+
+  const handleContentScroll = useCallback((e) => {
+    const scrollTop = e.target.scrollTop;
+    setIsContentAtTop(scrollTop <= 5);
+  }, []);
+
+  const handleTouchStart = useCallback((e) => {
+    const touch = e.touches[0];
+    dragStartY.current = touch.clientY;
+    dragStartHeight.current = drawerHeight;
+    
+    // Only allow dragging from handle area
+    const target = e.currentTarget;
+    const isHandle = target.closest('.drawer-handle');
+    if (isHandle || isContentAtTop) {
       setIsDragging(true);
-    },
-    [drawerHeight]
-  );
+    }
+  }, [drawerHeight, isContentAtTop]);
 
   const handleTouchMove = useCallback(
     (e) => {
@@ -643,7 +655,7 @@ export default function SearchPage() {
       const deltaPercent = (deltaY / vh) * 100;
       const newHeight = Math.max(
         25,
-        Math.min(88, dragStartHeight.current + deltaPercent)
+        Math.min(83, dragStartHeight.current + deltaPercent)
       );
       setDrawerHeight(newHeight);
     },
@@ -962,7 +974,7 @@ export default function SearchPage() {
           }}
         >
           <div
-            className="flex items-center justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
+            className="drawer-handle flex items-center justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -1021,8 +1033,10 @@ export default function SearchPage() {
             </div>
           </div>
           <div
+            ref={contentScrollRef}
             className="h-full overflow-y-auto px-4 py-4 space-y-4 pb-32"
-            style={{ WebkitOverflowScrolling: "touch" }}
+            style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-y" }}
+            onScroll={handleContentScroll}
           >
             {loading ? (
               <div className="space-y-4">
