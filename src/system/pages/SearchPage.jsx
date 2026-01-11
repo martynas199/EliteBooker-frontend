@@ -52,15 +52,20 @@ export default function SearchPage() {
   const [userLocation, setUserLocation] = useState(null);
   const [mapsLoaded, setMapsLoaded] = useState(false);
   const [drawerHeight, setDrawerHeight] = useState(60); // percentage of viewport height
+  const [viewportHeight, setViewportHeight] = useState(() =>
+    typeof window !== "undefined" ? window.innerHeight : 0
+  );
   const [isDragging, setIsDragging] = useState(false);
   const [isContentAtTop, setIsContentAtTop] = useState(true);
   const dragStartY = useRef(0);
   const dragStartHeight = useRef(0);
+  const scrollTouchStartY = useRef(0);
   const contentScrollRef = useRef(null);
   const mapRef = useRef(null);
   const googleMapRef = useRef(null);
   const overlayRef = useRef(null);
   const markerMapRef = useRef(new Map());
+  const nativeMarkersRef = useRef(new Map());
   const lastClusterKeysRef = useRef("");
   const cardRefs = useRef({});
   const cardContainerRef = useRef(null);
@@ -77,6 +82,26 @@ export default function SearchPage() {
     return () => {
       console.log("[SearchPage] Component unmounted");
       document.body.style.overflow = "";
+
+      // Cleanup native markers
+      for (const [, marker] of nativeMarkersRef.current.entries()) {
+        try {
+          marker.setMap(null);
+        } catch {}
+      }
+      nativeMarkersRef.current.clear();
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportHeight(window.innerHeight);
+    };
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
     };
   }, []);
 
@@ -553,6 +578,13 @@ export default function SearchPage() {
         } catch {}
       }
       markerMapRef.current.clear();
+
+      for (const [, marker] of nativeMarkersRef.current.entries()) {
+        try {
+          marker.setMap(null);
+        } catch {}
+      }
+      nativeMarkersRef.current.clear();
     };
   }, []);
 
@@ -581,6 +613,81 @@ export default function SearchPage() {
       if (onIdle) onIdle.remove();
     };
   }, [renderClusterMarkers]);
+
+  // Fallback markers: if the custom overlay cluster markers aren't showing for any reason,
+  // render basic Google Maps markers so venues are always visible on the map.
+  useEffect(() => {
+    const map = googleMapRef.current;
+    if (!map || !window.google?.maps) return;
+
+    // If the custom overlay markers are present, don't render duplicates.
+    if (markerMapRef.current.size > 0) {
+      for (const [, marker] of nativeMarkersRef.current.entries()) {
+        try {
+          marker.setMap(null);
+        } catch {}
+      }
+      nativeMarkersRef.current.clear();
+      return;
+    }
+
+    const nextIds = new Set();
+    for (const venue of filteredVenuesWithDistance) {
+      let venueLat;
+      let venueLng;
+
+      if (Array.isArray(venue.location?.coordinates)) {
+        [venueLng, venueLat] = venue.location.coordinates;
+      } else if (venue.location?.lat != null && venue.location?.lng != null) {
+        venueLat = venue.location.lat;
+        venueLng = venue.location.lng;
+      } else if (
+        venue.location?.latitude != null &&
+        venue.location?.longitude != null
+      ) {
+        venueLat = venue.location.latitude;
+        venueLng = venue.location.longitude;
+      } else if (venue.lat != null && venue.lng != null) {
+        venueLat = venue.lat;
+        venueLng = venue.lng;
+      }
+
+      if (venueLat == null || venueLng == null) continue;
+
+      nextIds.add(venue._id);
+      const existing = nativeMarkersRef.current.get(venue._id);
+      if (existing) {
+        try {
+          existing.setPosition({ lat: venueLat, lng: venueLng });
+        } catch {}
+        continue;
+      }
+
+      try {
+        const marker = new window.google.maps.Marker({
+          position: { lat: venueLat, lng: venueLng },
+          map,
+          title: venue.name,
+        });
+        marker.addListener("click", () => {
+          setActiveVenueId(venue._id);
+          setSelectedVenueId(venue._id);
+        });
+        nativeMarkersRef.current.set(venue._id, marker);
+      } catch (e) {
+        // ignore marker failures
+      }
+    }
+
+    for (const [id, marker] of nativeMarkersRef.current.entries()) {
+      if (!nextIds.has(id)) {
+        try {
+          marker.setMap(null);
+        } catch {}
+        nativeMarkersRef.current.delete(id);
+      }
+    }
+  }, [filteredVenuesWithDistance]);
 
   useEffect(() => {
     if (!googleMapRef.current) return;
@@ -626,26 +733,27 @@ export default function SearchPage() {
     }, 120);
   }, [activeVenueId, filteredVenuesWithDistance.length]);
 
-  }, [activeVenueId, filteredVenuesWithDistance.length]);
-
   const handleContentScroll = useCallback((e) => {
     const scrollTop = e.target.scrollTop;
     setIsContentAtTop(scrollTop <= 5);
   }, []);
 
-  const handleTouchStart = useCallback((e) => {
-    const touch = e.touches[0];
-    dragStartY.current = touch.clientY;
-    dragStartHeight.current = drawerHeight;
-    setIsDragging(true);
-  }, [drawerHeight]);
+  const handleTouchStart = useCallback(
+    (e) => {
+      const touch = e.touches[0];
+      dragStartY.current = touch.clientY;
+      dragStartHeight.current = drawerHeight;
+      setIsDragging(true);
+    },
+    [drawerHeight]
+  );
 
   const handleTouchMove = useCallback(
     (e) => {
       if (!isDragging) return;
       const touch = e.touches[0];
       const deltaY = dragStartY.current - touch.clientY;
-      const vh = window.innerHeight;
+      const vh = viewportHeight || window.innerHeight;
       const deltaPercent = (deltaY / vh) * 100;
       const newHeight = Math.max(
         25,
@@ -653,7 +761,7 @@ export default function SearchPage() {
       );
       setDrawerHeight(newHeight);
     },
-    [isDragging]
+    [isDragging, viewportHeight]
   );
 
   const handleTouchEnd = useCallback(() => {
@@ -755,7 +863,7 @@ export default function SearchPage() {
       />
       <div
         className="fixed inset-0 bg-white flex flex-col"
-        style={{ minHeight: "100vh", minHeight: "100dvh" }}
+        style={{ minHeight: "100vh", height: "100dvh" }}
       >
         <header
           className={`absolute top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 ${
@@ -961,9 +1069,11 @@ export default function SearchPage() {
           </div>
         </div>
         <div
-          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-[20px] shadow-lg z-[100] transition-all"
+          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-[20px] shadow-lg z-[100] transition-all flex flex-col"
           style={{
-            height: `${drawerHeight}vh`,
+            height: `${Math.round(
+              ((viewportHeight || window.innerHeight) * drawerHeight) / 100
+            )}px`,
             transition: isDragging ? "none" : "height 0.3s ease-out",
           }}
         >
@@ -979,7 +1089,7 @@ export default function SearchPage() {
               }`}
             />
           </div>
-          <div className="px-4 py-3 border-b border-gray-200">
+          <div className="px-4 py-3 border-b border-gray-200 flex-shrink-0">
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3">
               <FilterChip
                 label="All distances"
@@ -1028,14 +1138,32 @@ export default function SearchPage() {
           </div>
           <div
             ref={contentScrollRef}
-            className="h-full overflow-y-auto px-4 py-4 space-y-4 pb-32"
-            style={{ 
+            className="flex-1 min-h-0 overflow-y-scroll px-4 py-4 space-y-4 pb-32"
+            style={{
               WebkitOverflowScrolling: "touch",
-              overflowY: "auto",
+              overflowY: "scroll",
+              overscrollBehaviorY: "contain",
               touchAction: "pan-y",
-              position: "relative"
+              position: "relative",
             }}
             onScroll={handleContentScroll}
+            onTouchStart={(e) => {
+              scrollTouchStartY.current = e.touches?.[0]?.clientY ?? 0;
+            }}
+            onTouchMove={(e) => {
+              const el = e.currentTarget;
+              const currentY = e.touches?.[0]?.clientY ?? 0;
+              const deltaY = currentY - scrollTouchStartY.current;
+
+              const atTop = el.scrollTop <= 0;
+              const atBottom =
+                el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+
+              // Prevent scroll chaining / rubber-banding from interfering with inner scrolling on iOS.
+              if ((atTop && deltaY > 0) || (atBottom && deltaY < 0)) {
+                e.preventDefault();
+              }
+            }}
           >
             {loading ? (
               <div className="space-y-4">
