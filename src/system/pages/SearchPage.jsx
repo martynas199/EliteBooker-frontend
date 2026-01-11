@@ -78,11 +78,20 @@ export default function SearchPage() {
 
     // Force page to top and prevent body scroll
     window.scrollTo(0, 0);
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevBodyOverscroll = document.body.style.overscrollBehaviorY;
+    const prevHtmlOverscroll = document.documentElement.style.overscrollBehaviorY;
+
     document.body.style.overflow = "hidden";
+    // Prevent downward swipe from triggering browser pull-to-refresh and stealing scroll.
+    document.body.style.overscrollBehaviorY = "none";
+    document.documentElement.style.overscrollBehaviorY = "none";
 
     return () => {
       console.log("[SearchPage] Component unmounted");
-      document.body.style.overflow = "";
+      document.body.style.overflow = prevBodyOverflow;
+      document.body.style.overscrollBehaviorY = prevBodyOverscroll;
+      document.documentElement.style.overscrollBehaviorY = prevHtmlOverscroll;
 
       // Cleanup native markers
       for (const [, marker] of nativeMarkersRef.current.entries()) {
@@ -1178,6 +1187,8 @@ export default function SearchPage() {
             style={{
               WebkitOverflowScrolling: "touch",
               overflowY: "auto",
+              overscrollBehaviorY: "contain",
+              touchAction: "pan-y",
               position: "relative",
             }}
             onScroll={handleContentScroll}
