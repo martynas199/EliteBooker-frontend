@@ -1116,10 +1116,9 @@ export default function SearchPage() {
         <div
           className="lg:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-[20px] shadow-lg z-[100] transition-all flex flex-col"
           style={{
-            height: `${Math.round(
-              ((viewportHeight || window.innerHeight) * drawerHeight) / 100
-            )}px`,
-            transition: isDragging ? "none" : "height 0.3s ease-out",
+            height: `${Math.round(viewportHeight || window.innerHeight)}px`,
+            transform: `translateY(${100 - drawerHeight}%)`,
+            transition: isDragging ? "none" : "transform 0.3s ease-out",
           }}
         >
           <div
