@@ -80,7 +80,8 @@ export default function SearchPage() {
     window.scrollTo(0, 0);
     const prevBodyOverflow = document.body.style.overflow;
     const prevBodyOverscroll = document.body.style.overscrollBehaviorY;
-    const prevHtmlOverscroll = document.documentElement.style.overscrollBehaviorY;
+    const prevHtmlOverscroll =
+      document.documentElement.style.overscrollBehaviorY;
 
     document.body.style.overflow = "hidden";
     // Prevent downward swipe from triggering browser pull-to-refresh and stealing scroll.
@@ -1116,9 +1117,8 @@ export default function SearchPage() {
         <div
           className="lg:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-[20px] shadow-lg z-[100] transition-all flex flex-col"
           style={{
-            height: `${Math.round(viewportHeight || window.innerHeight)}px`,
-            transform: `translateY(${100 - drawerHeight}%)`,
-            transition: isDragging ? "none" : "transform 0.3s ease-out",
+            height: `${drawerHeight}vh`,
+            transition: isDragging ? "none" : "height 0.25s ease-out",
           }}
         >
           <div
