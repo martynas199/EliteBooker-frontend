@@ -61,6 +61,7 @@ export default function SearchPage() {
   const dragStartY = useRef(0);
   const dragStartHeight = useRef(0);
   const contentScrollRef = useRef(null);
+  const headerRef = useRef(null);
   const mapRef = useRef(null);
   const googleMapRef = useRef(null);
   const overlayRef = useRef(null);
@@ -552,9 +553,41 @@ export default function SearchPage() {
       new window.google.maps.LatLng(venueLat, venueLng)
     );
     if (!point) return;
-    popEl.style.left = `${point.x}px`;
+
+    const popWidth = popEl.offsetWidth || 0;
+    const popHeight = popEl.offsetHeight || 0;
+    const headerBottom = headerRef.current
+      ? headerRef.current.getBoundingClientRect().bottom
+      : 0;
+    const viewportW = window.innerWidth || 0;
+    const viewportH = window.innerHeight || 0;
+    const margin = 12;
+
+    const minX = margin + popWidth / 2;
+    const maxX = Math.max(minX, viewportW - margin - popWidth / 2);
+    const clampedX = Math.min(Math.max(point.x, minX), maxX);
+
+    const desiredAboveTop = point.y - popHeight - 14;
+    const desiredBelowBottom = point.y + 14 + popHeight;
+
+    // Prefer above; flip below if it would be hidden under the header.
+    let mode = "above";
+    if (desiredAboveTop < headerBottom + margin) mode = "below";
+
+    // If below would overflow bottom, pin just under the header.
+    if (mode === "below" && desiredBelowBottom > viewportH - margin) {
+      popEl.style.left = `${clampedX}px`;
+      popEl.style.top = `${Math.round(headerBottom + margin)}px`;
+      popEl.style.transform = "translate(-50%, 0px)";
+      return;
+    }
+
+    popEl.style.left = `${clampedX}px`;
     popEl.style.top = `${point.y}px`;
-    popEl.style.transform = "translate(-50%, calc(-100% - 14px))";
+    popEl.style.transform =
+      mode === "below"
+        ? "translate(-50%, 14px)"
+        : "translate(-50%, calc(-100% - 14px))";
   }, [selectedVenue]);
 
   useEffect(() => {
@@ -868,6 +901,7 @@ export default function SearchPage() {
         style={{ minHeight: "100vh", height: "100dvh" }}
       >
         <header
+          ref={headerRef}
           className={`absolute top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 ${
             drawerHeight > 80 ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
@@ -1140,32 +1174,13 @@ export default function SearchPage() {
           </div>
           <div
             ref={contentScrollRef}
-            className="flex-1 min-h-0 overflow-y-scroll px-4 py-4 space-y-4 pb-32"
+            className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-4 pb-32"
             style={{
               WebkitOverflowScrolling: "touch",
-              overflowY: "scroll",
-              overscrollBehaviorY: "contain",
-              touchAction: "pan-y",
+              overflowY: "auto",
               position: "relative",
             }}
             onScroll={handleContentScroll}
-            onTouchStart={(e) => {
-              scrollTouchStartY.current = e.touches?.[0]?.clientY ?? 0;
-            }}
-            onTouchMove={(e) => {
-              const el = e.currentTarget;
-              const currentY = e.touches?.[0]?.clientY ?? 0;
-              const deltaY = currentY - scrollTouchStartY.current;
-
-              const atTop = el.scrollTop <= 0;
-              const atBottom =
-                el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
-
-              // Prevent scroll chaining / rubber-banding from interfering with inner scrolling on iOS.
-              if ((atTop && deltaY > 0) || (atBottom && deltaY < 0)) {
-                e.preventDefault();
-              }
-            }}
           >
             {loading ? (
               <div className="space-y-4">
