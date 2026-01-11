@@ -51,7 +51,12 @@ export default function Dashboard() {
   const [metrics, setMetrics] = useState(null);
   const [metricsLoading, setMetricsLoading] = useState(false);
   const [salonData, setSalonData] = useState(null);
+  const [settingsData, setSettingsData] = useState(null);
   const [manualTaskCompletions, setManualTaskCompletions] = useState({});
+  const [contentStatus, setContentStatus] = useState({
+    hero: false,
+    about: false,
+  });
 
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -180,12 +185,17 @@ export default function Dashboard() {
         setLoading(true);
 
         // Fetch appointments, specialists, and salon info with granular error tracking
-        const [appointmentsResult, specialistsResult, salonResult] =
-          await Promise.allSettled([
-            api.get("/appointments", { signal }),
-            api.get("/specialists", { params: { limit: 1000 }, signal }),
-            api.get("/salon", { signal }),
-          ]);
+        const [
+          appointmentsResult,
+          specialistsResult,
+          salonResult,
+          settingsResult,
+        ] = await Promise.allSettled([
+          api.get("/appointments", { signal }),
+          api.get("/specialists", { params: { limit: 1000 }, signal }),
+          api.get("/salon", { signal }),
+          api.get("/settings", { signal }),
+        ]);
 
         const resultList = [appointmentsResult, specialistsResult, salonResult];
 
@@ -203,6 +213,7 @@ export default function Dashboard() {
         let appointments = [];
         let specialistsData = [];
         let salonInfo = {};
+        let settingsInfo = null;
 
         if (appointmentsResult.status === "fulfilled") {
           appointments = appointmentsResult.value.data || [];
@@ -231,6 +242,15 @@ export default function Dashboard() {
           });
         }
 
+        if (settingsResult.status === "fulfilled") {
+          settingsInfo = settingsResult.value.data || null;
+        } else {
+          requestErrors.push({
+            endpoint: "/settings",
+            error: settingsResult.reason,
+          });
+        }
+
         if (requestErrors.length > 0) {
           requestErrors.forEach(({ endpoint, error }) => {
             console.error(`[Dashboard] ${endpoint} request failed`, error);
@@ -242,6 +262,7 @@ export default function Dashboard() {
 
         // Store salon slug for booking page link
         // Priority: use slug first, then generate from name, never use ID
+        setSettingsData(settingsInfo);
         const slug =
           salonInfo.slug ||
           (salonInfo.name
@@ -316,6 +337,51 @@ export default function Dashboard() {
       abortController.abort();
     };
   }, [fetchData, admin]); // Re-fetch when fetchData changes (which depends on admin and isSuperAdmin)
+
+  // Fetch hero/about presence once admin is available
+  useEffect(() => {
+    if (!admin) return;
+
+    let cancelled = false;
+    const loadContentStatus = async () => {
+      try {
+        const [heroResult, aboutResult] = await Promise.allSettled([
+          api.get("/hero-sections"),
+          api.get("/about-us/admin"),
+        ]);
+
+        const heroData =
+          heroResult.status === "fulfilled"
+            ? heroResult.value.data?.data ?? heroResult.value.data ?? []
+            : [];
+        const heroHasContent = Array.isArray(heroData) && heroData.length > 0;
+
+        const aboutPayload =
+          aboutResult.status === "fulfilled" ? aboutResult.value.data : null;
+        const aboutData = aboutPayload?.data || aboutPayload;
+        const aboutHasContent = Boolean(
+          aboutData &&
+            (aboutData.description || aboutData.quote || aboutData.image)
+        );
+
+        if (!cancelled) {
+          setContentStatus((prev) => ({
+            ...prev,
+            hero: heroHasContent,
+            about: aboutHasContent,
+          }));
+        }
+      } catch (err) {
+        if (cancelled) return;
+        console.warn("[Dashboard] Content status check failed", err);
+      }
+    };
+
+    loadContentStatus();
+    return () => {
+      cancelled = true;
+    };
+  }, [admin]);
 
   useEffect(() => {
     // Handle window resize for responsive calendar
@@ -419,23 +485,61 @@ export default function Dashboard() {
   const onboardingTasks = useMemo(() => {
     const hasService = (services || []).length > 0;
     const hasStripe = Boolean(
-      stripeSpecialist &&
-        stripeSpecialist.stripeStatus === "connected" &&
-        stripeSpecialist.stripeAccountId
+      (specialists || []).some(
+        (s) => s.stripeStatus === "connected" && s.stripeAccountId
+      ) ||
+        salonData?.stripeStatus === "connected" ||
+        salonData?.stripeConnectStatus === "connected" ||
+        (stripeSpecialist &&
+          stripeSpecialist.stripeStatus === "connected" &&
+          stripeSpecialist.stripeAccountId)
     );
-    const hasHero = Boolean(
-      salonData?.heroSections?.length ||
-        salonData?.heroSectionConfigured ||
-        salonData?.heroImages?.length
-    );
-    const hasAbout = Boolean(
-      salonData?.aboutUsContent ||
-        salonData?.about ||
-        salonData?.aboutUs?.content
-    );
+    const hasHero = Boolean(contentStatus.hero);
+    const hasAbout = Boolean(contentStatus.about);
     const hasContact = Boolean(
-      salonData?.salonEmail || salonData?.salonPhone || salonData?.contactEmail
+      salonData?.salonEmail ||
+        salonData?.salonPhone ||
+        salonData?.contactEmail ||
+        salonData?.contactPhone ||
+        salonData?.salonAddress ||
+        salonData?.address?.street ||
+        salonData?.contactPage?.email ||
+        salonData?.contactPage?.phone ||
+        salonData?.contactPage?.address ||
+        settingsData?.salonEmail ||
+        settingsData?.salonPhone ||
+        settingsData?.salonAddress ||
+        settingsData?.contactEmail ||
+        settingsData?.contactPhone ||
+        settingsData?.contactPage?.email ||
+        settingsData?.contactPage?.phone ||
+        settingsData?.contactPage?.address
     );
+
+    console.log("[Onboarding] status", {
+      hasService,
+      hasStripe,
+      hasHero,
+      hasAbout,
+      hasContact,
+      contactFields: {
+        salonEmail: salonData?.salonEmail,
+        salonPhone: salonData?.salonPhone,
+        contactEmail: salonData?.contactEmail,
+        contactPhone: salonData?.contactPhone,
+        salonAddress: salonData?.salonAddress,
+        address: salonData?.address,
+        contactPage: salonData?.contactPage,
+        settings: {
+          salonEmail: settingsData?.salonEmail,
+          salonPhone: settingsData?.salonPhone,
+          salonAddress: settingsData?.salonAddress,
+          contactEmail: settingsData?.contactEmail,
+          contactPhone: settingsData?.contactPhone,
+          contactPage: settingsData?.contactPage,
+        },
+      },
+    });
 
     const baseTasks = [
       {
@@ -487,8 +591,11 @@ export default function Dashboard() {
     }));
   }, [
     services,
+    specialists,
     stripeSpecialist,
     salonData,
+    settingsData,
+    contentStatus,
     manualTaskCompletions,
   ]);
 
@@ -1281,7 +1388,9 @@ export default function Dashboard() {
                     Get your booking site ready
                   </h3>
                 </div>
-                <span className="text-xs text-gray-500">{onboardingTasks.length} steps</span>
+                <span className="text-xs text-gray-500">
+                  {onboardingTasks.length} steps
+                </span>
               </div>
 
               <div className="grid md:grid-cols-2 gap-3">
@@ -1372,8 +1481,12 @@ export default function Dashboard() {
                         </svg>
                       </div>
                       <div className="text-left">
-                        <p className="text-sm font-semibold text-gray-900">{task.title}</p>
-                        <p className="text-xs text-gray-500">{task.description}</p>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {task.title}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {task.description}
+                        </p>
                       </div>
                     </div>
                   );
@@ -1381,7 +1494,10 @@ export default function Dashboard() {
                   const ActionWrapper = task.to ? Link : "button";
                   const actionProps = task.to
                     ? { to: task.to }
-                    : { type: "button", onClick: () => setShowCreateServiceModal(true) };
+                    : {
+                        type: "button",
+                        onClick: () => setShowCreateServiceModal(true),
+                      };
 
                   return (
                     <div
@@ -1400,7 +1516,10 @@ export default function Dashboard() {
                           : "border-teal-100 bg-teal-50/70 hover:bg-teal-50 hover:shadow-md"
                       }`}
                     >
-                      <ActionWrapper className="flex-1 flex items-center gap-3" {...actionProps}>
+                      <ActionWrapper
+                        className="flex-1 flex items-center gap-3"
+                        {...actionProps}
+                      >
                         {content}
                       </ActionWrapper>
 
