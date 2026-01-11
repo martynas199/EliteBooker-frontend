@@ -59,6 +59,9 @@ export default function SearchPage() {
   const [viewportHeight, setViewportHeight] = useState(() =>
     typeof window !== "undefined" ? window.innerHeight : 0
   );
+  const [viewportWidth, setViewportWidth] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth : 0
+  );
   const [isDragging, setIsDragging] = useState(false);
   const [isContentAtTop, setIsContentAtTop] = useState(true);
   const dragStartY = useRef(0);
@@ -74,6 +77,7 @@ export default function SearchPage() {
   const cardRefs = useRef({});
   const cardContainerRef = useRef(null);
   const scrollTimerRef = useRef(null);
+  const pendingRecenterRef = useRef(false);
 
   // Add console log to debug
   useEffect(() => {
@@ -110,6 +114,7 @@ export default function SearchPage() {
   useEffect(() => {
     const handleResize = () => {
       setViewportHeight(window.innerHeight);
+      setViewportWidth(window.innerWidth);
     };
     window.addEventListener("resize", handleResize);
     window.addEventListener("orientationchange", handleResize);
@@ -404,7 +409,7 @@ export default function SearchPage() {
   const updateMarkerAppearance = useCallback(
     (div, venueId) => {
       const isActive = venueId === activeVenueId;
-      const size = isActive ? 52 : 38;
+      const size = isActive ? 60 : 38;
       const fill = isActive ? "#EF4444" : "#111111";
       div.innerHTML = `
       <svg width="${size}" height="${size}" viewBox="0 0 32 32" style="filter: drop-shadow(0 8px 12px rgba(0,0,0,0.25));">
@@ -530,6 +535,31 @@ export default function SearchPage() {
       }
     }
   }, [getMapBBox, superclusterIndex, activeVenueId, updateMarkerAppearance]);
+
+  const locationButtonBottom = useMemo(() => {
+    if (viewportWidth >= 1024) return "24px"; // desktop: keep near bottom right
+    const vh = viewportHeight || 0;
+    if (!vh) return "72px";
+    const px = (drawerHeight / 100) * vh + 16; // just above drawer top
+    const capped = Math.min(px, Math.max(vh - 96, 48)); // avoid pushing off the top
+    return `${capped}px`;
+  }, [viewportWidth, viewportHeight, drawerHeight]);
+
+  const recenterToUser = useCallback(() => {
+    const map = googleMapRef.current;
+    if (!map) return;
+
+    if (userLocation) {
+      map.panTo(userLocation);
+      const currentZoom = map.getZoom() || 12;
+      if (currentZoom < 14) map.setZoom(14);
+      return;
+    }
+
+    // If we don't have a location yet, fetch it and recenter once available.
+    pendingRecenterRef.current = true;
+    getUserLocation();
+  }, [userLocation, getUserLocation]);
 
   const popoverRef = useRef(null);
 
@@ -754,6 +784,15 @@ export default function SearchPage() {
       if (onIdle) onIdle.remove();
     };
   }, [positionPopover, selectedVenueId]);
+
+  useEffect(() => {
+    if (pendingRecenterRef.current && userLocation && googleMapRef.current) {
+      googleMapRef.current.panTo(userLocation);
+      const currentZoom = googleMapRef.current.getZoom() || 12;
+      if (currentZoom < 14) googleMapRef.current.setZoom(14);
+      pendingRecenterRef.current = false;
+    }
+  }, [userLocation]);
 
   const handleScroll = useCallback(() => {
     if (!cardContainerRef.current || !filteredVenuesWithDistance.length) return;
@@ -1128,6 +1167,24 @@ export default function SearchPage() {
           </div>
           <div className="absolute lg:relative inset-0 lg:inset-auto lg:flex-1 h-full w-full bg-gray-100">
             <div ref={mapRef} className="w-full h-full" />
+            <button
+              type="button"
+              onClick={recenterToUser}
+              className="absolute right-4 z-[160] w-11 h-11 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform"
+              style={{ bottom: locationButtonBottom }}
+              aria-label="Center on your location"
+            >
+              <svg
+                className="w-5 h-5 text-gray-800"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M20.48 3.52a.75.75 0 0 0-.86-.15l-15 7a.75.75 0 0 0 .1 1.4l6.22 1.6 1.6 6.22a.75.75 0 0 0 1.4.1l7-15a.75.75 0 0 0-.15-.86Z"
+                />
+              </svg>
+            </button>
             {selectedVenue && (
               <div
                 ref={popoverRef}
