@@ -1201,7 +1201,8 @@ export default function SearchPage() {
             <button
               type="button"
               onClick={recenterToUser}
-              className="absolute right-4 lg:right-8 bottom-4 lg:bottom-8 z-[200] w-11 h-11 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform"
+              className="absolute right-4 lg:right-8 z-[200] w-11 h-11 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform"
+              style={{ bottom: locationButtonBottom }}
               aria-label="Center on your location"
             >
               <svg
