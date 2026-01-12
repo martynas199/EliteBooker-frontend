@@ -2138,7 +2138,11 @@ export default function Dashboard() {
               onView={(view) => setCurrentView(view)}
               views={["month", "week", "day", "agenda"]}
               defaultView="month"
-              style={{ height: isMobile ? 400 : 700 }}
+              style={{ 
+                height: isMobile 
+                  ? (currentView === 'week' || currentView === 'day' ? 800 : 400)
+                  : (currentView === 'week' || currentView === 'day' ? 1200 : 700)
+              }}
               onSelectEvent={(event) => setSelectedEvent(event)}
               eventPropGetter={(event) => ({
                 style: event.style || {},
