@@ -1033,7 +1033,7 @@ export default function SearchPage() {
       >
         <header
           ref={headerRef}
-          className={`absolute lg:relative top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 bg-white ${
+          className={`absolute lg:relative top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 bg-transparent lg:bg-white ${
             drawerHeight > 80 ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto" : "opacity-100"
           }`}
         >
