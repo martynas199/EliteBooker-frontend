@@ -3,61 +3,94 @@ import { useState, useEffect, lazy, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { api } from "../shared/lib/apiClient";
 import logo from "../assets/logo.svg";
-import LandingPage from "../system/pages/LandingPage";
-import BusinessesLandingPage from "../system/pages/BusinessesLandingPage";
-import SearchPage from "../system/pages/SearchPage";
-import HelpPage from "../system/pages/HelpPage";
-import SalonDetails from "../tenant/pages/SalonDetails";
-import TimeSlots from "../tenant/pages/TimeSlotsPage";
-import CheckoutPage from "../tenant/pages/CheckoutPage";
-import ConfirmationPage from "../tenant/pages/ConfirmationPage";
-import SuccessPage from "../tenant/pages/BookingSuccessPage";
-import CancelPage from "../tenant/pages/BookingCancelPage";
-import FAQPage from "../tenant/pages/FAQPage";
+
+// Lazy load system pages (landing, search, etc.)
+const LandingPage = lazy(() => import("../system/pages/LandingPage"));
+const BusinessesLandingPage = lazy(() =>
+  import("../system/pages/BusinessesLandingPage")
+);
+const SearchPage = lazy(() => import("../system/pages/SearchPage"));
+const HelpPage = lazy(() => import("../system/pages/HelpPage"));
+const MenuPage = lazy(() => import("../system/pages/MenuPage"));
+const TenantSignup = lazy(() => import("../system/pages/SignupPage"));
+const SignupSuccessPage = lazy(() =>
+  import("../system/pages/SignupSuccessPage")
+);
+
+// Lazy load tenant pages
+const SalonDetails = lazy(() => import("../tenant/pages/SalonDetails"));
+const TimeSlots = lazy(() => import("../tenant/pages/TimeSlotsPage"));
+const CheckoutPage = lazy(() => import("../tenant/pages/CheckoutPage"));
+const ConfirmationPage = lazy(() => import("../tenant/pages/ConfirmationPage"));
+const SuccessPage = lazy(() => import("../tenant/pages/BookingSuccessPage"));
+const CancelPage = lazy(() => import("../tenant/pages/BookingCancelPage"));
+const FAQPage = lazy(() => import("../tenant/pages/FAQPage"));
+const ProductsPage = lazy(() => import("../tenant/pages/ProductsPage"));
+const ProductDetailPage = lazy(() =>
+  import("../tenant/pages/ProductDetailPage")
+);
+const ProductCheckoutPage = lazy(() =>
+  import("../tenant/pages/ProductCheckoutPage")
+);
+const OrderSuccessPage = lazy(() => import("../tenant/pages/OrderSuccessPage"));
+const ShopSuccessPage = lazy(() => import("../tenant/pages/ShopSuccessPage"));
+const ShopCancelPage = lazy(() => import("../tenant/pages/ShopCancelPage"));
+const LoginPage = lazy(() => import("../tenant/pages/LoginPage"));
+const RegisterPage = lazy(() => import("../tenant/pages/RegisterPage"));
+const AuthSuccessPage = lazy(() => import("../tenant/pages/AuthSuccessPage"));
+const ProfilePage = lazy(() => import("../tenant/pages/ProfilePage"));
+const ProfileEditPage = lazy(() => import("../tenant/pages/ProfileEditPage"));
+const ClientProfilePage = lazy(() =>
+  import("../tenant/pages/ClientProfilePage")
+);
+const ClientAppointmentsPage = lazy(() =>
+  import("../tenant/pages/ClientAppointmentsPage")
+);
+const BeauticianSelectionPage = lazy(() =>
+  import("../tenant/pages/BeauticiansPage")
+);
+const ServicesPage = lazy(() => import("../tenant/pages/ServicesPage"));
+const AboutUsPage = lazy(() => import("../tenant/pages/AboutUsPage"));
+const BlogPage = lazy(() => import("../tenant/pages/BlogPage"));
+const BlogPostPage = lazy(() => import("../tenant/pages/BlogPostPage"));
+const TokenDebugPage = lazy(() => import("../tenant/pages/TokenDebugPage"));
+const SalonLandingLuxury = lazy(() =>
+  import("../tenant/pages/SalonLandingLuxury")
+);
+const SeminarsPage = lazy(() => import("../tenant/pages/SeminarsPage"));
+const SeminarDetailPage = lazy(() =>
+  import("../tenant/pages/SeminarDetailPage")
+);
+const SeminarBookingPage = lazy(() =>
+  import("../tenant/pages/SeminarBookingPage")
+);
+const SeminarBookingSuccessPage = lazy(() =>
+  import("../tenant/pages/SeminarBookingSuccessPage")
+);
+const MySeminarsPage = lazy(() => import("../tenant/pages/MySeminarsPage"));
+
+// Lazy load client pages
+const ClientLoginPage = lazy(() => import("../client/pages/LoginPage"));
+const ClientRegisterPage = lazy(() => import("../client/pages/RegisterPage"));
+
+// Lazy load layouts
+const AdminLayout = lazy(() => import("../admin/layouts/AdminLayout"));
+const TenantApp = lazy(() => import("../tenant/layouts/TenantApp"));
+
+// Lazy load auth pages
+const AdminLogin = lazy(() => import("../admin/pages/Login"));
+const ForgotPassword = lazy(() => import("../admin/pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("../admin/pages/ResetPassword"));
+
+// Eagerly load only essential components
 import CartSidebar from "../tenant/components/CartSidebar";
 import { toggleCart } from "../tenant/state/cartSlice";
-import ProductsPage from "../tenant/pages/ProductsPage";
-import ProductDetailPage from "../tenant/pages/ProductDetailPage";
-import ProductCheckoutPage from "../tenant/pages/ProductCheckoutPage";
-import OrderSuccessPage from "../tenant/pages/OrderSuccessPage";
-import ShopSuccessPage from "../tenant/pages/ShopSuccessPage";
-import ShopCancelPage from "../tenant/pages/ShopCancelPage";
-import LoginPage from "../tenant/pages/LoginPage";
-import RegisterPage from "../tenant/pages/RegisterPage";
-import AuthSuccessPage from "../tenant/pages/AuthSuccessPage";
-import ProfilePage from "../tenant/pages/ProfilePage";
-import ProfileEditPage from "../tenant/pages/ProfileEditPage";
-import ClientProfilePage from "../tenant/pages/ClientProfilePage";
-import ClientAppointmentsPage from "../tenant/pages/ClientAppointmentsPage";
-import ClientLoginPage from "../client/pages/LoginPage";
-import ClientRegisterPage from "../client/pages/RegisterPage";
-import MenuPage from "../system/pages/MenuPage";
-import BeauticianSelectionPage from "../tenant/pages/BeauticiansPage";
-import ServicesPage from "../tenant/pages/ServicesPage";
-import AboutUsPage from "../tenant/pages/AboutUsPage";
-import BlogPage from "../tenant/pages/BlogPage";
-import BlogPostPage from "../tenant/pages/BlogPostPage";
-import TokenDebugPage from "../tenant/pages/TokenDebugPage";
-import SalonLandingLuxury from "../tenant/pages/SalonLandingLuxury";
-import SeminarsPage from "../tenant/pages/SeminarsPage";
-import SeminarDetailPage from "../tenant/pages/SeminarDetailPage";
-import SeminarBookingPage from "../tenant/pages/SeminarBookingPage";
-import SeminarBookingSuccessPage from "../tenant/pages/SeminarBookingSuccessPage";
-import MySeminarsPage from "../tenant/pages/MySeminarsPage";
 import { useAuth } from "../shared/contexts/AuthContext";
 import { useTenant } from "../shared/contexts/TenantContext";
 import { useTenantSettings } from "../shared/hooks/useTenantSettings";
 import { SettingsProvider } from "../shared/contexts/SettingsContext";
-
-import AdminLayout from "../admin/layouts/AdminLayout";
 import LoadingSpinner from "../shared/components/ui/LoadingSpinner";
 import ProtectedRoute from "../shared/components/ProtectedRoute";
-import TenantApp from "../tenant/layouts/TenantApp";
-import AdminLogin from "../admin/pages/Login";
-import ForgotPassword from "../admin/pages/ForgotPassword";
-import ResetPassword from "../admin/pages/ResetPassword";
-import TenantSignup from "../system/pages/SignupPage";
-import SignupSuccessPage from "../system/pages/SignupSuccessPage";
 import ScrollToTop from "../shared/components/ScrollToTop";
 import CurrencySelector from "../shared/components/CurrencySelector";
 import Footer from "../system/components/Footer";

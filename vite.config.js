@@ -6,14 +6,21 @@ export default defineConfig({
 
   // Build optimizations
   build: {
-    // Enable minification
-    minify: "terser",
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.logs in production
-        drop_debugger: true,
-      },
+    // Enable minification with esbuild (faster than terser)
+    minify: "esbuild",
+    // Target modern browsers for better optimization
+    target: "es2020",
+    // Esbuild minification options
+    esbuild: {
+      drop: ["console", "debugger"],
+      legalComments: "none",
+      minifyIdentifiers: true,
+      minifySyntax: true,
+      minifyWhitespace: true,
+      treeShaking: true,
     },
+    // Reduce chunk size
+    cssCodeSplit: true,
     // Code splitting and chunk optimization
     rollupOptions: {
       output: {

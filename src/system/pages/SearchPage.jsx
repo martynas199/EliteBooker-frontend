@@ -372,8 +372,42 @@ export default function SearchPage() {
       gestureHandling: "greedy",
       styles: [
         {
+          featureType: "landscape.natural",
+          elementType: "geometry.fill",
+          stylers: [{ color: "#B8D4A8" }],
+        },
+        {
+          featureType: "landscape.natural.landcover",
+          elementType: "geometry.fill",
+          stylers: [{ color: "#C2DDB4" }],
+        },
+        {
+          featureType: "poi.park",
+          elementType: "geometry.fill",
+          stylers: [{ color: "#A1D0A2" }],
+        },
+        {
+          featureType: "water",
+          elementType: "geometry.fill",
+          stylers: [{ color: "#64B5F6" }, { lightness: 25 }],
+        },
+        {
+          featureType: "road",
+          elementType: "geometry.fill",
+          stylers: [{ color: "#ffffff" }],
+        },
+        {
+          featureType: "road",
+          elementType: "geometry.stroke",
+          stylers: [{ color: "#E0E0E0" }, { weight: 0.5 }],
+        },
+        {
           featureType: "poi",
           elementType: "labels",
+          stylers: [{ visibility: "off" }],
+        },
+        {
+          featureType: "transit",
           stylers: [{ visibility: "off" }],
         },
       ],
@@ -999,18 +1033,18 @@ export default function SearchPage() {
       >
         <header
           ref={headerRef}
-          className={`absolute top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 ${
-            drawerHeight > 80 ? "opacity-0 pointer-events-none" : "opacity-100"
+          className={`absolute lg:relative top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 bg-white ${
+            drawerHeight > 80 ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto" : "opacity-100"
           }`}
         >
-          <div className="px-4 lg:px-6 xl:px-8 py-4 lg:py-5">
-            <div className="flex items-center gap-3 lg:gap-4 max-w-screen-2xl mx-auto">
+          <div className="px-4 lg:px-6 py-4 lg:py-5">
+            <div className="flex items-center gap-3 lg:gap-4 max-w-screen-2xl mx-auto lg:justify-center">
               <Link
                 to="/"
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors flex-shrink-0"
+                className="w-10 h-10 lg:w-10 lg:h-10 flex items-center justify-center rounded-full lg:rounded-full bg-white shadow-lg lg:shadow-none lg:bg-gray-50 hover:bg-gray-50 lg:hover:bg-gray-100 transition-colors flex-shrink-0"
               >
                 <svg
-                  className="w-5 h-5 text-gray-900"
+                  className="w-5 h-5 lg:w-6 lg:h-6 text-gray-900"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1018,12 +1052,12 @@ export default function SearchPage() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2.5}
+                    strokeWidth={2}
                     d="M10 19l-7-7m0 0l7-7m-7 7h18"
                   />
                 </svg>
               </Link>
-              <div className="flex-1 max-w-2xl relative">
+              <div className="flex-1 lg:flex-initial max-w-2xl lg:max-w-none lg:w-[700px] relative">
                 <svg
                   className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                   fill="none"
@@ -1044,133 +1078,83 @@ export default function SearchPage() {
                   onChange={(e) =>
                     setFilters((prev) => ({ ...prev, search: e.target.value }))
                   }
-                  className="w-full pl-11 pr-4 py-3 lg:py-3.5 bg-white border border-gray-300 rounded-full focus:ring-1 focus:ring-black focus:border-black text-sm lg:text-base transition-all shadow-lg"
+                  className="w-full pl-11 pr-4 py-3 lg:py-3 bg-white lg:bg-white/70 lg:backdrop-blur-md border border-gray-300 lg:border-gray-200 rounded-full focus:outline-none focus:ring-0 focus:border-gray-900 lg:focus:border-gray-300 text-sm lg:text-base transition-all shadow-lg"
                   style={{ fontSize: "16px", touchAction: "manipulation" }}
                 />
               </div>
-              {isAuthenticated ? (
-                <button
-                  type="button"
-                  onClick={() => navigate("/menu")}
-                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0 border border-gray-200 shadow-lg"
-                  aria-label="Open menu"
+              <button
+                type="button"
+                onClick={() => navigate("/menu")}
+                className="w-10 h-10 lg:w-10 lg:h-10 rounded-full bg-white lg:bg-gray-50 flex items-center justify-center hover:bg-gray-200 lg:hover:bg-gray-100 transition-colors flex-shrink-0 border border-gray-200 lg:border-transparent shadow-lg lg:shadow-none"
+                aria-label="Open menu"
+              >
+                <svg
+                  className="w-5 h-5 lg:w-6 lg:h-6 text-gray-600 lg:text-gray-800"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    className="w-5 h-5 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => navigate("/menu")}
-                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0 border border-gray-200 shadow-lg"
-                  aria-label="Open menu"
-                >
-                  <svg
-                    className="w-5 h-5 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
-                </button>
-              )}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </header>
         <div className="flex-1 overflow-hidden relative flex flex-row">
-          <div className="hidden lg:flex lg:flex-col lg:w-[440px] xl:w-[480px] 2xl:w-[520px] h-full border-r border-gray-100 bg-white overflow-hidden">
-            <div className="flex-shrink-0 px-6 xl:px-8 py-5 border-b border-gray-100">
-              <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-                <FilterChip
-                  label="All distances"
-                  active={filters.distance === "all"}
-                  onClick={() => setFilters((p) => ({ ...p, distance: "all" }))}
-                />
-                <FilterChip
-                  label="Within 5 mi"
-                  active={filters.distance === "5"}
-                  onClick={() => setFilters((p) => ({ ...p, distance: "5" }))}
-                />
-                <FilterChip
-                  label="Within 10 mi"
-                  active={filters.distance === "10"}
-                  onClick={() => setFilters((p) => ({ ...p, distance: "10" }))}
-                />
-                <FilterChip
-                  label="4+ stars"
-                  active={filters.rating === "4"}
-                  onClick={() =>
-                    setFilters((p) => ({
-                      ...p,
-                      rating: p.rating === "4" ? "all" : "4",
-                    }))
-                  }
-                />
-                <FilterChip
-                  label="4.5+ stars"
-                  active={filters.rating === "4.5"}
-                  onClick={() =>
-                    setFilters((p) => ({
-                      ...p,
-                      rating: p.rating === "4.5" ? "all" : "4.5",
-                    }))
-                  }
-                />
-              </div>
-              <div className="mt-3.5">
-                <p className="text-sm lg:text-base text-gray-600">
-                  <strong className="font-semibold text-gray-900">
-                    {filteredVenuesWithDistance.length}
-                  </strong>{" "}
-                  {filteredVenuesWithDistance.length === 1 ? "venue" : "venues"}{" "}
-                  found
-                </p>
+          <div className="hidden lg:flex lg:flex-col lg:w-[850px] xl:w-[900px] 2xl:w-[950px] h-full bg-white overflow-hidden">
+            <div className="flex-shrink-0 px-5 py-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">
+                    <strong className="font-semibold text-gray-900">
+                      {filteredVenuesWithDistance.length}k+
+                    </strong>{" "}
+                    venues nearby
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <FilterChip
+                    label="Filters"
+                    active={false}
+                    onClick={() => {}}
+                    icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>}
+                  />
+                  <FilterChip
+                    label="Hide map"
+                    active={false}
+                    onClick={() => {}}
+                    icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>}
+                  />
+                </div>
               </div>
             </div>
             <div
               ref={cardContainerRef}
               onScroll={handleScroll}
-              className="flex-1 overflow-y-auto px-4 xl:px-5 py-4 space-y-4 custom-scrollbar"
-              style={{
-                scrollbarWidth: "thin",
-                scrollbarColor: "#e5e7eb #f9fafb",
-              }}
+              className="flex-1 overflow-y-auto px-5 py-4 scrollbar-hide"
             >
               {loading ? (
-                <div className="space-y-4 py-2">
+                <div className="grid grid-cols-2 gap-3">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <div
                       key={i}
                       className="rounded-2xl border border-gray-100 overflow-hidden"
                     >
-                      <div className="h-36 bg-gray-100 animate-pulse" />
-                      <div className="p-4 space-y-3">
-                        <div className="h-4 w-2/3 bg-gray-100 animate-pulse rounded" />
-                        <div className="h-3 w-1/2 bg-gray-100 animate-pulse rounded" />
-                        <div className="h-10 w-full bg-gray-100 animate-pulse rounded-xl" />
+                      <div className="h-32 bg-gray-100 animate-pulse" />
+                      <div className="p-3 space-y-2">
+                        <div className="h-3 w-2/3 bg-gray-100 animate-pulse rounded" />
+                        <div className="h-2 w-1/2 bg-gray-100 animate-pulse rounded" />
                       </div>
                     </div>
                   ))}
                 </div>
               ) : filteredVenuesWithDistance.length === 0 ? (
-                <div className="text-center py-20">
+                <div className="text-center py-20 col-span-2">
                   <p className="text-gray-900 font-medium mb-2">
                     No venues found
                   </p>
@@ -1179,44 +1163,45 @@ export default function SearchPage() {
                   </p>
                 </div>
               ) : (
-                <AnimatePresence>
-                  {filteredVenuesWithDistance.map((venue, index) => (
-                    <motion.div
-                      key={venue._id}
-                      ref={(el) => (cardRefs.current[venue._id] = el)}
-                      data-venue-id={venue._id}
-                      initial={{ opacity: 0, y: 14 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -14 }}
-                      transition={{
-                        delay: index * 0.03,
-                        type: "spring",
-                        stiffness: 280,
-                        damping: 24,
-                      }}
-                      onMouseEnter={() => setActiveVenueId(venue._id)}
-                    >
-                      <VenueCard
-                        venue={venue}
-                        active={venue._id === activeVenueId}
-                        onClick={() => {
-                          setActiveVenueId(venue._id);
-                          setSelectedVenueId(venue._id);
+                <div className="grid grid-cols-2 gap-3">
+                  <AnimatePresence>
+                    {filteredVenuesWithDistance.map((venue, index) => (
+                      <motion.div
+                        key={venue._id}
+                        ref={(el) => (cardRefs.current[venue._id] = el)}
+                        data-venue-id={venue._id}
+                        initial={{ opacity: 0, y: 14 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -14 }}
+                        transition={{
+                          delay: index * 0.03,
+                          type: "spring",
+                          stiffness: 280,
+                          damping: 24,
                         }}
-                      />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+                        onMouseEnter={() => setActiveVenueId(venue._id)}
+                      >
+                        <VenueCard
+                          venue={venue}
+                          active={venue._id === activeVenueId}
+                          onClick={() => {
+                            setActiveVenueId(venue._id);
+                            setSelectedVenueId(venue._id);
+                          }}
+                        />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
               )}
             </div>
           </div>
-          <div className="absolute lg:relative inset-0 lg:inset-auto lg:flex-1 h-full w-full bg-gray-100">
-            <div ref={mapRef} className="w-full h-full" />
+          <div className="absolute lg:relative inset-0 lg:inset-auto lg:flex-1 h-full w-full bg-white lg:p-4">
+            <div ref={mapRef} className="w-full h-full lg:rounded-2xl lg:overflow-hidden lg:shadow-sm" />
             <button
               type="button"
               onClick={recenterToUser}
-              className="absolute right-4 z-[200] w-11 h-11 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform"
-              style={{ bottom: locationButtonBottom }}
+              className="absolute right-4 lg:right-8 bottom-4 lg:bottom-8 z-[200] w-11 h-11 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform"
               aria-label="Center on your location"
             >
               <svg
@@ -1301,18 +1286,18 @@ export default function SearchPage() {
                 }
               />
             </div>
-            <div className="py-2 border-t border-gray-100">
-              <p className="text-sm text-gray-600">
+            <div className="pt-2">
+              <p className="text-xs text-gray-600">
                 <strong className="font-semibold text-gray-900">
                   {filteredVenuesWithDistance.length}
                 </strong>{" "}
-                venues found
+                venues
               </p>
             </div>
           </div>
           <div
             ref={contentScrollRef}
-            className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-4 pb-32"
+            className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-3 pb-32"
             style={{
               WebkitOverflowScrolling: "touch",
               overflowY: "auto",
@@ -1375,17 +1360,18 @@ export default function SearchPage() {
   );
 }
 
-const FilterChip = React.memo(function FilterChip({ label, active, onClick }) {
+const FilterChip = React.memo(function FilterChip({ label, active, onClick, icon }) {
   return (
     <motion.button
       whileTap={{ scale: 0.96 }}
       onClick={onClick}
-      className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+      className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 flex items-center gap-2 ${
         active
           ? "bg-gray-900 text-white"
           : "bg-white text-gray-700 border border-gray-300 hover:border-gray-900 hover:bg-gray-50"
       }`}
     >
+      {icon}
       {label}
     </motion.button>
   );
