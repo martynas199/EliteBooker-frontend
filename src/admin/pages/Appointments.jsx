@@ -79,6 +79,9 @@ export default function Appointments() {
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
 
+  // Consent state - tracks which appointments have signed consents
+  const [consentsMap, setConsentsMap] = useState({});
+
   // Debounce search query to avoid excessive filtering
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
@@ -135,6 +138,12 @@ export default function Appointments() {
 
       setRows(appointments);
       setPagination(paginationData);
+
+      // Check consent status for all appointments
+      if (appointments.length > 0) {
+        const appointmentIds = appointments.map((apt) => apt._id);
+        checkConsentForAppointments(appointmentIds);
+      }
     } catch (error) {
       console.error("Failed to fetch appointments:", error);
       setRows([]);
@@ -484,6 +493,98 @@ export default function Appointments() {
       ),
       { duration: 8000 }
     );
+  }
+
+  // Check if an appointment has a signed consent
+  async function checkConsentForAppointments(appointmentIds) {
+    try {
+      // Check each appointment for consent (in production, you might batch this)
+      const consentChecks = await Promise.allSettled(
+        appointmentIds.map((id) =>
+          api.get(`/consents/appointment/${id}`).catch(() => null)
+        )
+      );
+
+      const newConsentsMap = {};
+      consentChecks.forEach((result, index) => {
+        const appointmentId = appointmentIds[index];
+        if (result.status === "fulfilled" && result.value?.data?.data) {
+          newConsentsMap[appointmentId] = result.value.data.data;
+        }
+      });
+
+      setConsentsMap((prev) => ({ ...prev, ...newConsentsMap }));
+    } catch (error) {
+      console.error("Error checking consents:", error);
+    }
+  }
+
+  // View consent PDF
+  async function viewConsentPDF(consentId) {
+    const loadingToast = toast.loading("Generating PDF...");
+    try {
+      const response = await api.get(`/consents/${consentId}/pdf`, {
+        responseType: "arraybuffer", // Use arraybuffer instead of blob for better control
+      });
+
+      toast.dismiss(loadingToast);
+
+      // Verify we got binary data
+      if (!response.data || response.data.byteLength === 0) {
+        toast.error("Received empty PDF");
+        return;
+      }
+
+      console.log(`Received PDF: ${response.data.byteLength} bytes`);
+
+      // Check PDF magic bytes
+      const header = new Uint8Array(response.data.slice(0, 5));
+      const headerStr = String.fromCharCode(...header);
+      if (!headerStr.startsWith("%PDF-")) {
+        console.error("Invalid PDF header:", headerStr);
+        toast.error("Received invalid PDF data");
+        return;
+      }
+
+      // Create a blob URL from the PDF data
+      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+      console.log("PDF blob URL created:", pdfUrl);
+
+      // Open in new tab
+      const newWindow = window.open(pdfUrl, "_blank");
+
+      if (!newWindow) {
+        toast.error("Please allow popups to view the PDF");
+        URL.revokeObjectURL(pdfUrl);
+        return;
+      }
+
+      // Clean up the URL after a delay
+      setTimeout(() => {
+        URL.revokeObjectURL(pdfUrl);
+        console.log("PDF blob URL cleaned up");
+      }, 10000);
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      console.error("Error fetching consent PDF:", error);
+
+      // Handle different error types
+      if (error.response?.data) {
+        // Try to parse error message
+        try {
+          const decoder = new TextDecoder("utf-8");
+          const text = decoder.decode(error.response.data);
+          const errorData = JSON.parse(text);
+          toast.error(errorData.message || "Failed to load consent PDF");
+        } catch {
+          toast.error("Failed to load consent PDF");
+        }
+      } else {
+        toast.error(error.message || "Failed to load consent PDF");
+      }
+    }
   }
 
   function openEditModal(appointment) {
@@ -1359,6 +1460,27 @@ export default function Appointments() {
                       >
                         {r.status?.replace(/_/g, " ").toUpperCase()}
                       </span>
+                      {consentsMap[r._id] && (
+                        <span
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200"
+                          title="Consent Form Signed"
+                        >
+                          <svg
+                            className="w-3 h-3"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          Consent
+                        </span>
+                      )}
                       {r.payment?.stripe?.lastPaymentError && (
                         <div
                           className="group relative"
@@ -1417,6 +1539,28 @@ export default function Appointments() {
                         </svg>
                         Edit
                       </button>
+                      {consentsMap[r._id] && (
+                        <button
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 rounded-lg transition-colors group"
+                          onClick={() => viewConsentPDF(consentsMap[r._id]._id)}
+                          title="View Consent Form"
+                        >
+                          <svg
+                            className="w-3.5 h-3.5 group-hover:scale-110 transition-transform"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                          </svg>
+                          PDF
+                        </button>
+                      )}
                       <button
                         className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed group"
                         disabled={
@@ -1560,6 +1704,47 @@ export default function Appointments() {
                 >
                   {r.status?.replace(/_/g, " ")}
                 </span>
+                {consentsMap[r._id] ? (
+                  <span
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-200"
+                    title="Consent Signed"
+                  >
+                    <svg
+                      className="w-2.5 h-2.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    Consent
+                  </span>
+                ) : (
+                  <span
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200"
+                    title="Consent Not Signed"
+                  >
+                    <svg
+                      className="w-2.5 h-2.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                    Not Signed
+                  </span>
+                )}
               </div>
 
               {/* Compact Details */}
@@ -1763,6 +1948,27 @@ export default function Appointments() {
 
               {/* Action Buttons */}
               <div className="px-3 pb-3 space-y-2">
+                {consentsMap[r._id] && (
+                  <button
+                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 rounded-lg transition-colors border border-green-200"
+                    onClick={() => viewConsentPDF(consentsMap[r._id]._id)}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                    Download PDF
+                  </button>
+                )}
                 <button
                   className="w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-colors"
                   onClick={() => openEditModal(r)}

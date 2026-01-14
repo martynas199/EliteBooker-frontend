@@ -1034,7 +1034,9 @@ export default function SearchPage() {
         <header
           ref={headerRef}
           className={`absolute lg:relative top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 bg-transparent lg:bg-white ${
-            drawerHeight > 80 ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto" : "opacity-100"
+            drawerHeight > 80
+              ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto"
+              : "opacity-100"
           }`}
         >
           <div className="px-4 lg:px-6 py-4 lg:py-5">
@@ -1122,13 +1124,41 @@ export default function SearchPage() {
                     label="Filters"
                     active={false}
                     onClick={() => {}}
-                    icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>}
+                    icon={
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                        />
+                      </svg>
+                    }
                   />
                   <FilterChip
                     label="Hide map"
                     active={false}
                     onClick={() => {}}
-                    icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>}
+                    icon={
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                        />
+                      </svg>
+                    }
                   />
                 </div>
               </div>
@@ -1197,7 +1227,10 @@ export default function SearchPage() {
             </div>
           </div>
           <div className="absolute lg:relative inset-0 lg:inset-auto lg:flex-1 h-full w-full bg-white lg:p-4">
-            <div ref={mapRef} className="w-full h-full lg:rounded-2xl lg:overflow-hidden lg:shadow-sm" />
+            <div
+              ref={mapRef}
+              className="w-full h-full lg:rounded-2xl lg:overflow-hidden lg:shadow-sm"
+            />
             <button
               type="button"
               onClick={recenterToUser}
@@ -1361,7 +1394,12 @@ export default function SearchPage() {
   );
 }
 
-const FilterChip = React.memo(function FilterChip({ label, active, onClick, icon }) {
+const FilterChip = React.memo(function FilterChip({
+  label,
+  active,
+  onClick,
+  icon,
+}) {
   return (
     <motion.button
       whileTap={{ scale: 0.96 }}

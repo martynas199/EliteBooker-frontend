@@ -28,10 +28,9 @@ const SECTION_TYPES = [
 ];
 
 const FREQUENCY_OPTIONS = [
-  { value: "first_visit_only", label: "First Visit Only" },
+  { value: "first_visit", label: "First Visit Only" },
   { value: "every_visit", label: "Every Visit" },
-  { value: "annually", label: "Annually" },
-  { value: "bi_annually", label: "Every 6 Months" },
+  { value: "until_changed", label: "Until Changed" },
 ];
 
 export default function ConsentTemplateBuilder() {
@@ -44,6 +43,7 @@ export default function ConsentTemplateBuilder() {
   const [loading, setLoading] = useState(isEditing);
   const [saving, setSaving] = useState(false);
   const [services, setServices] = useState([]);
+  const [showPreview, setShowPreview] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -51,7 +51,7 @@ export default function ConsentTemplateBuilder() {
     sections: [],
     requiredFor: {
       services: [],
-      frequency: "first_visit_only",
+      frequency: "until_changed",
     },
     disclaimers: [],
     risks: [],
@@ -62,14 +62,18 @@ export default function ConsentTemplateBuilder() {
     if (isEditing) {
       fetchTemplate();
     } else if (prebuiltTemplate) {
-      // Load pre-built template data
+      // Load pre-built template data and filter out invalid sections
+      const validSections = (prebuiltTemplate.sections || []).filter(
+        (section) => section.type
+      );
+
       setFormData({
         name: prebuiltTemplate.name || "",
         description: prebuiltTemplate.description || "",
-        sections: prebuiltTemplate.sections || [],
+        sections: validSections,
         requiredFor: {
           services: [],
-          frequency: "first_visit_only",
+          frequency: "until_changed",
         },
         disclaimers: prebuiltTemplate.disclaimers || [],
         risks: prebuiltTemplate.risks || [],
@@ -92,10 +96,15 @@ export default function ConsentTemplateBuilder() {
       const response = await api.get(`/consent-templates/${id}`);
       const template = response.data.data;
 
+      // Filter out any sections without a valid type
+      const validSections = (template.sections || []).filter(
+        (section) => section.type
+      );
+
       setFormData({
         name: template.name,
         description: template.description || "",
-        sections: template.sections,
+        sections: validSections,
         requiredFor: {
           services: template.requiredFor.services.map((s) => s._id || s),
           frequency: template.requiredFor.frequency,
@@ -103,6 +112,15 @@ export default function ConsentTemplateBuilder() {
         disclaimers: template.disclaimers || [],
         risks: template.risks || [],
       });
+
+      // Alert user if invalid sections were removed
+      if (template.sections.length !== validSections.length) {
+        alert(
+          `Removed ${
+            template.sections.length - validSections.length
+          } invalid section(s) that had no type.`
+        );
+      }
     } catch (error) {
       console.error("Error fetching template:", error);
       alert("Failed to load template");
@@ -113,18 +131,34 @@ export default function ConsentTemplateBuilder() {
   };
 
   const handleSave = async () => {
+    // Filter out any invalid sections before saving
+    const validSections = formData.sections.filter((section) => section.type);
+
     // Validation
     if (!formData.name.trim()) {
       alert("Please enter a template name");
       return;
     }
 
-    if (formData.sections.length === 0) {
-      alert("Please add at least one section");
+    if (validSections.length === 0) {
+      alert("Please add at least one valid section");
       return;
     }
 
-    const hasSignature = formData.sections.some((s) => s.type === "signature");
+    // Validate all sections have required fields
+    for (let i = 0; i < validSections.length; i++) {
+      const section = validSections[i];
+      if (!section.content || !section.content.trim()) {
+        alert(
+          `Section ${i + 1} (${
+            section.type
+          }) is missing content. Please fill it in or remove it.`
+        );
+        return;
+      }
+    }
+
+    const hasSignature = validSections.some((s) => s.type === "signature");
     if (!hasSignature) {
       alert("Template must include at least one signature section");
       return;
@@ -133,10 +167,16 @@ export default function ConsentTemplateBuilder() {
     try {
       setSaving(true);
 
+      // Save with only valid sections
+      const dataToSave = {
+        ...formData,
+        sections: validSections,
+      };
+
       if (isEditing) {
-        await api.put(`/consent-templates/${id}`, formData);
+        await api.put(`/consent-templates/${id}`, dataToSave);
       } else {
-        await api.post("/consent-templates", formData);
+        await api.post("/consent-templates", dataToSave);
       }
 
       navigate("/admin/consent-templates");
@@ -145,6 +185,18 @@ export default function ConsentTemplateBuilder() {
       alert(error.response?.data?.message || "Failed to save template");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const removeInvalidSections = () => {
+    const validSections = formData.sections.filter((section) => section.type);
+    const removedCount = formData.sections.length - validSections.length;
+
+    if (removedCount > 0) {
+      setFormData({ ...formData, sections: validSections });
+      alert(`Removed ${removedCount} invalid section(s)`);
+    } else {
+      alert("No invalid sections found");
     }
   };
 
@@ -331,52 +383,76 @@ export default function ConsentTemplateBuilder() {
 
       {/* Sections */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Form Sections</h2>
-          <div className="relative group">
-            <button className="inline-flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700">
-              <PlusIcon className="w-4 h-4" />
-              Add Section
-            </button>
+        <div className="flex items-center justify-between mb-2">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Form Sections
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+              Build the consent form your clients will see and sign
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            {formData.sections.some((s) => !s.type) && (
+              <button
+                onClick={removeInvalidSections}
+                className="px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700"
+              >
+                Remove Invalid Sections
+              </button>
+            )}
+            <div className="relative group">
+              <button className="inline-flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700">
+                <PlusIcon className="w-4 h-4" />
+                Add Section
+              </button>
 
-            {/* Dropdown */}
-            <div className="hidden group-hover:block absolute right-0 mt-1 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-              {SECTION_TYPES.map((type) => (
-                <button
-                  key={type.value}
-                  onClick={() => addSection(type.value)}
-                  className="w-full text-left px-4 py-3 hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg"
-                >
-                  <div className="font-medium text-sm text-gray-900">
-                    {type.label}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {type.description}
-                  </div>
-                </button>
-              ))}
+              {/* Dropdown */}
+              <div className="hidden group-hover:block absolute right-0 mt-1 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                {SECTION_TYPES.map((type) => (
+                  <button
+                    key={type.value}
+                    onClick={() => addSection(type.value)}
+                    className="w-full text-left px-4 py-3 hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg"
+                  >
+                    <div className="font-medium text-sm text-gray-900">
+                      {type.label}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {type.description}
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
         {formData.sections.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
-            <p>No sections added yet. Click "Add Section" to get started.</p>
+            <p className="mb-2">
+              No sections added yet. Click "Add Section" to get started.
+            </p>
+            <p className="text-xs">
+              Tip: Start with a Header, add Paragraphs for information, and end
+              with a Signature
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
             {formData.sections.map((section, index) => (
               <div
                 key={index}
-                className="border border-gray-200 rounded-lg p-4"
+                className="border-2 border-gray-300 rounded-lg p-4 hover:border-indigo-400 transition-colors"
               >
                 <div className="flex items-start gap-3">
                   {/* Move buttons */}
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1 pt-1">
                     <button
                       onClick={() => moveSection(index, "up")}
                       disabled={index === 0}
                       className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                      title="Move up"
                     >
                       <ChevronUpIcon className="w-4 h-4" />
                     </button>
@@ -384,6 +460,7 @@ export default function ConsentTemplateBuilder() {
                       onClick={() => moveSection(index, "down")}
                       disabled={index === formData.sections.length - 1}
                       className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                      title="Move down"
                     >
                       <ChevronDownIcon className="w-4 h-4" />
                     </button>
@@ -391,70 +468,181 @@ export default function ConsentTemplateBuilder() {
 
                   {/* Section content */}
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs font-medium rounded">
-                        {
-                          SECTION_TYPES.find((t) => t.value === section.type)
-                            ?.label
-                        }
-                      </span>
-                      {section.required && (
-                        <span className="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">
-                          Required
+                    {/* Section header with type and description */}
+                    <div className="mb-3 pb-3 border-b-2 border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span
+                          className={`px-3 py-1.5 text-white text-sm font-semibold rounded ${
+                            section.type ? "bg-indigo-600" : "bg-red-600"
+                          }`}
+                        >
+                          {SECTION_TYPES.find((t) => t.value === section.type)
+                            ?.label || "INVALID TYPE"}
                         </span>
-                      )}
+                        {section.required && (
+                          <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded">
+                            Required
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-700 bg-blue-50 p-2 rounded">
+                        {section.type === "header" && (
+                          <span>
+                            📋 <strong>Header:</strong> Large bold heading that
+                            divides your form into sections (e.g., "Medical
+                            History", "Treatment Consent")
+                          </span>
+                        )}
+                        {section.type === "paragraph" && (
+                          <span>
+                            📝 <strong>Paragraph:</strong> Regular text for
+                            detailed information, instructions, or explanations
+                            that clients need to read
+                          </span>
+                        )}
+                        {section.type === "list" && (
+                          <span>
+                            📌 <strong>List:</strong> Bullet point list for
+                            multiple related items (e.g., risks,
+                            contraindications, requirements)
+                          </span>
+                        )}
+                        {section.type === "declaration" && (
+                          <span>
+                            ⚠️ <strong>Declaration:</strong> Important
+                            highlighted statement that stands out (e.g., "I
+                            understand and accept the risks")
+                          </span>
+                        )}
+                        {section.type === "checkbox" && (
+                          <span>
+                            ☑️ <strong>Checkbox:</strong> A statement the client
+                            must actively agree to by checking a box
+                          </span>
+                        )}
+                        {section.type === "signature" && (
+                          <span>
+                            ✍️ <strong>Signature:</strong> A field where the
+                            client will digitally sign the form
+                          </span>
+                        )}
+                        {!section.type && (
+                          <span className="text-red-600">
+                            ❌ <strong>ERROR:</strong> This section is missing a
+                            type. Please delete it and add a new section.
+                          </span>
+                        )}
+                      </div>
                     </div>
 
-                    {section.type === "list" ? (
-                      <div>
-                        <input
-                          type="text"
-                          value={section.content}
-                          onChange={(e) =>
-                            updateSection(index, { content: e.target.value })
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-2"
-                          placeholder="List title"
-                        />
-                        <textarea
-                          value={(section.options || []).join("\n")}
-                          onChange={(e) =>
-                            updateSection(index, {
-                              options: e.target.value
-                                .split("\n")
-                                .filter(Boolean),
-                            })
-                          }
-                          rows={3}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                          placeholder="Enter list items (one per line)"
-                        />
+                    {/* Edit Fields */}
+                    <div className="bg-white">
+                      <div className="text-xs font-semibold text-gray-500 mb-2 uppercase">
+                        Edit Content:
                       </div>
-                    ) : (
-                      <textarea
-                        value={section.content}
-                        onChange={(e) =>
-                          updateSection(index, { content: e.target.value })
-                        }
-                        rows={section.type === "header" ? 1 : 3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                        placeholder={`Enter ${section.type} content`}
-                      />
-                    )}
+                      {section.type === "list" ? (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            List Title
+                          </label>
+                          <input
+                            type="text"
+                            value={section.content}
+                            onChange={(e) =>
+                              updateSection(index, { content: e.target.value })
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-3"
+                            placeholder="e.g., Potential Risks, Contraindications, Important Notes"
+                          />
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            List Items (one per line)
+                          </label>
+                          <textarea
+                            value={(section.options || []).join("\n")}
+                            onChange={(e) =>
+                              updateSection(index, {
+                                options: e.target.value
+                                  .split("\n")
+                                  .map((line) => line.trim())
+                                  .filter(Boolean),
+                              })
+                            }
+                            onKeyDown={(e) => {
+                              // Allow normal Enter key behavior
+                              if (e.key === "Enter") {
+                                e.stopPropagation();
+                              }
+                            }}
+                            rows={5}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                            placeholder={
+                              "Allergic reactions\nSkin irritation\nTemporary redness\nBruising\nSwelling"
+                            }
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            {section.type === "header"
+                              ? "Heading Text"
+                              : section.type === "paragraph"
+                              ? "Paragraph Content"
+                              : section.type === "declaration"
+                              ? "Declaration Statement"
+                              : section.type === "checkbox"
+                              ? "Checkbox Label"
+                              : section.type === "signature"
+                              ? "Signature Label"
+                              : "Content"}
+                          </label>
+                          <textarea
+                            value={section.content}
+                            onChange={(e) =>
+                              updateSection(index, { content: e.target.value })
+                            }
+                            rows={
+                              section.type === "header"
+                                ? 1
+                                : section.type === "checkbox"
+                                ? 2
+                                : 3
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                            placeholder={
+                              section.type === "header"
+                                ? "e.g., Medical History Questionnaire, Consent to Treatment"
+                                : section.type === "paragraph"
+                                ? "Enter detailed information, instructions, or explanations for the client to read..."
+                                : section.type === "declaration"
+                                ? "e.g., I understand the nature of the treatment and give my informed consent"
+                                : section.type === "checkbox"
+                                ? "e.g., I confirm that I have disclosed all relevant medical conditions"
+                                : section.type === "signature"
+                                ? "e.g., Client Signature, Parent/Guardian Signature"
+                                : "Enter content"
+                            }
+                          />
+                        </>
+                      )}
 
-                    {section.type === "checkbox" && (
-                      <label className="flex items-center gap-2 mt-2">
-                        <input
-                          type="checkbox"
-                          checked={section.required}
-                          onChange={(e) =>
-                            updateSection(index, { required: e.target.checked })
-                          }
-                          className="rounded border-gray-300"
-                        />
-                        <span className="text-sm text-gray-700">Required</span>
-                      </label>
-                    )}
+                      {section.type === "checkbox" && (
+                        <label className="flex items-center gap-2 mt-2">
+                          <input
+                            type="checkbox"
+                            checked={section.required}
+                            onChange={(e) =>
+                              updateSection(index, {
+                                required: e.target.checked,
+                              })
+                            }
+                            className="rounded border-gray-300"
+                          />
+                          <span className="text-sm text-gray-700">
+                            Required
+                          </span>
+                        </label>
+                      )}
+                    </div>
                   </div>
 
                   {/* Delete button */}
@@ -472,31 +660,168 @@ export default function ConsentTemplateBuilder() {
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-3 justify-end">
+      <div className="flex flex-col sm:flex-row gap-3 justify-between">
         <button
-          onClick={() => navigate("/admin/consent-templates")}
-          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+          onClick={() => setShowPreview(!showPreview)}
+          className="px-6 py-2 border-2 border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 font-medium"
         >
-          Cancel
+          {showPreview ? "Hide Preview" : "Preview Form"}
         </button>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
-        >
-          {saving ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              Saving...
-            </>
-          ) : (
-            <>
-              <CheckIcon className="w-5 h-5" />
-              {isEditing ? "Update Template" : "Create Template"}
-            </>
-          )}
-        </button>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={() => navigate("/admin/consent-templates")}
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+          >
+            {saving ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                Saving...
+              </>
+            ) : (
+              <>
+                <CheckIcon className="w-5 h-5" />
+                {isEditing ? "Update Template" : "Create Template"}
+              </>
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* Full Form Preview */}
+      {showPreview && (
+        <div className="mt-6 bg-white rounded-lg shadow-lg border-2 border-indigo-600 p-6">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-gray-200">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Client Preview
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                This is how clients will see the consent form
+              </p>
+            </div>
+          </div>
+
+          {/* Template Name as Form Title */}
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              {formData.name || "Untitled Consent Form"}
+            </h1>
+            {formData.description && (
+              <p className="text-gray-600">{formData.description}</p>
+            )}
+          </div>
+
+          {/* Render all sections as client would see them */}
+          <div className="space-y-6">
+            {formData.sections.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                <p>No sections added yet. Add sections to see the preview.</p>
+              </div>
+            ) : (
+              formData.sections.map((section, index) => (
+                <div key={index} className="space-y-2">
+                  {!section.type && (
+                    <div className="bg-red-50 border-2 border-red-600 p-4 rounded">
+                      <p className="text-red-800 font-semibold">
+                        ❌ Invalid Section (No Type)
+                      </p>
+                      <p className="text-red-700 text-sm mt-1">
+                        This section has no type assigned. Please delete it from
+                        the form builder.
+                      </p>
+                    </div>
+                  )}
+                  {section.type === "header" && (
+                    <h2 className="text-2xl font-bold text-gray-900 mt-6 mb-3">
+                      {section.content ||
+                        "[Empty Header - Add text in the form builder]"}
+                    </h2>
+                  )}
+                  {section.type === "paragraph" && (
+                    <p className="text-gray-700 leading-relaxed">
+                      {section.content ||
+                        "[Empty Paragraph - Add text in the form builder]"}
+                    </p>
+                  )}
+                  {section.type === "list" && (
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-2">
+                        {section.content || "[List Title]"}
+                      </h3>
+                      {(section.options || []).length > 0 ? (
+                        <ul className="list-disc list-inside space-y-1 pl-4">
+                          {section.options.map((item, i) => (
+                            <li key={i} className="text-gray-700">
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-500 italic pl-4">
+                          No list items added yet
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  {section.type === "declaration" && (
+                    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 my-4">
+                      <p className="text-gray-800 italic font-medium">
+                        {section.content ||
+                          "[Empty Declaration - Add text in the form builder]"}
+                      </p>
+                    </div>
+                  )}
+                  {section.type === "checkbox" && (
+                    <div className="flex items-start gap-3 p-3 bg-gray-50 rounded">
+                      <input
+                        type="checkbox"
+                        className="mt-1 h-4 w-4"
+                        disabled
+                      />
+                      <label className="text-gray-800">
+                        {section.content ||
+                          "[Empty Checkbox - Add text in the form builder]"}
+                        {section.required && (
+                          <span className="text-red-600 ml-1">*</span>
+                        )}
+                      </label>
+                    </div>
+                  )}
+                  {section.type === "signature" && (
+                    <div className="p-4 bg-gray-50 rounded">
+                      <label className="block text-gray-800 font-medium mb-2">
+                        {section.content || "Signature"}
+                        {section.required && (
+                          <span className="text-red-600 ml-1">*</span>
+                        )}
+                      </label>
+                      <div className="border-b-2 border-gray-400 w-full max-w-md h-16 bg-white"></div>
+                      <p className="text-xs text-gray-500 mt-2">Sign above</p>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Close Preview Button */}
+          <div className="mt-8 pt-6 border-t border-gray-200 text-center">
+            <button
+              onClick={() => setShowPreview(false)}
+              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+            >
+              Close Preview
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

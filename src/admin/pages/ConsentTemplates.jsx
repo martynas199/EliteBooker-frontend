@@ -372,40 +372,58 @@ export default function ConsentTemplates() {
                           name: "Massage Therapy Consent",
                           description:
                             "Standard consent form for massage therapy services",
-                          disclaimers: [
-                            "Massage therapy is not a substitute for medical care",
-                            "Please inform your therapist of any medical conditions or injuries",
-                            "You may experience temporary soreness after deep tissue work",
-                          ],
-                          risks: [
-                            "Temporary muscle soreness",
-                            "Minor bruising in some cases",
-                            "Rare allergic reactions to oils or lotions",
-                          ],
                           sections: [
                             {
-                              title: "Consent to Treatment",
-                              required: true,
-                              fields: [
-                                {
-                                  type: "checkbox",
-                                  label:
-                                    "I consent to receive massage therapy and understand the benefits and risks involved",
-                                  required: true,
-                                },
+                              type: "header",
+                              content: "Massage Therapy Consent Form",
+                              order: 0,
+                              required: false,
+                            },
+                            {
+                              type: "paragraph",
+                              content:
+                                "Massage therapy is not a substitute for medical care or treatment. Please inform your therapist of any medical conditions, injuries, or medications you are currently taking. You may experience temporary soreness after deep tissue work.",
+                              order: 1,
+                              required: false,
+                            },
+                            {
+                              type: "list",
+                              content: "Potential Risks and Side Effects",
+                              order: 2,
+                              required: false,
+                              options: [
+                                "Temporary muscle soreness",
+                                "Minor bruising in some cases",
+                                "Rare allergic reactions to oils or lotions",
+                                "Temporary redness at treatment sites",
                               ],
                             },
                             {
-                              title: "Medical Disclosure",
+                              type: "declaration",
+                              content:
+                                "I understand that massage therapy is provided for stress reduction, relaxation, and relief of muscular tension. If I experience any pain or discomfort during the session, I will immediately inform my therapist.",
+                              order: 3,
+                              required: false,
+                            },
+                            {
+                              type: "checkbox",
+                              content:
+                                "I consent to receive massage therapy and understand the benefits and risks involved",
+                              order: 4,
                               required: true,
-                              fields: [
-                                {
-                                  type: "checkbox",
-                                  label:
-                                    "I have disclosed all relevant medical conditions and medications to my therapist",
-                                  required: true,
-                                },
-                              ],
+                            },
+                            {
+                              type: "checkbox",
+                              content:
+                                "I have disclosed all relevant medical conditions, injuries, and medications to my therapist",
+                              order: 5,
+                              required: true,
+                            },
+                            {
+                              type: "signature",
+                              content: "Client Signature",
+                              order: 6,
+                              required: true,
                             },
                           ],
                         },
@@ -434,46 +452,64 @@ export default function ConsentTemplates() {
                           name: "Prenatal Treatment Consent",
                           description:
                             "Specialized consent form for pregnancy-related treatments",
-                          disclaimers: [
-                            "Specialized training is required for prenatal treatments",
-                            "Consult with your healthcare provider before booking",
-                            "Certain treatments may not be suitable during pregnancy",
-                          ],
-                          risks: [
-                            "Contraindicated in high-risk pregnancies",
-                            "May cause temporary discomfort",
-                            "Not recommended in first trimester without doctor approval",
-                          ],
                           sections: [
                             {
-                              title: "Pregnancy Information",
-                              required: true,
-                              fields: [
-                                {
-                                  type: "checkbox",
-                                  label:
-                                    "I confirm that I am currently pregnant and have disclosed my due date and any pregnancy complications",
-                                  required: true,
-                                },
-                                {
-                                  type: "checkbox",
-                                  label:
-                                    "I have received approval from my healthcare provider to receive this treatment",
-                                  required: true,
-                                },
+                              type: "header",
+                              content: "Prenatal Treatment Consent Form",
+                              order: 0,
+                              required: false,
+                            },
+                            {
+                              type: "paragraph",
+                              content:
+                                "Specialized training is required for prenatal treatments. Please consult with your healthcare provider before booking. Certain treatments may not be suitable during pregnancy, especially in the first trimester.",
+                              order: 1,
+                              required: false,
+                            },
+                            {
+                              type: "list",
+                              content: "Important Considerations",
+                              order: 2,
+                              required: false,
+                              options: [
+                                "Contraindicated in high-risk pregnancies",
+                                "May cause temporary discomfort",
+                                "Not recommended in first trimester without doctor approval",
+                                "Requires healthcare provider clearance",
                               ],
                             },
                             {
-                              title: "Consent to Treatment",
+                              type: "header",
+                              content: "Pregnancy Information",
+                              order: 3,
+                              required: false,
+                            },
+                            {
+                              type: "checkbox",
+                              content:
+                                "I confirm that I am currently pregnant and have disclosed my due date and any pregnancy complications",
+                              order: 4,
                               required: true,
-                              fields: [
-                                {
-                                  type: "checkbox",
-                                  label:
-                                    "I understand the risks and benefits of prenatal treatment and consent to receive this service",
-                                  required: true,
-                                },
-                              ],
+                            },
+                            {
+                              type: "checkbox",
+                              content:
+                                "I have received approval from my healthcare provider to receive this treatment during pregnancy",
+                              order: 5,
+                              required: true,
+                            },
+                            {
+                              type: "declaration",
+                              content:
+                                "I understand the risks and benefits of prenatal treatment and consent to receive this service. I will inform my therapist immediately if I experience any discomfort.",
+                              order: 6,
+                              required: false,
+                            },
+                            {
+                              type: "signature",
+                              content: "Client Signature",
+                              order: 7,
+                              required: true,
                             },
                           ],
                         },
@@ -501,40 +537,57 @@ export default function ConsentTemplates() {
                           name: "Beauty & Spa Services Consent",
                           description:
                             "General consent for facials, waxing, and spa treatments",
-                          disclaimers: [
-                            "Results may vary depending on skin type and condition",
-                            "Please inform us of any allergies or sensitivities",
-                            "Avoid sun exposure after certain treatments",
-                          ],
-                          risks: [
-                            "Temporary redness or irritation",
-                            "Allergic reactions to products",
-                            "Skin sensitivity following treatment",
-                          ],
                           sections: [
                             {
-                              title: "Skin & Allergy Information",
-                              required: true,
-                              fields: [
-                                {
-                                  type: "checkbox",
-                                  label:
-                                    "I have disclosed any skin conditions, allergies, or sensitivities",
-                                  required: true,
-                                },
+                              type: "header",
+                              content: "Beauty & Spa Services Consent",
+                              order: 0,
+                              required: false,
+                            },
+                            {
+                              type: "paragraph",
+                              content:
+                                "Results may vary depending on your skin type and condition. Please inform us of any allergies, sensitivities, or skin conditions before your treatment. Avoid sun exposure after certain treatments as advised by your aesthetician.",
+                              order: 1,
+                              required: false,
+                            },
+                            {
+                              type: "list",
+                              content: "Possible Side Effects",
+                              order: 2,
+                              required: false,
+                              options: [
+                                "Temporary redness or irritation",
+                                "Allergic reactions to products",
+                                "Skin sensitivity following treatment",
+                                "Minor swelling or tenderness",
                               ],
                             },
                             {
-                              title: "Treatment Consent",
+                              type: "header",
+                              content: "Skin & Allergy Information",
+                              order: 3,
+                              required: false,
+                            },
+                            {
+                              type: "checkbox",
+                              content:
+                                "I have disclosed any skin conditions, allergies, sensitivities, or medications I am currently taking",
+                              order: 4,
                               required: true,
-                              fields: [
-                                {
-                                  type: "checkbox",
-                                  label:
-                                    "I consent to receive the selected beauty or spa treatment and understand the potential risks",
-                                  required: true,
-                                },
-                              ],
+                            },
+                            {
+                              type: "checkbox",
+                              content:
+                                "I consent to receive the selected beauty or spa treatment and understand the potential risks and benefits",
+                              order: 5,
+                              required: true,
+                            },
+                            {
+                              type: "signature",
+                              content: "Client Signature",
+                              order: 6,
+                              required: true,
                             },
                           ],
                         },
@@ -559,49 +612,68 @@ export default function ConsentTemplates() {
                     navigate("/admin/consent-templates/new", {
                       state: {
                         template: {
-                          name: "Fitness Training Consent",
+                          name: "Fitness Training Consent & Waiver",
                           description:
                             "Consent and liability waiver for fitness and personal training sessions",
-                          disclaimers: [
-                            "Physical exercise involves inherent risks",
-                            "Consult your physician before beginning any fitness program",
-                            "Stop immediately if you experience pain or discomfort",
-                          ],
-                          risks: [
-                            "Muscle strain or injury",
-                            "Cardiovascular complications (if pre-existing conditions)",
-                            "Dehydration or fatigue",
-                          ],
                           sections: [
                             {
-                              title: "Health & Fitness Declaration",
-                              required: true,
-                              fields: [
-                                {
-                                  type: "checkbox",
-                                  label:
-                                    "I confirm that I am in good health and able to participate in physical exercise",
-                                  required: true,
-                                },
-                                {
-                                  type: "checkbox",
-                                  label:
-                                    "I have disclosed any medical conditions that may affect my ability to exercise safely",
-                                  required: true,
-                                },
+                              type: "header",
+                              content:
+                                "Fitness Training Consent & Liability Waiver",
+                              order: 0,
+                              required: false,
+                            },
+                            {
+                              type: "paragraph",
+                              content:
+                                "Physical exercise involves inherent risks. You should consult your physician before beginning any fitness program. Stop immediately if you experience pain, discomfort, dizziness, or shortness of breath.",
+                              order: 1,
+                              required: false,
+                            },
+                            {
+                              type: "list",
+                              content: "Potential Risks",
+                              order: 2,
+                              required: false,
+                              options: [
+                                "Muscle strain or injury",
+                                "Cardiovascular complications (if pre-existing conditions)",
+                                "Dehydration or fatigue",
+                                "Joint or ligament injury",
                               ],
                             },
                             {
-                              title: "Liability Waiver",
+                              type: "header",
+                              content: "Health & Fitness Declaration",
+                              order: 3,
+                              required: false,
+                            },
+                            {
+                              type: "checkbox",
+                              content:
+                                "I confirm that I am in good health and physically able to participate in exercise and fitness activities",
+                              order: 4,
                               required: true,
-                              fields: [
-                                {
-                                  type: "checkbox",
-                                  label:
-                                    "I understand the risks of physical exercise and assume responsibility for my participation",
-                                  required: true,
-                                },
-                              ],
+                            },
+                            {
+                              type: "checkbox",
+                              content:
+                                "I have disclosed any medical conditions, injuries, or physical limitations that may affect my ability to exercise safely",
+                              order: 5,
+                              required: true,
+                            },
+                            {
+                              type: "declaration",
+                              content:
+                                "I understand the risks of physical exercise and assume full responsibility for my participation. I release the trainer and facility from any liability for injuries that may occur during training.",
+                              order: 6,
+                              required: false,
+                            },
+                            {
+                              type: "signature",
+                              content: "Client Signature",
+                              order: 7,
+                              required: true,
                             },
                           ],
                         },
