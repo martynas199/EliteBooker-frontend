@@ -20,12 +20,19 @@ export default function Subscription() {
   const fetchSubscription = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/subscriptions/status");
-      setSubscription(response.data);
+      setLoadingInvoices(true);
 
-      // Fetch invoices if subscription exists
-      if (response.data) {
-        fetchInvoices();
+      // Fetch subscription and invoices in parallel for better performance
+      const [subscriptionRes, invoicesRes] = await Promise.all([
+        api.get("/subscriptions/status"),
+        api.get("/subscriptions/invoices").catch(() => ({ data: [] })), // Fail gracefully if invoices endpoint fails
+      ]);
+
+      setSubscription(subscriptionRes.data);
+
+      // Only set invoices if subscription exists
+      if (subscriptionRes.data) {
+        setInvoices(invoicesRes.data);
       }
     } catch (error) {
       console.error("Error fetching subscription:", error);
@@ -34,17 +41,6 @@ export default function Subscription() {
       }
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchInvoices = async () => {
-    try {
-      setLoadingInvoices(true);
-      const response = await api.get("/subscriptions/invoices");
-      setInvoices(response.data);
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
-    } finally {
       setLoadingInvoices(false);
     }
   };

@@ -1,8 +1,11 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { selectAdmin } from "../../shared/state/authSlice";
 import { api } from "../../shared/lib/apiClient";
+import { queryKeys } from "../../shared/lib/queryClient";
+import { useSharedData } from "../../shared/hooks/useSharedData";
 import Modal from "../../shared/components/ui/Modal";
 import FormField from "../../shared/components/forms/FormField";
 import Button from "../../shared/components/ui/Button";
@@ -26,8 +29,16 @@ import {
 export default function Appointments() {
   const { language } = useLanguage();
   const admin = useSelector(selectAdmin);
+  const queryClient = useQueryClient();
   const isSuperAdmin = admin?.role === "super_admin";
-  const [rows, setRows] = useState([]);
+
+  // Use shared data hook for cached specialists and services
+  const {
+    specialists,
+    services,
+    isLoading: sharedDataLoading,
+  } = useSharedData();
+
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 50,
@@ -35,7 +46,7 @@ export default function Appointments() {
     totalPages: 0,
     hasMore: false,
   });
-  const [loading, setLoading] = useState(false);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [activeId, setActiveId] = useState("");
   const [preview, setPreview] = useState(null);
@@ -49,8 +60,79 @@ export default function Appointments() {
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState(null);
-  const [services, setServices] = useState([]);
-  const [specialists, setSpecialists] = useState([]);
+
+  // React Query for appointments with pagination
+  const {
+    data: appointmentsData,
+    isLoading,
+    refetch: refetchAppointments,
+  } = useQuery({
+    queryKey: ["appointments", pagination.page],
+    queryFn: async ({ signal }) => {
+      const response = await api.get(
+        `/appointments?page=${pagination.page}&limit=50`,
+        {
+          signal,
+        }
+      );
+
+      let appointments = [];
+      let paginationData = pagination;
+
+      if (response.data.data) {
+        // Paginated response
+        appointments = response.data.data || [];
+        paginationData = response.data.pagination || pagination;
+      } else {
+        // Legacy response (array)
+        appointments = response.data || [];
+      }
+
+      // Filter appointments based on admin role and linked specialist
+      if (isSuperAdmin) {
+        // Super admin sees all appointments
+      } else if (admin?.specialistId) {
+        // Regular admin with linked specialist - only show their specialist's appointments
+        appointments = appointments.filter(
+          (apt) => apt.specialistId?._id === admin.specialistId
+        );
+
+        // Recalculate pagination for filtered results
+        const filteredTotal = appointments.length;
+        paginationData = {
+          page: 1,
+          limit: 50,
+          total: filteredTotal,
+          totalPages: Math.ceil(filteredTotal / 50),
+          hasMore: false,
+        };
+      } else {
+        // Regular admin without linked specialist - show no appointments
+        appointments = [];
+        paginationData = {
+          page: 1,
+          limit: 50,
+          total: 0,
+          totalPages: 0,
+          hasMore: false,
+        };
+      }
+
+      return {
+        appointments,
+        pagination: paginationData,
+      };
+    },
+    enabled: !!admin, // Only fetch when admin is loaded
+    staleTime: 30 * 1000, // 30 seconds - appointments change frequently
+    gcTime: 2 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+  });
+
+  const rows = appointmentsData?.appointments || [];
+  const loading = sharedDataLoading || isLoading;
 
   // Create modal state
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -85,86 +167,20 @@ export default function Appointments() {
   // Debounce search query to avoid excessive filtering
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const fetchAppointments = async (page = 1) => {
-    try {
-      setLoading(true);
-      const response = await api.get(`/appointments?page=${page}&limit=50`);
-
-      let appointments = [];
-      let paginationData = pagination;
-
-      if (response.data.data) {
-        // Paginated response
-        appointments = response.data.data || [];
-        paginationData = response.data.pagination || pagination;
-      } else {
-        // Legacy response (array)
-        appointments = response.data || [];
-      }
-
-      // Filter appointments based on admin role and linked specialist
-      if (isSuperAdmin) {
-        // Super admin sees all appointments
-      } else if (admin?.specialistId) {
-        // Regular admin with linked specialist - only show their specialist's appointments
-        const originalCount = appointments.length;
-        appointments = appointments.filter(
-          (apt) => apt.specialistId?._id === admin.specialistId
-        );
-
-        // Recalculate pagination for filtered results
-        const filteredTotal = appointments.length;
-        paginationData = {
-          page: 1,
-          limit: 50,
-          total: filteredTotal,
-          totalPages: Math.ceil(filteredTotal / 50),
-          hasMore: false,
-        };
-      } else {
-        // Regular admin without linked specialist - show no appointments
-        console.log(
-          "[Appointments] Regular admin without linked specialist - showing no appointments"
-        );
-        appointments = [];
-        paginationData = {
-          page: 1,
-          limit: 50,
-          total: 0,
-          totalPages: 0,
-          hasMore: false,
-        };
-      }
-
-      setRows(appointments);
-      setPagination(paginationData);
-
-      // Check consent status for all appointments
-      if (appointments.length > 0) {
-        const appointmentIds = appointments.map((apt) => apt._id);
-        checkConsentForAppointments(appointmentIds);
-      }
-    } catch (error) {
-      console.error("Failed to fetch appointments:", error);
-      setRows([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Update pagination data when appointmentsData changes
   useEffect(() => {
-    fetchAppointments(pagination.page);
+    if (appointmentsData?.pagination) {
+      setPagination(appointmentsData.pagination);
+    }
+  }, [appointmentsData]);
 
-    // Load services and specialists for edit modal
-    api
-      .get("/services", { params: { limit: 1000 } })
-      .then((r) => setServices(r.data || []))
-      .catch(() => {});
-    api
-      .get("/specialists", { params: { limit: 1000 } })
-      .then((r) => setSpecialists(r.data || []))
-      .catch(() => {});
-  }, []);
+  // Check consent status for appointments
+  useEffect(() => {
+    if (rows.length > 0) {
+      const appointmentIds = rows.map((apt) => apt._id);
+      checkConsentForAppointments(appointmentIds);
+    }
+  }, [rows]);
 
   // Close date pickers when clicking outside
   useEffect(() => {
@@ -355,17 +371,10 @@ export default function Appointments() {
           reason: reason || undefined,
         })
         .then((r) => r.data);
-      setRows((old) =>
-        old.map((x) =>
-          x._id === activeId
-            ? {
-                ...x,
-                status: res.status,
-                cancelledAt: new Date().toISOString(),
-              }
-            : x
-        )
-      );
+
+      // Refetch appointments to get latest data
+      await refetchAppointments();
+
       setModalOpen(false);
       setActiveId("");
       setPreview(null);
@@ -389,7 +398,7 @@ export default function Appointments() {
 
     try {
       await api.delete(`/appointments/${id}`);
-      setRows((old) => old.filter((x) => x._id !== id));
+      await refetchAppointments();
       toast.success("Appointment deleted successfully");
     } catch (e) {
       toast.error(e.message || "Failed to delete appointment");
@@ -415,17 +424,8 @@ export default function Appointments() {
                   `/appointments/specialist/${admin.specialistId}`
                 );
 
-                // Remove all appointments for this specialist from the state
-                setRows((old) =>
-                  old.filter((apt) => {
-                    const specialistId =
-                      typeof apt.specialistId === "object" &&
-                      apt.specialistId?._id
-                        ? apt.specialistId._id
-                        : apt.specialistId;
-                    return String(specialistId) !== String(admin.specialistId);
-                  })
-                );
+                // Refetch appointments to update the list
+                await refetchAppointments();
 
                 toast.success(
                   res.data.message ||
@@ -470,11 +470,7 @@ export default function Appointments() {
                   })
                   .then((r) => r.data);
 
-                setRows((old) =>
-                  old.map((x) =>
-                    x._id === id ? { ...x, status: res.status } : x
-                  )
-                );
+                await refetchAppointments();
                 toast.success("Marked as No Show");
               } catch (e) {
                 toast.error(e.message || "Failed to update status");
@@ -634,11 +630,8 @@ export default function Appointments() {
         .then((r) => r.data);
 
       if (res.success && res.appointment) {
-        setRows((old) =>
-          old.map((x) =>
-            x._id === editingAppointment._id ? res.appointment : x
-          )
-        );
+        // Refetch appointments to get latest data
+        await refetchAppointments();
       }
 
       setEditModalOpen(false);
@@ -715,7 +708,7 @@ export default function Appointments() {
 
       if (response.data.ok) {
         // Refresh appointments list
-        await fetchAppointments(pagination.page);
+        await refetchAppointments();
         setCreateModalOpen(false);
         toast.success("Appointment created successfully");
       }
@@ -2139,7 +2132,9 @@ export default function Appointments() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => fetchAppointments(pagination.page - 1)}
+              onClick={() =>
+                setPagination((prev) => ({ ...prev, page: prev.page - 1 }))
+              }
               disabled={pagination.page === 1 || loading}
               className="w-full sm:w-auto h-11 sm:h-9 text-sm sm:text-base font-medium"
             >
@@ -2151,7 +2146,9 @@ export default function Appointments() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => fetchAppointments(pagination.page + 1)}
+              onClick={() =>
+                setPagination((prev) => ({ ...prev, page: prev.page + 1 }))
+              }
               disabled={!pagination.hasMore || loading}
               className="w-full sm:w-auto h-11 sm:h-9 text-sm sm:text-base font-medium"
             >

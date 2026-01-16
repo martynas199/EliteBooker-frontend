@@ -16,13 +16,14 @@ export function SettingsProvider({ children }) {
 
   useEffect(() => {
     let isMounted = true;
+    const controller = new AbortController();
 
     async function loadSettings() {
       try {
         setLoading(true);
         const [settingsResponse, salonResponse] = await Promise.all([
-          api.get("/settings"),
-          SalonAPI.get().catch(() => null),
+          api.get("/settings", { signal: controller.signal }),
+          SalonAPI.get({ signal: controller.signal }).catch(() => null),
         ]);
 
         if (isMounted) {
@@ -31,6 +32,11 @@ export function SettingsProvider({ children }) {
           setError(null);
         }
       } catch (err) {
+        // Ignore abort errors (component unmounted)
+        if (err.name === "AbortError" || err.code === "ERR_CANCELED") {
+          return;
+        }
+
         console.error("Failed to load settings:", err);
         if (isMounted) {
           setError(err);
@@ -46,6 +52,7 @@ export function SettingsProvider({ children }) {
 
     return () => {
       isMounted = false;
+      controller.abort(); // Cancel request on unmount
     };
   }, []);
 

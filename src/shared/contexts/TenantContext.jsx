@@ -67,6 +67,8 @@ export function TenantProvider({ children }) {
   const [resolution, setResolution] = useState(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function loadTenant() {
       try {
         setLoading(true);
@@ -82,16 +84,18 @@ export function TenantProvider({ children }) {
           return;
         }
 
-        // Fetch tenant data
+        // Fetch tenant data with cancellation support
         let response;
         if (resolved.slug) {
           response = await axios.get(
-            `${API_URL}/api/tenants/slug/${resolved.slug}`
+            `${API_URL}/api/tenants/slug/${resolved.slug}`,
+            { signal: controller.signal }
           );
         } else if (resolved.domain) {
           // Custom domain - backend will resolve
           response = await axios.get(`${API_URL}/api/tenants/current`, {
             headers: { Host: resolved.domain },
+            signal: controller.signal,
           });
         }
 
@@ -104,6 +108,11 @@ export function TenantProvider({ children }) {
           setTenant(null);
         }
       } catch (err) {
+        // Ignore abort errors (component unmounted or route changed)
+        if (err.name === "AbortError" || err.code === "ERR_CANCELED") {
+          return;
+        }
+
         console.error("Failed to load tenant:", err);
         setError(err.message);
         setTenant(null);
@@ -113,6 +122,10 @@ export function TenantProvider({ children }) {
     }
 
     loadTenant();
+
+    return () => {
+      controller.abort(); // Cancel request on unmount or route change
+    };
   }, [location.pathname]); // Re-run when pathname changes
 
   /**

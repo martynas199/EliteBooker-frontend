@@ -9,16 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("userToken"));
   const [loading, setLoading] = useState(true);
 
-  // Load user on mount if token exists
-  useEffect(() => {
-    if (token) {
-      fetchCurrentUser();
-    } else {
-      setLoading(false);
-    }
-  }, [token]);
-
-  // Fetch current user from API
+  // Fetch current user helper (defined at component scope so it can be exposed in context)
   const fetchCurrentUser = async () => {
     try {
       // Always read the latest token from localStorage
@@ -53,6 +44,22 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  // Load user on mount if token exists
+  useEffect(() => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+
+    fetchCurrentUser();
+
+    return () => {
+      controller.abort(); // Cancel request on unmount
+    };
+  }, [token]);
 
   // Register new user
   const register = async (name, email, phone, password) => {

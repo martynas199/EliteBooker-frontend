@@ -1,35 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { api } from "../../shared/lib/apiClient";
+import { queryKeys } from "../../shared/lib/queryClient";
+import { useSharedData } from "../../shared/hooks/useSharedData";
 import StaffForm from "../StaffForm";
 import StaffList from "../StaffList";
 
 export default function Staff() {
-  const [staff, setStaff] = useState([]);
-  const [services, setServices] = useState([]);
+  const queryClient = useQueryClient();
+
+  // Use shared data hook to get cached specialists and services
+  const { specialists: staff, services, isLoading } = useSharedData();
+
   const [editingStaff, setEditingStaff] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    setIsLoading(true);
-    try {
-      const [staffRes, servicesRes] = await Promise.all([
-        api.get("/specialists", { params: { limit: 1000 } }),
-        api.get("/services", { params: { limit: 1000 } }),
-      ]);
-      setStaff(staffRes.data);
-      setServices(servicesRes.data);
-    } catch (error) {
-      console.error("Failed to load data:", error);
-      alert("Failed to load staff data: " + error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleCreate = () => {
     setEditingStaff(null);
@@ -101,7 +85,11 @@ export default function Staff() {
         }
       }
 
-      await loadData();
+      // Invalidate specialists cache to trigger refetch
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.specialists.list(),
+      });
+
       setShowForm(false);
       setEditingStaff(null);
     } catch (error) {
@@ -113,7 +101,12 @@ export default function Staff() {
   const handleDelete = async (staffId) => {
     try {
       await api.delete(`/specialists/${staffId}`);
-      await loadData();
+
+      // Invalidate specialists cache to trigger refetch
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.specialists.list(),
+      });
+
       setShowForm(false);
       setEditingStaff(null);
     } catch (error) {

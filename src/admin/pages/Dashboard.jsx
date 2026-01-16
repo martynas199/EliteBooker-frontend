@@ -2,8 +2,11 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { selectAdmin } from "../../shared/state/authSlice";
 import { api } from "../../shared/lib/apiClient";
+import { queryKeys } from "../../shared/lib/queryClient";
+import { useSharedData } from "../../shared/hooks/useSharedData";
 import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import dayjs from "dayjs";
 import toast from "react-hot-toast";
@@ -35,12 +38,18 @@ const isCancellationError = (error) => {
 export default function Dashboard() {
   const { language } = useLanguage();
   const admin = useSelector(selectAdmin);
+  const queryClient = useQueryClient();
   const isSuperAdmin = admin?.role === "super_admin";
-  const [allAppointments, setAllAppointments] = useState([]);
-  const [specialists, setSpecialists] = useState([]);
+
+  // Use shared data hook for cached specialists and services
+  const {
+    specialists,
+    services,
+    isLoading: sharedDataLoading,
+  } = useSharedData();
+
   const [selectedSpecialist, setSelectedSpecialist] = useState("all");
   const [showSpecialistDrawer, setShowSpecialistDrawer] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [currentView, setCurrentView] = useState("month");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -61,8 +70,56 @@ export default function Dashboard() {
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState(null);
-  const [services, setServices] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+
+  // Fetch appointments with React Query
+  const {
+    data: allAppointments = [],
+    isLoading: appointmentsLoading,
+    refetch: refetchAppointments,
+  } = useQuery({
+    queryKey: queryKeys.appointments.all,
+    queryFn: async ({ signal }) => {
+      const response = await api.get("/appointments", { signal });
+      return response.data || [];
+    },
+    enabled: !!admin, // Only fetch when admin is loaded
+    staleTime: 1 * 60 * 1000, // 1 minute - appointments change frequently
+    gcTime: 2 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+  });
+
+  // Fetch salon info with React Query
+  const { data: salonInfo } = useQuery({
+    queryKey: ["salon"],
+    queryFn: async ({ signal }) => {
+      const response = await api.get("/salon", { signal });
+      return response.data || {};
+    },
+    enabled: !!admin,
+    staleTime: 5 * 60 * 1000, // 5 minutes - salon info rarely changes
+    gcTime: 10 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Fetch settings with React Query
+  const { data: settingsInfo } = useQuery({
+    queryKey: ["settings"],
+    queryFn: async ({ signal }) => {
+      const response = await api.get("/settings", { signal });
+      return response.data || null;
+    },
+    enabled: !!admin,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  const loading = sharedDataLoading || appointmentsLoading;
 
   // Support modal state
   const [showSupportModal, setShowSupportModal] = useState(false);
@@ -147,8 +204,7 @@ export default function Dashboard() {
 
       if (response.data.ok) {
         // Refresh data to show new appointment
-        const controller = new AbortController();
-        await fetchData(controller.signal);
+        await refetchAppointments();
 
         setShowCreateAppointmentModal(false);
         // Reset form
@@ -179,164 +235,59 @@ export default function Dashboard() {
     }
   };
 
-  const fetchData = useCallback(
-    async (signal) => {
-      try {
-        setLoading(true);
-
-        // Fetch appointments, specialists, and salon info with granular error tracking
-        const [
-          appointmentsResult,
-          specialistsResult,
-          salonResult,
-          settingsResult,
-        ] = await Promise.allSettled([
-          api.get("/appointments", { signal }),
-          api.get("/specialists", { params: { limit: 1000 }, signal }),
-          api.get("/salon", { signal }),
-          api.get("/settings", { signal }),
-        ]);
-
-        const resultList = [appointmentsResult, specialistsResult, salonResult];
-
-        const wasCancelled = resultList.some(
-          (result) =>
-            result.status === "rejected" && isCancellationError(result.reason)
-        );
-
-        if (wasCancelled) {
-          return;
-        }
-
-        const requestErrors = [];
-
-        let appointments = [];
-        let specialistsData = [];
-        let salonInfo = {};
-        let settingsInfo = null;
-
-        if (appointmentsResult.status === "fulfilled") {
-          appointments = appointmentsResult.value.data || [];
-        } else {
-          requestErrors.push({
-            endpoint: "/appointments",
-            error: appointmentsResult.reason,
-          });
-        }
-
-        if (specialistsResult.status === "fulfilled") {
-          specialistsData = specialistsResult.value.data || [];
-        } else {
-          requestErrors.push({
-            endpoint: "/specialists",
-            error: specialistsResult.reason,
-          });
-        }
-
-        if (salonResult.status === "fulfilled") {
-          salonInfo = salonResult.value.data || {};
-        } else {
-          requestErrors.push({
-            endpoint: "/salon",
-            error: salonResult.reason,
-          });
-        }
-
-        if (settingsResult.status === "fulfilled") {
-          settingsInfo = settingsResult.value.data || null;
-        } else {
-          requestErrors.push({
-            endpoint: "/settings",
-            error: settingsResult.reason,
-          });
-        }
-
-        if (requestErrors.length > 0) {
-          requestErrors.forEach(({ endpoint, error }) => {
-            console.error(`[Dashboard] ${endpoint} request failed`, error);
-          });
-          throw (
-            requestErrors[0].error || new Error("Dashboard data request failed")
-          );
-        }
-
-        // Store salon slug for booking page link
-        // Priority: use slug first, then generate from name, never use ID
-        setSettingsData(settingsInfo);
-        const slug =
-          salonInfo.slug ||
-          (salonInfo.name
-            ? salonInfo.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
-            : null);
-
-        if (slug) {
-          setSalonSlug(slug);
-        } else {
-          console.warn(
-            "[Dashboard] No salon slug found in response",
-            salonInfo
-          );
-        }
-
-        setSalonData(salonInfo);
-
-        // Filter appointments based on admin role and linked specialist
-        if (isSuperAdmin) {
-          // Super admin sees all appointments
-        } else if (admin?.specialistId) {
-          // Regular admin with linked specialist - only show their specialist's appointments
-          const originalCount = appointments.length;
-          appointments = appointments.filter(
-            (apt) => apt.specialistId?._id === admin.specialistId
-          );
-          // Auto-select the specialist's filter
-          setSelectedSpecialist(admin.specialistId);
-        } else {
-          // Regular admin without linked specialist - show no appointments
-          appointments = [];
-        }
-
-        setAllAppointments(appointments);
-        setSpecialists(specialistsData);
-      } catch (error) {
-        // Ignore abort/cancel errors (user navigated away or request cancelled)
-        if (isCancellationError(error)) {
-          return;
-        }
-
-        // Ignore 403 errors on initial load (admin not yet loaded)
-        if (error.response?.status === 403) {
-          console.log(
-            "[Dashboard] 403 error (likely no auth token yet), will retry when admin loads"
-          );
-          return;
-        }
-
-        console.error("Failed to fetch data:", error);
-        toast.error("Failed to load dashboard data");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [admin?.specialistId, isSuperAdmin]
-  ); // Only recreate if these change
-
+  // Update salon data when salonInfo changes
   useEffect(() => {
-    // Don't fetch data until admin is loaded from localStorage
-    if (!admin) {
-      console.log("[Dashboard] Waiting for admin to load...");
-      return;
+    if (salonInfo) {
+      setSalonData(salonInfo);
+
+      // Store salon slug for booking page link
+      const slug =
+        salonInfo.slug ||
+        (salonInfo.name
+          ? salonInfo.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+          : null);
+
+      if (slug) {
+        setSalonSlug(slug);
+      } else {
+        console.warn("[Dashboard] No salon slug found in response", salonInfo);
+      }
+    }
+  }, [salonInfo]);
+
+  // Update settings data when settingsInfo changes
+  useEffect(() => {
+    if (settingsInfo) {
+      setSettingsData(settingsInfo);
+    }
+  }, [settingsInfo]);
+
+  // Filter appointments based on admin role and selected specialist
+  const filteredAppointments = useMemo(() => {
+    if (!allAppointments) return [];
+
+    let filtered = [...allAppointments];
+
+    // Apply role-based filtering
+    if (!isSuperAdmin && admin?.specialistId) {
+      // Regular admin with linked specialist - only show their specialist's appointments
+      filtered = filtered.filter(
+        (apt) => apt.specialistId?._id === admin.specialistId
+      );
+    } else if (!isSuperAdmin && !admin?.specialistId) {
+      // Regular admin without linked specialist - show no appointments
+      filtered = [];
     }
 
-    const abortController = new AbortController();
+    // Apply specialist filter (for UI filter dropdown)
+    if (selectedSpecialist && selectedSpecialist !== "all") {
+      filtered = filtered.filter(
+        (apt) => apt.specialistId?._id === selectedSpecialist
+      );
+    }
 
-    fetchData(abortController.signal);
-
-    // Cleanup: Cancel request if component unmounts or dependencies change
-    return () => {
-      abortController.abort();
-    };
-  }, [fetchData, admin]); // Re-fetch when fetchData changes (which depends on admin and isSuperAdmin)
+    return filtered;
+  }, [allAppointments, admin?.specialistId, isSuperAdmin, selectedSpecialist]);
 
   // Fetch hero/about presence once admin is available
   useEffect(() => {
@@ -642,12 +593,6 @@ export default function Dashboard() {
 
     loadMetrics();
 
-    // Load services for edit modal
-    api
-      .get("/services", { params: { limit: 1000 } })
-      .then((r) => setServices(r.data || []))
-      .catch(() => {});
-
     return () => controller.abort();
   }, [
     admin?._id,
@@ -735,8 +680,7 @@ export default function Dashboard() {
       toast.success("Appointment updated successfully");
 
       // Refresh data
-      const controller = new AbortController();
-      fetchData(controller.signal);
+      await refetchAppointments();
     } catch (e) {
       toast.error(
         e.response?.data?.error || e.message || "Failed to update appointment"
@@ -2686,8 +2630,10 @@ export default function Dashboard() {
         isOpen={showCreateServiceModal}
         onClose={() => setShowCreateServiceModal(false)}
         onSuccess={() => {
-          // Optionally refresh data after service creation
-          fetchData();
+          // Invalidate services cache to trigger refetch
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.services.list(),
+          });
         }}
       />
 
@@ -2696,8 +2642,10 @@ export default function Dashboard() {
         isOpen={showCreateStaffModal}
         onClose={() => setShowCreateStaffModal(false)}
         onSuccess={() => {
-          // Optionally refresh data after staff creation
-          fetchData();
+          // Invalidate specialists cache to trigger refetch
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.specialists.list(),
+          });
         }}
       />
 
