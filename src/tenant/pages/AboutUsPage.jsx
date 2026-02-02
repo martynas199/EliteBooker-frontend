@@ -77,9 +77,9 @@ export default function AboutUsPage() {
     <div className="min-h-screen bg-white">
       {/* SEO Meta Tags */}
       <SEOHead
-        title="About Us - Our Story & Mission"
-        description="Discover Elite Booker Beauty Salon in Wisbech, Cambridgeshire. Learn about our expert specialists, premium beauty services, and our commitment to excellence. Located at 12 Blackfriars Rd, PE13 1AT. We specialize in permanent makeup, brows, lashes and luxury beauty treatments for clients across Wisbech, March, King's Lynn, Peterborough and Cambridgeshire."
-        keywords="about Elite Booker, beauty salon Wisbech story, experienced specialists Cambridgeshire, professional beauty services, award winning beauty salon, best beauty salon Wisbech"
+        title="About Elite Booker | Appointment Booking Platform"
+        description="Discover how Elite Booker empowers service-based professionals and small businesses to manage appointments, payments, and client relationships with ease. Meet the team behind our booking software and partner success programmes."
+        keywords="elite booker about, appointment booking platform, service business scheduling, small business booking software, client management tools"
         schema={combinedSchema}
       />
 
@@ -113,7 +113,7 @@ export default function AboutUsPage() {
               About Us
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              Discover our story and what makes us special
+              We help service professionals deliver brilliant client experiences with smart booking and payment tools
             </p>
           </motion.div>
 
@@ -303,16 +303,16 @@ export default function AboutUsPage() {
           >
             <div className="text-center">
               <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight">
-                Ready to Start Your Journey?
+                Ready to Grow Your Bookings?
               </h2>
               <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
-                Experience the difference. Book your appointment today and
-                discover what makes us special.
+                Talk with our team about streamlining appointments, reducing
+                no-shows, and giving clients a frictionless way to book online.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <a
-                  href="specialists"
+                  href="/services"
                   className="group inline-flex items-center gap-3 bg-gray-900 text-white px-8 py-4 rounded-xl hover:bg-gray-800 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105"
                 >
                   <svg
@@ -328,11 +328,11 @@ export default function AboutUsPage() {
                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  Book Appointment
+                  Explore Services
                 </a>
 
                 <a
-                  href="salon"
+                  href="/salon"
                   className="group inline-flex items-center gap-3 border-2 border-gray-300 text-gray-900 px-8 py-4 rounded-xl hover:bg-gray-100 hover:border-gray-900 transition-all duration-300 font-bold text-lg"
                 >
                   <svg
@@ -354,7 +354,7 @@ export default function AboutUsPage() {
                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  Contact Us
+                  Contact Support
                 </a>
               </div>
             </div>

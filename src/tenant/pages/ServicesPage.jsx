@@ -147,8 +147,8 @@ export default function ServicesPage() {
   return (
     <>
       <SEOHead
-        title={`Services - ${salonName}`}
-        description={`Browse our professional beauty services at ${salonName}. Book your appointment online today.`}
+        title={`Services & Online Booking - ${salonName}`}
+        description={`Browse services, compare pricing, and secure appointments with ${salonName}. Designed for service-based professionals and small businesses to manage bookings online.`}
       />
 
       <PageTransition>
@@ -163,11 +163,11 @@ export default function ServicesPage() {
               transition={{ duration: 0.6 }}
             >
               <h1 className="text-5xl font-black text-gray-900 mb-4 tracking-tight">
-                Our Services
+                Services & Online Booking
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 {salon?.description ||
-                  "Discover our range of professional beauty treatments"}
+                  "Select the services you need and reserve time with our specialists in just a few clicks."}
               </p>
             </motion.div>
 
@@ -291,12 +291,12 @@ export default function ServicesPage() {
                 </svg>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                No services found
+                No services available
               </h3>
               <p className="text-gray-600">
                 {selectedCategory === "all"
-                  ? "No services are currently available."
-                  : `No services found in the "${selectedCategory}" category.`}
+                  ? "Services are being updated. Contact us to schedule your appointment."
+                  : `No services in the "${selectedCategory}" category right now. Contact us and we'll help arrange the right appointment.`}
               </p>
             </div>
           </Card>

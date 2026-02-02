@@ -39,7 +39,7 @@ export default function BlogPage() {
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: "Home", url: "/" },
-    { name: "Let's Talk About Beauty", url: "/blog" },
+    { name: "Appointment Booking Tips", url: "/blog" },
   ]);
 
   const formatDate = (dateString) => {
@@ -53,9 +53,9 @@ export default function BlogPage() {
   return (
     <PageTransition className="min-h-screen bg-gray-50">
       <SEOHead
-        title="Let's Talk About Beauty - Blog & Beauty Tips"
-        description="Discover the latest beauty trends, tips, and expert advice from Elite Booker Beauty Salon in Wisbech. Learn about aesthetic treatments, skincare, permanent makeup, and beauty secrets from our professional team."
-        keywords="beauty blog, beauty tips Wisbech, aesthetic advice, skincare tips, permanent makeup guide, beauty trends, lip filler information, anti-wrinkle advice, dermal filler guide"
+        title="Appointment Booking Tips for Service Businesses | Elite Booker Blog"
+        description="Practical guides for service professionals and small business owners on online bookings, payments, client retention, and reducing no-shows."
+        keywords="appointment booking tips, service business blog, small business scheduling, reduce no shows, client retention strategies, online booking software"
         schema={breadcrumbSchema}
       />
 
@@ -64,11 +64,10 @@ export default function BlogPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-brand-100 opacity-70"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="font-serif text-4xl md:text-6xl font-bold text-gray-900 mb-4">
-            Let's Talk About <span className="text-brand-600">Beauty</span>
+            Appointment Booking <span className="text-brand-600">Tips &amp; Insights</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Discover expert insights, beauty tips, and the latest trends in
-            aesthetic treatments from our professional team
+            Expert guidance for service professionals on growing repeat bookings, managing schedules, and delighting clients online
           </p>
         </div>
       </section>
@@ -148,7 +147,7 @@ export default function BlogPage() {
             <p className="text-gray-600">
               {selectedTag
                 ? `No posts found with tag "${selectedTag}"`
-                : "Check back soon for beauty insights and tips!"}
+                : "Check back soon for appointment booking guides, retention strategies, and automation tips."}
             </p>
           </div>
         ) : (

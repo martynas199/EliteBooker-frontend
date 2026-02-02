@@ -86,11 +86,13 @@ export default function SalonDetails() {
     <div className="pb-10">
       {/* SEO Meta Tags */}
       <SEOHead
-        title={`Contact ${salonName} | Location, Hours & Directions`}
-        description={`Visit ${salonName}${
-          formattedAddress ? ` at ${formattedAddress}` : ""
-        }${salonPhone ? `. Call ${salonPhone}` : ""}. ${salonDescription}`}
-        keywords={`contact ${salonName}, beauty salon location, opening hours, directions, beauty salon near me`}
+        title={`Contact ${salonName} | Bookings, Hours & Support`}
+        description={`${
+          formattedAddress ? `Visit us at ${formattedAddress}. ` : ""
+        }${
+          salonPhone ? `Call ${salonPhone} or message our team. ` : ""
+        }We can help with appointment availability, rescheduling, and account support.`}
+        keywords={`contact ${salonName}, appointment support, booking help, service business contact, opening hours, reschedule appointment`}
         schema={combinedSchema}
       />
 

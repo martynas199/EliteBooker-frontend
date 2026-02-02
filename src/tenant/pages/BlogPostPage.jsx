@@ -93,11 +93,12 @@ export default function BlogPostPage() {
   return (
     <PageTransition className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <SEOHead
-        title={`${post.title} - Beauty Blog`}
+        title={`${post.title} | Elite Booker`}
         description={
-          post.excerpt || post.content.substring(0, 160).replace(/<[^>]*>/g, "")
+          post.excerpt ||
+          post.content.substring(0, 155).replace(/<[^>]*>/g, "").trim() + "..."
         }
-        keywords={post.tags?.join(", ") || "beauty, aesthetic treatments"}
+        keywords={`${post.tags?.join(", ") || "appointment booking tips"}, service business blog, small business scheduling, client retention`}
         schema={[breadcrumbSchema, blogPostSchema]}
       />
 
@@ -207,6 +208,11 @@ export default function BlogPostPage() {
             className="text-gray-700 leading-relaxed blog-content"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+          
+          {/* Word count and reading stats */}
+          <div className="mt-8 pt-6 border-t border-gray-200 text-sm text-gray-500">
+            <p>Last updated: {formatDate(post.updatedAt || post.publishedAt)}</p>
+          </div>
         </div>
 
         {/* Share Section */}
@@ -279,18 +285,25 @@ export default function BlogPostPage() {
         {/* CTA Section */}
         <div className="mt-16 p-8 bg-gradient-to-br from-brand-50 to-brand-100 rounded-2xl text-center">
           <h3 className="font-serif text-2xl font-bold text-gray-900 mb-4">
-            Ready to Experience Beauty Excellence?
+            Ready to Streamline Your Appointment Booking?
           </h3>
           <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
-            Book your appointment with our expert specialists in Wisbech and
-            discover the treatments mentioned in this article.
+            Discover how Elite Booker helps service professionals reduce no-shows, automate reminders, and grow repeat bookings online.
           </p>
-          <button
-            onClick={() => navigate(`/salon/${tenant?.slug}/specialists`)}
-            className="px-8 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
-          >
-            Book Now
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={() => navigate('/services')}
+              className="px-8 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
+            >
+              Explore Services
+            </button>
+            <button
+              onClick={() => navigate('/salon')}
+              className="px-8 py-3 bg-white text-brand-600 border-2 border-brand-600 rounded-lg hover:bg-brand-50 transition-all duration-300 font-medium"
+            >
+              Contact Support
+            </button>
+          </div>
         </div>
       </article>
 
@@ -349,6 +362,31 @@ export default function BlogPostPage() {
         }
         .blog-content a:hover {
           color: #b8910e;
+        }
+        .blog-content img {
+          border-radius: 0.75rem;
+          margin: 1.5rem 0;
+          max-width: 100%;
+          height: auto;
+        }
+        .blog-content code {
+          background: #f3f4f6;
+          padding: 0.125rem 0.375rem;
+          border-radius: 0.25rem;
+          font-size: 0.9em;
+        }
+        .blog-content pre {
+          background: #1f2937;
+          color: #f9fafb;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          overflow-x: auto;
+          margin: 1.5rem 0;
+        }
+        .blog-content pre code {
+          background: transparent;
+          color: inherit;
+          padding: 0;
         }
       `}</style>
     </PageTransition>
