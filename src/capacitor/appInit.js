@@ -72,8 +72,13 @@ export function addSafeAreaSupport() {
   }
 }
 
-// Disable pull-to-refresh on mobile
+// Disable pull-to-refresh on mobile (only on native platforms)
 export function disablePullToRefresh() {
+  // Only apply on native platforms to prevent scroll issues on web
+  if (!Capacitor.isNativePlatform()) {
+    return;
+  }
+  
   document.body.style.overscrollBehaviorY = 'none';
   
   let startY = 0;
