@@ -178,7 +178,7 @@ export default function LandingPage() {
         }}
       />
 
-      <PageTransition className="overflow-x-hidden bg-white">
+      <PageTransition className="min-h-screen overflow-y-auto overflow-x-hidden bg-white">
         {/* Navigation Header - with safe area for iPhone notch */}
         <header
           className="sticky z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200"
