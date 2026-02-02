@@ -113,7 +113,8 @@ export default function AboutUsPage() {
               About Us
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              We help service professionals deliver brilliant client experiences with smart booking and payment tools
+              We help service professionals deliver brilliant client experiences
+              with smart booking and payment tools
             </p>
           </motion.div>
 

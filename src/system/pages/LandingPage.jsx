@@ -1,6 +1,5 @@
 import { useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
-import PageTransition from "../../shared/components/ui/PageTransition";
 import MenuDropdown from "../../shared/components/ui/MenuDropdown";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 import GiftCardModal from "../../shared/components/modals/GiftCardModal";
@@ -178,7 +177,7 @@ export default function LandingPage() {
         }}
       />
 
-      <PageTransition className="min-h-screen overflow-y-auto overflow-x-hidden bg-white">
+      <div className="bg-white">
         {/* Navigation Header - with safe area for iPhone notch */}
         <header
           className="sticky z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200"
@@ -896,7 +895,7 @@ export default function LandingPage() {
             </Suspense>
           )}
         </div>
-      </PageTransition>
+      </div>
 
       {/* Lazy-loaded Booking Fee Modal */}
       {showFeeModal && (

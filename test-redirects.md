@@ -3,15 +3,18 @@
 ## What Was Fixed
 
 ### 1. **vercel.json** - Added Proper Redirects
+
 - ✅ Permanent 301 redirect from `elitebooker.co.uk` → `www.elitebooker.co.uk`
 - ✅ HTTPS is enforced automatically by Vercel
 - ✅ Added security headers (X-Content-Type-Options, X-Frame-Options)
 
 ### 2. **robots.txt** - Fixed Domain References
+
 - ✅ Updated from `.com` to `.co.uk`
 - ✅ Sitemap URL now points to correct domain
 
 ### 3. **index.html** - Already Correct
+
 - ✅ Canonical URL set to `https://www.elitebooker.co.uk/`
 
 ## Testing Steps
@@ -19,16 +22,19 @@
 ### After Deployment:
 
 1. **Test HTTP → HTTPS Redirect**
+
    - Visit: `http://www.elitebooker.co.uk/`
    - Should redirect to: `https://www.elitebooker.co.uk/`
    - Expected: 301 or 308 redirect
 
 2. **Test Non-WWW → WWW Redirect**
+
    - Visit: `http://elitebooker.co.uk/`
    - Should redirect to: `https://www.elitebooker.co.uk/`
    - Expected: 301 redirect
 
 3. **Test HTTPS Non-WWW → WWW Redirect**
+
    - Visit: `https://elitebooker.co.uk/`
    - Should redirect to: `https://www.elitebooker.co.uk/`
    - Expected: 301 redirect
@@ -52,6 +58,7 @@ curl -IL http://elitebooker.co.uk/ | grep -E "(HTTP|Location)"
 ```
 
 ### Expected cURL Output:
+
 ```
 HTTP/2 301
 location: https://www.elitebooker.co.uk/
@@ -64,16 +71,19 @@ HTTP/2 200
 After deployment:
 
 1. **Request Indexing**
+
    - Go to Google Search Console
    - Enter URL: `https://www.elitebooker.co.uk/`
    - Click "Request Indexing"
 
 2. **Submit Sitemap**
+
    - Go to Sitemaps section
    - Add: `https://www.elitebooker.co.uk/sitemap.xml`
    - Click Submit
 
 3. **Check URL Inspection Tool**
+
    - Inspect: `https://www.elitebooker.co.uk/`
    - Should show: "URL is on Google" (after reindex)
    - Coverage should be: "Indexable"
@@ -87,6 +97,7 @@ After deployment:
 Ensure in Vercel dashboard:
 
 1. **Domains Tab**
+
    - Primary: `www.elitebooker.co.uk`
    - Redirect: `elitebooker.co.uk` → `www.elitebooker.co.uk`
 
@@ -96,11 +107,13 @@ Ensure in Vercel dashboard:
 ## Common Issues
 
 ### If redirects don't work:
+
 - Clear browser cache or test in incognito
 - Wait 5-10 minutes after deployment for DNS propagation
 - Check Vercel deployment logs
 
 ### If Google still shows redirect errors:
+
 - Request re-indexing in Search Console
 - Wait 24-48 hours for Google to re-crawl
 - Verify robots.txt is accessible: `https://www.elitebooker.co.uk/robots.txt`

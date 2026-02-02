@@ -50,7 +50,7 @@ export default function ServicesPage() {
           console.log(
             `[Service ${index + 1}] "${
               service.name
-            }" - Specialist: ${specialistName} (${specialistId})`
+            }" - Specialist: ${specialistName} (${specialistId})`,
           );
         });
 
@@ -113,7 +113,7 @@ export default function ServicesPage() {
       ) {
         toast.error(
           "You can only book services from the same specialist. Please clear your current selection to choose services from a different specialist.",
-          { duration: 4000 }
+          { duration: 4000 },
         );
         return;
       }
@@ -130,7 +130,7 @@ export default function ServicesPage() {
         bufferBeforeMin: service.bufferBeforeMin || 0,
         bufferAfterMin: service.bufferAfterMin || 0,
         specialistId: serviceSpecialistId, // Store specialist ID
-      })
+      }),
     );
   };
 
@@ -319,7 +319,7 @@ export default function ServicesPage() {
                   service={service}
                   onClick={(variant) => handleServiceClick(service, variant)}
                   isSelected={bookingServices.some(
-                    (s) => s.serviceId === service._id
+                    (s) => s.serviceId === service._id,
                   )}
                 />
               </motion.div>

@@ -64,10 +64,12 @@ export default function BlogPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-brand-100 opacity-70"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="font-serif text-4xl md:text-6xl font-bold text-gray-900 mb-4">
-            Appointment Booking <span className="text-brand-600">Tips &amp; Insights</span>
+            Appointment Booking{" "}
+            <span className="text-brand-600">Tips &amp; Insights</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Expert guidance for service professionals on growing repeat bookings, managing schedules, and delighting clients online
+            Expert guidance for service professionals on growing repeat
+            bookings, managing schedules, and delighting clients online
           </p>
         </div>
       </section>

@@ -96,9 +96,14 @@ export default function BlogPostPage() {
         title={`${post.title} | Elite Booker`}
         description={
           post.excerpt ||
-          post.content.substring(0, 155).replace(/<[^>]*>/g, "").trim() + "..."
+          post.content
+            .substring(0, 155)
+            .replace(/<[^>]*>/g, "")
+            .trim() + "..."
         }
-        keywords={`${post.tags?.join(", ") || "appointment booking tips"}, service business blog, small business scheduling, client retention`}
+        keywords={`${
+          post.tags?.join(", ") || "appointment booking tips"
+        }, service business blog, small business scheduling, client retention`}
         schema={[breadcrumbSchema, blogPostSchema]}
       />
 
@@ -208,10 +213,12 @@ export default function BlogPostPage() {
             className="text-gray-700 leading-relaxed blog-content"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
-          
+
           {/* Word count and reading stats */}
           <div className="mt-8 pt-6 border-t border-gray-200 text-sm text-gray-500">
-            <p>Last updated: {formatDate(post.updatedAt || post.publishedAt)}</p>
+            <p>
+              Last updated: {formatDate(post.updatedAt || post.publishedAt)}
+            </p>
           </div>
         </div>
 
@@ -288,17 +295,18 @@ export default function BlogPostPage() {
             Ready to Streamline Your Appointment Booking?
           </h3>
           <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
-            Discover how Elite Booker helps service professionals reduce no-shows, automate reminders, and grow repeat bookings online.
+            Discover how Elite Booker helps service professionals reduce
+            no-shows, automate reminders, and grow repeat bookings online.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => navigate('/services')}
+              onClick={() => navigate("/services")}
               className="px-8 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
             >
               Explore Services
             </button>
             <button
-              onClick={() => navigate('/salon')}
+              onClick={() => navigate("/salon")}
               className="px-8 py-3 bg-white text-brand-600 border-2 border-brand-600 rounded-lg hover:bg-brand-50 transition-all duration-300 font-medium"
             >
               Contact Support

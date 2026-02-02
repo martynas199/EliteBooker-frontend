@@ -64,10 +64,10 @@ export default function SalonDetails() {
     () =>
       formattedAddress
         ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-            formattedAddress
+            formattedAddress,
           )}`
         : null,
-    [formattedAddress]
+    [formattedAddress],
   );
 
   // Generate schemas
