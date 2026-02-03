@@ -42,11 +42,13 @@ api.interceptors.request.use(
       localStorage.getItem("clientToken") ||
       sessionStorage.getItem("clientToken");
     if (clientToken && !config.headers["Authorization"]) {
-      // Add for /client routes OR for /api/client endpoints OR for favorites endpoints
+      // Add for /client routes OR for /api/client endpoints OR for favorites endpoints OR for referrals endpoints
       if (
         pathname.startsWith("/client") ||
+        pathname.startsWith("/referral") ||
         config.url?.includes("/client/") ||
-        config.url?.includes("/favorites")
+        config.url?.includes("/favorites") ||
+        config.url?.includes("/referrals")
       ) {
         config.headers["Authorization"] = `Bearer ${clientToken}`;
       }
@@ -75,7 +77,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Track if we're currently refreshing to prevent multiple refresh calls
@@ -105,7 +107,7 @@ api.interceptors.response.use(
       const networkError = new Error(
         error.code === "ECONNABORTED"
           ? "Request timed out. Please check your connection and try again."
-          : "Network error. Please check your internet connection."
+          : "Network error. Please check your internet connection.",
       );
       networkError.isNetworkError = true;
       networkError.originalError = error;
@@ -196,7 +198,7 @@ api.interceptors.response.use(
     // Handle 503 Service Unavailable
     if (error.response.status === 503) {
       const maintenanceError = new Error(
-        "Service temporarily unavailable. We're working on it!"
+        "Service temporarily unavailable. We're working on it!",
       );
       maintenanceError.isMaintenanceError = true;
       return Promise.reject(maintenanceError);
@@ -214,5 +216,5 @@ api.interceptors.response.use(
     structuredError.response = error.response;
 
     return Promise.reject(structuredError);
-  }
+  },
 );

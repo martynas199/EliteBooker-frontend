@@ -6,6 +6,7 @@ import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 import DemoRequestModal from "../../shared/components/modals/DemoRequestModal";
 import { motion } from "framer-motion";
 import SEOHead from "../../shared/components/seo/SEOHead";
+import OrganizationSchema from "../../shared/components/Schema/OrganizationSchema";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { useInViewOnce } from "../../shared/hooks/useInViewOnce";
 import { stats } from "./landing/landingData";
@@ -34,6 +35,9 @@ export default function LandingPage() {
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const [showGiftCardModal, setShowGiftCardModal] = useState(false);
   const [showDemoModal, setShowDemoModal] = useState(false);
+  const [showIndustriesDropdown, setShowIndustriesDropdown] = useState(false);
+  const [showCompareDropdown, setShowCompareDropdown] = useState(false);
+  const [showFeaturesDropdown, setShowFeaturesDropdown] = useState(false);
 
   // IntersectionObserver hooks for lazy rendering sections
   const featuresObserver = useInViewOnce({ rootMargin: "200px" });
@@ -104,78 +108,23 @@ export default function LandingPage() {
       label: "Business log in",
       href: "/admin/login",
     },
+    {
+      label: "Join referral program",
+      href: "/join-referral-program",
+    },
   ];
 
   return (
     <>
       {/* SEO Meta Tags */}
       <SEOHead
-        title="#1 Appointment Booking Software for Salons & Spas | Free Trial"
-        description="Elite Booker is the leading appointment booking software trusted by 500+ salons & spas worldwide. Automate bookings 24/7, reduce no-shows by 70%, accept online payments, manage staff schedules. Start your free trial today - no credit card required. See why businesses rank us #1 for ease of use and customer support."
-        keywords="appointment booking software, salon booking system, spa scheduling software, online appointment scheduler, beauty booking app, salon management software, appointment scheduling system, booking software for salons, spa management software, beauty business software, online booking platform, salon software, appointment app, scheduling software, booking management system, free booking software, best salon software, appointment reminder system"
-        schema={{
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          name: "Elite Booker",
-          applicationCategory: "BusinessApplication",
-          operatingSystem: "Web, iOS, Android",
-          offers: {
-            "@type": "Offer",
-            price: "0",
-            priceCurrency: "GBP",
-            priceValidUntil: "2026-12-31",
-          },
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: "4.9",
-            ratingCount: "523",
-            bestRating: "5",
-            worstRating: "1",
-          },
-          description:
-            "Elite Booker is the #1 appointment booking software for salons, spas, and beauty businesses. Automate online bookings 24/7, reduce no-shows by 70%, accept payments, manage staff schedules, and grow your business.",
-          screenshot: "https://www.elitebooker.com/screenshots/dashboard.jpg",
-          softwareVersion: "2.0",
-          releaseNotes:
-            "Improved scheduling engine, enhanced mobile app, advanced analytics",
-          softwareRequirements:
-            "Modern web browser (Chrome, Firefox, Safari, Edge)",
-          permissions:
-            "Internet access required for real-time booking synchronization",
-          keywords:
-            "appointment booking, salon software, spa scheduling, beauty business management, online booking system",
-          author: {
-            "@type": "Organization",
-            name: "Elite Booker Ltd",
-            url: "https://www.elitebooker.com",
-          },
-          provider: {
-            "@type": "Organization",
-            name: "Elite Booker Ltd",
-            url: "https://www.elitebooker.com",
-            logo: "https://www.elitebooker.com/logo.png",
-            contactPoint: {
-              "@type": "ContactPoint",
-              telephone: "+44-800-123-4567",
-              contactType: "Customer Support",
-              areaServed: "GB",
-              availableLanguage: ["English"],
-            },
-          },
-          featureList: [
-            "24/7 Online Booking",
-            "Automated SMS & Email Reminders",
-            "Online Payment Processing",
-            "Staff Schedule Management",
-            "Customer Management System",
-            "Business Analytics & Reporting",
-            "Mobile App (iOS & Android)",
-            "Multi-Location Support",
-            "Gift Card Management",
-            "Product Sales Integration",
-          ],
-        }}
+        title="Elite Booker - UK's Leading Booking System for Beauty & Wellness"
+        description="Zero commission booking system for UK salons, spas & beauty professionals. Online scheduling, SMS reminders, deposits & POS. From £29/month. Trusted by 500+ UK businesses."
+        keywords="online booking system UK, salon booking software UK, appointment scheduling UK, beauty booking app, zero commission booking, salon management software"
       />
+
+      {/* Organization Schema */}
+      <OrganizationSchema />
 
       <div className="bg-white">
         {/* Navigation Header - with safe area for iPhone notch */}
@@ -201,30 +150,154 @@ export default function LandingPage() {
                 />
               </div>
 
-              {/* Search Bar - Center */}
-              <div className="hidden flex-1 max-w-2xl mx-8">
-                <button
-                  onClick={() => navigate("/search")}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 rounded-full transition-all text-left"
+              {/* Center Navigation - Desktop */}
+              <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
+                {/* Industries Dropdown */}
+                <div
+                  className="relative"
+                  onMouseEnter={() => setShowIndustriesDropdown(true)}
+                  onMouseLeave={() => setShowIndustriesDropdown(false)}
                 >
-                  <svg
-                    className="w-5 h-5 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                  <span className="text-gray-500 font-medium">
-                    Search for salons, spas, or treatments...
-                  </span>
+                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all flex items-center gap-1">
+                    Industries
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  {showIndustriesDropdown && (
+                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-100 py-2 w-56 z-50">
+                      <button
+                        onClick={() => navigate("/industries/lash-technicians")}
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                      >
+                        Lash Technicians
+                      </button>
+                      <button
+                        onClick={() => navigate("/industries/hair-salons")}
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                      >
+                        Hair Salons
+                      </button>
+                      <button
+                        onClick={() => navigate("/industries/barbers")}
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                      >
+                        Barbers
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Compare Dropdown */}
+                <div
+                  className="relative"
+                  onMouseEnter={() => setShowCompareDropdown(true)}
+                  onMouseLeave={() => setShowCompareDropdown(false)}
+                >
+                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all flex items-center gap-1">
+                    Compare
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  {showCompareDropdown && (
+                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-100 py-2 w-56 z-50">
+                      <button
+                        onClick={() => navigate("/compare/vs-fresha")}
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                      >
+                        vs Fresha
+                      </button>
+                      <button
+                        onClick={() => navigate("/compare/vs-treatwell")}
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                      >
+                        vs Treatwell
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Features Dropdown */}
+                <div
+                  className="relative"
+                  onMouseEnter={() => setShowFeaturesDropdown(true)}
+                  onMouseLeave={() => setShowFeaturesDropdown(false)}
+                >
+                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all flex items-center gap-1">
+                    Features
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  {showFeaturesDropdown && (
+                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-100 py-2 w-56 z-50">
+                      <button
+                        onClick={() => navigate("/features/sms-reminders")}
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                      >
+                        SMS Reminders
+                      </button>
+                      <button
+                        onClick={() => navigate("/features/no-show-protection")}
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                      >
+                        No-Show Protection
+                      </button>
+                      <button
+                        onClick={() => navigate("/features/calendar-sync")}
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                      >
+                        Calendar Sync
+                      </button>
+                      <button
+                        onClick={() => navigate("/features/online-booking")}
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                      >
+                        Online Booking
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Pricing Link */}
+                <button
+                  onClick={() => navigate("/pricing")}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all"
+                >
+                  Pricing
                 </button>
-              </div>
+              </nav>
 
               {/* Right Actions - Desktop */}
               <div className="hidden md:flex items-center gap-3">
@@ -356,7 +429,7 @@ export default function LandingPage() {
                       onClick={(e) => {
                         e.preventDefault();
                         console.log(
-                          "[Mobile Menu] Avatar clicked, navigating to menu"
+                          "[Mobile Menu] Avatar clicked, navigating to menu",
                         );
                         navigate("/menu");
                       }}
@@ -555,41 +628,90 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-violet-100 to-fuchsia-100 border border-violet-200 mb-8"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-100 to-green-100 border border-emerald-200 mb-6"
                 >
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
-                  </span>
-                  <span className="text-sm font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
-                    Trusted by 500+ Businesses
+                  <svg
+                    className="w-4 h-4 text-emerald-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span className="text-sm font-semibold text-emerald-700">
+                    Trusted by 500+ UK Salons & Spas
                   </span>
                 </motion.div>
 
-                {/* Main Headline */}
-                <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 leading-[1.1] tracking-tight">
-                  <span className="block text-gray-900">Bookings</span>
-                  <span className="block bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600 bg-clip-text text-transparent">
-                    Made Simple
+                {/* Main Headline - Problem/Solution */}
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
+                  <span className="block text-gray-900">Stop Losing</span>
+                  <span className="block bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                    20% Commission
                   </span>
+                  <span className="block text-gray-900">to Fresha</span>
                 </h1>
 
-                <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                  The complete booking solution for salons, spas, and wellness
-                  businesses. Accept appointments 24/7, take payments online,
-                  and grow your revenue.
+                <p className="text-lg md:text-xl text-gray-700 mb-4 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                  Keep 100% of your earnings. Elite Booker is the UK's only{" "}
+                  <span className="text-emerald-600 font-bold">
+                    commission-free
+                  </span>{" "}
+                  booking software.
+                </p>
+
+                {/* Stats Bar */}
+                <div className="flex flex-wrap gap-6 mb-8 justify-center lg:justify-start">
+                  <div className="flex items-center gap-2">
+                    <div className="flex -space-x-2">
+                      <div className="w-8 h-8 rounded-full bg-violet-200 border-2 border-white flex items-center justify-center text-xs font-bold text-violet-700">
+                        SJ
+                      </div>
+                      <div className="w-8 h-8 rounded-full bg-fuchsia-200 border-2 border-white flex items-center justify-center text-xs font-bold text-fuchsia-700">
+                        MC
+                      </div>
+                      <div className="w-8 h-8 rounded-full bg-cyan-200 border-2 border-white flex items-center justify-center text-xs font-bold text-cyan-700">
+                        LA
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-yellow-400 text-lg">★★★★★</span>
+                      <span className="text-sm font-semibold text-gray-900">
+                        4.9
+                      </span>
+                      <span className="text-sm text-gray-600">
+                        (247 reviews)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Value Prop */}
+                <p className="text-base md:text-lg text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0">
+                  <span className="font-semibold text-gray-900">
+                    Save £2,500-£12,000/year
+                  </span>{" "}
+                  vs marketplace platforms. Start with our{" "}
+                  <span className="font-semibold text-gray-900">
+                    free forever plan
+                  </span>
+                  , upgrade when you're ready.
                 </p>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-6">
                   <motion.button
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate("/signup")}
-                    className="group relative px-8 py-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-violet-500/50 hover:shadow-xl hover:shadow-violet-500/60 transition-all overflow-hidden"
+                    className="group relative px-8 py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all overflow-hidden"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      Get Started Free
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-700 to-green-700 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative flex items-center justify-center gap-2">
+                      <span className="text-lg">Start Free Forever</span>
                       <svg
                         className="w-5 h-5 group-hover:translate-x-1 transition-transform"
                         fill="none"
@@ -603,37 +725,28 @@ export default function LandingPage() {
                           d="M13 7l5 5m0 0l-5 5m5-5H6"
                         />
                       </svg>
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-600 to-violet-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
                   </motion.button>
 
                   <motion.button
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() =>
-                      document
-                        .getElementById("demo")
-                        ?.scrollIntoView({ behavior: "smooth" })
-                    }
-                    className="px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold text-lg border-2 border-gray-200 hover:border-violet-300 hover:bg-gray-50 transition-all shadow-lg"
+                    onClick={() => {
+                      const element =
+                        document.getElementById("pricing-section");
+                      element?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-xl hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-md hover:shadow-lg"
                   >
-                    <span className="flex items-center justify-center gap-2">
-                      <svg
-                        className="w-5 h-5"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                      </svg>
-                      Watch Demo
-                    </span>
+                    See Pricing →
                   </motion.button>
                 </div>
 
-                <p className="mt-6 text-sm text-gray-500 flex items-center justify-center lg:justify-start gap-4 flex-wrap">
-                  <span className="flex items-center gap-1">
+                {/* Trust Badges */}
+                <div className="flex items-center gap-3 text-sm text-gray-600 justify-center lg:justify-start">
+                  <div className="flex items-center gap-1.5">
                     <svg
-                      className="w-4 h-4 text-green-500"
+                      className="w-5 h-5 text-emerald-600"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -643,11 +756,12 @@ export default function LandingPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    No credit card
-                  </span>
-                  <span className="flex items-center gap-1">
+                    <span className="font-medium">No credit card required</span>
+                  </div>
+                  <span className="text-gray-300">•</span>
+                  <div className="flex items-center gap-1.5">
                     <svg
-                      className="w-4 h-4 text-green-500"
+                      className="w-5 h-5 text-emerald-600"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -657,201 +771,295 @@ export default function LandingPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Always free
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <svg
-                      className="w-4 h-4 text-green-500"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    No hidden fees
-                  </span>
-                </p>
+                    <span className="font-medium">Cancel anytime</span>
+                  </div>
+                </div>
               </motion.div>
 
-              {/* Right - Dashboard Preview */}
+              {/* Right Content - Comparison Card */}
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="flex-1 relative"
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="flex-1 max-w-lg"
               >
-                {/* Floating Cards */}
-                <div className="relative w-full max-w-2xl mx-auto pt-12">
-                  {/* Main Dashboard Card */}
-                  <motion.div
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="relative z-10 bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden"
-                  >
-                    <div className="p-6 bg-gradient-to-br from-violet-50 to-fuchsia-50 border-b border-gray-200">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold">
-                            B
-                          </div>
-                          <div>
-                            <div className="font-bold text-gray-900">
-                              Elite Booker
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              Dashboard
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex gap-1">
-                          <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                          <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                          <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-3 gap-3">
-                        <div className="bg-white rounded-xl p-3 shadow-sm">
-                          <div className="text-2xl font-bold text-violet-600">
-                            247
-                          </div>
-                          <div className="text-xs text-gray-600">Bookings</div>
-                        </div>
-                        <div className="bg-white rounded-xl p-3 shadow-sm">
-                          <div className="text-2xl font-bold text-fuchsia-600">
-                            $12.4k
-                          </div>
-                          <div className="text-xs text-gray-600">Revenue</div>
-                        </div>
-                        <div className="bg-white rounded-xl p-3 shadow-sm">
-                          <div className="text-2xl font-bold text-cyan-600">
-                            4.9★
-                          </div>
-                          <div className="text-xs text-gray-600">Rating</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-violet-100"></div>
-                            <div>
-                              <div className="text-sm font-medium">
-                                Sarah Johnson
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                Haircut & Style
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-xs text-green-600 font-medium">
-                            Confirmed
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-fuchsia-100"></div>
-                            <div>
-                              <div className="text-sm font-medium">
-                                Mike Chen
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                Massage Therapy
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-xs text-blue-600 font-medium">
-                            Pending
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
+                <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-2xl font-bold text-gray-900">
+                      Save Thousands
+                    </h3>
+                    <span className="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">
+                      vs Fresha
+                    </span>
+                  </div>
 
-                  {/* Floating Notification Card */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1, y: [0, -5, 0] }}
-                    transition={{ delay: 0.5, duration: 3, repeat: Infinity }}
-                    className="absolute -top-6 -right-6 bg-white rounded-2xl shadow-xl border border-gray-200 p-4 max-w-[200px]"
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white">
-                        <svg
-                          className="w-5 h-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
+                  {/* Fresha */}
+                  <div className="mb-6 p-4 bg-red-50 rounded-xl border border-red-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-bold text-gray-900">Fresha</span>
+                      <span className="text-red-600 font-bold">You Lose</span>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Subscription</span>
+                        <span className="font-semibold text-gray-900">
+                          £179/year
+                        </span>
                       </div>
-                      <div>
-                        <div className="text-sm font-semibold text-gray-900">
-                          New Booking!
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          Emma booked a facial
-                        </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">20% Commission</span>
+                        <span className="font-semibold text-red-600">
+                          £2,400/year
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Extra Fees</span>
+                        <span className="font-semibold text-gray-900">
+                          £300/year
+                        </span>
+                      </div>
+                      <div className="border-t-2 border-red-300 pt-2 mt-2 flex justify-between">
+                        <span className="font-bold">Total Cost</span>
+                        <span className="font-bold text-red-600 text-lg">
+                          £2,879/year
+                        </span>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
 
-                  {/* Floating Stats Card */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1, y: [0, 5, 0] }}
-                    transition={{ delay: 0.7, duration: 3, repeat: Infinity }}
-                    className="absolute -bottom-20 -left-6 bg-white rounded-2xl shadow-xl border border-gray-200 p-4 max-w-[200px]"
-                  >
-                    <div className="text-xs text-gray-500 mb-2">
-                      No-show rate
+                  {/* Elite Booker */}
+                  <div className="p-4 bg-emerald-50 rounded-xl border-2 border-emerald-400">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-bold text-gray-900">
+                        Elite Booker
+                      </span>
+                      <span className="text-emerald-600 font-bold">
+                        You Keep
+                      </span>
                     </div>
-                    <div className="text-2xl font-bold text-green-600 mb-1">
-                      ↓ 68%
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Free Plan</span>
+                        <span className="font-semibold text-emerald-600">
+                          £0/year
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Commission</span>
+                        <span className="font-semibold text-emerald-600">
+                          £0 Forever
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">
+                          Pro Plan (optional)
+                        </span>
+                        <span className="font-semibold text-gray-900">
+                          £120/year
+                        </span>
+                      </div>
+                      <div className="border-t-2 border-emerald-400 pt-2 mt-2 flex justify-between">
+                        <span className="font-bold">Total Cost</span>
+                        <span className="font-bold text-emerald-600 text-lg">
+                          £0-£120/year
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-600">vs. last month</div>
-                  </motion.div>
+                  </div>
+
+                  {/* Savings */}
+                  <div className="mt-6 p-4 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl text-white text-center">
+                    <p className="text-sm font-semibold mb-1">YOU SAVE</p>
+                    <p className="text-4xl font-extrabold">£2,759+</p>
+                    <p className="text-sm text-emerald-100 mt-1">
+                      per year vs Fresha
+                    </p>
+                  </div>
+
+                  <p className="text-xs text-gray-500 text-center mt-4">
+                    Based on £12,000 annual revenue.{" "}
+                    <button
+                      onClick={() => navigate("/compare/vs-fresha")}
+                      className="text-violet-600 hover:underline font-semibold"
+                    >
+                      See full comparison →
+                    </button>
+                  </p>
                 </div>
               </motion.div>
             </div>
           </div>
         </section>
 
-        {/* Stats Section */}
-        <section className="py-16 bg-white border-y border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Stats Section - Quick Wins */}
+        <section className="py-16 px-4 bg-gray-50 border-y border-gray-200">
+          <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {stats.map((stat, idx) => (
+              {[
+                {
+                  value: "£0",
+                  label: "Commission Forever",
+                  color: "text-emerald-600",
+                },
+                {
+                  value: "70%",
+                  label: "Fewer No-Shows",
+                  color: "text-violet-600",
+                },
+                {
+                  value: "24/7",
+                  label: "Online Booking",
+                  color: "text-fuchsia-600",
+                },
+                {
+                  value: "500+",
+                  label: "UK Businesses",
+                  color: "text-cyan-600",
+                },
+              ].map((stat, i) => (
                 <motion.div
-                  key={idx}
+                  key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
+                  transition={{ delay: i * 0.1 }}
                   className="text-center"
                 >
-                  <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                  <div
+                    className={`text-4xl md:text-5xl font-extrabold ${stat.color} mb-2`}
+                  >
                     {stat.value}
                   </div>
-                  <div className="text-gray-600 font-medium">{stat.label}</div>
+                  <div className="text-sm md:text-base text-gray-600 font-medium">
+                    {stat.label}
+                  </div>
                 </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Lazy-loaded Features Section */}
+        {/* Problem Section - Pain Points */}
+        <section className="py-20 px-4 bg-white">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4">
+                Tired of Losing Money to
+                <br />
+                <span className="text-red-600">Marketplace Platforms?</span>
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Fresha and Treatwell take 20-30% of every booking. That's
+                thousands of pounds you'll never see.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {[
+                {
+                  icon: "💸",
+                  problem: "20% Commission Fees",
+                  description:
+                    "Fresha takes £20 from every £100 booking. On £50k revenue, you lose £10,000.",
+                  solution:
+                    "Elite Booker: £0 commission. Keep 100% of your earnings.",
+                },
+                {
+                  icon: "😤",
+                  problem: "Marketplace Competition",
+                  description:
+                    "Your clients see competitors' ads on your booking page. You're losing bookings.",
+                  solution:
+                    "Elite Booker: Your own branded booking page. No competitor ads. Ever.",
+                },
+                {
+                  icon: "🚫",
+                  problem: "28% No-Show Rate",
+                  description:
+                    "Ghost bookings cost UK salons £500-£2,000/month in lost revenue.",
+                  solution:
+                    "Elite Booker: SMS reminders reduce no-shows by 70%. Deposit protection available.",
+                },
+                {
+                  icon: "📱",
+                  problem: "Clients Can't Find You",
+                  description:
+                    "Paper diaries and phone calls = lost bookings at 2am when clients actually book.",
+                  solution:
+                    "Elite Booker: 24/7 online booking. Accept appointments while you sleep.",
+                },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="p-6 bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow"
+                >
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    {item.problem}
+                  </h3>
+                  <p className="text-gray-600 mb-4 text-sm">
+                    {item.description}
+                  </p>
+                  <div className="flex items-start gap-2 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                    <svg
+                      className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <p className="text-sm font-semibold text-emerald-800">
+                      {item.solution}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="text-center mt-12">
+              <button
+                onClick={() => navigate("/signup")}
+                className="px-10 py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold text-lg rounded-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
+              >
+                Start Saving Money Today →
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Stats Banner */}
+        <section className="py-12 px-4 bg-gradient-to-r from-violet-600 to-fuchsia-600">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-8 text-center text-white">
+              {stats.map((stat, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div className="text-5xl font-extrabold mb-2">
+                    {stat.value}
+                  </div>
+                  <div className="text-lg font-medium text-violet-100">
+                    {stat.label}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
         <div ref={featuresObserver.ref}>
           {featuresObserver.inView && (
             <Suspense fallback={<SectionFallback />}>
@@ -860,16 +1068,19 @@ export default function LandingPage() {
           )}
         </div>
 
-        {/* Lazy-loaded Demo Section */}
+        {/* Demo Section */}
         <div ref={demoObserver.ref}>
           {demoObserver.inView && (
             <Suspense fallback={<SectionFallback />}>
-              <DemoSection />
+              <DemoSection
+                onGiftCardClick={() => setShowGiftCardModal(true)}
+                onDemoClick={() => setShowDemoModal(true)}
+              />
             </Suspense>
           )}
         </div>
 
-        {/* Lazy-loaded Testimonials Section */}
+        {/* Testimonials Section */}
         <div ref={testimonialsObserver.ref}>
           {testimonialsObserver.inView && (
             <Suspense fallback={<SectionFallback />}>
@@ -878,47 +1089,162 @@ export default function LandingPage() {
           )}
         </div>
 
-        {/* Lazy-loaded Pricing Section */}
-        <div ref={pricingObserver.ref}>
+        {/* Pricing Section */}
+        <div ref={pricingObserver.ref} id="pricing-section">
           {pricingObserver.inView && (
             <Suspense fallback={<SectionFallback />}>
-              <PricingSection onShowFeeModal={() => setShowFeeModal(true)} />
+              <PricingSection setShowFeeModal={setShowFeeModal} />
             </Suspense>
           )}
         </div>
 
-        {/* Lazy-loaded Final CTA Section */}
+        {/* Final CTA Section */}
         <div ref={ctaObserver.ref}>
           {ctaObserver.inView && (
             <Suspense fallback={<SectionFallback />}>
-              <FinalCtaSection onShowDemoModal={() => setShowDemoModal(true)} />
+              <FinalCtaSection />
             </Suspense>
           )}
         </div>
+
+        {/* Footer */}
+        <footer className="bg-gray-900 text-gray-300 py-12 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid md:grid-cols-4 gap-8">
+              {/* Company */}
+              <div>
+                <img
+                  src={eliteLogo}
+                  alt="Elite Booker"
+                  className="h-16 mb-4 brightness-0 invert"
+                />
+                <p className="text-sm text-gray-400">
+                  The UK's only commission-free booking software for salons,
+                  spas & wellness businesses.
+                </p>
+              </div>
+
+              {/* Product */}
+              <div>
+                <h3 className="font-bold text-white mb-4">Product</h3>
+                <ul className="space-y-2 text-sm">
+                  <li>
+                    <button
+                      onClick={() => navigate("/features/sms-reminders")}
+                      className="hover:text-white transition"
+                    >
+                      SMS Reminders
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => navigate("/features/online-booking")}
+                      className="hover:text-white transition"
+                    >
+                      Online Booking
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => navigate("/features/no-show-protection")}
+                      className="hover:text-white transition"
+                    >
+                      No-Show Protection
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => navigate("/pricing")}
+                      className="hover:text-white transition"
+                    >
+                      Pricing
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Compare */}
+              <div>
+                <h3 className="font-bold text-white mb-4">Compare</h3>
+                <ul className="space-y-2 text-sm">
+                  <li>
+                    <button
+                      onClick={() => navigate("/compare/vs-fresha")}
+                      className="hover:text-white transition"
+                    >
+                      vs Fresha
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => navigate("/compare/vs-treatwell")}
+                      className="hover:text-white transition"
+                    >
+                      vs Treatwell
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Company */}
+              <div>
+                <h3 className="font-bold text-white mb-4">Company</h3>
+                <ul className="space-y-2 text-sm">
+                  <li>
+                    <button
+                      onClick={() => navigate("/help")}
+                      className="hover:text-white transition"
+                    >
+                      Help Center
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => navigate("/signup")}
+                      className="hover:text-white transition"
+                    >
+                      Sign Up
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => navigate("/admin/login")}
+                      className="hover:text-white transition"
+                    >
+                      Business Login
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-500">
+              <p>© 2026 Elite Booker. All rights reserved.</p>
+            </div>
+          </div>
+        </footer>
+
+        {/* Modals */}
+        {showGiftCardModal && (
+          <Suspense fallback={null}>
+            <GiftCardModal onClose={() => setShowGiftCardModal(false)} />
+          </Suspense>
+        )}
+
+        {showDemoModal && (
+          <Suspense fallback={null}>
+            <DemoRequestModal onClose={() => setShowDemoModal(false)} />
+          </Suspense>
+        )}
+
+        {showFeeModal && (
+          <Suspense fallback={null}>
+            <BookingFeeModal onClose={() => setShowFeeModal(false)} />
+          </Suspense>
+        )}
       </div>
 
-      {/* Lazy-loaded Booking Fee Modal */}
-      {showFeeModal && (
-        <Suspense fallback={null}>
-          <BookingFeeModal
-            isOpen={showFeeModal}
-            onClose={() => setShowFeeModal(false)}
-          />
-        </Suspense>
-      )}
-
-      {/* Gift Card Modal */}
-      <GiftCardModal
-        isOpen={showGiftCardModal}
-        onClose={() => setShowGiftCardModal(false)}
-        onSuccess={(giftCard) => {}}
-      />
-
-      {/* Demo Request Modal */}
-      <DemoRequestModal
-        isOpen={showDemoModal}
-        onClose={() => setShowDemoModal(false)}
-      />
+      <OrganizationSchema />
     </>
   );
 }

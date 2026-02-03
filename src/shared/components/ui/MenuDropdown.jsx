@@ -52,6 +52,7 @@ export default function MenuDropdown({
     }
   };
 
+  const isMobile = position === "mobile";
   const positionClasses = position === "left" ? "left-0" : "right-0";
 
   // If no business links, show simple single-section menu (logged in state)
@@ -60,12 +61,19 @@ export default function MenuDropdown({
   return (
     <>
       {/* Click outside to close dropdown */}
-      <div className="fixed inset-0 z-[998]" onClick={onClose} />
+      <div
+        className={`fixed inset-0 z-[998] ${isMobile ? "bg-black/20" : ""}`}
+        onClick={onClose}
+      />
 
       <div
         ref={dropdownRef}
-        className={`absolute ${positionClasses} top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl overflow-hidden z-[999]`}
-        style={{ minWidth: "320px" }}
+        className={
+          isMobile
+            ? "fixed inset-4 top-16 bg-white rounded-2xl shadow-2xl overflow-y-auto z-[999]"
+            : `absolute ${positionClasses} top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl overflow-hidden z-[999]`
+        }
+        style={isMobile ? {} : { minWidth: "320px" }}
       >
         {/* For Customers Section */}
         {customerLinks.length > 0 && (

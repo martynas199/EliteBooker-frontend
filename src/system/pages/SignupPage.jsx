@@ -4,8 +4,8 @@
  * Allows new salons to register and create their account
  */
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../../shared/lib/apiClient";
 import { motion } from "framer-motion";
 import eliteLogo from "../../assets/elite.png";
@@ -14,9 +14,13 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export default function TenantSignup() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [step, setStep] = useState(1);
+  const [referralCode, setReferralCode] = useState("");
+  const [referralValid, setReferralValid] = useState(null); // null, true, or false
+  const [validatingReferral, setValidatingReferral] = useState(false);
 
   const [formData, setFormData] = useState({
     // Business info
@@ -35,9 +39,48 @@ export default function TenantSignup() {
     adminPasswordConfirm: "",
   });
 
+  // Auto-detect referral code from URL parameter
+  useEffect(() => {
+    const refCode = searchParams.get("ref");
+    if (refCode) {
+      const normalized = refCode.toUpperCase().trim();
+      setReferralCode(normalized);
+      validateReferralCode(normalized);
+    }
+  }, [searchParams]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validateReferralCode = async (code) => {
+    if (!code || code.length !== 6) {
+      setReferralValid(null);
+      return;
+    }
+
+    setValidatingReferral(true);
+    try {
+      const response = await api.post(`/referrals/validate/${code}`);
+      setReferralValid(response.data.valid === true);
+    } catch (error) {
+      setReferralValid(false);
+    } finally {
+      setValidatingReferral(false);
+    }
+  };
+
+  const handleReferralCodeChange = (e) => {
+    const code = e.target.value.toUpperCase().trim();
+    setReferralCode(code);
+
+    // Debounce validation
+    if (code.length === 6) {
+      validateReferralCode(code);
+    } else {
+      setReferralValid(null);
+    }
   };
 
   const validateStep1 = () => {
@@ -117,6 +160,7 @@ export default function TenantSignup() {
         adminName: formData.adminName,
         adminEmail: formData.adminEmail,
         adminPassword: formData.adminPassword,
+        ...(referralCode && referralValid && { referralCode }), // Include only if valid
       });
 
       if (response.data.success) {
@@ -139,7 +183,7 @@ export default function TenantSignup() {
       setError(
         err.response?.data?.message ||
           err.response?.data?.error ||
-          "Failed to create account. Please try again."
+          "Failed to create account. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -505,6 +549,83 @@ export default function TenantSignup() {
                     placeholder="Re-enter password"
                     required
                   />
+                </div>
+
+                {/* Referral Code (Optional) */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Referral Code (Optional)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={referralCode}
+                      onChange={handleReferralCodeChange}
+                      maxLength={6}
+                      className={`w-full px-4 py-3 pr-10 border rounded-xl focus:ring-2 focus:ring-violet-500 transition-all uppercase ${
+                        referralValid === true
+                          ? "border-green-500 bg-green-50"
+                          : referralValid === false
+                          ? "border-red-500 bg-red-50"
+                          : "border-gray-300"
+                      }`}
+                      placeholder="ABC234"
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {validatingReferral ? (
+                        <svg
+                          className="animate-spin h-5 w-5 text-gray-400"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
+                        </svg>
+                      ) : referralValid === true ? (
+                        <svg
+                          className="h-5 w-5 text-green-500"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      ) : referralValid === false ? (
+                        <svg
+                          className="h-5 w-5 text-red-500"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      ) : null}
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1.5">
+                    {referralValid === true
+                      ? "✓ Valid referral code"
+                      : referralValid === false
+                      ? "✗ Invalid referral code"
+                      : "Enter a 6-character code if you were referred by someone"}
+                  </p>
                 </div>
 
                 <div className="bg-gradient-to-br from-violet-50 to-fuchsia-50 border border-violet-200 rounded-2xl p-6">

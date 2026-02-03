@@ -7,14 +7,67 @@ import logo from "../assets/logo.svg";
 // Lazy load system pages (landing, search, etc.)
 const LandingPage = lazy(() => import("../system/pages/LandingPage"));
 const BusinessesLandingPage = lazy(() =>
-  import("../system/pages/BusinessesLandingPage")
+  import("../system/pages/BusinessesLandingPage"),
 );
 const SearchPage = lazy(() => import("../system/pages/SearchPage"));
 const HelpPage = lazy(() => import("../system/pages/HelpPage"));
 const MenuPage = lazy(() => import("../system/pages/MenuPage"));
 const TenantSignup = lazy(() => import("../system/pages/SignupPage"));
+const ReferralSignupPage = lazy(() =>
+  import("../system/pages/ReferralSignupPage"),
+);
+const ReferralLoginPage = lazy(() =>
+  import("../system/pages/ReferralLoginPage"),
+);
+const ReferralDashboard = lazy(() =>
+  import("../system/pages/ReferralDashboard"),
+);
 const SignupSuccessPage = lazy(() =>
-  import("../system/pages/SignupSuccessPage")
+  import("../system/pages/SignupSuccessPage"),
+);
+
+// Industry landing pages
+const LashTechnicians = lazy(() =>
+  import("../system/pages/industries/LashTechnicians"),
+);
+const HairSalons = lazy(() => import("../system/pages/industries/HairSalons"));
+const Barbers = lazy(() => import("../system/pages/industries/Barbers"));
+
+// Pricing page
+const PricingPage = lazy(() => import("../system/pages/PricingPage"));
+
+// Comparison pages
+const VsFresha = lazy(() => import("../system/pages/compare/VsFresha"));
+const VsTreatwell = lazy(() => import("../system/pages/compare/VsTreatwell"));
+
+// Blog pages
+const ReduceSalonNoShows = lazy(() =>
+  import("../system/pages/blog/ReduceSalonNoShows"),
+);
+
+// Feature pages
+const SmsReminders = lazy(() =>
+  import("../system/pages/features/SmsReminders"),
+);
+const NoShowProtection = lazy(() =>
+  import("../system/pages/features/NoShowProtection"),
+);
+const CalendarSync = lazy(() =>
+  import("../system/pages/features/CalendarSync"),
+);
+const OnlineBooking = lazy(() =>
+  import("../system/pages/features/OnlineBooking"),
+);
+
+// Programmatic local solution pages (400+ city/niche combinations)
+const LocalSolutionPage = lazy(() =>
+  import("../system/pages/solutions/LocalSolutionPage"),
+);
+
+// SEO Tools - Product-Led SEO
+const RoiCalculator = lazy(() => import("../system/pages/tools/RoiCalculator"));
+const DepositPolicyGenerator = lazy(() =>
+  import("../system/pages/tools/DepositPolicyGenerator"),
 );
 
 // Lazy load tenant pages
@@ -27,10 +80,10 @@ const CancelPage = lazy(() => import("../tenant/pages/BookingCancelPage"));
 const FAQPage = lazy(() => import("../tenant/pages/FAQPage"));
 const ProductsPage = lazy(() => import("../tenant/pages/ProductsPage"));
 const ProductDetailPage = lazy(() =>
-  import("../tenant/pages/ProductDetailPage")
+  import("../tenant/pages/ProductDetailPage"),
 );
 const ProductCheckoutPage = lazy(() =>
-  import("../tenant/pages/ProductCheckoutPage")
+  import("../tenant/pages/ProductCheckoutPage"),
 );
 const OrderSuccessPage = lazy(() => import("../tenant/pages/OrderSuccessPage"));
 const ShopSuccessPage = lazy(() => import("../tenant/pages/ShopSuccessPage"));
@@ -41,13 +94,13 @@ const AuthSuccessPage = lazy(() => import("../tenant/pages/AuthSuccessPage"));
 const ProfilePage = lazy(() => import("../tenant/pages/ProfilePage"));
 const ProfileEditPage = lazy(() => import("../tenant/pages/ProfileEditPage"));
 const ClientProfilePage = lazy(() =>
-  import("../tenant/pages/ClientProfilePage")
+  import("../tenant/pages/ClientProfilePage"),
 );
 const ClientAppointmentsPage = lazy(() =>
-  import("../tenant/pages/ClientAppointmentsPage")
+  import("../tenant/pages/ClientAppointmentsPage"),
 );
 const BeauticianSelectionPage = lazy(() =>
-  import("../tenant/pages/BeauticiansPage")
+  import("../tenant/pages/BeauticiansPage"),
 );
 const ServicesPage = lazy(() => import("../tenant/pages/ServicesPage"));
 const AboutUsPage = lazy(() => import("../tenant/pages/AboutUsPage"));
@@ -55,17 +108,17 @@ const BlogPage = lazy(() => import("../tenant/pages/BlogPage"));
 const BlogPostPage = lazy(() => import("../tenant/pages/BlogPostPage"));
 const TokenDebugPage = lazy(() => import("../tenant/pages/TokenDebugPage"));
 const SalonLandingLuxury = lazy(() =>
-  import("../tenant/pages/SalonLandingLuxury")
+  import("../tenant/pages/SalonLandingLuxury"),
 );
 const SeminarsPage = lazy(() => import("../tenant/pages/SeminarsPage"));
 const SeminarDetailPage = lazy(() =>
-  import("../tenant/pages/SeminarDetailPage")
+  import("../tenant/pages/SeminarDetailPage"),
 );
 const SeminarBookingPage = lazy(() =>
-  import("../tenant/pages/SeminarBookingPage")
+  import("../tenant/pages/SeminarBookingPage"),
 );
 const SeminarBookingSuccessPage = lazy(() =>
-  import("../tenant/pages/SeminarBookingSuccessPage")
+  import("../tenant/pages/SeminarBookingSuccessPage"),
 );
 const MySeminarsPage = lazy(() => import("../tenant/pages/MySeminarsPage"));
 
@@ -105,32 +158,32 @@ const AdminServices = lazy(() => import("../admin/pages/Services"));
 const AdminLocations = lazy(() => import("../admin/pages/Locations"));
 const AdminStaff = lazy(() => import("../admin/pages/Staff"));
 const WorkingHoursCalendar = lazy(() =>
-  import("../admin/pages/WorkingHoursCalendar")
+  import("../admin/pages/WorkingHoursCalendar"),
 );
 const Settings = lazy(() => import("../admin/pages/Settings"));
 const Revenue = lazy(() => import("../admin/pages/Revenue"));
 const ProfitAnalytics = lazy(() => import("../admin/pages/ProfitAnalytics"));
 const Profile = lazy(() => import("../admin/pages/Profile"));
 const CancellationPolicy = lazy(() =>
-  import("../admin/pages/CancellationPolicy")
+  import("../admin/pages/CancellationPolicy"),
 );
 const BookingPoliciesPage = lazy(() =>
-  import("../admin/pages/BookingPoliciesPage")
+  import("../admin/pages/BookingPoliciesPage"),
 );
 const TimeOff = lazy(() => import("../admin/pages/TimeOff"));
 const HeroSections = lazy(() => import("../admin/pages/HeroSections"));
 const AboutUsManagement = lazy(() =>
-  import("../admin/pages/AboutUsManagement")
+  import("../admin/pages/AboutUsManagement"),
 );
 const Products = lazy(() => import("../admin/pages/Products"));
 const ProductsHero = lazy(() => import("../admin/pages/ProductsHero"));
 const AdminBeauticianLink = lazy(() =>
-  import("../admin/pages/AdminBeauticianLink")
+  import("../admin/pages/AdminBeauticianLink"),
 );
 const StripeConnect = lazy(() => import("../admin/pages/StripeConnect"));
 const Subscription = lazy(() => import("../admin/pages/Subscription"));
 const OnboardingComplete = lazy(() =>
-  import("../admin/pages/OnboardingComplete")
+  import("../admin/pages/OnboardingComplete"),
 );
 const ReauthOnboarding = lazy(() => import("../admin/pages/ReauthOnboarding"));
 const ShippingRates = lazy(() => import("../admin/pages/ShippingRates"));
@@ -147,16 +200,16 @@ const SeminarForm = lazy(() => import("../admin/pages/SeminarForm"));
 const SeminarAttendees = lazy(() => import("../admin/pages/SeminarAttendees"));
 const ConsentTemplates = lazy(() => import("../admin/pages/ConsentTemplates"));
 const ConsentTemplateBuilder = lazy(() =>
-  import("../admin/pages/ConsentTemplateBuilder")
+  import("../admin/pages/ConsentTemplateBuilder"),
 );
 const ConsentTemplateView = lazy(() =>
-  import("../admin/pages/ConsentTemplateView")
+  import("../admin/pages/ConsentTemplateView"),
 );
 const ConsentSigningPage = lazy(() =>
-  import("../client/pages/ConsentSigningPage")
+  import("../client/pages/ConsentSigningPage"),
 );
 const ConsentInitiatePage = lazy(() =>
-  import("../client/pages/ConsentInitiatePage")
+  import("../client/pages/ConsentInitiatePage"),
 );
 const ClientFormsPage = lazy(() => import("../client/pages/ClientFormsPage"));
 
@@ -245,6 +298,12 @@ export default function AppRoutes() {
         <Route path="/signup" element={<TenantSignup />} />
         <Route path="/signup/success" element={<SignupSuccessPage />} />
 
+        {/* Referral Program Signup (public) */}
+        <Route path="/referral-signup" element={<ReferralSignupPage />} />
+        <Route path="/join-referral-program" element={<ReferralSignupPage />} />
+        <Route path="/referral-login" element={<ReferralLoginPage />} />
+        <Route path="/referral-dashboard" element={<ReferralDashboard />} />
+
         {/* OAuth Success Page (must be before CustomerLayout catch-all) */}
         <Route path="/auth/success" element={<AuthSuccessPage />} />
 
@@ -279,6 +338,132 @@ export default function AppRoutes() {
 
         {/* Help & Support */}
         <Route path="/help" element={<HelpPage />} />
+
+        {/* Pricing Page */}
+        <Route
+          path="/pricing"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <PricingPage />
+            </Suspense>
+          }
+        />
+
+        {/* Industry Landing Pages */}
+        <Route
+          path="/industries/lash-technicians"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <LashTechnicians />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/industries/hair-salons"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <HairSalons />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/industries/barbers"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <Barbers />
+            </Suspense>
+          }
+        />
+
+        {/* Comparison Pages */}
+        <Route
+          path="/compare/vs-fresha"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <VsFresha />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/compare/vs-treatwell"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <VsTreatwell />
+            </Suspense>
+          }
+        />
+
+        {/* Blog Pages */}
+        <Route
+          path="/blog/reduce-salon-no-shows"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <ReduceSalonNoShows />
+            </Suspense>
+          }
+        />
+
+        {/* Feature Pages */}
+        <Route
+          path="/features/sms-reminders"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <SmsReminders />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/features/no-show-protection"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <NoShowProtection />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/features/calendar-sync"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <CalendarSync />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/features/online-booking"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <OnlineBooking />
+            </Suspense>
+          }
+        />
+
+        {/* Programmatic Local Solutions - 400+ pages: /solutions/{niche}-{city} */}
+        <Route
+          path="/solutions/:slugCombination"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <LocalSolutionPage />
+            </Suspense>
+          }
+        />
+
+        {/* SEO Tools - Product-Led SEO */}
+        <Route
+          path="/tools/roi-calculator"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <RoiCalculator />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/tools/deposit-policy-generator"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <DepositPolicyGenerator />
+            </Suspense>
+          }
+        />
 
         {/* Public Consent Signing */}
         <Route
