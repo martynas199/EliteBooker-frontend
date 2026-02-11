@@ -32,7 +32,7 @@ function ProfessionalToggle({ value, onChange }) {
         onClick={() => onChange("services")}
         className={`px-8 py-3 rounded-lg font-semibold transition-all duration-200 ${
           value === "services"
-            ? "bg-white text-brand-600 shadow-md"
+            ? "bg-white text-gray-900 shadow-md"
             : "text-gray-600 hover:text-gray-900"
         }`}
       >
@@ -42,7 +42,7 @@ function ProfessionalToggle({ value, onChange }) {
         onClick={() => onChange("specialists")}
         className={`px-8 py-3 rounded-lg font-semibold transition-all duration-200 ${
           value === "specialists"
-            ? "bg-white text-brand-600 shadow-md"
+            ? "bg-white text-gray-900 shadow-md"
             : "text-gray-600 hover:text-gray-900"
         }`}
       >
@@ -120,7 +120,7 @@ function EmptyState({ type }) {
         </div>
       </motion.div>
 
-      <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
+      <h3 className="text-2xl font-semibold text-gray-900 mb-2 text-center">
         {type === "services" ? "No Services Yet" : "No Specialists Yet"}
       </h3>
       <p className="text-gray-600 text-center max-w-md">
@@ -465,7 +465,7 @@ export default function SalonLandingLuxury() {
       <div className="min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Hero Section - Clean and Professional */}
-          <div className="relative bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 rounded-2xl sm:rounded-3xl overflow-hidden mb-12 shadow-lg sm:shadow-xl">
+          <div className="relative bg-gray-900 rounded-2xl sm:rounded-3xl overflow-hidden mb-12 shadow-sm">
             {/* Action Buttons - Top Right */}
             <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center gap-2">
               {/* Share Button */}
@@ -478,7 +478,7 @@ export default function SalonLandingLuxury() {
                 aria-label="Share this business"
               >
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 group-hover:text-brand-600 transition-colors duration-300"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 group-hover:text-gray-900 transition-colors duration-300"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={2}
@@ -609,7 +609,7 @@ export default function SalonLandingLuxury() {
                     transition={{ duration: 0.6, delay: 0.8 }}
                     className="flex flex-col sm:flex-row justify-center items-center gap-4 px-4"
                   >
-                    <motion.button
+                    <button
                       onClick={() => {
                         if (
                           heroSection?.ctaLink &&
@@ -640,12 +640,10 @@ export default function SalonLandingLuxury() {
                           );
                         }
                       }}
-                      className="px-10 py-5 bg-white text-brand-600 font-bold text-lg rounded-xl shadow-2xl flex items-center justify-center gap-3 w-full sm:w-auto"
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
+                      className="px-8 py-4 bg-gray-900 text-white font-medium text-base rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
                     >
                       <svg
-                        className="w-6 h-6"
+                        className="w-5 h-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -658,21 +656,15 @@ export default function SalonLandingLuxury() {
                         />
                       </svg>
                       {heroSection?.ctaText || "Book Your Appointment"}
-                    </motion.button>
+                    </button>
 
                     {/* Gift Card Button */}
-                    <motion.button
+                    <button
                       onClick={() => setShowGiftCardModal(true)}
-                      className="px-8 py-5 bg-white/10 backdrop-blur-md text-white font-semibold text-lg rounded-xl shadow-xl flex items-center justify-center gap-3 border-2 border-white/30 w-full sm:w-auto"
-                      whileHover={{
-                        scale: 1.02,
-                        y: -2,
-                        backgroundColor: "rgba(255, 255, 255, 0.15)",
-                      }}
-                      whileTap={{ scale: 0.98 }}
+                      className="px-8 py-4 bg-gray-900 text-white font-medium text-base rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
                     >
                       <svg
-                        className="w-6 h-6"
+                        className="w-5 h-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -685,7 +677,7 @@ export default function SalonLandingLuxury() {
                         />
                       </svg>
                       Send a Gift Card
-                    </motion.button>
+                    </button>
                   </motion.div>
                 )}
               </motion.div>
@@ -702,7 +694,7 @@ export default function SalonLandingLuxury() {
                   transition={{ duration: 0.6 }}
                   className="text-center mb-12"
                 >
-                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                  <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
                     Our Locations
                   </h2>
                   <p className="text-gray-600 text-lg">
@@ -732,7 +724,7 @@ export default function SalonLandingLuxury() {
                       }}
                     >
                       <div className="flex items-start justify-between mb-4">
-                        <h3 className="text-xl font-bold text-gray-900">
+                        <h3 className="text-xl font-semibold text-gray-900">
                           {location.name}
                         </h3>
                         {location.isPrimary && (
@@ -853,7 +845,7 @@ export default function SalonLandingLuxury() {
                         )}
 
                       {/* View Services Button */}
-                      <button className="mt-6 w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg transition-colors group-hover:shadow-lg">
+                      <button className="mt-6 w-full py-3 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-colors">
                         View Services & Specialists
                       </button>
                     </motion.div>
@@ -867,7 +859,7 @@ export default function SalonLandingLuxury() {
           {selectedLocation && (
             <section
               id="location-services"
-              className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen"
+              className="bg-gray-50 min-h-screen"
             >
               <div className="max-w-7xl mx-auto px-4 py-16">
                 {/* Back Button */}
@@ -915,7 +907,7 @@ export default function SalonLandingLuxury() {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-8 sm:mb-12"
                   >
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-4">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-900 mb-3 sm:mb-4 px-4">
                       Upcoming Seminars & Masterclasses
                     </h2>
                     <p className="text-gray-600 text-base sm:text-lg px-4">
@@ -976,7 +968,7 @@ export default function SalonLandingLuxury() {
                           </div>
 
                           {/* Title */}
-                          <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
                             {seminar.title}
                           </h3>
 
@@ -1014,7 +1006,7 @@ export default function SalonLandingLuxury() {
                           {/* CTA Button */}
                           <button
                             onClick={() => navigate(`seminars/${seminar.slug}`)}
-                            className="w-full py-2.5 sm:py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm sm:text-base font-semibold rounded-lg transition-colors shadow-sm hover:shadow-md"
+                            className="w-full py-2.5 sm:py-3 bg-gray-900 hover:bg-gray-800 text-white text-sm sm:text-base font-medium rounded-lg transition-colors shadow-sm"
                           >
                             View Details & Book
                           </button>
@@ -1027,7 +1019,7 @@ export default function SalonLandingLuxury() {
                   <div className="text-center">
                     <button
                       onClick={() => navigate("seminars")}
-                      className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-gray-900 hover:bg-gray-800 text-white text-sm sm:text-base font-semibold rounded-xl transition-colors shadow-lg hover:shadow-xl"
+                      className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-gray-900 hover:bg-gray-800 text-white text-sm sm:text-base font-medium rounded-lg transition-colors shadow-sm"
                     >
                       View All Seminars
                       <svg
@@ -1076,7 +1068,7 @@ export default function SalonLandingLuxury() {
                           transition={{ duration: 0.6 }}
                           className="text-center mb-12"
                         >
-                          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                          <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
                             Our Services
                           </h2>
                           <p className="text-gray-600 text-lg">
@@ -1104,11 +1096,11 @@ export default function SalonLandingLuxury() {
                                       <img
                                         src={specialist.profilePicture.url}
                                         alt={specialist.name}
-                                        className="w-16 h-16 rounded-full object-cover border-2 border-brand-500"
+                                        className="w-16 h-16 rounded-full object-cover border-2 border-gray-900"
                                       />
                                     )}
                                     <div>
-                                      <h3 className="text-2xl font-bold text-gray-900">
+                                      <h3 className="text-2xl font-semibold text-gray-900">
                                         {specialist.name}
                                       </h3>
                                       {specialist.title && (

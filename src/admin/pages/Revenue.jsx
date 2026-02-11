@@ -190,7 +190,7 @@ export default function Revenue() {
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
           Revenue Analytics
         </h1>
         <p className="text-sm text-gray-600 mt-1">

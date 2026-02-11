@@ -133,82 +133,61 @@ export default function StaffList({
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6 overflow-x-hidden">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg hidden sm:flex">
-            <svg
-              className="w-6 h-6 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-            Staff
-          </h2>
-        </div>
-        <Button
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
+          Staff Members
+        </h2>
+        <button
           onClick={onCreate}
-          variant="primary"
-          className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-blue-600 hover:bg-blue-700"
+          className="px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
         >
-          <Plus className="w-5 h-5 mr-2 inline-block" />
-          Add Staff Member
-        </Button>
+          <Plus className="w-4 h-4 inline-block mr-2" />
+          Add Staff
+        </button>
       </div>
 
       {/* Filters */}
-      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border-2 border-gray-100 p-6 space-y-4">
-        <div className="flex flex-col md:flex-row gap-4">
-          {/* Search */}
-          <div className="flex-1 relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search staff by name, email, or specialty..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
-            />
-          </div>
-
-          {/* Active Filter */}
-          <SelectButton
-            value={filterActive}
-            placeholder="All Status"
-            options={[
-              { value: "all", label: "All Status" },
-              { value: "active", label: "Active Only" },
-              { value: "inactive", label: "Inactive Only" },
-            ]}
-            onClick={() => setShowActiveDrawer(true)}
-            className="px-4 py-3 rounded-xl"
-          />
-
-          {/* Service Filter */}
-          <SelectButton
-            value={filterService}
-            placeholder="All Services"
-            options={[
-              { value: "all", label: "All Services" },
-              ...services.map((service) => ({
-                value: service._id,
-                label: service.name,
-              })),
-            ]}
-            onClick={() => setShowServiceDrawer(true)}
-            className="px-4 py-3 rounded-xl"
+      <div className="flex flex-col sm:flex-row gap-3">
+        {/* Search */}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="Search staff..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-11 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors shadow-sm"
+            style={{ fontSize: "16px" }}
           />
         </div>
+
+        {/* Active Filter */}
+        <SelectButton
+          value={filterActive}
+          placeholder="All Status"
+          options={[
+            { value: "all", label: "All Status" },
+            { value: "active", label: "Active Only" },
+            { value: "inactive", label: "Inactive Only" },
+          ]}
+          onClick={() => setShowActiveDrawer(true)}
+          className="px-4 py-3 rounded-lg border border-gray-300"
+        />
+
+        {/* Service Filter */}
+        <SelectButton
+          value={filterService}
+          placeholder="All Services"
+          options={[
+            { value: "all", label: "All Services" },
+            ...services.map((service) => ({
+              value: service._id,
+              label: service.name,
+            })),
+          ]}
+          onClick={() => setShowServiceDrawer(true)}
+          className="px-4 py-3 rounded-xl"
+        />
 
         <div className="text-sm font-medium text-gray-600">
           Showing {filteredStaff.length} of {staff.length} staff members

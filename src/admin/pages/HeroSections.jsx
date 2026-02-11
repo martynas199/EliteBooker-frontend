@@ -512,22 +512,18 @@ export default function HeroSections() {
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
+                    <button
                       onClick={() => handleEdit(section)}
-                      className="w-full sm:w-auto sm:px-6"
+                      className="w-full sm:w-auto px-6 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
                     >
                       Edit
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
+                    </button>
+                    <button
                       onClick={() => handleDelete(section._id)}
-                      className="w-full sm:w-auto sm:px-6"
+                      className="w-full sm:w-auto px-6 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
                     >
                       Delete
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>

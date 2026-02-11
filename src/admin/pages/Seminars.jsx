@@ -117,14 +117,14 @@ export default function Seminars() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="p-2 sm:p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg sm:rounded-xl shadow-lg flex sm:hidden">
+          <div className="p-2 sm:p-3 bg-gray-900 rounded-lg sm:rounded-xl shadow-sm flex sm:hidden">
             <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
-          <div className="hidden sm:flex p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg">
+          <div className="hidden sm:flex p-3 bg-gray-900 rounded-xl shadow-sm">
             <GraduationCap className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900">
               Seminars & Masterclasses
             </h2>
             <p className="text-xs sm:text-sm text-gray-600">
@@ -143,7 +143,7 @@ export default function Seminars() {
       </div>
 
       {/* Filters */}
-      <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl sm:rounded-2xl shadow-lg border-2 border-gray-100 p-4 sm:p-6">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4">
           <div>
             <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
@@ -232,7 +232,7 @@ export default function Seminars() {
                 className="overflow-hidden border-2 border-gray-100 hover:border-gray-200 transition-all shadow-sm hover:shadow-md"
               >
                 {/* Image Header with Overlay Status */}
-                <div className="relative h-32 bg-gradient-to-br from-violet-50 to-purple-50">
+                <div className="relative h-32 bg-gray-50">
                   {seminar.images?.main ? (
                     <img
                       src={

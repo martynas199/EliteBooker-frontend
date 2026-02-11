@@ -226,16 +226,12 @@ export default function ClientsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="px-2 sm:px-3 py-3">
+      <div className="px-4 sm:px-6 lg:px-8 py-6">
         {/* Header */}
-        <div className="mb-3">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Users className="h-6 w-6 text-black" />
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
             Clients
-          </h1>
-          <p className="mt-0.5 text-xs text-gray-600">
-            Manage client relationships and booking history
-          </p>
+          </h2>
         </div>
 
         {/* Segments Overview */}
@@ -314,13 +310,14 @@ export default function ClientsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search by name or email..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-transparent"
+                className="w-full pl-11 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors shadow-sm"
+                style={{ fontSize: "16px" }}
               />
             </div>
 

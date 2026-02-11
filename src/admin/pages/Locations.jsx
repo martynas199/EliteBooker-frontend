@@ -228,27 +228,17 @@ export default function Locations() {
   }
 
   return (
-    <div className="space-y-6 overflow-x-hidden">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 overflow-x-hidden">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg hidden sm:flex">
-            <MapPin className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Locations
-            </h2>
-            <p className="text-sm text-gray-600">
-              Manage your business locations and their details
-            </p>
-          </div>
-        </div>
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
+          Locations
+        </h2>
         <button
           onClick={() => setShowModal(true)}
-          className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2 px-4 py-2 text-white rounded-lg"
+          className="px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-4 h-4 inline-block mr-2" />
           Add Location
         </button>
       </div>

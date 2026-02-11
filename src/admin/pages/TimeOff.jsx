@@ -195,152 +195,84 @@ export default function TimeOff() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto">
-      {/* Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 rounded-2xl shadow-2xl p-4 sm:p-8">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE2YzAgNC40MTgtMy41ODIgOC04IDhzLTgtMy41ODItOC04IDMuNTgyLTggOC04IDggMy41ODIgOCA4eiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
-        <div className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
-                <svg
-                  className="w-6 h-6 sm:w-7 sm:h-7 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
+      {/* Header */}
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
+          Time Off Management
+        </h2>
+        <button
+          onClick={() => setShowAddForm(!showAddForm)}
+          className="px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
+        >
+          {showAddForm ? "Cancel" : "Add Time Off"}
+        </button>
+      </div>
+
+      {/* Stats Cards - kept but simplified */}
+      {timeOffList.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+              </div>
+              <div>
+                <div className="text-2xl font-semibold text-gray-900">
+                  {currentTimeOff.length}
+                </div>
+                <div className="text-sm text-gray-600">Active Now</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white drop-shadow-lg">
-                Time Off Management
-              </h1>
-            </div>
-            <p className="text-brand-50 text-base sm:text-lg font-medium">
-              Manage team availability and schedule time-off periods
-            </p>
-            {timeOffList.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
-                <div className="bg-white/95 backdrop-blur-sm rounded-xl px-5 py-3 shadow-lg hover:shadow-xl transition-all hover:scale-105">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                      <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
-                    </div>
-                    <div>
-                      <div className="text-xl sm:text-2xl font-bold text-gray-900">
-                        {currentTimeOff.length}
-                      </div>
-                      <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                        Active Now
-                      </div>
-                    </div>
-                  </div>
+              <div>
+                <div className="text-2xl font-semibold text-gray-900">
+                  {upcomingTimeOff.length}
                 </div>
-                <div className="bg-white/95 backdrop-blur-sm rounded-xl px-5 py-3 shadow-lg hover:shadow-xl transition-all hover:scale-105">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <svg
-                        className="w-5 h-5 text-blue-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-gray-900">
-                        {upcomingTimeOff.length}
-                      </div>
-                      <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                        Upcoming
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white/95 backdrop-blur-sm rounded-xl px-5 py-3 shadow-lg hover:shadow-xl transition-all hover:scale-105">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                      <svg
-                        className="w-5 h-5 text-gray-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <span className="text-3xl font-bold text-gray-900">
-                        {specialists.length}
-                      </span>
-                      <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                        Team Members
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div className="text-sm text-gray-600">Upcoming</div>
               </div>
-            )}
+            </div>
           </div>
-          <Button
-            onClick={() => setShowAddForm(!showAddForm)}
-            variant="outline"
-            className="whitespace-nowrap bg-white text-brand-600 hover:bg-gray-50 border-0 shadow-xl hover:shadow-2xl transition-all font-bold px-8 py-3 text-base"
-          >
-            {showAddForm ? "✕ Cancel" : "+ Add Time Off"}
-          </Button>
+          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center">
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div>
+                <span className="text-2xl font-semibold text-gray-900">
+                  {specialists.length}
+                </span>
+                <div className="text-sm text-gray-600">Team Members</div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Add Time Off Form */}
       {showAddForm && (
-        <Card className="overflow-visible shadow-2xl border-0 ring-1 ring-gray-900/5 animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="bg-gradient-to-r from-brand-500 to-brand-600 px-8 py-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-              </div>
-              <h2 className="text-xl font-bold text-white">
-                Add Time Off Period
-              </h2>
-            </div>
+        <Card className="overflow-visible shadow-sm border border-gray-200">
+          <div className="bg-white border-b border-gray-200 px-6 py-4">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Add Time Off Period
+            </h2>
           </div>
           <form
             onSubmit={handleSubmit}
-            className="p-4 sm:p-8 space-y-6 bg-gradient-to-br from-gray-50 to-white"
+            className="p-6 space-y-6 bg-white"
           >
             <div className="grid gap-4 sm:grid-cols-2">
               {/* Specialist Selection */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Staff Member <span className="text-red-500">*</span>
                 </label>
                 <SelectButton
@@ -375,7 +307,7 @@ export default function TimeOff() {
                     setFormData({ ...formData, reason: e.target.value })
                   }
                   placeholder="e.g., Vacation, Sick leave, Holiday"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl font-medium focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl font-medium focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
                 />
                 <p className="text-xs text-gray-600 mt-2 font-medium">
                   Optional note visible to team
@@ -393,7 +325,7 @@ export default function TimeOff() {
                     setShowStartPicker(!showStartPicker);
                     setShowEndPicker(false);
                   }}
-                  className={`w-full px-4 py-3 border-2 rounded-xl font-medium focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all text-left bg-white hover:bg-gray-50 flex items-center justify-between ${
+                  className={`w-full px-4 py-3 border-2 rounded-xl font-medium focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all text-left bg-white hover:bg-gray-50 flex items-center justify-between ${
                     errors.start ? "border-red-500" : "border-gray-300"
                   }`}
                 >
@@ -471,7 +403,7 @@ export default function TimeOff() {
                     setShowEndPicker(!showEndPicker);
                     setShowStartPicker(false);
                   }}
-                  className={`w-full px-4 py-3 border-2 rounded-xl font-medium focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all text-left bg-white hover:bg-gray-50 flex items-center justify-between ${
+                  className={`w-full px-4 py-3 border-2 rounded-xl font-medium focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all text-left bg-white hover:bg-gray-50 flex items-center justify-between ${
                     errors.end ? "border-red-500" : "border-gray-300"
                   }`}
                 >
@@ -525,8 +457,8 @@ export default function TimeOff() {
                       }
                       className="rdp-custom"
                       modifiersClassNames={{
-                        selected: "!bg-brand-600 !text-white font-semibold",
-                        today: "!text-brand-600 font-bold",
+                        selected: "!bg-gray-900 !text-white font-semibold",
+                        today: "!text-gray-900 font-semibold",
                       }}
                     />
                   </div>
@@ -542,11 +474,11 @@ export default function TimeOff() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full sm:flex-1 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white shadow-lg hover:shadow-xl transition-all font-semibold py-3 rounded-xl text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full sm:flex-1 bg-gray-900 hover:bg-gray-800 text-white font-medium py-3 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
               >
                 {submitting ? (
                   <>
@@ -602,7 +534,7 @@ export default function TimeOff() {
                   });
                   setErrors({});
                 }}
-                className="w-full sm:w-auto px-8 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl shadow-md hover:shadow-lg transition-all"
+                className="w-full sm:w-auto px-6 bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 rounded-lg border border-gray-300 transition-colors"
               >
                 Cancel
               </button>
@@ -613,14 +545,13 @@ export default function TimeOff() {
 
       {/* Current Time Off */}
       {currentTimeOff.length > 0 && (
-        <Card className="overflow-hidden shadow-2xl border-0 ring-1 ring-red-900/5">
-          <div className="bg-gradient-to-br from-red-500 via-red-600 to-rose-600 px-4 sm:px-6 py-4 sm:py-5 relative overflow-hidden">
-            <div className="absolute inset-0 bg-black/10"></div>
-            <div className="relative flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg ring-2 ring-white/30">
+        <Card className="overflow-hidden shadow-sm border border-gray-200">
+          <div className="bg-red-50 border-b border-red-200 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
                   <svg
-                    className="w-6 h-6 text-white"
+                    className="w-5 h-5 text-red-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -628,28 +559,28 @@ export default function TimeOff() {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={2.5}
+                      strokeWidth={2}
                       d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white drop-shadow-lg">
+                  <h2 className="text-lg font-semibold text-gray-900">
                     Currently Off
                   </h2>
-                  <p className="text-red-50 text-sm font-medium">
+                  <p className="text-sm text-gray-600">
                     Active time-off periods
                   </p>
                 </div>
               </div>
-              <div className="w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center">
-                <span className="text-xl font-bold text-red-600">
+              <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center">
+                <span className="text-lg font-semibold text-red-600">
                   {currentTimeOff.length}
                 </span>
               </div>
             </div>
           </div>
-          <div className="p-5 space-y-3 bg-gradient-to-b from-gray-50 to-white">
+          <div className="p-5 space-y-3 bg-white">
             {currentTimeOff.map((timeOff, index) => (
               <div
                 key={timeOff._id}
@@ -669,14 +600,13 @@ export default function TimeOff() {
 
       {/* Upcoming Time Off */}
       {upcomingTimeOff.length > 0 && (
-        <Card className="overflow-hidden shadow-2xl border-0 ring-1 ring-blue-900/5">
-          <div className="bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 px-4 sm:px-6 py-4 sm:py-5 relative overflow-hidden">
-            <div className="absolute inset-0 bg-black/10"></div>
-            <div className="relative flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg ring-2 ring-white/30">
+        <Card className="overflow-hidden shadow-sm border border-gray-200">
+          <div className="bg-blue-50 border-b border-blue-200 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
                   <svg
-                    className="w-6 h-6 text-white"
+                    className="w-5 h-5 text-blue-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -684,28 +614,28 @@ export default function TimeOff() {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={2.5}
+                      strokeWidth={2}
                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white drop-shadow-lg">
+                  <h2 className="text-lg font-semibold text-gray-900">
                     Upcoming
                   </h2>
-                  <p className="text-blue-50 text-sm font-medium">
+                  <p className="text-sm text-gray-600">
                     Scheduled time-off
                   </p>
                 </div>
               </div>
-              <div className="w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center">
-                <span className="text-xl font-bold text-blue-600">
+              <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center">
+                <span className="text-lg font-semibold text-blue-600">
                   {upcomingTimeOff.length}
                 </span>
               </div>
             </div>
           </div>
-          <div className="p-5 space-y-3 bg-gradient-to-b from-gray-50 to-white">
+          <div className="p-5 space-y-3 bg-white">
             {upcomingTimeOff.map((timeOff, index) => (
               <div
                 key={timeOff._id}
@@ -725,16 +655,15 @@ export default function TimeOff() {
 
       {/* Past Time Off */}
       {pastTimeOff.length > 0 && (
-        <Card className="overflow-hidden shadow-2xl border-0 ring-1 ring-gray-900/5">
+        <Card className="overflow-hidden shadow-sm border border-gray-200">
           <details className="group">
             <summary className="cursor-pointer list-none">
-              <div className="bg-gradient-to-br from-emerald-500 via-green-600 to-teal-600 hover:from-emerald-600 hover:via-green-700 hover:to-teal-700 px-4 sm:px-6 py-4 sm:py-5 transition-all relative overflow-hidden">
-                <div className="absolute inset-0 bg-black/10"></div>
-                <div className="relative flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg ring-2 ring-white/30">
+              <div className="bg-gray-50 hover:bg-gray-100 border-b border-gray-200 px-6 py-4 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
                       <svg
-                        className="w-6 h-6 text-white"
+                        className="w-5 h-5 text-green-600"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -742,28 +671,28 @@ export default function TimeOff() {
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          strokeWidth={2.5}
+                          strokeWidth={2}
                           d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                       </svg>
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-white drop-shadow-lg">
+                      <h2 className="text-lg font-semibold text-gray-900">
                         Past Time Off
                       </h2>
-                      <p className="text-green-50 text-sm font-medium">
+                      <p className="text-sm text-gray-600">
                         Historical records
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center">
-                      <span className="text-xl font-bold text-green-600">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center">
+                      <span className="text-lg font-semibold text-green-600">
                         {pastTimeOff.length}
                       </span>
                     </div>
                     <svg
-                      className="w-7 h-7 text-white transition-transform group-open:rotate-180 drop-shadow-md"
+                      className="w-5 h-5 text-gray-600 transition-transform group-open:rotate-180"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -771,7 +700,7 @@ export default function TimeOff() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={3}
+                        strokeWidth={2}
                         d="M19 9l-7 7-7-7"
                       />
                     </svg>
@@ -779,7 +708,7 @@ export default function TimeOff() {
                 </div>
               </div>
             </summary>
-            <div className="p-5 space-y-3 bg-gradient-to-b from-gray-50 to-white">
+            <div className="p-5 space-y-3 bg-white">
               {pastTimeOff.slice(0, visiblePastCount).map((timeOff, index) => (
                 <div
                   key={timeOff._id}
@@ -797,7 +726,7 @@ export default function TimeOff() {
                 <div className="pt-4">
                   <button
                     onClick={() => setVisiblePastCount((prev) => prev + 5)}
-                    className="w-full py-3 px-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl border-2 border-green-200 hover:border-green-300 text-green-700 font-bold text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                    className="w-full py-3 px-4 bg-white hover:bg-gray-50 rounded-lg border border-gray-300 text-gray-700 font-medium text-sm transition-colors flex items-center justify-center gap-2"
                   >
                     <svg
                       className="w-5 h-5"
@@ -824,8 +753,8 @@ export default function TimeOff() {
 
       {/* Empty State */}
       {timeOffList.length === 0 && !showAddForm && (
-        <Card className="p-16 text-center shadow-2xl border-0 ring-1 ring-gray-900/5">
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-lg">
+        <Card className="p-16 text-center shadow-sm border border-gray-200">
+          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
             <svg
               className="w-12 h-12 text-gray-400"
               fill="none"
@@ -840,16 +769,16 @@ export default function TimeOff() {
               />
             </svg>
           </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-3">
+          <h3 className="text-2xl font-semibold text-gray-900 mb-3">
             No Time Off Scheduled
           </h3>
-          <p className="text-gray-600 text-lg mb-8 max-w-md mx-auto">
+          <p className="text-gray-600 text-base mb-8 max-w-md mx-auto">
             Add time-off periods to block dates when staff members are
             unavailable
           </p>
           <button
             onClick={() => setShowAddForm(true)}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold px-8 py-4 rounded-xl shadow-xl hover:shadow-2xl transition-all text-base"
+            className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-medium px-6 py-3 rounded-lg transition-colors"
           >
             <svg
               className="w-5 h-5"

@@ -734,22 +734,30 @@ export default function Appointments() {
       <SlowRequestWarning isLoading={loading} threshold={2000} />
 
       {/* Header Section */}
-      <div className="mb-4 lg:mb-6">
-        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 tracking-tight">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
           {t("appointments", language)}
-        </h1>
-
-        {/* Show subtitle for different admin types */}
-        {isSuperAdmin ? (
-          <p className="text-sm text-gray-600 mt-1">
-            View and manage all appointments from all specialists
-          </p>
-        ) : admin?.specialistId ? (
-          <p className="text-sm text-gray-600 mt-1">
-            {t("viewAppointmentsLinkedBeauticianOnly", language)}
-          </p>
-        ) : null}
+        </h2>
+        {(isSuperAdmin || admin?.specialistId) && (
+          <button
+            onClick={openCreateModal}
+            className="px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            New Appointment
+          </button>
+        )}
       </div>
+
+      {/* Show subtitle for different admin types - kept under header */}
+      {isSuperAdmin ? (
+        <p className="text-sm text-gray-600 mb-4">
+          View and manage all appointments from all specialists
+        </p>
+      ) : admin?.specialistId ? (
+        <p className="text-sm text-gray-600 mb-4">
+          {t("viewAppointmentsLinkedBeauticianOnly", language)}
+        </p>
+      ) : null}
 
       {/* Show warning for regular admins without linked specialist */}
       {!isSuperAdmin && !admin?.specialistId && (
@@ -782,33 +790,37 @@ export default function Appointments() {
 
       {/* Filters - only show if admin has access */}
       {(isSuperAdmin || admin?.specialistId) && (
-        <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 mb-4 space-y-3">
-          {/* Create Appointment Button & Search Bar */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <button
-              onClick={openCreateModal}
-              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium rounded-lg transition-colors"
+        <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 space-y-4">
+          {/* Search Bar */}
+          <div className="relative">
+            <svg
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 strokeWidth={2}
-                viewBox="0 0 24 24"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search by name, email, phone, service..."
+              className="w-full pl-11 pr-10 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors shadow-sm"
+              style={{ fontSize: "16px" }}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              <span>New Appointment</span>
-            </button>
-
-            <div className="relative flex-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg
-                  className="h-4 w-4 text-gray-400"
+                  className="h-5 w-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -817,38 +829,11 @@ export default function Appointments() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-              </div>
-              <input
-                type="text"
-                placeholder="Search by name, email, phone, service..."
-                className="w-full pl-9 pr-9 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all placeholder:text-gray-400"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <svg
-                    className="h-5 w-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              )}
-            </div>
+              </button>
+            )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

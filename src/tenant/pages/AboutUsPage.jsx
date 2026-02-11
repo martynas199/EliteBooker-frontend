@@ -115,7 +115,7 @@ export default function AboutUsPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-12 sm:mb-16"
           >
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-gray-900 mb-3 sm:mb-4 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-semibold text-gray-900 mb-3 sm:mb-4 tracking-tight">
               About Us
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
@@ -161,7 +161,7 @@ export default function AboutUsPage() {
                   {aboutUs.quote}
                 </blockquote>
               </div>
-              <div className="h-1 w-20 sm:w-24 bg-gradient-to-r from-gray-900 to-transparent rounded-full" />
+              <div className="h-1 w-20 sm:w-24 bg-gray-900 rounded-full" />
             </motion.div>
           </div>
         </div>
@@ -177,7 +177,7 @@ export default function AboutUsPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-12 sm:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-4 sm:mb-6 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-900 mb-4 sm:mb-6 tracking-tight">
               Our Story
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">

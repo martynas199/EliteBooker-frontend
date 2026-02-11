@@ -228,7 +228,7 @@ export default function Profile() {
     <div className="max-w-4xl mx-auto space-y-6 p-6">
       {/* Page Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2">
           Profile Settings
         </h1>
         <p className="text-gray-600">
@@ -239,16 +239,16 @@ export default function Profile() {
       {/* Profile Overview Card */}
       <Card>
         <div className="flex items-center gap-6 p-6">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-3xl shadow-lg">
+          <div className="w-24 h-24 rounded-full bg-gray-900 flex items-center justify-center text-white font-bold text-3xl shadow-sm">
             {getInitials(admin?.name)}
           </div>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-semibold text-gray-900">
               {admin?.name || "Admin User"}
             </h2>
             <p className="text-gray-600 mb-1">{admin?.email}</p>
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 bg-brand-100 text-brand-700 text-sm font-medium rounded-full capitalize">
+              <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full capitalize">
                 {admin?.role || "administrator"}
               </span>
               {admin?.active !== undefined && (
