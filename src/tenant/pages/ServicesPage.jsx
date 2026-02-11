@@ -345,7 +345,7 @@ export default function ServicesPage() {
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <button
-                  onClick={() => navigate("salon")}
+                  onClick={() => navigate(`/salon/${tenant?.slug}/contact`)}
                   className="px-8 py-4 bg-white text-brand-600 font-bold rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
                 >
                   Contact Us

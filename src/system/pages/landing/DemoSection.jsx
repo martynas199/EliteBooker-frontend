@@ -6,10 +6,7 @@ export default function DemoSection() {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   return (
-    <section
-      id="demo"
-      className="py-20 bg-gradient-to-br from-indigo-600 to-purple-700 text-white"
-    >
+    <section id="demo" className="py-20 bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -18,9 +15,9 @@ export default function DemoSection() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              See It In Action
+              See it in action
             </h2>
-            <p className="text-xl text-indigo-100 mb-8 leading-relaxed">
+            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
               Watch how easy it is to manage appointments, accept payments, and
               grow your business. Everything you need in one beautiful
               dashboard.
@@ -52,15 +49,15 @@ export default function DemoSection() {
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="aspect-video bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/20">
+            <div className="aspect-video bg-gray-800 rounded-2xl overflow-hidden border border-gray-700">
               {!videoLoaded ? (
                 <button
                   onClick={() => setVideoLoaded(true)}
-                  className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all group"
+                  className="w-full h-full flex items-center justify-center bg-gray-800 hover:bg-gray-700 transition-all group"
                   aria-label="Load video"
                 >
                   <div className="text-center">
-                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-all">
+                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-700 flex items-center justify-center group-hover:bg-gray-600 transition-all">
                       <svg
                         className="w-10 h-10 text-white ml-1"
                         fill="currentColor"
@@ -70,9 +67,7 @@ export default function DemoSection() {
                       </svg>
                     </div>
                     <p className="text-white font-semibold">Watch Demo Video</p>
-                    <p className="text-indigo-100 text-sm mt-1">
-                      Click to play
-                    </p>
+                    <p className="text-gray-400 text-sm mt-1">Click to play</p>
                   </div>
                 </button>
               ) : (

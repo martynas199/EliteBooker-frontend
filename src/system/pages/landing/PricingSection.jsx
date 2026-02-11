@@ -26,12 +26,12 @@ export default function PricingSection({ onShowFeeModal }) {
           </p>
 
           {/* Billing Toggle */}
-          <div className="inline-flex items-center gap-4 bg-white p-2 rounded-xl shadow-sm">
+          <div className="inline-flex items-center gap-4 bg-white p-2 rounded-xl shadow-sm border border-gray-200">
             <button
               onClick={() => setActivePlan("monthly")}
               className={`px-6 py-2 rounded-lg font-medium transition-all ${
                 activePlan === "monthly"
-                  ? "bg-indigo-600 text-white"
+                  ? "bg-gray-900 text-white"
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >
@@ -41,12 +41,12 @@ export default function PricingSection({ onShowFeeModal }) {
               onClick={() => setActivePlan("annual")}
               className={`px-6 py-2 rounded-lg font-medium transition-all ${
                 activePlan === "annual"
-                  ? "bg-indigo-600 text-white"
+                  ? "bg-gray-900 text-white"
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >
               Annual
-              <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+              <span className="ml-2 text-xs bg-gray-100 text-gray-900 px-2 py-1 rounded-full font-semibold">
                 Save 17%
               </span>
             </button>
@@ -65,14 +65,14 @@ export default function PricingSection({ onShowFeeModal }) {
               className="relative"
             >
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-medium">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-1 rounded-full text-sm font-semibold">
                   Most Popular
                 </div>
               )}
               <Card
                 className={`h-full p-8 ${
                   plan.popular
-                    ? "border-2 border-indigo-500 shadow-xl"
+                    ? "border-2 border-gray-900 shadow-xl"
                     : "border border-gray-200"
                 }`}
               >
@@ -94,7 +94,7 @@ export default function PricingSection({ onShowFeeModal }) {
                     </>
                   )}
                   {activePlan === "annual" && plan.price.annual > 0 && (
-                    <p className="text-sm text-green-600 mt-1">
+                    <p className="text-sm text-gray-600 mt-1">
                       Billed £{(plan.price.annual * 12).toFixed(2)} annually
                     </p>
                   )}
@@ -103,10 +103,10 @@ export default function PricingSection({ onShowFeeModal }) {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => navigate("/signup")}
-                  className={`w-full py-3 rounded-xl font-semibold mb-4 transition-all ${
+                  className={`w-full py-3 rounded-lg font-semibold mb-4 transition-all ${
                     plan.popular
-                      ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg"
-                      : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                      ? "bg-black text-white hover:bg-gray-800"
+                      : "bg-white border border-gray-300 text-gray-900 hover:border-gray-900"
                   }`}
                 >
                   {plan.cta}
@@ -114,7 +114,7 @@ export default function PricingSection({ onShowFeeModal }) {
                 {plan.learnMore && (
                   <button
                     onClick={onShowFeeModal}
-                    className="w-full py-2 mb-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium underline"
+                    className="w-full py-2 mb-4 text-sm text-gray-900 hover:text-gray-700 font-medium underline"
                   >
                     Learn more about fees
                   </button>

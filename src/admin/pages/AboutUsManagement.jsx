@@ -99,9 +99,17 @@ export default function AboutUsManagement() {
       return;
     }
 
+    // Normalize description: ensure proper paragraph separation
+    const normalizedDescription = formData.description
+      .trim()
+      .split(/\n\s*\n/) // Split on any double line breaks
+      .map((p) => p.replace(/\s+/g, " ").trim()) // Normalize whitespace within paragraphs
+      .filter((p) => p.length > 0)
+      .join("\n\n"); // Rejoin with consistent double newlines
+
     const submitData = new FormData();
     submitData.append("quote", formData.quote.trim());
-    submitData.append("description", formData.description.trim());
+    submitData.append("description", normalizedDescription);
 
     if (imageFile) {
       submitData.append("image", imageFile);
@@ -371,6 +379,16 @@ export default function AboutUsManagement() {
           >
             About Us Description *
           </label>
+          <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800 font-medium mb-1">
+              💡 Formatting Tip: Separate paragraphs with blank lines (press
+              Enter twice).
+            </p>
+            <p className="text-xs text-blue-700">
+              ✨ You can paste text from AI generators - we'll automatically
+              format it correctly!
+            </p>
+          </div>
           <textarea
             id="description"
             rows={12}
@@ -378,13 +396,22 @@ export default function AboutUsManagement() {
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-none"
-            placeholder="Tell your story... What makes your salon special? What's your mission and vision?"
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-none font-mono"
+            placeholder="Tell your story... What makes your salon special? What's your mission and vision?
+
+Press Enter twice between paragraphs for better formatting.
+
+Example:
+This is the first paragraph.
+
+This is the second paragraph."
             maxLength={5000}
+            style={{ whiteSpace: "pre-wrap" }}
           />
           <div className="flex justify-between items-center mt-2">
             <p className="text-gray-500 text-sm">
-              Share your salon's story, values, and what makes you unique
+              Share your salon's story, values, and what makes you unique. Use
+              blank lines between paragraphs.
             </p>
             <span className="text-sm text-gray-500">
               {formData.description.length}/5000

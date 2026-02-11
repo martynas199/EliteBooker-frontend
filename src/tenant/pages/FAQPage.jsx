@@ -16,33 +16,11 @@ export default function FAQPage() {
       questions: [
         {
           q: "What is your cancellation policy?",
-          a: "We offer flexible cancellation with automatic refunds based on when you cancel:",
-          details: [
-            {
-              icon: "✓",
-              color: "text-green-600",
-              text: "Full refund within 15 minutes of booking (grace period)",
-            },
-            {
-              icon: "✓",
-              color: "text-green-600",
-              text: "Free cancellation up to 24 hours before your appointment",
-            },
-            {
-              icon: "⚠",
-              color: "text-yellow-600",
-              text: "50% refund between 2-24 hours before appointment",
-            },
-            {
-              icon: "✗",
-              color: "text-red-600",
-              text: "No refund within 2 hours of appointment time",
-            },
-          ],
+          a: "Our cancellation policy is designed to be fair and flexible. The specific refund terms depend on how far in advance you cancel your appointment. You'll see the full cancellation policy details during the booking process and in your booking confirmation email. Generally, the earlier you cancel, the higher the refund percentage.",
         },
         {
           q: "How do I cancel my appointment?",
-          a: "If you booked as a registered user, you can cancel your appointment from your profile page. If you booked as a guest, please contact the salon directly to cancel. Refunds (if applicable) are processed automatically to your original payment method.",
+          a: "If you booked as a registered user, you can cancel your appointment from your profile page. If you booked as a guest, please contact us directly to cancel. Refunds (if applicable) are processed automatically to your original payment method.",
         },
         {
           q: "When will I receive my refund?",
@@ -50,7 +28,7 @@ export default function FAQPage() {
         },
         {
           q: "What if I paid a deposit?",
-          a: "If you paid a deposit, the refund percentage applies to your deposit amount. For example, if you cancel 12 hours before your appointment, you'll receive 50% of your deposit back.",
+          a: "If you paid a deposit, the refund policy applies to your deposit amount based on when you cancel. The exact refund percentage is shown during booking and in your confirmation email.",
         },
       ],
     },
@@ -128,7 +106,7 @@ export default function FAQPage() {
       question: q.q,
       answer:
         q.a + (q.details ? "\n" + q.details.map((d) => d.text).join("\n") : ""),
-    }))
+    })),
   );
   const faqSchema = generateFAQSchema(allFAQs);
   const breadcrumbSchema = generateBreadcrumbSchema([
@@ -155,35 +133,11 @@ export default function FAQPage() {
 
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-bold text-gray-900">
-          Frequently Asked Questions - Elite Booker Wisbech
+          Frequently Asked Questions
         </h1>
         <p className="text-gray-600">
-          Find answers to common questions about{" "}
-          <a
-            href="/specialists"
-            className="text-brand-600 hover:text-brand-700 underline"
-          >
-            bookings
-          </a>
-          , payments, cancellations and our{" "}
-          <a href="/" className="text-brand-600 hover:text-brand-700 underline">
-            beauty services
-          </a>{" "}
-          in Wisbech. Browse our{" "}
-          <a
-            href="/products"
-            className="text-brand-600 hover:text-brand-700 underline"
-          >
-            product catalog
-          </a>{" "}
-          or{" "}
-          <a
-            href="/contact"
-            className="text-brand-600 hover:text-brand-700 underline"
-          >
-            contact us
-          </a>{" "}
-          for more help.
+          Find answers to common questions about bookings, payments,
+          cancellations and our services.
         </p>
       </div>
 

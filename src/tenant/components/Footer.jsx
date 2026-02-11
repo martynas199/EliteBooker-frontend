@@ -142,7 +142,7 @@ export default function TenantFooter() {
 
             {/* Call to Action Button */}
             <Link
-              to=""
+              to={`/salon/${tenant?.slug}/services`}
               className="inline-flex items-center gap-2 px-6 py-3 bg-black hover:bg-gray-800 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
             >
               <svg
@@ -173,13 +173,13 @@ export default function TenantFooter() {
                 { label: "Services", path: "services" },
                 { label: "About Us", path: "about" },
                 // { label: "Shop", path: "products" }, // Hidden - focusing on bookings
-                { label: "Contact", path: "salon" },
+                { label: "Contact", path: "contact" },
                 { label: "FAQ", path: "faq" },
                 { label: "Blog", path: "blog" },
               ].map((item) => (
                 <li key={item.label}>
                   <Link
-                    to={item.path}
+                    to={`/salon/${tenant?.slug}/${item.path}`}
                     className="text-gray-600 hover:text-gray-900 transition-colors hover:translate-x-1 inline-block transform duration-200 flex items-center gap-2 group"
                   >
                     <span className="w-1.5 h-1.5 bg-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>

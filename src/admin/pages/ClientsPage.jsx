@@ -41,6 +41,11 @@ export default function ClientsPage() {
   const [clientDetails, setClientDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
 
+  // Notes editing state
+  const [editingNotes, setEditingNotes] = useState(false);
+  const [notesValue, setNotesValue] = useState("");
+  const [savingNotes, setSavingNotes] = useState(false);
+
   // Drawer state
   const [showStatusDrawer, setShowStatusDrawer] = useState(false);
   const [showSortDrawer, setShowSortDrawer] = useState(false);
@@ -91,6 +96,7 @@ export default function ClientsPage() {
     try {
       setLoadingDetails(true);
       const response = await api.get(`/admin/clients/${clientId}`);
+      console.log("Client details response:", response.data); // Debug log
       setClientDetails(response.data);
     } catch (error) {
       console.error("Failed to fetch client details:", error);
@@ -102,6 +108,7 @@ export default function ClientsPage() {
   const handleClientClick = async (client) => {
     setSelectedClient(client);
     setShowModal(true);
+    setEditingNotes(false);
     await fetchClientDetails(client.id);
   };
 
@@ -109,6 +116,47 @@ export default function ClientsPage() {
     setShowModal(false);
     setSelectedClient(null);
     setClientDetails(null);
+    setEditingNotes(false);
+    setNotesValue("");
+  };
+
+  const handleEditNotes = () => {
+    setNotesValue(clientDetails?.relationship?.internalNotes || "");
+    setEditingNotes(true);
+  };
+
+  const handleCancelEditNotes = () => {
+    setEditingNotes(false);
+    setNotesValue("");
+  };
+
+  const handleSaveNotes = async () => {
+    try {
+      setSavingNotes(true);
+      console.log(
+        "Saving notes for client:",
+        selectedClient.id,
+        "Notes:",
+        notesValue,
+      ); // Debug
+      const response = await api.patch(`/admin/clients/${selectedClient.id}`, {
+        internalNotes: notesValue,
+      });
+      console.log("Save notes response:", response.data); // Debug
+
+      // Refresh client details
+      await fetchClientDetails(selectedClient.id);
+      setEditingNotes(false);
+
+      // Also refresh the client list to ensure data is in sync
+      await fetchClients();
+    } catch (error) {
+      console.error("Failed to save notes:", error);
+      console.error("Error details:", error.response?.data); // More detailed error logging
+      alert("Failed to save notes. Please try again.");
+    } finally {
+      setSavingNotes(false);
+    }
   };
 
   const formatCurrency = (amount) => {
@@ -466,6 +514,7 @@ export default function ClientsPage() {
         open={showModal}
         onClose={closeModal}
         title={selectedClient?.name || "Client Details"}
+        variant="dashboard"
       >
         {loadingDetails ? (
           <div className="flex justify-center py-12">
@@ -496,7 +545,7 @@ export default function ClientsPage() {
                   <span>
                     Member since{" "}
                     {new Date(
-                      clientDetails.client.memberSince
+                      clientDetails.client.memberSince,
                     ).toLocaleDateString("en-GB", {
                       day: "numeric",
                       month: "short",
@@ -525,7 +574,7 @@ export default function ClientsPage() {
                 <p className="text-sm text-gray-600 mb-1">Average Spend</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {formatCurrency(
-                    clientDetails.relationship?.averageSpend || 0
+                    clientDetails.relationship?.averageSpend || 0,
                   )}
                 </p>
               </div>
@@ -534,7 +583,7 @@ export default function ClientsPage() {
                 <p className="text-lg font-bold text-gray-900">
                   {clientDetails.relationship?.lastVisit
                     ? new Date(
-                        clientDetails.relationship.lastVisit
+                        clientDetails.relationship.lastVisit,
                       ).toLocaleDateString("en-GB", {
                         day: "numeric",
                         month: "short",
@@ -565,16 +614,58 @@ export default function ClientsPage() {
               )}
 
             {/* Internal Notes */}
-            {clientDetails.relationship?.internalNotes && (
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-semibold text-gray-900">
                   Internal Notes
                 </h3>
-                <p className="text-sm text-gray-700 bg-gray-50 rounded-lg p-4">
+                {!editingNotes && (
+                  <button
+                    onClick={handleEditNotes}
+                    className="text-sm text-black hover:underline font-medium"
+                  >
+                    {clientDetails.relationship?.internalNotes ? "Edit" : "Add"}
+                  </button>
+                )}
+              </div>
+              {editingNotes ? (
+                <div className="space-y-3">
+                  <textarea
+                    value={notesValue}
+                    onChange={(e) => setNotesValue(e.target.value)}
+                    placeholder="Add notes about this client (e.g., preferences, allergies, special requests)..."
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent resize-none"
+                    rows={4}
+                    disabled={savingNotes}
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleSaveNotes}
+                      disabled={savingNotes}
+                      className="px-4 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+                    >
+                      {savingNotes ? "Saving..." : "Save Notes"}
+                    </button>
+                    <button
+                      onClick={handleCancelEditNotes}
+                      disabled={savingNotes}
+                      className="px-4 py-2 bg-gray-200 text-gray-900 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : clientDetails.relationship?.internalNotes ? (
+                <p className="text-sm text-gray-700 bg-gray-50 rounded-lg p-4 whitespace-pre-wrap">
                   {clientDetails.relationship.internalNotes}
                 </p>
-              </div>
-            )}
+              ) : (
+                <p className="text-sm text-gray-500 bg-gray-50 rounded-lg p-4 italic">
+                  No notes added yet. Click "Add" to add notes about this
+                  client.
+                </p>
+              )}
+            </div>
 
             {/* Recent Bookings */}
             {clientDetails.bookings && clientDetails.bookings.length > 0 && (

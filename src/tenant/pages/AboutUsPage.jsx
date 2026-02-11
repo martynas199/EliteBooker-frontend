@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import { useAboutUs } from "../../shared/hooks/useAboutUsQueries";
+import { useTenant } from "../../shared/contexts/TenantContext";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import {
   generateOrganizationSchema,
@@ -8,6 +9,7 @@ import {
 } from "../../shared/utils/schemaGenerator";
 
 export default function AboutUsPage() {
+  const { tenant } = useTenant();
   const {
     data: aboutUs,
     isLoading,
@@ -59,7 +61,11 @@ export default function AboutUsPage() {
     );
   }
 
-  const paragraphs = aboutUs.description.split("\n\n").filter((p) => p.trim());
+  // Smart paragraph splitting - handles various formats from AI generators
+  const paragraphs = aboutUs.description
+    .split(/\n\s*\n/) // Split on double newlines with optional whitespace
+    .map((p) => p.replace(/\n/g, " ").trim()) // Replace single newlines with spaces within paragraphs
+    .filter((p) => p.length > 0);
 
   // Generate schemas
   const organizationSchema = generateOrganizationSchema();
@@ -333,7 +339,7 @@ export default function AboutUsPage() {
                 </a>
 
                 <a
-                  href="/salon"
+                  href={`/salon/${tenant?.slug}/contact`}
                   className="group inline-flex items-center gap-3 border-2 border-gray-300 text-gray-900 px-8 py-4 rounded-xl hover:bg-gray-100 hover:border-gray-900 transition-all duration-300 font-bold text-lg"
                 >
                   <svg
@@ -355,7 +361,7 @@ export default function AboutUsPage() {
                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  Contact Support
+                  Contact Us
                 </a>
               </div>
             </div>

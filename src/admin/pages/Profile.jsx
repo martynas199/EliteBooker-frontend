@@ -157,7 +157,7 @@ export default function Profile() {
       console.error("Password change error:", err);
       setPasswordError(
         err.response?.data?.error ||
-          "Failed to change password. Please try again."
+          "Failed to change password. Please try again.",
       );
     } finally {
       setPasswordLoading(false);
@@ -182,7 +182,7 @@ export default function Profile() {
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.error || "Failed to update working hours"
+        err.response?.data?.error || "Failed to update working hours",
       );
     } finally {
       setSavingWorkingHours(false);
@@ -207,7 +207,7 @@ export default function Profile() {
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.error || "Failed to update payment settings"
+        err.response?.data?.error || "Failed to update payment settings",
       );
     } finally {
       setSavingPaymentSettings(false);
@@ -225,7 +225,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 p-6">
       {/* Page Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -670,56 +670,6 @@ export default function Profile() {
           </form>
         </div>
       </Card>
-
-      {/* Working Hours - Only for specialists */}
-      {specialist && (
-        <Card>
-          <div className="p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <svg
-                className="w-6 h-6 text-brand-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <h3 className="text-xl font-semibold text-gray-900">
-                Working Hours
-              </h3>
-            </div>
-
-            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
-                Set your availability for client bookings. Add multiple time
-                slots for each day of the week.
-              </p>
-            </div>
-
-            <WorkingHoursForm
-              workingHours={workingHours}
-              onChange={setWorkingHours}
-              errors={{}}
-            />
-
-            <div className="flex items-center gap-3 pt-6 mt-6 border-t border-gray-200">
-              <Button
-                variant="brand"
-                onClick={handleSaveWorkingHours}
-                loading={savingWorkingHours}
-                disabled={savingWorkingHours}
-              >
-                {savingWorkingHours ? "Saving..." : "Save Working Hours"}
-              </Button>
-            </div>
-          </div>
-        </Card>
-      )}
 
       {/* Payment Settings - Only for specialists */}
       {specialist && (

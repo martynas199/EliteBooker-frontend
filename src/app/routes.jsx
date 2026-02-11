@@ -244,7 +244,7 @@ function CustomerLayout() {
             <Route path="times" element={<TimeSlots />} />
             <Route path="checkout" element={<CheckoutPage />} />
             <Route path="confirmation" element={<ConfirmationPage />} />
-            <Route path="salon" element={<SalonDetails />} />
+            <Route path="contact" element={<SalonDetails />} />
             <Route path="products" element={<ProductsPage />} />
             <Route path="products/:id" element={<ProductDetailPage />} />
             <Route path="success" element={<SuccessPage />} />

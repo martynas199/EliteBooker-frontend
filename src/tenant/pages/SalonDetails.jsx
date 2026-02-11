@@ -74,7 +74,7 @@ export default function SalonDetails() {
   const localBusinessSchema = generateLocalBusinessSchema();
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: "Home", url: "/" },
-    { name: "Contact Us", url: "/salon" },
+    { name: "Contact Us", url: "/contact" },
   ]);
 
   const combinedSchema = {

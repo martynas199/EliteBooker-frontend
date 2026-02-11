@@ -158,7 +158,7 @@ export default function LandingPage() {
                   onMouseEnter={() => setShowIndustriesDropdown(true)}
                   onMouseLeave={() => setShowIndustriesDropdown(false)}
                 >
-                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all flex items-center gap-1">
+                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg transition-colors flex items-center gap-1">
                     Industries
                     <svg
                       className="w-4 h-4"
@@ -175,22 +175,22 @@ export default function LandingPage() {
                     </svg>
                   </button>
                   {showIndustriesDropdown && (
-                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-100 py-2 w-56 z-50">
+                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-200 py-2 w-56 z-50">
                       <button
                         onClick={() => navigate("/industries/lash-technicians")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         Lash Technicians
                       </button>
                       <button
                         onClick={() => navigate("/industries/hair-salons")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         Hair Salons
                       </button>
                       <button
                         onClick={() => navigate("/industries/barbers")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         Barbers
                       </button>
@@ -204,7 +204,7 @@ export default function LandingPage() {
                   onMouseEnter={() => setShowCompareDropdown(true)}
                   onMouseLeave={() => setShowCompareDropdown(false)}
                 >
-                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all flex items-center gap-1">
+                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg transition-colors flex items-center gap-1">
                     Compare
                     <svg
                       className="w-4 h-4"
@@ -221,16 +221,16 @@ export default function LandingPage() {
                     </svg>
                   </button>
                   {showCompareDropdown && (
-                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-100 py-2 w-56 z-50">
+                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-200 py-2 w-56 z-50">
                       <button
                         onClick={() => navigate("/compare/vs-fresha")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         vs Fresha
                       </button>
                       <button
                         onClick={() => navigate("/compare/vs-treatwell")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         vs Treatwell
                       </button>
@@ -244,7 +244,7 @@ export default function LandingPage() {
                   onMouseEnter={() => setShowFeaturesDropdown(true)}
                   onMouseLeave={() => setShowFeaturesDropdown(false)}
                 >
-                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all flex items-center gap-1">
+                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg transition-colors flex items-center gap-1">
                     Features
                     <svg
                       className="w-4 h-4"
@@ -261,28 +261,28 @@ export default function LandingPage() {
                     </svg>
                   </button>
                   {showFeaturesDropdown && (
-                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-100 py-2 w-56 z-50">
+                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-200 py-2 w-56 z-50">
                       <button
                         onClick={() => navigate("/features/sms-reminders")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         SMS Reminders
                       </button>
                       <button
                         onClick={() => navigate("/features/no-show-protection")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         No-Show Protection
                       </button>
                       <button
                         onClick={() => navigate("/features/calendar-sync")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         Calendar Sync
                       </button>
                       <button
                         onClick={() => navigate("/features/online-booking")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         Online Booking
                       </button>
@@ -293,7 +293,7 @@ export default function LandingPage() {
                 {/* Pricing Link */}
                 <button
                   onClick={() => navigate("/pricing")}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg transition-colors"
                 >
                   Pricing
                 </button>
@@ -456,7 +456,7 @@ export default function LandingPage() {
                   /* Not logged in - show hamburger menu */
                   <button
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="p-2 text-gray-600 hover:text-violet-600 transition-colors"
+                    className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
                     aria-label="Toggle menu"
                   >
                     {mobileMenuOpen ? (
@@ -510,21 +510,21 @@ export default function LandingPage() {
               <a
                 href="#features"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
+                className="block py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
               >
                 Features
               </a>
               <a
                 href="#pricing"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
+                className="block py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
               >
                 Pricing
               </a>
               <a
                 href="#testimonials"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
+                className="block py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
               >
                 Testimonials
               </a>
@@ -547,8 +547,8 @@ export default function LandingPage() {
                     }}
                     className={`w-full text-left py-2 font-medium transition-colors ${
                       link.primary
-                        ? "text-violet-600 hover:text-violet-700"
-                        : "text-gray-600 hover:text-violet-600"
+                        ? "text-gray-900 hover:text-gray-700"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     {link.label}
@@ -568,7 +568,7 @@ export default function LandingPage() {
                       setMobileMenuOpen(false);
                       navigate(link.href);
                     }}
-                    className="w-full text-left py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
+                    className="w-full text-left py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
                   >
                     {link.label}
                   </button>
@@ -891,7 +891,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Stats Section - Quick Wins */}
+        {/* Stats Section - Clean */}
         <section className="py-16 px-4 bg-gray-50 border-y border-gray-200">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -899,22 +899,18 @@ export default function LandingPage() {
                 {
                   value: "£0",
                   label: "Commission Forever",
-                  color: "text-emerald-600",
                 },
                 {
                   value: "70%",
                   label: "Fewer No-Shows",
-                  color: "text-violet-600",
                 },
                 {
                   value: "24/7",
                   label: "Online Booking",
-                  color: "text-fuchsia-600",
                 },
                 {
                   value: "500+",
                   label: "UK Businesses",
-                  color: "text-cyan-600",
                 },
               ].map((stat, i) => (
                 <motion.div
@@ -925,12 +921,10 @@ export default function LandingPage() {
                   transition={{ delay: i * 0.1 }}
                   className="text-center"
                 >
-                  <div
-                    className={`text-4xl md:text-5xl font-extrabold ${stat.color} mb-2`}
-                  >
+                  <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
                     {stat.value}
                   </div>
-                  <div className="text-sm md:text-base text-gray-600 font-medium">
+                  <div className="text-sm md:text-base text-gray-600">
                     {stat.label}
                   </div>
                 </motion.div>
@@ -943,50 +937,96 @@ export default function LandingPage() {
         <section className="py-20 px-4 bg-white">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4">
-                Tired of Losing Money to
-                <br />
-                <span className="text-red-600">Marketplace Platforms?</span>
+              <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+                Why beauty professionals choose Elite Booker
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Fresha and Treatwell take 20-30% of every booking. That's
-                thousands of pounds you'll never see.
+                Say goodbye to expensive commissions and hello to keeping 100%
+                of your earnings.
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               {[
                 {
-                  icon: "💸",
-                  problem: "20% Commission Fees",
+                  icon: (
+                    <svg
+                      className="w-12 h-12 text-emerald-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  ),
+                  title: "Zero commission",
                   description:
-                    "Fresha takes £20 from every £100 booking. On £50k revenue, you lose £10,000.",
-                  solution:
-                    "Elite Booker: £0 commission. Keep 100% of your earnings.",
+                    "Keep 100% of your earnings. No hidden fees or percentage cuts on bookings.",
                 },
                 {
-                  icon: "😤",
-                  problem: "Marketplace Competition",
+                  icon: (
+                    <svg
+                      className="w-12 h-12 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                      />
+                    </svg>
+                  ),
+                  title: "24/7 online booking",
                   description:
-                    "Your clients see competitors' ads on your booking page. You're losing bookings.",
-                  solution:
-                    "Elite Booker: Your own branded booking page. No competitor ads. Ever.",
+                    "Accept appointments anytime, anywhere. Your clients book while you sleep.",
                 },
                 {
-                  icon: "🚫",
-                  problem: "28% No-Show Rate",
+                  icon: (
+                    <svg
+                      className="w-12 h-12 text-purple-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                      />
+                    </svg>
+                  ),
+                  title: "Reduce no-shows by 70%",
                   description:
-                    "Ghost bookings cost UK salons £500-£2,000/month in lost revenue.",
-                  solution:
-                    "Elite Booker: SMS reminders reduce no-shows by 70%. Deposit protection available.",
+                    "Automated SMS reminders and deposit protection keep your schedule full.",
                 },
                 {
-                  icon: "📱",
-                  problem: "Clients Can't Find You",
+                  icon: (
+                    <svg
+                      className="w-12 h-12 text-pink-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+                      />
+                    </svg>
+                  ),
+                  title: "Your branded page",
                   description:
-                    "Paper diaries and phone calls = lost bookings at 2am when clients actually book.",
-                  solution:
-                    "Elite Booker: 24/7 online booking. Accept appointments while you sleep.",
+                    "Professional booking page with your branding. No competitor ads. Ever.",
                 },
               ].map((item, i) => (
                 <motion.div
@@ -995,31 +1035,13 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="p-6 bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow"
+                  className="p-8 bg-white rounded-2xl border border-gray-200 hover:shadow-lg hover:border-gray-300 transition-all"
                 >
-                  <div className="text-4xl mb-4">{item.icon}</div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {item.problem}
+                  <div className="mb-4">{item.icon}</div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    {item.title}
                   </h3>
-                  <p className="text-gray-600 mb-4 text-sm">
-                    {item.description}
-                  </p>
-                  <div className="flex items-start gap-2 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-                    <svg
-                      className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <p className="text-sm font-semibold text-emerald-800">
-                      {item.solution}
-                    </p>
-                  </div>
+                  <p className="text-gray-600">{item.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -1027,16 +1049,16 @@ export default function LandingPage() {
             <div className="text-center mt-12">
               <button
                 onClick={() => navigate("/signup")}
-                className="px-10 py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold text-lg rounded-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
+                className="px-10 py-4 bg-black text-white font-semibold text-lg rounded-lg hover:bg-gray-800 transition-colors"
               >
-                Start Saving Money Today →
+                Get started
               </button>
             </div>
           </div>
         </section>
 
         {/* Stats Banner */}
-        <section className="py-12 px-4 bg-gradient-to-r from-violet-600 to-fuchsia-600">
+        <section className="py-12 px-4 bg-gray-900">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-3 gap-8 text-center text-white">
               {stats.map((stat, index) => (
@@ -1047,12 +1069,8 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <div className="text-5xl font-extrabold mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-lg font-medium text-violet-100">
-                    {stat.label}
-                  </div>
+                  <div className="text-5xl font-bold mb-2">{stat.value}</div>
+                  <div className="text-lg text-gray-300">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
@@ -1093,7 +1111,7 @@ export default function LandingPage() {
         <div ref={pricingObserver.ref} id="pricing-section">
           {pricingObserver.inView && (
             <Suspense fallback={<SectionFallback />}>
-              <PricingSection setShowFeeModal={setShowFeeModal} />
+              <PricingSection onShowFeeModal={() => setShowFeeModal(true)} />
             </Suspense>
           )}
         </div>
@@ -1239,7 +1257,10 @@ export default function LandingPage() {
 
         {showFeeModal && (
           <Suspense fallback={null}>
-            <BookingFeeModal onClose={() => setShowFeeModal(false)} />
+            <BookingFeeModal
+              isOpen={showFeeModal}
+              onClose={() => setShowFeeModal(false)}
+            />
           </Suspense>
         )}
       </div>
