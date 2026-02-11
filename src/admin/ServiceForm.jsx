@@ -71,8 +71,8 @@ export default function ServiceForm({
     variants: [
       {
         name: "Standard",
-        durationMin: 30,
-        price: 0,
+        durationMin: "",
+        price: "",
         promoPrice: null,
         bufferBeforeMin: 0,
         bufferAfterMin: 0,
@@ -150,8 +150,9 @@ export default function ServiceForm({
             : [
                 {
                   name: "Standard",
-                  durationMin: 30,
-                  price: 0,
+                  durationMin: "",
+                  price: "",
+                  promoPrice: null,
                   bufferBeforeMin: 0,
                   bufferAfterMin: 0,
                 },
@@ -161,7 +162,7 @@ export default function ServiceForm({
       // For non-super admins creating a new service, pre-select their specialist ID
       console.log(
         "Auto-filling specialist for non-super admin:",
-        admin.specialistId
+        admin.specialistId,
       );
       setFormData((prev) => ({
         ...prev,
@@ -198,8 +199,8 @@ export default function ServiceForm({
         ...prev.variants,
         {
           name: "",
-          durationMin: 30,
-          price: 0,
+          durationMin: "",
+          price: "",
           promoPrice: null,
           bufferBeforeMin: 0,
           bufferAfterMin: 0,
@@ -307,7 +308,19 @@ export default function ServiceForm({
     setIsSubmitting(true);
 
     try {
-      await onSave(formData);
+      // Convert empty strings to proper numbers before submission
+      const submissionData = {
+        ...formData,
+        variants: formData.variants.map((v) => ({
+          ...v,
+          durationMin:
+            typeof v.durationMin === "string"
+              ? parseInt(v.durationMin)
+              : v.durationMin,
+          price: typeof v.price === "string" ? parseFloat(v.price) : v.price,
+        })),
+      };
+      await onSave(submissionData);
     } catch (err) {
       setErrors((prev) => ({ ...prev, submit: err.message }));
     } finally {
@@ -376,7 +389,7 @@ export default function ServiceForm({
   };
 
   const errorCount = Object.keys(errors).filter(
-    (key) => key !== "submit"
+    (key) => key !== "submit",
   ).length;
 
   return (
@@ -431,9 +444,10 @@ export default function ServiceForm({
               id="name"
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
-              className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
                 errors.name ? "border-red-500" : "border-gray-300"
               }`}
+              style={{ fontSize: "16px" }}
               aria-invalid={!!errors.name}
             />
           </FormField>
@@ -451,9 +465,10 @@ export default function ServiceForm({
               id="category"
               value={formData.category}
               onChange={(e) => handleChange("category", e.target.value)}
-              className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
                 errors.category ? "border-red-500" : "border-gray-300"
               }`}
+              style={{ fontSize: "16px" }}
               placeholder="e.g., Hair, Nails, Spa"
               aria-invalid={!!errors.category}
             />
@@ -475,7 +490,8 @@ export default function ServiceForm({
                     setIsAIGenerated(false); // Clear AI flag when manually edited
                   }}
                   rows={4}
-                  className="w-full px-3 py-2 pr-12 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors resize-none"
+                  className="w-full px-3 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors resize-none"
+                  style={{ fontSize: "16px" }}
                 />
                 <button
                   type="button"
@@ -578,8 +594,8 @@ export default function ServiceForm({
                             handleChange(
                               "availableAt",
                               formData.availableAt.filter(
-                                (id) => id !== location._id
-                              )
+                                (id) => id !== location._id,
+                              ),
                             );
                           }
                         }}
@@ -787,7 +803,8 @@ export default function ServiceForm({
                     type="time"
                     value={newTimeSlot}
                     onChange={(e) => setNewTimeSlot(e.target.value)}
-                    className="w-full sm:flex-1 px-3 py-2.5 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base"
+                    className="w-full sm:flex-1 px-3 py-2.5 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    style={{ fontSize: "16px" }}
                     placeholder="09:15"
                   />
                   <button
@@ -836,8 +853,8 @@ export default function ServiceForm({
                               handleChange(
                                 "fixedTimeSlots",
                                 formData.fixedTimeSlots.filter(
-                                  (t) => t !== time
-                                )
+                                  (t) => t !== time,
+                                ),
                               );
                               toast.success("Removed");
                             }}
@@ -980,11 +997,12 @@ export default function ServiceForm({
                     onChange={(e) =>
                       handleVariantChange(index, "name", e.target.value)
                     }
-                    className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
                       errors[`variant_${index}_name`]
                         ? "border-red-500"
                         : "border-gray-300"
                     }`}
+                    style={{ fontSize: "16px" }}
                     placeholder="e.g., Standard"
                   />
                 </FormField>
@@ -1000,20 +1018,22 @@ export default function ServiceForm({
                     type="number"
                     id={`variant-${index}-duration`}
                     inputMode="numeric"
-                    value={variant.durationMin}
+                    value={variant.durationMin === 0 ? "" : variant.durationMin}
                     onChange={(e) =>
                       handleVariantChange(
                         index,
                         "durationMin",
-                        parseInt(e.target.value) || 0
+                        e.target.value === "" ? "" : parseInt(e.target.value),
                       )
                     }
-                    className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                    className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
                       errors[`variant_${index}_duration`]
                         ? "border-red-500"
                         : "border-gray-300"
                     }`}
+                    style={{ fontSize: "16px" }}
                     min="1"
+                    placeholder="e.g., 30"
                   />
                 </FormField>
 
@@ -1030,20 +1050,21 @@ export default function ServiceForm({
                     inputMode="decimal"
                     step="0.01"
                     min="0"
-                    value={variant.price}
+                    value={variant.price === 0 ? "" : variant.price}
                     onChange={(e) => {
                       const value = e.target.value;
                       handleVariantChange(
                         index,
                         "price",
-                        value === "" ? 0 : parseFloat(value)
+                        value === "" ? "" : parseFloat(value),
                       );
                     }}
-                    className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                    className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
                       errors[`variant_${index}_price`]
                         ? "border-red-500"
                         : "border-gray-300"
                     }`}
+                    style={{ fontSize: "16px" }}
                     placeholder="0.00"
                   />
                 </FormField>
@@ -1066,14 +1087,15 @@ export default function ServiceForm({
                       handleVariantChange(
                         index,
                         "promoPrice",
-                        value === "" ? null : parseFloat(value)
+                        value === "" ? null : parseFloat(value),
                       );
                     }}
-                    className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
+                    className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
                       errors[`variant_${index}_promoPrice`]
                         ? "border-red-500"
                         : "border-gray-300"
                     }`}
+                    style={{ fontSize: "16px" }}
                     placeholder="0.00"
                   />
                 </FormField>
@@ -1092,10 +1114,11 @@ export default function ServiceForm({
                       handleVariantChange(
                         index,
                         "bufferBeforeMin",
-                        parseInt(e.target.value) || 0
+                        parseInt(e.target.value) || 0,
                       )
                     }
-                    className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                    style={{ fontSize: "16px" }}
                     min="0"
                   />
                 </FormField>
@@ -1114,10 +1137,11 @@ export default function ServiceForm({
                       handleVariantChange(
                         index,
                         "bufferAfterMin",
-                        parseInt(e.target.value) || 0
+                        parseInt(e.target.value) || 0,
                       )
                     }
-                    className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                    style={{ fontSize: "16px" }}
                     min="0"
                   />
                 </FormField>
