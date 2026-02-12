@@ -4,6 +4,9 @@ import Button from "../../shared/components/ui/Button";
 import Modal from "../../shared/components/ui/Modal";
 import FormField from "../../shared/components/forms/FormField";
 import toast from "react-hot-toast";
+import AdminPageShell, {
+  AdminSectionCard,
+} from "../components/AdminPageShell";
 
 export default function Settings() {
   const [formData, setFormData] = useState({
@@ -264,23 +267,17 @@ export default function Settings() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900 tracking-wide mb-2">
-          Contact Page / Business Details
-        </h1>
-        <p className="text-gray-600 font-light leading-relaxed">
-          Manage your business contact information, opening hours, and details
-          shown on the contact page.
-        </p>
-      </div>
-
+    <AdminPageShell
+      title="Contact Page / Business Details"
+      description="Manage your business contact information, opening hours, and details shown on the contact page."
+      maxWidth="md"
+    >
       {loading ? (
         <div className="text-center py-8 text-gray-500">Loading...</div>
       ) : (
         <div className="space-y-6">
           {/* Contact Information Form */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <AdminSectionCard>
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <svg
                 className="w-5 h-5 text-gray-600"
@@ -416,10 +413,10 @@ export default function Settings() {
                 </div>
               </div>
             </div>
-          </div>
+          </AdminSectionCard>
 
           {/* Salon Working Hours */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <AdminSectionCard>
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <svg
                 className="w-5 h-5 text-gray-600"
@@ -490,7 +487,7 @@ export default function Settings() {
                 );
               })}
             </div>
-          </div>
+          </AdminSectionCard>
 
           {/* Message */}
           {message.text && (
@@ -630,6 +627,6 @@ export default function Settings() {
           </div>
         </div>
       </Modal>
-    </div>
+    </AdminPageShell>
   );
 }

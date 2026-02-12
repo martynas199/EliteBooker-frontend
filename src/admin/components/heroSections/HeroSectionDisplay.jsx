@@ -34,7 +34,7 @@ export default function HeroSectionDisplay() {
               <h2 className="text-3xl md:text-5xl lg:text-5xl mb-6 leading-tight font-script text-brand-900">
                 {section.title}
               </h2>
-              <p className="text-gray-700 text-sm md:text-base leading-relaxed mb-8 italic font-light text-brand-800">
+              <p className="text-gray-700 text-sm md:text-base leading-relaxed mb-8 italic text-brand-800">
                 {section.subtitle}
               </p>
               {section.ctaText && (

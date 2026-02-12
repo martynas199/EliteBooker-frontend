@@ -25,6 +25,7 @@ import {
   SelectDrawer,
   SelectButton,
 } from "../../shared/components/ui/SelectDrawer";
+import AdminPageShell from "../components/AdminPageShell";
 
 export default function Appointments() {
   const { language } = useLanguage();
@@ -729,35 +730,31 @@ export default function Appointments() {
     }
   }
 
-  return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <SlowRequestWarning isLoading={loading} threshold={2000} />
+  const pageDescription = isSuperAdmin
+    ? "View and manage all appointments from all specialists"
+    : admin?.specialistId
+    ? t("viewAppointmentsLinkedBeauticianOnly", language)
+    : "Manage appointments and availability";
 
-      {/* Header Section */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
-          {t("appointments", language)}
-        </h2>
-        {(isSuperAdmin || admin?.specialistId) && (
-          <button
+  return (
+    <AdminPageShell
+      title={t("appointments", language)}
+      description={pageDescription}
+      action={
+        isSuperAdmin || admin?.specialistId ? (
+          <Button
+            variant="brand"
+            size="md"
             onClick={openCreateModal}
-            className="px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
+            className="w-full sm:w-auto"
           >
             New Appointment
-          </button>
-        )}
-      </div>
-
-      {/* Show subtitle for different admin types - kept under header */}
-      {isSuperAdmin ? (
-        <p className="text-sm text-gray-600 mb-4">
-          View and manage all appointments from all specialists
-        </p>
-      ) : admin?.specialistId ? (
-        <p className="text-sm text-gray-600 mb-4">
-          {t("viewAppointmentsLinkedBeauticianOnly", language)}
-        </p>
-      ) : null}
+          </Button>
+        ) : null
+      }
+      maxWidth="2xl"
+    >
+      <SlowRequestWarning isLoading={loading} threshold={2000} />
 
       {/* Show warning for regular admins without linked specialist */}
       {!isSuperAdmin && !admin?.specialistId && (
@@ -1099,7 +1096,7 @@ export default function Appointments() {
           </div>
 
           {/* Desktop Table Skeleton */}
-          <div className="hidden lg:block bg-white rounded-lg border border-gray-200">
+          <div className="hidden lg:block rounded-2xl border border-gray-200 bg-white shadow-sm">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -1147,7 +1144,7 @@ export default function Appointments() {
 
       {/* Desktop Table View */}
       {!loading && sortedRows.length > 0 && (
-        <div className="hidden lg:block overflow-auto rounded-xl bg-white shadow-sm border border-gray-200">
+        <div className="hidden lg:block overflow-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
           <table className="min-w-[800px] w-full">
             <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
               <tr>
@@ -2123,7 +2120,7 @@ export default function Appointments() {
               disabled={pagination.page === 1 || loading}
               className="w-full sm:w-auto h-11 sm:h-9 text-sm sm:text-base font-medium"
             >
-              ← Previous
+              Previous
             </Button>
             <span className="text-sm sm:text-base text-gray-700 font-medium px-4 py-2 bg-gray-50 rounded-lg">
               Page {pagination.page} of {pagination.totalPages}
@@ -2137,7 +2134,7 @@ export default function Appointments() {
               disabled={!pagination.hasMore || loading}
               className="w-full sm:w-auto h-11 sm:h-9 text-sm sm:text-base font-medium"
             >
-              Next →
+              Next
             </Button>
           </div>
         </div>
@@ -2181,7 +2178,7 @@ export default function Appointments() {
         submitting={submitting}
         isSuperAdmin={isSuperAdmin}
       />
-    </div>
+    </AdminPageShell>
   );
 }
 
@@ -2678,9 +2675,9 @@ function EditModal({
                   <>
                     <div className="text-sm text-gray-900 font-medium">
                       {isDeposit
-                        ? "💳 Deposit Paid"
+                        ? "Deposit Paid"
                         : isFullPayment
-                        ? "✅ Paid in Full"
+                        ? "Paid in Full"
                         : "Payment Required"}
                     </div>
                     {isDeposit && depositAmount && (
@@ -3094,10 +3091,10 @@ function CreateModal({
               value={appointment.paymentStatus}
               placeholder="Select Payment Status"
               options={[
-                { value: "paid", label: "💵 Paid (Cash/Card in Person)" },
+                { value: "paid", label: "Paid (Cash/Card in Person)" },
                 {
                   value: "unpaid",
-                  label: "🔄 Unpaid (Online Payment Required)",
+                  label: "Unpaid (Online Payment Required)",
                 },
               ]}
               onClick={() => setShowPaymentStatusDrawer(true)}
@@ -3177,9 +3174,9 @@ function CreateModal({
                   <>
                     <div className="text-sm text-gray-900 font-medium">
                       {isDeposit
-                        ? "💳 Deposit Paid"
+                        ? "Deposit Paid"
                         : isFullPayment
-                        ? "✅ Paid in Full"
+                        ? "Paid in Full"
                         : "Payment Required"}
                     </div>
                     {isDeposit && depositAmount && (
@@ -3305,9 +3302,9 @@ function CreateModal({
         onClose={() => setShowPaymentStatusDrawer(false)}
         title="Select Payment Status"
         options={[
-          { value: "paid", label: "💵 Paid (Cash/Card in Person)" },
-          { value: "unpaid", label: "🔄 Unpaid (Online Payment Required)" },
-          { value: "deposit", label: "💰 Deposit (Partial Payment)" },
+          { value: "paid", label: "Paid (Cash/Card in Person)" },
+          { value: "unpaid", label: "Unpaid (Online Payment Required)" },
+          { value: "deposit", label: "Deposit (Partial Payment)" },
         ]}
         value={appointment.paymentStatus}
         onChange={(val) => updateField("paymentStatus", val)}

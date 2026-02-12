@@ -63,7 +63,7 @@ export default function ShippingRateChecker() {
 
   return (
     <Card className="p-6">
-      <h2 className="text-2xl font-serif font-bold text-gray-900 mb-6">
+      <h2 className="mb-6 text-xl font-semibold text-gray-900 sm:text-2xl">
         Royal Mail Shipping Rate Checker
       </h2>
 

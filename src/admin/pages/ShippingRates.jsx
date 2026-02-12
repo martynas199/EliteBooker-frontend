@@ -1,38 +1,31 @@
 import ShippingRateChecker from "../components/shipping/ShippingRateChecker";
+import AdminPageShell from "../components/AdminPageShell";
 
 export default function ShippingRates() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">
-          Shipping Rate Calculator
-        </h1>
-        <p className="text-gray-600">
-          Calculate Royal Mail shipping costs for orders
-        </p>
-      </div>
+    <AdminPageShell
+      title="Shipping Rate Calculator"
+      description="Calculate Royal Mail shipping costs for orders"
+      maxWidth="md"
+    >
 
       <ShippingRateChecker />
 
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h3 className="font-semibold text-blue-900 mb-2">
-          📦 How to use this tool
-        </h3>
-        <ul className="text-sm text-blue-800 space-y-1">
-          <li>• Enter the origin and destination postal codes</li>
-          <li>• Set the package weight in kilograms</li>
+        <h3 className="mb-2 font-semibold text-blue-900">How to use this tool</h3>
+        <ul className="list-disc list-inside space-y-1 text-sm text-blue-800">
+          <li>Enter the origin and destination postal codes</li>
+          <li>Set the package weight in kilograms</li>
           <li>
-            • Select a specific Royal Mail service or choose "Any available
+            Select a specific Royal Mail service or choose "Any available
             service"
           </li>
-          <li>
-            • Click "Get Shipping Rates" to see available options and costs
-          </li>
+          <li>Click "Get Shipping Rates" to see available options and costs</li>
         </ul>
       </div>
 
       <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-        <h3 className="font-semibold text-amber-900 mb-2">⚙️ Configuration</h3>
+        <h3 className="mb-2 font-semibold text-amber-900">Configuration</h3>
         <p className="text-sm text-amber-800 mb-2">
           To enable automatic shipping calculations, add your ShipEngine API key
           to the environment variables:
@@ -45,6 +38,6 @@ export default function ShippingRates() {
           fallback.
         </p>
       </div>
-    </div>
+    </AdminPageShell>
   );
 }

@@ -10,6 +10,7 @@ import {
   SelectDrawer,
   SelectButton,
 } from "../shared/components/ui/SelectDrawer";
+import AdminPageShell from "./components/AdminPageShell";
 
 /**
  * ServicesList - Display and manage services in admin panel
@@ -104,9 +105,26 @@ export default function ServicesList({
     return service.price || 0;
   };
 
+  const pageAction = (
+    <Button
+      variant="brand"
+      size="md"
+      onClick={onCreate}
+      className="w-full sm:w-auto"
+      icon={Plus}
+    >
+      {t("addService", language)}
+    </Button>
+  );
+
   if (isLoading) {
     return (
-      <div className="space-y-4 overflow-x-hidden">
+      <AdminPageShell
+        title={t("services", language)}
+        action={pageAction}
+        maxWidth="2xl"
+        contentClassName="space-y-4 overflow-x-hidden"
+      >
         <div className="flex items-center justify-between mb-6">
           <div className="h-8 w-32 bg-gray-200 animate-pulse rounded" />
           <div className="h-10 w-32 bg-gray-200 animate-pulse rounded-lg" />
@@ -116,27 +134,17 @@ export default function ServicesList({
             <ServiceCardSkeleton key={i} />
           ))}
         </div>
-      </div>
+      </AdminPageShell>
     );
   }
 
   return (
-    <div className="px-3 sm:px-4 py-4 space-y-4 overflow-x-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
-          {t("services", language)}
-        </h2>
-        <button
-          onClick={onCreate}
-          className="px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">{t("addService", language)}</span>
-          <span className="sm:hidden">Add</span>
-        </button>
-      </div>
-
+    <AdminPageShell
+      title={t("services", language)}
+      action={pageAction}
+      maxWidth="2xl"
+      contentClassName="space-y-4 overflow-x-hidden"
+    >
       {/* Filters */}
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row gap-3">
@@ -215,13 +223,13 @@ export default function ServicesList({
               : "Try adjusting your filters to find what you're looking for"}
           </p>
           {services.length === 0 && (
-            <button
+            <Button
+              variant="brand"
+              size="md"
               onClick={onCreate}
-              className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-medium px-6 py-3 rounded-lg transition-colors text-sm"
             >
-              <Plus className="w-4 h-4" />
               {t("addService", language)}
-            </button>
+            </Button>
           )}
         </div>
       ) : (
@@ -343,7 +351,7 @@ export default function ServicesList({
           </div>
 
           {/* Desktop Table View */}
-          <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden border border-gray-100">
+          <div className="hidden md:block overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
@@ -505,6 +513,6 @@ export default function ServicesList({
         onConfirm={confirmDelete}
         onCancel={() => setDeleteConfirm(null)}
       />
-    </div>
+    </AdminPageShell>
   );
 }

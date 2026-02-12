@@ -3,6 +3,7 @@ import { api } from "../../shared/lib/apiClient";
 import Button from "../../shared/components/ui/Button";
 import Card from "../../shared/components/ui/Card";
 import toast from "react-hot-toast";
+import AdminPageShell from "../components/AdminPageShell";
 
 export default function ProductsHero() {
   const [settings, setSettings] = useState(null);
@@ -148,16 +149,11 @@ export default function ProductsHero() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">
-          Products Hero Image
-        </h1>
-        <p className="text-gray-600">
-          Upload a background image for the Products page hero section.
-          Recommended size: 1920x600px or larger.
-        </p>
-      </div>
+    <AdminPageShell
+      title="Products Hero Image"
+      description="Upload a background image for the Products page hero section. Recommended size: 1920x600px or larger."
+      maxWidth="md"
+    >
 
       <Card className="p-6">
         <div className="space-y-6">
@@ -508,6 +504,6 @@ export default function ProductsHero() {
           </div>
         </div>
       </Card>
-    </div>
+    </AdminPageShell>
   );
 }

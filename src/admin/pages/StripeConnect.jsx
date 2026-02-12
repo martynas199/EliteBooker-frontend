@@ -1,22 +1,17 @@
 import { useSelector } from "react-redux";
 import { selectAdmin } from "../../shared/state/authSlice";
 import StripeConnectSettings from "../components/connect/StripeConnectSettings";
+import AdminPageShell from "../components/AdminPageShell";
 
 export default function StripeConnect() {
   const admin = useSelector(selectAdmin);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-serif font-bold text-gray-900 tracking-wide mb-2">
-          Stripe Connect
-        </h1>
-        <p className="text-gray-600 font-light leading-relaxed">
-          Manage your Stripe Connect account to receive payments from bookings
-          and product orders.
-        </p>
-      </div>
-
+    <AdminPageShell
+      title="Stripe Connect"
+      description="Manage your Stripe Connect account to receive payments from bookings and product orders."
+      maxWidth="md"
+    >
       {admin?.specialistId && admin?.email ? (
         <StripeConnectSettings
           specialistId={admin.specialistId}
@@ -61,6 +56,6 @@ export default function StripeConnect() {
           </div>
         </div>
       )}
-    </div>
+    </AdminPageShell>
   );
 }

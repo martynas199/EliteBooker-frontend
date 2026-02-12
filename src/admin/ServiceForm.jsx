@@ -171,13 +171,6 @@ export default function ServiceForm({
     }
   }, [service, isSuperAdmin, admin]);
 
-  // Debug log to check admin object
-  useEffect(() => {
-    console.log("ServiceForm - Admin object:", admin);
-    console.log("ServiceForm - isSuperAdmin:", isSuperAdmin);
-    console.log("ServiceForm - Specialists available:", specialists.length);
-  }, [admin, isSuperAdmin, specialists]);
-
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error for this field
@@ -391,6 +384,19 @@ export default function ServiceForm({
   const errorCount = Object.keys(errors).filter(
     (key) => key !== "submit",
   ).length;
+  const requiredChecks = [
+    Boolean(formData.name.trim()),
+    Boolean(formData.category.trim()),
+    Boolean(formData.primaryBeauticianId),
+    formData.variants.every(
+      (variant) =>
+        variant.name.trim() &&
+        Number(variant.durationMin) > 0 &&
+        Number(variant.price) > 0,
+    ),
+  ];
+  const completedRequiredCount = requiredChecks.filter(Boolean).length;
+  const requiredTotalCount = requiredChecks.length;
 
   const inputClass = (hasError = false) =>
     `w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 ${
@@ -435,6 +441,30 @@ export default function ServiceForm({
           </div>
         </div>
       )}
+
+      <div className="mb-4 rounded-2xl border border-gray-200 bg-white p-3.5 shadow-sm sm:p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Form Progress
+            </p>
+            <p className="text-sm font-semibold text-gray-900">
+              {completedRequiredCount}/{requiredTotalCount} required sections complete
+            </p>
+          </div>
+          <span
+            className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
+              completedRequiredCount === requiredTotalCount
+                ? "bg-green-100 text-green-700"
+                : "bg-amber-100 text-amber-700"
+            }`}
+          >
+            {completedRequiredCount === requiredTotalCount
+              ? "Ready to save"
+              : "Needs attention"}
+          </span>
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 pb-24 sm:space-y-5 sm:pb-0">
         {/* Basic Info Section */}
@@ -507,7 +537,7 @@ export default function ServiceForm({
                     setIsAIGenerated(false); // Clear AI flag when manually edited
                   }}
                   rows={4}
-                  className="w-full resize-none rounded-xl border border-gray-300 px-3.5 py-2.5 pr-12 text-sm text-gray-900 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                  className="w-full resize-none rounded-xl border border-gray-300 px-3.5 py-2.5 pr-12 text-sm text-gray-900 shadow-sm transition-all focus:border-black focus:outline-none focus:ring-2 focus:ring-black/20"
                   style={{ fontSize: "16px" }}
                 />
                 <button
@@ -518,7 +548,7 @@ export default function ServiceForm({
                     !formData.name ||
                     formData.name.trim().length <= 3
                   }
-                  className="absolute bottom-3 right-3 p-2 bg-white border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-400 shadow-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group"
+                  className="group absolute bottom-3 right-3 rounded-lg border border-gray-300 bg-white p-2 shadow-sm transition-all duration-200 hover:border-gray-500 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                   title={
                     isAIGenerated
                       ? "Regenerate AI description"
@@ -526,15 +556,15 @@ export default function ServiceForm({
                   }
                 >
                   {isGeneratingAI ? (
-                    <div className="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-900 border-t-transparent" />
                   ) : (
-                    <Sparkles className="w-5 h-5 text-purple-600 group-hover:scale-110 transition-transform" />
+                    <Sparkles className="h-5 w-5 text-gray-900 transition-transform group-hover:scale-110" />
                   )}
                 </button>
               </div>
               {isAIGenerated && (
-                <p className="text-xs text-purple-600 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" />
+                <p className="flex items-center gap-1 text-xs text-green-700">
+                  <Sparkles className="h-3 w-3" />
                   AI-generated, editable
                 </p>
               )}
@@ -564,10 +594,15 @@ export default function ServiceForm({
               } ${!isSuperAdmin ? "bg-gray-100 cursor-not-allowed" : ""}`}
             />
             {!isSuperAdmin && !admin?.specialistId && (
-              <p className="text-sm text-red-600 mt-1 font-medium">
+              <p className="sr-only">
                 ⚠️ Your admin account is not linked to a specialist. Please
                 contact your administrator to link your account before creating
                 services.
+              </p>
+            )}
+            {!isSuperAdmin && !admin?.specialistId && (
+              <p className="mt-1 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+                Your admin account is not linked to a specialist. Contact your administrator before creating services.
               </p>
             )}
             {!isSuperAdmin && admin?.specialistId && (
@@ -805,7 +840,7 @@ export default function ServiceForm({
           </div>
 
           {/* Fixed Time Slots */}
-          <div className="flex flex-col gap-3 rounded-xl border border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50 p-3.5 sm:p-4">
+          <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-3.5 sm:p-4">
             <div className="flex items-start gap-2 sm:gap-3">
               <input
                 type="checkbox"
@@ -817,15 +852,18 @@ export default function ServiceForm({
                     handleChange("fixedTimeSlots", []);
                   }
                 }}
-                className="w-6 h-6 text-purple-600 rounded focus:ring-purple-500 cursor-pointer flex-shrink-0 mt-0.5"
+                className="mt-0.5 h-6 w-6 flex-shrink-0 cursor-pointer rounded text-gray-900 focus:ring-gray-500"
               />
               <div className="flex-1 min-w-0">
                 <label
                   htmlFor="useFixedSlots"
-                  className="text-sm font-semibold text-gray-900 cursor-pointer block"
+                  className="sr-only"
                 >
                   🕐 Use Fixed Time Slots
                 </label>
+                <span className="block cursor-pointer text-sm font-semibold text-gray-900">
+                  Use Fixed Time Slots
+                </span>
                 <p className="text-xs text-gray-600 mt-1">
                   Set specific times for appointments
                   <span className="hidden sm:inline">
@@ -844,7 +882,7 @@ export default function ServiceForm({
                     type="time"
                     value={newTimeSlot}
                     onChange={(e) => setNewTimeSlot(e.target.value)}
-                    className="w-full rounded-xl border-2 border-purple-300 px-3 py-2.5 sm:flex-1 focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
+                    className="w-full rounded-xl border border-gray-300 px-3 py-2.5 shadow-sm sm:flex-1 focus:border-black focus:outline-none focus:ring-2 focus:ring-black/20"
                     style={{ fontSize: "16px" }}
                     placeholder="09:15"
                   />
@@ -865,7 +903,7 @@ export default function ServiceForm({
                       setNewTimeSlot("");
                       toast.success("Time added");
                     }}
-                    className="w-full sm:w-auto px-6 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-colors active:scale-95"
+                    className="w-full rounded-xl border border-gray-900 bg-gray-900 px-6 py-2.5 text-white transition-colors hover:bg-black sm:w-auto"
                   >
                     Add Time
                   </button>
@@ -883,9 +921,9 @@ export default function ServiceForm({
                       {formData.fixedTimeSlots.map((time) => (
                         <div
                           key={time}
-                          className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-purple-200 shadow-sm"
+                          className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-2.5 shadow-sm"
                         >
-                          <span className="font-mono text-sm sm:text-base font-semibold text-purple-900">
+                          <span className="font-mono text-sm font-semibold text-gray-900 sm:text-base">
                             {time}
                           </span>
                           <button
@@ -899,8 +937,23 @@ export default function ServiceForm({
                               );
                               toast.success("Removed");
                             }}
-                            className="text-xs sm:text-sm text-red-600 hover:text-red-800 font-medium px-2 py-1 hover:bg-red-50 rounded transition-colors active:scale-95"
+                            className="inline-flex items-center justify-center rounded px-2 py-1 text-xs font-medium text-transparent transition-colors hover:bg-red-50 sm:text-sm"
                           >
+                            <svg
+                              className="h-4 w-4 text-red-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                            <span className="sr-only">Remove</span>
                             ✕
                           </button>
                         </div>
@@ -914,9 +967,12 @@ export default function ServiceForm({
                 )}
 
                 {/* Quick Presets */}
-                <div className="p-2.5 sm:p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-xs font-medium text-blue-900 mb-2">
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-2.5 sm:p-3">
+                  <p className="sr-only">
                     💡 Quick Presets:
+                  </p>
+                  <p className="mb-2 text-xs font-medium text-gray-700">
+                    Quick presets:
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2">
                     <button
@@ -930,7 +986,7 @@ export default function ServiceForm({
                         ]);
                         toast.success("Preset applied");
                       }}
-                      className="text-xs px-3 py-2 bg-white border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors active:scale-95 font-medium"
+                      className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium transition-colors hover:bg-gray-100"
                     >
                       Every 3hrs (9-6)
                     </button>
@@ -944,7 +1000,7 @@ export default function ServiceForm({
                         ]);
                         toast.success("Preset applied");
                       }}
-                      className="text-xs px-3 py-2 bg-white border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors active:scale-95 font-medium"
+                      className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium transition-colors hover:bg-gray-100"
                     >
                       Morning+Afternoon
                     </button>
@@ -954,7 +1010,7 @@ export default function ServiceForm({
                         handleChange("fixedTimeSlots", []);
                         toast.success("Cleared");
                       }}
-                      className="text-xs px-3 py-2 bg-white border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors active:scale-95 font-medium"
+                      className="rounded-lg border border-red-300 bg-white px-3 py-2 text-xs font-medium text-red-700 transition-colors hover:bg-red-50"
                     >
                       Clear All
                     </button>
@@ -990,16 +1046,19 @@ export default function ServiceForm({
                 onClick={addVariant}
                 variant="outline"
                 size="md"
-                className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-brand-200 bg-white px-3 py-2 text-sm font-semibold text-brand-700 hover:border-brand-400 sm:w-auto sm:text-xs"
+                className="flex w-full items-center justify-center gap-1.5 sm:w-auto"
               >
                 <span className="text-sm leading-none">+</span>
                 <span>{t("addVariant", language)}</span>
               </Button>
             </div>
-            <p className="text-xs text-gray-600">
+            <p className="sr-only">
               Create different versions of this service with unique durations
               and prices. For example: "Quick Trim (15 min, £20)" and "Full Cut
               & Style (45 min, £45)".
+            </p>
+            <p className="text-xs text-gray-600">
+              Create different versions of this service with unique durations and prices. Example: "Quick Trim (15 min, £20)" and "Full Cut & Style (45 min, £45)".
             </p>
           </div>
 
@@ -1007,20 +1066,22 @@ export default function ServiceForm({
           {formData.variants.map((variant, index) => (
             <div
               key={index}
-              className="space-y-3 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-3.5 sm:p-4"
+              className="space-y-3 rounded-xl border border-gray-200 bg-white p-3.5 sm:p-4"
             >
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <h4 className="font-bold text-gray-900 text-sm">
                   {t("variantName", language)} {index + 1}
                 </h4>
                 {formData.variants.length > 1 && (
-                  <button
+                  <Button
                     type="button"
                     onClick={() => removeVariant(index)}
-                    className="w-full rounded-lg border border-red-300 px-2.5 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-600 hover:text-white sm:w-auto"
+                    variant="danger"
+                    size="sm"
+                    className="w-full sm:w-auto"
                   >
                     {t("remove", language)}
-                  </button>
+                  </Button>
                 )}
               </div>
 
@@ -1181,7 +1242,7 @@ export default function ServiceForm({
         </div>
 
         {/* Form Actions */}
-        <div className="sticky bottom-0 z-20 -mx-1 border-t border-gray-200 bg-white/95 px-1 pb-[max(env(safe-area-inset-bottom),0.6rem)] pt-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-3">
+        <div className="sticky bottom-0 z-20 -mx-1 border-t border-gray-200 bg-white/95 px-1 pb-[max(env(safe-area-inset-bottom),0.6rem)] pt-3 shadow-[0_-6px_16px_rgba(15,23,42,0.08)] backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-3 sm:shadow-none">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
             {isEditMode && onDelete && (
               <Button

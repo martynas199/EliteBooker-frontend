@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import dayjs from "dayjs";
+import AdminPageShell from "../components/AdminPageShell";
 
 const formatCurrency = (amount) => `£${amount.toFixed(2)}`;
 const formatPercentage = (percentage) => `${percentage.toFixed(1)}%`;
@@ -138,16 +139,13 @@ export default function ProfitAnalytics() {
   } = analytics || {};
 
   return (
-    <div className="space-y-6 p-3 sm:p-6 overflow-x-hidden">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 mb-2">
-          Profit Analytics
-        </h1>
-        <p className="text-sm sm:text-base text-gray-600">
-          Track your margins, profits, and product performance
-        </p>
-      </div>
+    <AdminPageShell
+      title="Profit Analytics"
+      description="Track your margins, profits, and product performance"
+      maxWidth="2xl"
+      contentClassName="space-y-6 overflow-x-hidden"
+      className="px-3 sm:px-6 lg:px-8"
+    >
 
       {/* Filters */}
       <Card className="p-3 sm:p-4">
@@ -860,6 +858,6 @@ export default function ProfitAnalytics() {
           </div>
         </Card>
       )}
-    </div>
+    </AdminPageShell>
   );
 }

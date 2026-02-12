@@ -407,10 +407,10 @@ export default function AdminBeauticianLink() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-serif font-bold text-gray-900 tracking-wide">
+          <h1 className="text-2xl font-semibold text-gray-900 md:text-3xl">
             Admin Management
           </h1>
-          <p className="mt-2 text-gray-600 font-light">
+          <p className="mt-2 text-gray-600">
             Create admin accounts and link them to specialist profiles
           </p>
         </div>
@@ -427,7 +427,7 @@ export default function AdminBeauticianLink() {
       {/* Create Admin Form */}
       {showCreateForm && (
         <Card className="p-6 border-4 border-brand-400 shadow-lg">
-          <h2 className="text-xl font-serif font-semibold mb-4 tracking-wide">
+          <h2 className="mb-4 text-xl font-semibold text-gray-900">
             Create New Admin Account
           </h2>
           <form onSubmit={handleCreateAdmin} className="space-y-4">
@@ -607,7 +607,7 @@ export default function AdminBeauticianLink() {
 
       {/* Link Existing Admin to Specialist */}
       <Card className="p-6">
-        <h2 className="text-xl font-serif font-semibold mb-4 tracking-wide">
+        <h2 className="mb-4 text-xl font-semibold text-gray-900">
           Link Existing Admin to Specialist
         </h2>
         <div className="grid gap-6 md:grid-cols-2">
@@ -717,7 +717,7 @@ export default function AdminBeauticianLink() {
 
       {/* Current Links */}
       <Card className="p-4 sm:p-6 overflow-hidden">
-        <h2 className="text-lg sm:text-xl font-serif font-semibold mb-4 tracking-wide break-words">
+        <h2 className="mb-4 break-words text-lg font-semibold text-gray-900 sm:text-xl">
           Current Links
         </h2>
         <div className="space-y-3">
@@ -825,7 +825,7 @@ export default function AdminBeauticianLink() {
 
       {/* All Admins List */}
       <Card className="p-4 sm:p-6 overflow-hidden">
-        <h2 className="text-lg sm:text-xl font-serif font-semibold mb-4 tracking-wide break-words">
+        <h2 className="mb-4 break-words text-lg font-semibold text-gray-900 sm:text-xl">
           All Admin Accounts
         </h2>
         <div className="space-y-3">

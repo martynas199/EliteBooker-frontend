@@ -17,6 +17,7 @@ import {
   SelectDrawer,
   SelectButton,
 } from "../../shared/components/ui/SelectDrawer";
+import AdminPageShell from "../components/AdminPageShell";
 
 export default function Revenue() {
   const [startDate, setStartDate] = useState(
@@ -187,16 +188,11 @@ export default function Revenue() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
-          Revenue Analytics
-        </h1>
-        <p className="text-sm text-gray-600 mt-1">
-          Track performance and booking revenue
-        </p>
-      </div>
+    <AdminPageShell
+      title="Revenue Analytics"
+      description="Track performance and booking revenue"
+      maxWidth="2xl"
+    >
 
       {/* Date Range Card */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5">
@@ -845,6 +841,6 @@ export default function Revenue() {
           setShowSpecialistDrawer(false);
         }}
       />
-    </div>
+    </AdminPageShell>
   );
 }
