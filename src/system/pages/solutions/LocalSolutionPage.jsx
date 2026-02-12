@@ -182,13 +182,13 @@ export default function LocalSolutionPage() {
 
       <main className="min-h-screen bg-white">
         {/* Hero Section */}
-        <section className="relative pt-20 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-violet-50 via-white to-fuchsia-50 overflow-hidden">
+        <section className="relative pt-20 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc] overflow-hidden">
           <div className="max-w-7xl mx-auto">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 text-sm text-gray-600 mb-6">
               {breadcrumbs.map((crumb, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <a href={crumb.url} className="hover:text-violet-600">
+                  <a href={crumb.url} className="hover:text-slate-700">
                     {crumb.label}
                   </a>
                   {index < breadcrumbs.length - 1 && <span>/</span>}
@@ -203,7 +203,7 @@ export default function LocalSolutionPage() {
               className="text-center max-w-4xl mx-auto"
             >
               {/* Trust Badge */}
-              <div className="inline-flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-violet-100 mb-6">
+              <div className="inline-flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-slate-200 mb-6">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -242,14 +242,14 @@ export default function LocalSolutionPage() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a
                   href="/signup"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold rounded-full hover:shadow-xl transition-all text-lg"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-slate-900 to-slate-700 text-white font-semibold rounded-full hover:shadow-xl transition-all text-lg"
                 >
                   Start Free Today
                   <ArrowRight className="w-5 h-5" />
                 </a>
                 <a
                   href="#calculator"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-full hover:border-violet-600 transition-all text-lg"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-full hover:border-slate-700 transition-all text-lg"
                 >
                   Calculate Your Savings
                 </a>
@@ -332,8 +332,8 @@ export default function LocalSolutionPage() {
                 viewport={{ once: true }}
                 className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200"
               >
-                <div className="w-14 h-14 bg-teal-100 rounded-xl flex items-center justify-center mb-6">
-                  <MessageSquare className="w-7 h-7 text-teal-600" />
+                <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center mb-6">
+                  <MessageSquare className="w-7 h-7 text-slate-700" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   SMS Reminders (£2.99/mo)
@@ -344,15 +344,15 @@ export default function LocalSolutionPage() {
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />
                     <span>Automatic 48hr + 24hr reminders</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />
                     <span>Clients reply YES to confirm</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />
                     <span>Unlimited messages included</span>
                   </li>
                 </ul>
@@ -366,8 +366,8 @@ export default function LocalSolutionPage() {
                 transition={{ delay: 0.1 }}
                 className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200"
               >
-                <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
-                  <Shield className="w-7 h-7 text-blue-600" />
+                <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center mb-6">
+                  <Shield className="w-7 h-7 text-slate-700" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   Deposit Collection
@@ -378,15 +378,15 @@ export default function LocalSolutionPage() {
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />
                     <span>Set deposit amount per service</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />
                     <span>Automatic refunds on cancellation</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />
                     <span>PCI-compliant Stripe integration</span>
                   </li>
                 </ul>
@@ -400,8 +400,8 @@ export default function LocalSolutionPage() {
                 transition={{ delay: 0.2 }}
                 className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200"
               >
-                <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
-                  <Calendar className="w-7 h-7 text-purple-600" />
+                <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center mb-6">
+                  <Calendar className="w-7 h-7 text-slate-700" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   Google Calendar Sync
@@ -412,15 +412,15 @@ export default function LocalSolutionPage() {
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />
                     <span>Real-time calendar updates</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />
                     <span>Block personal time from your phone</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />
                     <span>Prevent double bookings automatically</span>
                   </li>
                 </ul>
@@ -447,7 +447,7 @@ export default function LocalSolutionPage() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className="bg-violet-50 rounded-2xl p-6 border border-violet-200"
+                className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
               >
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
@@ -463,7 +463,7 @@ export default function LocalSolutionPage() {
                   No-shows dropped from 6-8/week to 1-2. Game changer."
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-violet-200 rounded-full flex items-center justify-center font-bold text-violet-700">
+                  <div className="w-12 h-12 bg-slate-200 rounded-full flex items-center justify-center font-bold text-slate-800">
                     SJ
                   </div>
                   <div>
@@ -481,7 +481,7 @@ export default function LocalSolutionPage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="bg-fuchsia-50 rounded-2xl p-6 border border-fuchsia-200"
+                className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
               >
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
@@ -497,7 +497,7 @@ export default function LocalSolutionPage() {
                   is to book."
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-fuchsia-200 rounded-full flex items-center justify-center font-bold text-fuchsia-700">
+                  <div className="w-12 h-12 bg-slate-200 rounded-full flex items-center justify-center font-bold text-slate-800">
                     MC
                   </div>
                   <div>
@@ -517,7 +517,7 @@ export default function LocalSolutionPage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="bg-teal-50 rounded-2xl p-6 border border-teal-200"
+                className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
               >
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
@@ -532,7 +532,7 @@ export default function LocalSolutionPage() {
                   had 3 bookings within an hour. Why didn't I do this sooner?"
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-teal-200 rounded-full flex items-center justify-center font-bold text-teal-700">
+                  <div className="w-12 h-12 bg-slate-200 rounded-full flex items-center justify-center font-bold text-slate-800">
                     LA
                   </div>
                   <div>
@@ -557,9 +557,9 @@ export default function LocalSolutionPage() {
               See how much you'll save compared to Fresha/Treatwell:
             </p>
 
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-violet-200">
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-slate-200">
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white">
+                <thead className="bg-gradient-to-r from-slate-900 to-slate-700 text-white">
                   <tr>
                     <th className="px-6 py-4 text-left font-semibold">
                       Cost Breakdown
@@ -615,7 +615,7 @@ export default function LocalSolutionPage() {
                       £0
                     </td>
                   </tr>
-                  <tr className="border-t-4 border-violet-200">
+                  <tr className="border-t-4 border-slate-200">
                     <td className="px-6 py-5 text-gray-900 font-bold text-lg">
                       Monthly Cost ({monthlyBookings} bookings)
                     </td>
@@ -642,7 +642,7 @@ export default function LocalSolutionPage() {
             <div className="text-center mt-8">
               <a
                 href="/signup"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold rounded-full hover:shadow-xl transition-all text-lg"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-slate-900 to-slate-700 text-white font-semibold rounded-full hover:shadow-xl transition-all text-lg"
               >
                 Start Saving Today
                 <ArrowRight className="w-5 h-5" />
@@ -670,7 +670,7 @@ export default function LocalSolutionPage() {
                 >
                   <summary className="font-semibold text-lg text-gray-900 cursor-pointer list-none flex items-center justify-between">
                     {faq.name}
-                    <span className="text-violet-600 group-open:rotate-180 transition-transform">
+                    <span className="text-slate-700 group-open:rotate-180 transition-transform">
                       ▼
                     </span>
                   </summary>
@@ -684,7 +684,7 @@ export default function LocalSolutionPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-purple-700 text-white">
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl sm:text-5xl font-bold mb-6">
               Join {city.name}'s {niche.pluralName} Who've Already Switched
@@ -697,14 +697,14 @@ export default function LocalSolutionPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
                 href="/signup"
-                className="inline-flex items-center gap-2 px-10 py-5 bg-white text-violet-600 font-bold rounded-full hover:shadow-2xl transition-all text-lg"
+                className="inline-flex items-center gap-2 px-10 py-5 bg-white text-slate-700 font-bold rounded-full hover:shadow-2xl transition-all text-lg"
               >
                 Get Started Free
                 <ArrowRight className="w-5 h-5" />
               </a>
               <a
                 href="/pricing"
-                className="inline-flex items-center gap-2 px-10 py-5 bg-transparent border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-violet-600 transition-all text-lg"
+                className="inline-flex items-center gap-2 px-10 py-5 bg-transparent border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-slate-700 transition-all text-lg"
               >
                 View Pricing
               </a>
@@ -732,3 +732,7 @@ export default function LocalSolutionPage() {
     </>
   );
 }
+
+
+
+

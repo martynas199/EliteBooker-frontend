@@ -72,18 +72,18 @@ export default function Barbers() {
         className="min-h-screen"
         style={{
           background:
-            "linear-gradient(to bottom, rgb(249, 250, 251), rgb(255, 255, 255))",
+            "linear-gradient(to bottom, #f8f5ef, #f6f2ea 55%, #efe8dc)",
         }}
       >
         {/* Hero Section */}
-        <section className="py-20 px-4">
+        <section className="px-4 py-14 sm:py-16">
           <div className="max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center"
             >
-              <h1 className="text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="mb-5 text-3xl font-bold text-gray-900 sm:text-4xl lg:text-5xl">
                 Booking Software Built for UK Barber Shops
               </h1>
               <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
@@ -94,14 +94,14 @@ export default function Barbers() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/signup"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-slate-900 to-slate-700 text-white font-semibold rounded-lg hover:from-slate-800 hover:to-slate-700 transition-all shadow-lg"
                 >
                   Start Free Trial
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
                 <Link
                   to="/signup"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-emerald-600 font-semibold rounded-lg border-2 border-emerald-600 hover:bg-emerald-50 transition-all"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-semibold rounded-lg border-2 border-slate-700 hover:bg-slate-50 transition-all"
                 >
                   Book a Demo
                 </Link>
@@ -128,37 +128,37 @@ export default function Barbers() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
                 {
-                  icon: <Calendar className="w-8 h-8 text-emerald-600" />,
+                  icon: <Calendar className="w-8 h-8 text-slate-700" />,
                   title: "24/7 Online Booking",
                   description:
                     "Customers book their own appointments online anytime. Frees up your phone lines and reduces admin work.",
                 },
                 {
-                  icon: <Users className="w-8 h-8 text-emerald-600" />,
+                  icon: <Users className="w-8 h-8 text-slate-700" />,
                   title: "Walk-In Queue Management",
                   description:
                     "Digital queue system lets customers join from their phone and see real-time wait times. No more crowded waiting areas.",
                 },
                 {
-                  icon: <MessageSquare className="w-8 h-8 text-emerald-600" />,
+                  icon: <MessageSquare className="w-8 h-8 text-slate-700" />,
                   title: "Automated SMS Reminders",
                   description:
                     "Send automatic reminders 48 & 24 hours before appointments. Cut no-shows by 70% and keep your chair filled.",
                 },
                 {
-                  icon: <Shield className="w-8 h-8 text-emerald-600" />,
+                  icon: <Shield className="w-8 h-8 text-slate-700" />,
                   title: "Deposit Protection",
                   description:
                     "Require deposits for evening/weekend slots or new clients. Secure your busiest times and reduce no-shows to near zero.",
                 },
                 {
-                  icon: <Users className="w-8 h-8 text-emerald-600" />,
+                  icon: <Users className="w-8 h-8 text-slate-700" />,
                   title: "Multi-Barber Scheduling",
                   description:
                     "Manage unlimited barbers, each with their own calendar, availability settings, and service menu.",
                 },
                 {
-                  icon: <Smartphone className="w-8 h-8 text-emerald-600" />,
+                  icon: <Smartphone className="w-8 h-8 text-slate-700" />,
                   title: "Mobile Dashboard",
                   description:
                     "Manage bookings, check your schedule, and update availability from your phone. Perfect for busy barber shops.",
@@ -195,7 +195,7 @@ export default function Barbers() {
               className="text-center"
             >
               <div className="mb-8">
-                <div className="w-20 h-20 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
+                <div className="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
                   MT
                 </div>
                 <p className="text-2xl font-medium text-gray-900 mb-2">
@@ -243,23 +243,23 @@ export default function Barbers() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-20 px-4 bg-gradient-to-r from-emerald-600 to-teal-600">
+        <section className="bg-gradient-to-r from-slate-900 to-slate-700 px-4 py-14 sm:py-16 lg:py-20">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold text-white mb-6">
+            <h2 className="mb-5 text-3xl font-bold text-white sm:text-4xl">
               Ready to Modernize Your Barber Shop?
             </h2>
-            <p className="text-xl text-emerald-50 mb-8">
+            <p className="text-xl text-slate-100 mb-8">
               Join hundreds of UK barbers using Elite Booker. Setup takes 10
               minutes.
             </p>
             <Link
               to="/signup"
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-gray-100 transition-all shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-semibold rounded-lg hover:bg-gray-100 transition-all shadow-lg"
             >
               Start Free Trial
               <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
-            <p className="mt-4 text-emerald-50 text-sm">
+            <p className="mt-4 text-slate-100 text-sm">
               No credit card required • Cancel anytime • Free 14-day trial
             </p>
           </div>
@@ -269,3 +269,7 @@ export default function Barbers() {
     </>
   );
 }
+
+
+
+

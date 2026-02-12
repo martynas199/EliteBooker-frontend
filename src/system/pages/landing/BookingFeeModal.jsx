@@ -48,9 +48,9 @@ export default function BookingFeeModal({ isOpen, onClose }) {
         </div>
 
         <div className="space-y-3 mb-3">
-          <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-3">
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
             <div className="flex items-start gap-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 mt-0.5">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-slate-700 to-slate-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 mt-0.5">
                 £
               </div>
               <div className="pt-0.5">
@@ -111,7 +111,7 @@ export default function BookingFeeModal({ isOpen, onClose }) {
                 href="https://stripe.com/gb/pricing"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-indigo-600 hover:text-indigo-700 underline"
+                className="text-slate-700 hover:text-slate-800 underline"
               >
                 Stripe processing fees
               </a>
@@ -135,7 +135,7 @@ export default function BookingFeeModal({ isOpen, onClose }) {
               onClose();
               navigate("/signup");
             }}
-            className="flex-1 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all"
+            className="flex-1 py-2.5 bg-gradient-to-r from-slate-900 to-slate-700 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all"
           >
             Get Started
           </motion.button>
@@ -144,3 +144,4 @@ export default function BookingFeeModal({ isOpen, onClose }) {
     </div>
   );
 }
+

@@ -5,52 +5,45 @@
  */
 
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { api } from "../../shared/lib/apiClient";
 import { motion } from "framer-motion";
 import eliteLogo from "../../assets/elite.png";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
-
 export default function TenantSignup() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [step, setStep] = useState(1);
   const [referralCode, setReferralCode] = useState("");
-  const [referralValid, setReferralValid] = useState(null); // null, true, or false
+  const [referralValid, setReferralValid] = useState(null);
   const [validatingReferral, setValidatingReferral] = useState(false);
 
   const [formData, setFormData] = useState({
-    // Business info
     businessName: "",
     email: "",
     phone: "",
-    // Address
     street: "",
     city: "",
     postalCode: "",
     country: "United Kingdom",
-    // Admin account
     adminName: "",
     adminEmail: "",
     adminPassword: "",
     adminPasswordConfirm: "",
   });
 
-  // Auto-detect referral code from URL parameter
   useEffect(() => {
     const refCode = searchParams.get("ref");
     if (refCode) {
-      const normalized = refCode.toUpperCase().trim();
-      setReferralCode(normalized);
-      validateReferralCode(normalized);
+      const normalizedCode = refCode.toUpperCase().trim();
+      setReferralCode(normalizedCode);
+      validateReferralCode(normalizedCode);
     }
   }, [searchParams]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -64,23 +57,23 @@ export default function TenantSignup() {
     try {
       const response = await api.post(`/referrals/validate/${code}`);
       setReferralValid(response.data.valid === true);
-    } catch (error) {
+    } catch {
       setReferralValid(false);
     } finally {
       setValidatingReferral(false);
     }
   };
 
-  const handleReferralCodeChange = (e) => {
-    const code = e.target.value.toUpperCase().trim();
+  const handleReferralCodeChange = (event) => {
+    const code = event.target.value.toUpperCase().trim();
     setReferralCode(code);
 
-    // Debounce validation
     if (code.length === 6) {
       validateReferralCode(code);
-    } else {
-      setReferralValid(null);
+      return;
     }
+
+    setReferralValid(null);
   };
 
   const validateStep1 = () => {
@@ -96,11 +89,7 @@ export default function TenantSignup() {
   };
 
   const validateStep2 = () => {
-    if (
-      !formData.adminName ||
-      !formData.adminEmail ||
-      !formData.adminPassword
-    ) {
+    if (!formData.adminName || !formData.adminEmail || !formData.adminPassword) {
       setError("Please fill in all required fields");
       return false;
     }
@@ -124,11 +113,11 @@ export default function TenantSignup() {
 
   const handleBack = () => {
     setError(null);
-    setStep(step - 1);
+    setStep(1);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setError(null);
 
     if (!validateStep2()) {
@@ -138,17 +127,15 @@ export default function TenantSignup() {
     setLoading(true);
 
     try {
-      // Clear any existing auth cookies before signup to prevent conflicts
       document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       document.cookie =
         "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       document.cookie =
         "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      console.log("[Signup] Cleared existing auth cookies");
 
       const response = await api.post("/tenants/create", {
         businessName: formData.businessName,
-        name: formData.businessName, // Use businessName for both
+        name: formData.businessName,
         email: formData.email,
         phone: formData.phone,
         address: {
@@ -160,29 +147,18 @@ export default function TenantSignup() {
         adminName: formData.adminName,
         adminEmail: formData.adminEmail,
         adminPassword: formData.adminPassword,
-        ...(referralCode && referralValid && { referralCode }), // Include only if valid
+        ...(referralCode && referralValid && { referralCode }),
       });
 
       if (response.data.success) {
-        console.log("[Signup] Success response:", response.data);
-        console.log("[Signup] Token:", response.data.token);
-        console.log("[Signup] Tenant:", response.data.tenant);
-        console.log("[Signup] Admin:", response.data.admin);
-
-        // Token is stored in httpOnly cookie by backend
-        console.log("[Signup] Login successful, cookie should be set");
-
-        // Redirect to success page
-        console.log("[Signup] Redirecting to success page...");
         setTimeout(() => {
           window.location.href = "/signup/success";
         }, 500);
       }
-    } catch (err) {
-      console.error("Signup error:", err);
+    } catch (requestError) {
       setError(
-        err.response?.data?.message ||
-          err.response?.data?.error ||
+        requestError.response?.data?.message ||
+          requestError.response?.data?.error ||
           "Failed to create account. Please try again.",
       );
     } finally {
@@ -190,114 +166,116 @@ export default function TenantSignup() {
     }
   };
 
+  const labelClass = "block text-sm font-semibold text-slate-700 mb-2";
+  const inputClass =
+    "w-full rounded-xl border border-slate-300 px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition-all focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200";
+  const sectionCardClass =
+    "rounded-2xl border border-slate-200 bg-white/85 p-4 shadow-sm sm:p-5";
+
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50">
-      {/* Animated gradient orbs */}
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#f7f3ec] via-[#f6f2ea] to-[#f2ece2]">
       <motion.div
-        animate={{
-          x: [0, 100, 0],
-          y: [0, -100, 0],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-violet-400/20 to-fuchsia-400/20 rounded-full blur-3xl"
+        animate={{ x: [0, 80, 0], y: [0, -80, 0], scale: [1, 1.15, 1] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute left-[-8rem] top-16 h-80 w-80 rounded-full bg-amber-300/35 blur-3xl"
       />
       <motion.div
-        animate={{
-          x: [0, -100, 0],
-          y: [0, 100, 0],
-          scale: [1.2, 1, 1.2],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-cyan-400/20 to-blue-400/20 rounded-full blur-3xl"
+        animate={{ x: [0, -100, 0], y: [0, 80, 0], scale: [1.1, 1, 1.1] }}
+        transition={{ duration: 17, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute bottom-8 right-[-8rem] h-96 w-96 rounded-full bg-amber-300/15 blur-3xl"
       />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#00000006_1px,transparent_1px),linear-gradient(to_bottom,#00000006_1px,transparent_1px)] bg-[size:3rem_3rem]" />
 
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-
-      <div className="relative min-h-screen flex items-center justify-center p-4">
+      <div
+        className="relative flex min-h-screen items-start justify-center px-4 py-10 sm:items-center sm:py-14"
+        style={{
+          paddingTop: "max(env(safe-area-inset-top), 2rem)",
+          paddingBottom: "max(env(safe-area-inset-bottom), 1.5rem)",
+        }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white rounded-3xl shadow-2xl border border-gray-200 max-w-2xl w-full p-8 sm:p-12"
+          transition={{ duration: 0.45 }}
+          className="w-full max-w-4xl rounded-3xl border border-slate-200 bg-white/92 p-4 shadow-2xl backdrop-blur sm:p-8 lg:p-10"
         >
-          {/* Header */}
-          <div className="text-center mb-10">
+          <div className="mb-8 text-center sm:mb-10">
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1 }}
-              className="flex justify-center mb-6"
+              transition={{ delay: 0.05 }}
+              className="mb-5 flex justify-center"
             >
-              <img src={eliteLogo} alt="Elite Booker" className="h-16 w-auto" />
+              <img src={eliteLogo} alt="Elite Booker" className="h-12 w-auto sm:h-16" />
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-4xl font-bold bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600 bg-clip-text text-transparent mb-3"
+              transition={{ delay: 0.15 }}
+              className="mb-3 bg-gradient-to-r from-slate-900 via-slate-800 to-amber-700 bg-clip-text text-2xl font-bold text-transparent sm:text-4xl"
             >
-              Create Your Account
+              Create your account
             </motion.h1>
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-gray-600 text-lg"
+              transition={{ delay: 0.25 }}
+              className="mx-auto max-w-xl text-sm text-slate-600 sm:text-base"
             >
-              Join hundreds of businesses transforming their booking experience
+              Join beauty businesses building a premium booking experience with
+              full revenue control.
             </motion.p>
 
-            {/* Progress Steps */}
-            <div className="mt-8 flex items-center justify-center space-x-3">
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-[11px] font-medium uppercase tracking-wide text-slate-700 sm:text-xs">
+              <span className="rounded-full border border-amber-100 bg-white px-3 py-1">
+                No credit card required
+              </span>
+              <span className="rounded-full border border-amber-100 bg-white px-3 py-1">
+                Setup in minutes
+              </span>
+              <span className="rounded-full border border-amber-100 bg-white px-3 py-1">
+                Cancel anytime
+              </span>
+            </div>
+
+            <div className="mt-7 flex items-center justify-center gap-2.5 sm:gap-3">
               <div className="flex items-center">
                 <div
-                  className={`h-10 w-10 rounded-full flex items-center justify-center font-semibold transition-all ${
+                  className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold transition-all sm:h-10 sm:w-10 ${
                     step >= 1
-                      ? "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg"
-                      : "bg-gray-200 text-gray-400"
+                      ? "bg-slate-900 text-white shadow-lg"
+                      : "bg-slate-200 text-slate-400"
                   }`}
                 >
                   1
                 </div>
                 <span
-                  className={`ml-2 text-sm font-medium ${
-                    step >= 1 ? "text-gray-900" : "text-gray-400"
+                  className={`ml-2 hidden text-sm font-medium sm:inline ${
+                    step >= 1 ? "text-slate-900" : "text-slate-400"
                   }`}
                 >
                   Business
                 </span>
               </div>
               <div
-                className={`h-1 w-16 rounded ${
-                  step >= 2
-                    ? "bg-gradient-to-r from-violet-600 to-fuchsia-600"
-                    : "bg-gray-200"
+                className={`h-1 w-12 rounded sm:w-16 ${
+                  step >= 2 ? "bg-slate-900" : "bg-slate-200"
                 }`}
               />
               <div className="flex items-center">
                 <div
-                  className={`h-10 w-10 rounded-full flex items-center justify-center font-semibold transition-all ${
+                  className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold transition-all sm:h-10 sm:w-10 ${
                     step >= 2
-                      ? "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg"
-                      : "bg-gray-200 text-gray-400"
+                      ? "bg-slate-900 text-white shadow-lg"
+                      : "bg-slate-200 text-slate-400"
                   }`}
                 >
                   2
                 </div>
                 <span
-                  className={`ml-2 text-sm font-medium ${
-                    step >= 2 ? "text-gray-900" : "text-gray-400"
+                  className={`ml-2 hidden text-sm font-medium sm:inline ${
+                    step >= 2 ? "text-slate-900" : "text-slate-400"
                   }`}
                 >
                   Account
@@ -306,15 +284,14 @@ export default function TenantSignup() {
             </div>
           </div>
 
-          {/* Error message */}
           {error && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-start gap-3"
+              className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700"
             >
               <svg
-                className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5"
+                className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-500"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -329,137 +306,135 @@ export default function TenantSignup() {
           )}
 
           <form onSubmit={handleSubmit}>
-            {/* Step 1: Business Information */}
             {step === 1 && (
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
-                className="space-y-6"
+                className="space-y-5 sm:space-y-6"
               >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                <h2 className="mb-1 text-2xl font-bold text-slate-950">
                   Tell us about your business
                 </h2>
+                <p className="text-sm text-slate-600">
+                  We use this to generate your branded booking workspace.
+                </p>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Business Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="businessName"
-                    value={formData.businessName}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
-                    placeholder="e.g., Luxury Beauty Salon"
-                    required
-                  />
-                  <p className="text-sm text-gray-500 mt-1.5">
-                    This will be displayed to your customers
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className={sectionCardClass}>
+                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    Business Details
+                  </h3>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Business Email *
-                    </label>
+                    <label className={labelClass}>Business Name *</label>
                     <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
+                      type="text"
+                      name="businessName"
+                      value={formData.businessName}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
-                      placeholder="info@yoursalon.com"
+                      className={inputClass}
+                      placeholder="Luxury Beauty Salon"
                       required
                     />
+                    <p className="mt-1.5 text-xs text-slate-500 sm:text-sm">
+                      This name appears on your booking page.
+                    </p>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
-                      placeholder="+44 1234 567890"
-                    />
+                  <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                      <label className={labelClass}>Business Email *</label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={inputClass}
+                        placeholder="info@yoursalon.com"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className={labelClass}>Phone Number</label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className={inputClass}
+                        placeholder="+44 1234 567890"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Street Address
-                  </label>
-                  <input
-                    type="text"
-                    name="street"
-                    value={formData.street}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
-                    placeholder="123 High Street"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className={sectionCardClass}>
+                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    Business Location
+                  </h3>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      City
-                    </label>
+                    <label className={labelClass}>Street Address</label>
                     <input
                       type="text"
-                      name="city"
-                      value={formData.city}
+                      name="street"
+                      value={formData.street}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
-                      placeholder="London"
+                      className={inputClass}
+                      placeholder="123 High Street"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Postal Code
-                    </label>
-                    <input
-                      type="text"
-                      name="postalCode"
-                      value={formData.postalCode}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
-                      placeholder="SW1A 1AA"
-                    />
-                  </div>
+                  <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div>
+                      <label className={labelClass}>City</label>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        className={inputClass}
+                        placeholder="London"
+                      />
+                    </div>
 
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Country
-                    </label>
-                    <select
-                      name="country"
-                      value={formData.country}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
-                    >
-                      <option value="United Kingdom">United Kingdom</option>
-                      <option value="Ireland">Ireland</option>
-                      <option value="United States">United States</option>
-                    </select>
+                    <div>
+                      <label className={labelClass}>Postal Code</label>
+                      <input
+                        type="text"
+                        name="postalCode"
+                        value={formData.postalCode}
+                        onChange={handleChange}
+                        className={inputClass}
+                        placeholder="SW1A 1AA"
+                      />
+                    </div>
+
+                    <div>
+                      <label className={labelClass}>Country</label>
+                      <select
+                        name="country"
+                        value={formData.country}
+                        onChange={handleChange}
+                        className={inputClass}
+                      >
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Ireland">Ireland</option>
+                        <option value="United States">United States</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
 
                 <motion.button
                   type="button"
                   onClick={handleNext}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-semibold shadow-lg shadow-violet-500/50 hover:shadow-xl hover:shadow-violet-500/60 transition-all flex items-center justify-center gap-2"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 py-4 font-semibold text-white transition-all hover:from-slate-800 hover:to-slate-700"
                 >
                   Continue
                   <svg
-                    className="w-5 h-5"
+                    className="h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -475,198 +450,184 @@ export default function TenantSignup() {
               </motion.div>
             )}
 
-            {/* Step 2: Admin Account */}
             {step === 2 && (
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
-                className="space-y-6"
+                className="space-y-5 sm:space-y-6"
               >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                <h2 className="mb-1 text-2xl font-bold text-slate-950">
                   Create your admin account
                 </h2>
+                <p className="text-sm text-slate-600">
+                  This account will be the first admin profile for your business.
+                </p>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Your Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="adminName"
-                    value={formData.adminName}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
-                    placeholder="John Smith"
-                    required
-                  />
-                </div>
+                <div className={sectionCardClass}>
+                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    Admin Details
+                  </h3>
+                  <div>
+                    <label className={labelClass}>Your Name *</label>
+                    <input
+                      type="text"
+                      name="adminName"
+                      value={formData.adminName}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="John Smith"
+                      required
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Email Address *
-                  </label>
+                <div className="mt-4">
+                  <label className={labelClass}>Email Address *</label>
                   <input
                     type="email"
                     name="adminEmail"
                     value={formData.adminEmail}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                    className={inputClass}
                     placeholder="john@yoursalon.com"
                     required
                   />
-                  <p className="text-sm text-gray-500 mt-1.5">
-                    You'll use this to log in
+                  <p className="mt-1.5 text-xs text-slate-500 sm:text-sm">
+                    You will use this email to log in.
                   </p>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Password *
-                  </label>
-                  <input
-                    type="password"
-                    name="adminPassword"
-                    value={formData.adminPassword}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
-                    placeholder="Minimum 8 characters"
-                    required
-                    minLength={8}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Confirm Password *
-                  </label>
-                  <input
-                    type="password"
-                    name="adminPasswordConfirm"
-                    value={formData.adminPasswordConfirm}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
-                    placeholder="Re-enter password"
-                    required
-                  />
-                </div>
-
-                {/* Referral Code (Optional) */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Referral Code (Optional)
-                  </label>
-                  <div className="relative">
+                <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <label className={labelClass}>Password *</label>
                     <input
-                      type="text"
-                      value={referralCode}
-                      onChange={handleReferralCodeChange}
-                      maxLength={6}
-                      className={`w-full px-4 py-3 pr-10 border rounded-xl focus:ring-2 focus:ring-violet-500 transition-all uppercase ${
-                        referralValid === true
-                          ? "border-green-500 bg-green-50"
-                          : referralValid === false
-                          ? "border-red-500 bg-red-50"
-                          : "border-gray-300"
-                      }`}
-                      placeholder="ABC234"
+                      type="password"
+                      name="adminPassword"
+                      value={formData.adminPassword}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="Minimum 8 characters"
+                      required
+                      minLength={8}
                     />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      {validatingReferral ? (
-                        <svg
-                          className="animate-spin h-5 w-5 text-gray-400"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            fill="none"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          />
-                        </svg>
-                      ) : referralValid === true ? (
-                        <svg
-                          className="h-5 w-5 text-green-500"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      ) : referralValid === false ? (
-                        <svg
-                          className="h-5 w-5 text-red-500"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      ) : null}
-                    </div>
                   </div>
-                  <p className="text-sm text-gray-500 mt-1.5">
-                    {referralValid === true
-                      ? "✓ Valid referral code"
-                      : referralValid === false
-                      ? "✗ Invalid referral code"
-                      : "Enter a 6-character code if you were referred by someone"}
-                  </p>
+
+                  <div>
+                    <label className={labelClass}>Confirm Password *</label>
+                    <input
+                      type="password"
+                      name="adminPasswordConfirm"
+                      value={formData.adminPasswordConfirm}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="Re-enter password"
+                      required
+                    />
+                  </div>
+                </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-violet-50 to-fuchsia-50 border border-violet-200 rounded-2xl p-6">
-                  <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <span className="text-2xl">🎉</span>
-                    What happens next?
+                <div className={sectionCardClass}>
+                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    Referral (Optional)
                   </h3>
-                  <ul className="space-y-2.5 text-sm text-gray-700">
+                  <div>
+                    <label className={labelClass}>Referral Code</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={referralCode}
+                        onChange={handleReferralCodeChange}
+                        maxLength={6}
+                        className={`${inputClass} pr-10 uppercase ${
+                          referralValid === true
+                            ? "border-emerald-500 bg-emerald-50"
+                            : referralValid === false
+                              ? "border-red-500 bg-red-50"
+                              : ""
+                        }`}
+                        placeholder="ABC234"
+                      />
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        {validatingReferral ? (
+                          <svg className="h-5 w-5 animate-spin text-slate-400" viewBox="0 0 24 24">
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                              fill="none"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                            />
+                          </svg>
+                        ) : referralValid === true ? (
+                          <svg className="h-5 w-5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : referralValid === false ? (
+                          <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : null}
+                      </div>
+                    </div>
+                    <p className="mt-1.5 text-xs text-slate-500 sm:text-sm">
+                      {referralValid === true
+                        ? "Valid referral code"
+                        : referralValid === false
+                          ? "Invalid referral code"
+                          : "Enter a 6-character code if someone referred you"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-5 sm:p-6">
+                  <h3 className="mb-3 text-base font-bold text-slate-900">What happens next</h3>
+                  <ul className="space-y-2.5 text-sm text-slate-700">
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 font-bold mt-0.5">✓</span>
-                      <span>It's always free - no credit card required</span>
+                      <span className="mt-0.5 text-emerald-600">✓</span>
+                      <span>Start free with no credit card required</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 font-bold mt-0.5">✓</span>
-                      <span>Access to booking features</span>
+                      <span className="mt-0.5 text-emerald-600">✓</span>
+                      <span>Get immediate access to booking features</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 font-bold mt-0.5">✓</span>
-                      <span>Add your team and services instantly</span>
+                      <span className="mt-0.5 text-emerald-600">✓</span>
+                      <span>Add team members and services in minutes</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-500 font-bold mt-0.5">✓</span>
-                      <span>Start accepting online bookings 24/7</span>
+                      <span className="mt-0.5 text-emerald-600">✓</span>
+                      <span>Start accepting online bookings right away</span>
                     </li>
                   </ul>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                   <motion.button
                     type="submit"
                     disabled={loading}
-                    whileHover={{ scale: loading ? 1 : 1.02 }}
+                    whileHover={{ scale: loading ? 1 : 1.01 }}
                     whileTap={{ scale: loading ? 1 : 0.98 }}
-                    className="w-full sm:flex-1 sm:order-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-semibold shadow-lg shadow-violet-500/50 hover:shadow-xl hover:shadow-violet-500/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
+                    className="order-1 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 py-4 font-semibold text-white transition-all hover:from-slate-800 hover:to-slate-700 disabled:cursor-not-allowed disabled:opacity-50 sm:order-2 sm:flex-1"
                   >
                     {loading ? (
                       <>
-                        <svg
-                          className="animate-spin h-5 w-5"
-                          viewBox="0 0 24 24"
-                        >
+                        <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">
                           <circle
                             className="opacity-25"
                             cx="12"
@@ -679,16 +640,16 @@ export default function TenantSignup() {
                           <path
                             className="opacity-75"
                             fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                           />
                         </svg>
-                        Creating Account...
+                        Creating account...
                       </>
                     ) : (
                       <>
-                        Create Account
+                        Create account
                         <svg
-                          className="w-5 h-5"
+                          className="h-5 w-5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -703,12 +664,13 @@ export default function TenantSignup() {
                       </>
                     )}
                   </motion.button>
+
                   <motion.button
                     type="button"
                     onClick={handleBack}
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full sm:flex-1 sm:order-1 bg-gray-100 text-gray-700 py-4 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                    className="order-2 w-full rounded-xl border border-slate-200 bg-slate-100 py-4 font-semibold text-slate-700 transition-colors hover:bg-slate-200 sm:order-1 sm:flex-1"
                   >
                     Back
                   </motion.button>
@@ -717,17 +679,16 @@ export default function TenantSignup() {
             )}
           </form>
 
-          {/* Footer */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="mt-8 text-center text-sm text-gray-600"
+            transition={{ delay: 0.35 }}
+            className="mt-8 text-center text-sm text-slate-600"
           >
             Already have an account?{" "}
             <a
               href="/admin/login"
-              className="font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+              className="font-semibold text-slate-900 underline transition-colors hover:text-slate-700"
             >
               Log in
             </a>
@@ -737,3 +698,4 @@ export default function TenantSignup() {
     </div>
   );
 }
+

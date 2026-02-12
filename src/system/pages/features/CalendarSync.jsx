@@ -82,21 +82,21 @@ export default function CalendarSync() {
         className="min-h-screen"
         style={{
           background:
-            "linear-gradient(to bottom, rgb(249, 250, 251), rgb(255, 255, 255))",
+            "linear-gradient(to bottom, #f8f5ef, #f6f2ea 55%, #efe8dc)",
         }}
       >
         {/* Hero */}
-        <section className="py-20 px-4 bg-gradient-to-br from-purple-600 to-pink-600 text-white">
+        <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-700 px-4 py-14 text-white sm:py-16 lg:py-20">
           <div className="max-w-6xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <Calendar className="w-20 h-20 mx-auto mb-6 text-purple-100" />
-              <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <Calendar className="mx-auto mb-6 h-14 w-14 text-slate-200 sm:h-16 sm:w-16" />
+              <h1 className="mx-auto mb-5 max-w-5xl text-3xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_6px_26px_rgba(0,0,0,0.78)] sm:text-4xl lg:text-5xl">
                 Sync with Google Calendar, Apple, Outlook
               </h1>
-              <p className="text-xl text-purple-50 mb-8 max-w-3xl mx-auto">
+              <p className="mx-auto mb-8 max-w-3xl text-base text-slate-50 sm:text-lg">
                 Two-way calendar sync keeps your appointments and personal life
                 in perfect harmony. Book in Elite Booker → appears in Google
                 Calendar. Block time in Google Calendar → appears as busy in
@@ -104,7 +104,7 @@ export default function CalendarSync() {
               </p>
               <Link
                 to="/signup"
-                className="inline-flex items-center justify-center px-8 py-4 bg-white text-purple-600 font-semibold rounded-lg hover:bg-gray-100 shadow-lg"
+                className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-semibold rounded-lg hover:bg-gray-100 shadow-lg"
               >
                 Start Free Trial
               </Link>
@@ -113,7 +113,7 @@ export default function CalendarSync() {
         </section>
 
         {/* The Problem/Solution */}
-        <section className="py-20 px-4">
+        <section className="px-4 py-14 sm:py-16">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12">
               <div className="bg-red-50 p-8 rounded-xl border-2 border-red-200">
@@ -128,8 +128,8 @@ export default function CalendarSync() {
                   <li>❌ Confusion when schedules change</li>
                 </ul>
               </div>
-              <div className="bg-emerald-50 p-8 rounded-xl border-2 border-emerald-200">
-                <h3 className="text-2xl font-bold text-emerald-900 mb-4">
+              <div className="bg-slate-50 p-8 rounded-xl border-2 border-slate-200">
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
                   With Calendar Sync:
                 </h3>
                 <ul className="space-y-3 text-lg text-gray-800">
@@ -145,14 +145,14 @@ export default function CalendarSync() {
         </section>
 
         {/* How It Works */}
-        <section className="py-20 px-4 bg-gray-50">
+        <section className="bg-gray-50 px-4 py-14 sm:py-16">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               How Two-Way Sync Works
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white p-6 rounded-xl text-center border-2 border-purple-200">
-                <RefreshCw className="w-16 h-16 text-purple-600 mx-auto mb-4" />
+              <div className="bg-white p-6 rounded-xl text-center border-2 border-slate-200">
+                <RefreshCw className="w-16 h-16 text-slate-700 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   Connect Once
                 </h3>
@@ -162,8 +162,8 @@ export default function CalendarSync() {
                   seconds.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-xl text-center border-2 border-pink-200">
-                <Zap className="w-16 h-16 text-pink-600 mx-auto mb-4" />
+              <div className="bg-white p-6 rounded-xl text-center border-2 border-slate-200">
+                <Zap className="w-16 h-16 text-slate-700 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   Auto-Sync Bookings
                 </h3>
@@ -172,8 +172,8 @@ export default function CalendarSync() {
                   automatically with client name, service, duration, location.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-xl text-center border-2 border-purple-200">
-                <Clock className="w-16 h-16 text-purple-600 mx-auto mb-4" />
+              <div className="bg-white p-6 rounded-xl text-center border-2 border-slate-200">
+                <Clock className="w-16 h-16 text-slate-700 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   Block Personal Time
                 </h3>
@@ -187,14 +187,14 @@ export default function CalendarSync() {
         </section>
 
         {/* Use Cases */}
-        <section className="py-20 px-4">
+        <section className="px-4 py-14 sm:py-16">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               Perfect For:
             </h2>
             <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-purple-50 p-8 rounded-xl">
-                <h3 className="text-2xl font-bold text-purple-900 mb-4">
+              <div className="bg-slate-50 p-8 rounded-xl">
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
                   Salon Owners with Personal Lives
                 </h3>
                 <p className="text-lg text-gray-700">
@@ -206,8 +206,8 @@ export default function CalendarSync() {
                   — Sarah, Manchester Hair Salon
                 </p>
               </div>
-              <div className="bg-pink-50 p-8 rounded-xl">
-                <h3 className="text-2xl font-bold text-pink-900 mb-4">
+              <div className="bg-slate-50 p-8 rounded-xl">
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
                   Mobile Therapists
                 </h3>
                 <p className="text-lg text-gray-700">
@@ -219,8 +219,8 @@ export default function CalendarSync() {
                   — Emma, London Mobile Lash Tech
                 </p>
               </div>
-              <div className="bg-purple-50 p-8 rounded-xl">
-                <h3 className="text-2xl font-bold text-purple-900 mb-4">
+              <div className="bg-slate-50 p-8 rounded-xl">
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
                   Multi-Location Teams
                 </h3>
                 <p className="text-lg text-gray-700">
@@ -231,8 +231,8 @@ export default function CalendarSync() {
                   — Marcus, Birmingham Spa Chain
                 </p>
               </div>
-              <div className="bg-pink-50 p-8 rounded-xl">
-                <h3 className="text-2xl font-bold text-pink-900 mb-4">
+              <div className="bg-slate-50 p-8 rounded-xl">
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
                   Freelancers Working Multiple Salons
                 </h3>
                 <p className="text-lg text-gray-700">
@@ -249,9 +249,9 @@ export default function CalendarSync() {
         </section>
 
         {/* Features */}
-        <section className="py-20 px-4 bg-gray-50">
+        <section className="bg-gray-50 px-4 py-14 sm:py-16">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               What Gets Synced
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
@@ -291,7 +291,7 @@ export default function CalendarSync() {
                   key={idx}
                   className="bg-white p-6 rounded-xl border-2 border-gray-200 text-center"
                 >
-                  <feature.icon className="w-12 h-12 text-purple-600 mx-auto mb-4" />
+                  <feature.icon className="w-12 h-12 text-slate-700 mx-auto mb-4" />
                   <h3 className="text-lg font-bold text-gray-900 mb-2">
                     {feature.title}
                   </h3>
@@ -303,9 +303,9 @@ export default function CalendarSync() {
         </section>
 
         {/* FAQs */}
-        <section className="py-20 px-4">
+        <section className="px-4 py-14 sm:py-16">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               Frequently Asked Questions
             </h2>
             <div className="space-y-6">
@@ -325,18 +325,18 @@ export default function CalendarSync() {
         </section>
 
         {/* CTA */}
-        <section className="py-20 px-4 bg-gradient-to-br from-purple-600 to-pink-600 text-white">
+        <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-700 px-4 py-14 text-white sm:py-16 lg:py-20">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">
+            <h2 className="mx-auto mb-5 max-w-4xl text-3xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_6px_24px_rgba(0,0,0,0.78)] sm:text-4xl">
               Sync Your Calendar in 30 Seconds
             </h2>
-            <p className="text-xl text-purple-50 mb-8">
+            <p className="mb-8 text-base text-slate-50 sm:text-lg">
               Connect Google Calendar, Apple Calendar, or Outlook. Two-way sync
               keeps everything automatically updated.
             </p>
             <Link
               to="/signup"
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-bold rounded-lg hover:bg-gray-100 shadow-lg"
             >
               Start Your Free Trial
             </Link>
@@ -347,3 +347,7 @@ export default function CalendarSync() {
     </>
   );
 }
+
+
+
+

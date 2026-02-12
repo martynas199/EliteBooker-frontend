@@ -83,21 +83,21 @@ export default function OnlineBooking() {
         className="min-h-screen"
         style={{
           background:
-            "linear-gradient(to bottom, rgb(249, 250, 251), rgb(255, 255, 255))",
+            "linear-gradient(to bottom, #f8f5ef, #f6f2ea 55%, #efe8dc)",
         }}
       >
         {/* Hero */}
-        <section className="py-20 px-4 bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white">
+        <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-700 px-4 py-14 text-white sm:py-16 lg:py-20">
           <div className="max-w-6xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <Clock className="w-20 h-20 mx-auto mb-6 text-violet-100" />
-              <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <Clock className="mx-auto mb-6 h-14 w-14 text-slate-200 sm:h-16 sm:w-16" />
+              <h1 className="mx-auto mb-5 max-w-5xl text-3xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_6px_26px_rgba(0,0,0,0.78)] sm:text-4xl lg:text-5xl">
                 Accept Bookings 24/7, Even While You Sleep
               </h1>
-              <p className="text-xl text-violet-50 mb-8 max-w-3xl mx-auto">
+              <p className="mx-auto mb-8 max-w-3xl text-base text-slate-50 sm:text-lg">
                 Clients book at 11pm when they remember. You wake up to new
                 appointments. Mobile-optimized online booking increases revenue
                 by 30% without lifting a finger.
@@ -105,13 +105,13 @@ export default function OnlineBooking() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/signup"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-violet-600 font-semibold rounded-lg hover:bg-gray-100 shadow-lg"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-semibold rounded-lg hover:bg-gray-100 shadow-lg"
                 >
                   Start Free Trial
                 </Link>
                 <a
                   href="#demo"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-violet-500 text-white font-semibold rounded-lg hover:bg-violet-400 border-2 border-white"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-slate-500 text-white font-semibold rounded-lg hover:bg-slate-600 border-2 border-white"
                 >
                   See Live Demo
                 </a>
@@ -125,25 +125,25 @@ export default function OnlineBooking() {
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-4 gap-8 text-center">
               <div>
-                <div className="text-5xl font-bold text-violet-600 mb-2">
+                <div className="mb-2 text-4xl font-bold text-slate-700 sm:text-5xl">
                   30%
                 </div>
                 <div className="text-gray-600">More Bookings</div>
               </div>
               <div>
-                <div className="text-5xl font-bold text-violet-600 mb-2">
+                <div className="mb-2 text-4xl font-bold text-slate-700 sm:text-5xl">
                   24/7
                 </div>
                 <div className="text-gray-600">Always Open</div>
               </div>
               <div>
-                <div className="text-5xl font-bold text-violet-600 mb-2">
+                <div className="mb-2 text-4xl font-bold text-slate-700 sm:text-5xl">
                   60sec
                 </div>
                 <div className="text-gray-600">Booking Time</div>
               </div>
               <div>
-                <div className="text-5xl font-bold text-violet-600 mb-2">
+                <div className="mb-2 text-4xl font-bold text-slate-700 sm:text-5xl">
                   £0
                 </div>
                 <div className="text-gray-600">Setup Cost</div>
@@ -153,73 +153,73 @@ export default function OnlineBooking() {
         </section>
 
         {/* Why Online Booking */}
-        <section className="py-20 px-4">
+        <section className="px-4 py-14 sm:py-16">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               Why Clients Love Online Booking
             </h2>
             <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-white p-8 rounded-xl border-2 border-violet-200">
+              <div className="bg-white p-8 rounded-xl border-2 border-slate-200">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   For Clients:
                 </h3>
                 <ul className="space-y-3 text-lg text-gray-700">
                   <li className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-violet-600 mr-3 mt-1 flex-shrink-0" />
+                    <CheckCircle className="w-6 h-6 text-slate-700 mr-3 mt-1 flex-shrink-0" />
                     <span>
                       Book at 11pm when they remember (not waiting for you to
                       open)
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-violet-600 mr-3 mt-1 flex-shrink-0" />
+                    <CheckCircle className="w-6 h-6 text-slate-700 mr-3 mt-1 flex-shrink-0" />
                     <span>
                       See real availability (not "I'll check and call you back")
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-violet-600 mr-3 mt-1 flex-shrink-0" />
+                    <CheckCircle className="w-6 h-6 text-slate-700 mr-3 mt-1 flex-shrink-0" />
                     <span>No phone anxiety (introverts love this!)</span>
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-violet-600 mr-3 mt-1 flex-shrink-0" />
+                    <CheckCircle className="w-6 h-6 text-slate-700 mr-3 mt-1 flex-shrink-0" />
                     <span>Instant confirmation (no waiting)</span>
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-violet-600 mr-3 mt-1 flex-shrink-0" />
+                    <CheckCircle className="w-6 h-6 text-slate-700 mr-3 mt-1 flex-shrink-0" />
                     <span>Easy reschedule/cancel (one click)</span>
                   </li>
                 </ul>
               </div>
-              <div className="bg-white p-8 rounded-xl border-2 border-fuchsia-200">
+              <div className="bg-white p-8 rounded-xl border-2 border-slate-200">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   For You:
                 </h3>
                 <ul className="space-y-3 text-lg text-gray-700">
                   <li className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-fuchsia-600 mr-3 mt-1 flex-shrink-0" />
+                    <CheckCircle className="w-6 h-6 text-slate-700 mr-3 mt-1 flex-shrink-0" />
                     <span>Stop answering phone calls during treatments</span>
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-fuchsia-600 mr-3 mt-1 flex-shrink-0" />
+                    <CheckCircle className="w-6 h-6 text-slate-700 mr-3 mt-1 flex-shrink-0" />
                     <span>
                       No more "let me check my calendar" conversations
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-fuchsia-600 mr-3 mt-1 flex-shrink-0" />
+                    <CheckCircle className="w-6 h-6 text-slate-700 mr-3 mt-1 flex-shrink-0" />
                     <span>
                       Bookings while you sleep, on holiday, or with clients
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-fuchsia-600 mr-3 mt-1 flex-shrink-0" />
+                    <CheckCircle className="w-6 h-6 text-slate-700 mr-3 mt-1 flex-shrink-0" />
                     <span>
                       Automatic deposit collection (no chasing payments)
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-6 h-6 text-fuchsia-600 mr-3 mt-1 flex-shrink-0" />
+                    <CheckCircle className="w-6 h-6 text-slate-700 mr-3 mt-1 flex-shrink-0" />
                     <span>Professional image (not amateur "DM to book")</span>
                   </li>
                 </ul>
@@ -229,9 +229,9 @@ export default function OnlineBooking() {
         </section>
 
         {/* How It Works */}
-        <section className="py-20 px-4 bg-gray-50">
+        <section className="bg-gray-50 px-4 py-14 sm:py-16">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               How It Works
             </h2>
             <div className="space-y-8">
@@ -270,7 +270,7 @@ export default function OnlineBooking() {
                   transition={{ delay: idx * 0.1 }}
                   className="flex items-start gap-6 bg-white p-6 rounded-xl border-2 border-gray-200"
                 >
-                  <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-xl flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
+                  <div className="w-16 h-16 bg-gradient-to-br from-slate-900 to-slate-700 rounded-xl flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
                     {step.step}
                   </div>
                   <div>
@@ -286,12 +286,12 @@ export default function OnlineBooking() {
         </section>
 
         {/* Mobile First */}
-        <section className="py-20 px-4">
+        <section className="px-4 py-14 sm:py-16">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <Smartphone className="w-16 h-16 text-violet-600 mb-6" />
-                <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                <Smartphone className="w-16 h-16 text-slate-700 mb-6" />
+                <h2 className="mb-5 text-2xl font-bold text-gray-900 sm:text-3xl">
                   Mobile-First Design
                 </h2>
                 <p className="text-xl text-gray-700 mb-6">
@@ -316,7 +316,7 @@ export default function OnlineBooking() {
                       The Beauty Lounge
                     </h3>
                     <div className="space-y-3">
-                      <div className="bg-gradient-to-r from-violet-50 to-fuchsia-50 p-4 rounded-lg border border-violet-200">
+                      <div className="bg-gradient-to-r from-[#f8f5ef] to-[#efe8dc] p-4 rounded-lg border border-slate-200">
                         <div className="font-semibold text-gray-900">
                           Eyelash Extensions
                         </div>
@@ -341,7 +341,7 @@ export default function OnlineBooking() {
                         </div>
                       </div>
                     </div>
-                    <button className="w-full mt-6 py-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-bold rounded-lg">
+                    <button className="w-full mt-6 py-3 bg-gradient-to-r from-slate-900 to-slate-700 text-white font-bold rounded-lg">
                       Book Now
                     </button>
                   </div>
@@ -352,17 +352,17 @@ export default function OnlineBooking() {
         </section>
 
         {/* ROI */}
-        <section className="py-20 px-4 bg-violet-50">
+        <section className="bg-slate-50 px-4 py-14 sm:py-16">
           <div className="max-w-4xl mx-auto text-center">
-            <TrendingUp className="w-16 h-16 text-violet-600 mx-auto mb-6" />
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            <TrendingUp className="w-16 h-16 text-slate-700 mx-auto mb-6" />
+            <h2 className="mb-5 text-2xl font-bold text-gray-900 sm:text-3xl">
               The ROI is Massive
             </h2>
             <p className="text-xl text-gray-700 mb-8">
               UK salons using online booking report 30% increase in appointments
               within 3 months.
             </p>
-            <div className="bg-white p-8 rounded-2xl border-2 border-violet-600">
+            <div className="bg-white p-8 rounded-2xl border-2 border-slate-700">
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
                 Example: Small Salon
               </h3>
@@ -378,7 +378,7 @@ export default function OnlineBooking() {
                 <p>
                   <strong>Average treatment:</strong> £45
                 </p>
-                <p className="text-2xl font-bold text-violet-600 mt-4">
+                <p className="text-2xl font-bold text-slate-700 mt-4">
                   +£1,080/month revenue
                 </p>
                 <p className="text-gray-600">
@@ -390,9 +390,9 @@ export default function OnlineBooking() {
         </section>
 
         {/* FAQs */}
-        <section className="py-20 px-4">
+        <section className="px-4 py-14 sm:py-16">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               Frequently Asked Questions
             </h2>
             <div className="space-y-6">
@@ -412,22 +412,22 @@ export default function OnlineBooking() {
         </section>
 
         {/* CTA */}
-        <section className="py-20 px-4 bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white">
+        <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-700 px-4 py-14 text-white sm:py-16 lg:py-20">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">
+            <h2 className="mx-auto mb-5 max-w-4xl text-3xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_6px_24px_rgba(0,0,0,0.78)] sm:text-4xl">
               Start Accepting Bookings 24/7 Today
             </h2>
-            <p className="text-xl text-violet-50 mb-8">
+            <p className="mb-8 text-base text-slate-50 sm:text-lg">
               Set up your online booking page in 10 minutes. Get your first
               booking tonight.
             </p>
             <Link
               to="/signup"
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-violet-600 font-bold rounded-lg hover:bg-gray-100 shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-bold rounded-lg hover:bg-gray-100 shadow-lg"
             >
               Start Your Free Trial
             </Link>
-            <p className="text-violet-100 mt-4 text-sm">
+            <p className="mt-4 text-sm text-slate-50">
               14-day free trial • No credit card required • £0 Basic plan
               forever
             </p>
@@ -438,3 +438,6 @@ export default function OnlineBooking() {
     </>
   );
 }
+
+
+

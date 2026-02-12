@@ -15,18 +15,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-/**
- * ProfileMenu Component
- * Reusable menu component for client profile - matches Fresha's design
- * Can be used in sidebar or dropdown panel
- *
- * @param {Object} props
- * @param {Object} props.client - Client data object with name and email
- * @param {Function} props.onLogout - Logout callback function
- * @param {string} props.variant - 'sidebar' | 'dropdown' (default: 'sidebar')
- * @param {Function} props.onItemClick - Optional callback when menu item is clicked
- * @param {Function} props.onGiftCardClick - Optional callback when gift card item is clicked
- */
 export default function ProfileMenu({
   client,
   onLogout,
@@ -39,17 +27,18 @@ export default function ProfileMenu({
   const handleNavigation = (path, action) => {
     if (onItemClick) onItemClick();
 
-    // Handle special actions
     if (action === "gift-card") {
       if (onGiftCardClick) {
         onGiftCardClick();
-      } else {
-        console.warn("Gift card clicked but no handler provided");
+      } else if (path) {
+        navigate(path);
       }
       return;
     }
 
-    navigate(path);
+    if (path) {
+      navigate(path);
+    }
   };
 
   const handleLogoutClick = async () => {
@@ -58,128 +47,63 @@ export default function ProfileMenu({
   };
 
   const menuItems = [
-    {
-      icon: UserCircle,
-      label: "Profile",
-      path: "/client/profile",
-      section: "main",
-    },
-    {
-      icon: Calendar,
-      label: "Appointments",
-      path: "/client/appointments",
-      section: "main",
-    },
-    {
-      icon: Wallet,
-      label: "Wallet",
-      path: "/client/wallet",
-      section: "main",
-    },
-    {
-      icon: Heart,
-      label: "Favourites",
-      path: "/client/favourites",
-      section: "main",
-    },
+    { icon: UserCircle, label: "Profile", path: "/client/profile" },
+    { icon: Calendar, label: "Appointments", path: "/client/appointments" },
+    { icon: Wallet, label: "Wallet", path: "/client/wallet" },
+    { icon: Heart, label: "Favourites", path: "/client/favourites" },
     {
       icon: Gift,
       label: "Send a gift card",
       path: "/gift-cards",
       action: "gift-card",
-      section: "main",
     },
-    {
-      icon: FileText,
-      label: "Forms",
-      path: "/client/forms",
-      section: "main",
-    },
-    {
-      icon: Package,
-      label: "Product orders",
-      path: "/client/orders",
-      section: "main",
-    },
-    {
-      icon: Settings,
-      label: "Settings",
-      path: "/client/settings",
-      section: "main",
-    },
+    { icon: FileText, label: "Forms", path: "/client/forms" },
+    { icon: Package, label: "Product orders", path: "/client/orders" },
+    { icon: Settings, label: "Settings", path: "/client/settings" },
   ];
 
   const bottomItems = [
-    {
-      icon: LogOut,
-      label: "Log out",
-      action: "logout",
-      section: "bottom",
-    },
-    {
-      icon: Globe,
-      label: "Find a business",
-      path: "/search",
-      section: "bottom",
-    },
-    {
-      icon: Download,
-      label: "Download the app",
-      path: "/download",
-      section: "bottom",
-    },
-    {
-      icon: HelpCircle,
-      label: "Help and support",
-      path: "/help",
-      section: "bottom",
-    },
-    {
-      icon: Globe,
-      label: "English",
-      path: "/language",
-      section: "bottom",
-    },
+    { icon: LogOut, label: "Log out", action: "logout" },
+    { icon: Globe, label: "Find a business", path: "/search" },
+    { icon: Download, label: "Download the app", path: "/download" },
+    { icon: HelpCircle, label: "Help and support", path: "/help" },
+    { icon: Globe, label: "English", path: "/language" },
   ];
 
-  const businessItem = {
-    label: "For businesses",
-    path: "/admin/login",
-    section: "business",
-  };
-
+  const businessItem = { label: "For businesses", path: "/admin/login" };
   const isSidebar = variant === "sidebar";
   const isMobile = variant === "mobile";
 
   if (isMobile) {
-    // Mobile full-screen layout
     return (
-      <div className="flex flex-col bg-white min-h-full">
-        {/* Wallet Card */}
-        <div className="m-4 p-6 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-2xl text-white">
-          <p className="text-sm opacity-90 mb-1">Wallet balance</p>
-          <p className="text-3xl font-bold mb-3">£0.00</p>
-          <button className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors">
+      <div className="min-h-full bg-white">
+        <div className="rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 p-5 text-white">
+          <p className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-200">
+            Wallet
+          </p>
+          <p className="mb-3 text-3xl font-bold">GBP 0.00</p>
+          <button className="rounded-lg bg-white/15 px-4 py-2 text-sm font-medium transition-colors hover:bg-white/25">
             View wallet
           </button>
         </div>
 
-        {/* Menu Items */}
-        <div className="flex flex-col">
-          {menuItems.map((item, index) => {
+        <div className="mt-3 space-y-1">
+          {menuItems.map((item) => {
             const Icon = item.icon;
             return (
               <button
-                key={index}
+                key={item.label}
                 onClick={() => handleNavigation(item.path, item.action)}
-                className="flex items-center justify-between px-4 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100"
+                className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-left transition-colors hover:bg-slate-50"
               >
                 <div className="flex items-center gap-3">
-                  <Icon className="w-5 h-5 text-gray-600" />
-                  <span className="text-base text-gray-900">{item.label}</span>
+                  <Icon className="h-5 w-5 text-slate-600" />
+                  <span className="text-sm font-medium text-slate-900">
+                    {item.label}
+                  </span>
                 </div>
                 <svg
-                  className="w-5 h-5 text-gray-400"
+                  className="h-4 w-4 text-slate-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -187,7 +111,7 @@ export default function ProfileMenu({
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.8}
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
@@ -196,26 +120,27 @@ export default function ProfileMenu({
           })}
         </div>
 
-        {/* Bottom Items */}
-        <div className="mt-4 border-t border-gray-200">
-          {bottomItems.map((item, index) => {
+        <div className="mt-3 border-t border-slate-200 pt-3">
+          {bottomItems.map((item) => {
             const Icon = item.icon;
             return (
               <button
-                key={index}
+                key={item.label}
                 onClick={() =>
                   item.action === "logout"
                     ? handleLogoutClick()
                     : handleNavigation(item.path)
                 }
-                className="flex items-center justify-between px-4 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100"
+                className="mb-1 flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-left transition-colors hover:bg-slate-50 last:mb-0"
               >
                 <div className="flex items-center gap-3">
-                  <Icon className="w-5 h-5 text-gray-600" />
-                  <span className="text-base text-gray-900">{item.label}</span>
+                  <Icon className="h-5 w-5 text-slate-600" />
+                  <span className="text-sm font-medium text-slate-900">
+                    {item.label}
+                  </span>
                 </div>
                 <svg
-                  className="w-5 h-5 text-gray-400"
+                  className="h-4 w-4 text-slate-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -223,7 +148,7 @@ export default function ProfileMenu({
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.8}
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
@@ -232,147 +157,142 @@ export default function ProfileMenu({
           })}
         </div>
 
-        {/* For Businesses Link */}
-        <div className="px-4 py-4 border-t border-gray-200">
+        <div className="mt-3 border-t border-slate-200 pt-3">
           <button
             onClick={() => handleNavigation(businessItem.path)}
-            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+            className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-left transition-colors hover:bg-slate-50"
           >
-            <span className="text-base font-medium text-gray-900">
+            <span className="text-sm font-semibold text-slate-900">
               {businessItem.label}
             </span>
-            <ArrowRight className="w-5 h-5 text-gray-600" />
-          </button>
-        </div>
-      </div>
-    );
-  } else if (isSidebar) {
-    // Sidebar layout for profile page
-    return (
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col h-full">
-        {/* User Info */}
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="font-semibold text-gray-900 text-lg">
-            {client?.name || "User"}
-          </h2>
-        </div>
-
-        {/* Main Menu Items */}
-        <div className="flex-1 overflow-y-auto py-4">
-          <nav className="space-y-1 px-3">
-            {menuItems.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleNavigation(item.path, item.action)}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-left"
-                >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-sm">{item.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Bottom Items */}
-        <div className="border-t border-gray-200">
-          <nav className="space-y-1 px-3 py-4">
-            {bottomItems.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={index}
-                  onClick={() =>
-                    item.action === "logout"
-                      ? handleLogoutClick()
-                      : handleNavigation(item.path)
-                  }
-                  className="w-full flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-left"
-                >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-sm">{item.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* For Businesses Link */}
-          <div className="px-3 pb-4">
-            <button
-              onClick={() => handleNavigation(businessItem.path)}
-              className="w-full flex items-center justify-between px-3 py-2.5 text-gray-900 hover:bg-gray-100 rounded-lg transition-colors text-left font-medium"
-            >
-              <span className="text-sm">{businessItem.label}</span>
-              <ArrowRight className="w-4 h-4 flex-shrink-0" />
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  } else {
-    // Dropdown layout for header menu
-    return (
-      <div className="py-2 min-w-[320px]">
-        {/* User Name Header */}
-        <div className="px-4 py-3 border-b border-gray-100">
-          <p className="font-semibold text-gray-900">
-            {client?.name || "User"}
-          </p>
-        </div>
-
-        {/* Main Menu Items */}
-        <div className="py-2">
-          {menuItems.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={index}
-                onClick={() => handleNavigation(item.path, item.action)}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors text-left"
-              >
-                <Icon className="w-5 h-5 flex-shrink-0" />
-                <span className="text-sm whitespace-nowrap">{item.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Bottom Items */}
-        <div className="border-t border-gray-100 py-2">
-          {bottomItems.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={index}
-                onClick={() =>
-                  item.action === "logout"
-                    ? handleLogoutClick()
-                    : handleNavigation(item.path)
-                }
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors text-left"
-              >
-                <Icon className="w-5 h-5 flex-shrink-0" />
-                <span className="text-sm whitespace-nowrap">{item.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* For Businesses Link */}
-        <div className="border-t border-gray-100 px-4 py-2">
-          <button
-            onClick={() => handleNavigation(businessItem.path)}
-            className="w-full flex items-center justify-between py-2.5 text-gray-900 hover:text-violet-600 transition-colors text-left font-medium"
-          >
-            <span className="text-sm whitespace-nowrap">
-              {businessItem.label}
-            </span>
-            <ArrowRight className="w-4 h-4 flex-shrink-0" />
+            <ArrowRight className="h-4 w-4 text-slate-600" />
           </button>
         </div>
       </div>
     );
   }
+
+  if (isSidebar) {
+    return (
+      <div className="flex h-full w-64 flex-col border-r border-gray-200 bg-white">
+        <div className="border-b border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900">
+            {client?.name || "User"}
+          </h2>
+        </div>
+
+        <div className="flex-1 overflow-y-auto py-4">
+          <nav className="space-y-1 px-3">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => handleNavigation(item.path, item.action)}
+                  className="w-full rounded-lg px-3 py-2.5 text-left text-gray-700 transition-colors hover:bg-gray-100"
+                >
+                  <span className="flex items-center gap-3">
+                    <Icon className="h-5 w-5 flex-shrink-0" />
+                    <span className="text-sm">{item.label}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="border-t border-gray-200">
+          <nav className="space-y-1 px-3 py-4">
+            {bottomItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.label}
+                  onClick={() =>
+                    item.action === "logout"
+                      ? handleLogoutClick()
+                      : handleNavigation(item.path)
+                  }
+                  className="w-full rounded-lg px-3 py-2.5 text-left text-gray-700 transition-colors hover:bg-gray-100"
+                >
+                  <span className="flex items-center gap-3">
+                    <Icon className="h-5 w-5 flex-shrink-0" />
+                    <span className="text-sm">{item.label}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
+
+          <div className="px-3 pb-4">
+            <button
+              onClick={() => handleNavigation(businessItem.path)}
+              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left font-medium text-gray-900 transition-colors hover:bg-gray-100"
+            >
+              <span className="text-sm">{businessItem.label}</span>
+              <ArrowRight className="h-4 w-4 flex-shrink-0" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-w-[320px] py-2">
+      <div className="border-b border-gray-100 px-4 py-3">
+        <p className="font-semibold text-gray-900">{client?.name || "User"}</p>
+      </div>
+
+      <div className="py-2">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.label}
+              onClick={() => handleNavigation(item.path, item.action)}
+              className="w-full px-4 py-2.5 text-left text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              <span className="flex items-center gap-3">
+                <Icon className="h-5 w-5 flex-shrink-0" />
+                <span className="whitespace-nowrap text-sm">{item.label}</span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="border-t border-gray-100 py-2">
+        {bottomItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.label}
+              onClick={() =>
+                item.action === "logout"
+                  ? handleLogoutClick()
+                  : handleNavigation(item.path)
+              }
+              className="w-full px-4 py-2.5 text-left text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              <span className="flex items-center gap-3">
+                <Icon className="h-5 w-5 flex-shrink-0" />
+                <span className="whitespace-nowrap text-sm">{item.label}</span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="border-t border-gray-100 px-4 py-2">
+        <button
+          onClick={() => handleNavigation(businessItem.path)}
+          className="flex w-full items-center justify-between py-2.5 text-left font-medium text-gray-900 transition-colors hover:text-violet-600"
+        >
+          <span className="whitespace-nowrap text-sm">{businessItem.label}</span>
+          <ArrowRight className="h-4 w-4 flex-shrink-0" />
+        </button>
+      </div>
+    </div>
+  );
 }

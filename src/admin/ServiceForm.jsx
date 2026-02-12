@@ -392,10 +392,18 @@ export default function ServiceForm({
     (key) => key !== "submit",
   ).length;
 
+  const inputClass = (hasError = false) =>
+    `w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 ${
+      hasError ? "border-red-500" : "border-gray-300"
+    }`;
+
+  const cardClass =
+    "rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5";
+
   return (
     <>
       {errorCount > 0 && (
-        <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+        <div className="mb-4 rounded-2xl border border-red-200 bg-red-50/90 p-4 shadow-sm">
           <div className="flex items-start gap-2">
             <svg
               className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0"
@@ -428,9 +436,22 @@ export default function ServiceForm({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-4 pb-24 sm:space-y-5 sm:pb-0">
         {/* Basic Info Section */}
-        <div className="space-y-3">
+        <div className={cardClass}>
+          <div className="mb-4 flex items-start gap-3 border-b border-gray-100 pb-3">
+            <div className="rounded-xl bg-slate-900 p-2 text-white shadow-sm">
+              <Info className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900">Service Details</h3>
+              <p className="text-xs text-gray-500">
+                Add core information your clients will see first.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
           {/* Name */}
           <FormField
             label={t("serviceName", language)}
@@ -444,9 +465,7 @@ export default function ServiceForm({
               id="name"
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                errors.name ? "border-red-500" : "border-gray-300"
-              }`}
+              className={inputClass(!!errors.name)}
               style={{ fontSize: "16px" }}
               aria-invalid={!!errors.name}
             />
@@ -465,9 +484,7 @@ export default function ServiceForm({
               id="category"
               value={formData.category}
               onChange={(e) => handleChange("category", e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                errors.category ? "border-red-500" : "border-gray-300"
-              }`}
+              className={inputClass(!!errors.category)}
               style={{ fontSize: "16px" }}
               placeholder="e.g., Hair, Nails, Spa"
               aria-invalid={!!errors.category}
@@ -490,7 +507,7 @@ export default function ServiceForm({
                     setIsAIGenerated(false); // Clear AI flag when manually edited
                   }}
                   rows={4}
-                  className="w-full px-3 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors resize-none"
+                  className="w-full resize-none rounded-xl border border-gray-300 px-3.5 py-2.5 pr-12 text-sm text-gray-900 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                   style={{ fontSize: "16px" }}
                 />
                 <button
@@ -542,7 +559,7 @@ export default function ServiceForm({
               }))}
               onClick={() => isSuperAdmin && setShowSpecialistDrawer(true)}
               disabled={!isSuperAdmin}
-              className={`w-full px-3 py-2 text-sm rounded-lg ${
+              className={`w-full rounded-xl px-3.5 py-2.5 text-sm ${
                 errors.primaryBeauticianId ? "border-red-500" : ""
               } ${!isSuperAdmin ? "bg-gray-100 cursor-not-allowed" : ""}`}
             />
@@ -575,11 +592,11 @@ export default function ServiceForm({
                   Locations page.
                 </p>
               ) : (
-                <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
+                <div className="max-h-56 space-y-2 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50 p-2.5">
                   {locations.map((location) => (
                     <label
                       key={location._id}
-                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                      className="flex cursor-pointer items-center gap-2 rounded-lg border border-transparent bg-white p-2.5 shadow-sm transition-colors hover:border-gray-200 hover:bg-gray-100"
                     >
                       <input
                         type="checkbox"
@@ -622,6 +639,18 @@ export default function ServiceForm({
             </FormField>
           )}
 
+          <div className="mb-2 mt-1 flex items-start gap-3">
+            <div className="rounded-xl bg-slate-100 p-2 text-slate-700">
+              <ImageIcon className="h-4 w-4" />
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900">Media & Visibility</h4>
+              <p className="text-xs text-gray-500">
+                Upload a clean thumbnail and control listing behavior.
+              </p>
+            </div>
+          </div>
+
           {/* Image Upload */}
           <FormField
             label={t("serviceImage", language)}
@@ -640,7 +669,7 @@ export default function ServiceForm({
                   <img
                     src={formData.image.url}
                     alt={formData.image.alt || "Service image"}
-                    className="w-full h-48 object-cover rounded-lg border-2 border-gray-200"
+                    className="h-52 w-full rounded-xl border-2 border-gray-200 object-cover"
                   />
                   <button
                     type="button"
@@ -659,7 +688,7 @@ export default function ServiceForm({
               ) : (
                 <label
                   htmlFor="image"
-                  className={`flex flex-col items-center justify-center w-full h-56 sm:h-48 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+                  className={`flex h-56 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors sm:h-52 ${
                     isUploadingImage
                       ? "border-brand-400 bg-brand-50"
                       : "border-gray-300 hover:border-brand-400 bg-gray-50 hover:bg-brand-50"
@@ -718,8 +747,20 @@ export default function ServiceForm({
             </div>
           </FormField>
 
+          <div className="mb-2 mt-1 flex items-start gap-3">
+            <div className="rounded-xl bg-slate-100 p-2 text-slate-700">
+              <Settings className="h-4 w-4" />
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900">Service Settings</h4>
+              <p className="text-xs text-gray-500">
+                Configure status, pricing behavior, and slot mode.
+              </p>
+            </div>
+          </div>
+
           {/* Active Status */}
-          <div className="flex flex-col gap-2 p-3 sm:p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+          <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-gray-50 p-3.5 sm:p-4">
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
@@ -741,7 +782,7 @@ export default function ServiceForm({
           </div>
 
           {/* Price Varies */}
-          <div className="flex flex-col gap-2 p-3 sm:p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+          <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-gray-50 p-3.5 sm:p-4">
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
@@ -764,7 +805,7 @@ export default function ServiceForm({
           </div>
 
           {/* Fixed Time Slots */}
-          <div className="flex flex-col gap-3 p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border-2 border-purple-200">
+          <div className="flex flex-col gap-3 rounded-xl border border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50 p-3.5 sm:p-4">
             <div className="flex items-start gap-2 sm:gap-3">
               <input
                 type="checkbox"
@@ -803,7 +844,7 @@ export default function ServiceForm({
                     type="time"
                     value={newTimeSlot}
                     onChange={(e) => setNewTimeSlot(e.target.value)}
-                    className="w-full sm:flex-1 px-3 py-2.5 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full rounded-xl border-2 border-purple-300 px-3 py-2.5 sm:flex-1 focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
                     style={{ fontSize: "16px" }}
                     placeholder="09:15"
                   />
@@ -923,11 +964,12 @@ export default function ServiceForm({
             )}
           </div>
         </div>
+        </div>
 
         {/* Variants Section */}
-        <div className="space-y-3">
-          <div className="pb-2 border-b border-gray-200">
-            <div className="flex items-center justify-between gap-2 mb-2">
+        <div className={cardClass}>
+          <div className="border-b border-gray-100 pb-3">
+            <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg">
                   <Layers className="w-4 h-4 text-white" />
@@ -947,10 +989,10 @@ export default function ServiceForm({
                 type="button"
                 onClick={addVariant}
                 variant="outline"
-                size="sm"
-                className="flex items-center gap-1.5 rounded-lg border border-brand-200 bg-white px-3 py-1.5 text-xs font-semibold text-brand-700 hover:border-brand-400"
+                size="md"
+                className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-brand-200 bg-white px-3 py-2 text-sm font-semibold text-brand-700 hover:border-brand-400 sm:w-auto sm:text-xs"
               >
-                <span className="text-sm leading-none">＋</span>
+                <span className="text-sm leading-none">+</span>
                 <span>{t("addVariant", language)}</span>
               </Button>
             </div>
@@ -965,9 +1007,9 @@ export default function ServiceForm({
           {formData.variants.map((variant, index) => (
             <div
               key={index}
-              className="p-3 border border-gray-200 rounded-lg space-y-3 bg-gradient-to-br from-gray-50 to-white"
+              className="space-y-3 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-3.5 sm:p-4"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <h4 className="font-bold text-gray-900 text-sm">
                   {t("variantName", language)} {index + 1}
                 </h4>
@@ -975,14 +1017,14 @@ export default function ServiceForm({
                   <button
                     type="button"
                     onClick={() => removeVariant(index)}
-                    className="px-2.5 py-1 text-xs font-medium text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded-lg transition-colors"
+                    className="w-full rounded-lg border border-red-300 px-2.5 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-600 hover:text-white sm:w-auto"
                   >
                     {t("remove", language)}
                   </button>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 <FormField
                   label={t("variantName", language)}
                   error={errors[`variant_${index}_name`]}
@@ -997,11 +1039,7 @@ export default function ServiceForm({
                     onChange={(e) =>
                       handleVariantChange(index, "name", e.target.value)
                     }
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                      errors[`variant_${index}_name`]
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
+                    className={inputClass(!!errors[`variant_${index}_name`])}
                     style={{ fontSize: "16px" }}
                     placeholder="e.g., Standard"
                   />
@@ -1026,11 +1064,7 @@ export default function ServiceForm({
                         e.target.value === "" ? "" : parseInt(e.target.value),
                       )
                     }
-                    className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                      errors[`variant_${index}_duration`]
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
+                    className={inputClass(!!errors[`variant_${index}_duration`])}
                     style={{ fontSize: "16px" }}
                     min="1"
                     placeholder="e.g., 30"
@@ -1059,11 +1093,7 @@ export default function ServiceForm({
                         value === "" ? "" : parseFloat(value),
                       );
                     }}
-                    className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                      errors[`variant_${index}_price`]
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
+                    className={inputClass(!!errors[`variant_${index}_price`])}
                     style={{ fontSize: "16px" }}
                     placeholder="0.00"
                   />
@@ -1090,11 +1120,7 @@ export default function ServiceForm({
                         value === "" ? null : parseFloat(value),
                       );
                     }}
-                    className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors ${
-                      errors[`variant_${index}_promoPrice`]
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
+                    className={inputClass(!!errors[`variant_${index}_promoPrice`])}
                     style={{ fontSize: "16px" }}
                     placeholder="0.00"
                   />
@@ -1117,7 +1143,7 @@ export default function ServiceForm({
                         parseInt(e.target.value) || 0,
                       )
                     }
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                    className={inputClass(false)}
                     style={{ fontSize: "16px" }}
                     min="0"
                   />
@@ -1140,7 +1166,7 @@ export default function ServiceForm({
                         parseInt(e.target.value) || 0,
                       )
                     }
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                    className={inputClass(false)}
                     style={{ fontSize: "16px" }}
                     min="0"
                   />
@@ -1155,33 +1181,48 @@ export default function ServiceForm({
         </div>
 
         {/* Form Actions */}
-        <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-200">
-          <Button
-            type="button"
-            onClick={onCancel}
-            disabled={isSubmitting}
-            variant="outline"
-            size="sm"
-            className="text-xs"
-          >
-            {t("cancel", language)}
-          </Button>
-          <Button
-            type="submit"
-            disabled={isSubmitting || isUploadingImage}
-            loading={isSubmitting}
-            variant="brand"
-            size="sm"
-            className="text-xs"
-          >
-            {isEditMode
-              ? t("saveService", language)
-              : t("createService", language)}
-          </Button>
+        <div className="sticky bottom-0 z-20 -mx-1 border-t border-gray-200 bg-white/95 px-1 pb-[max(env(safe-area-inset-bottom),0.6rem)] pt-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+            {isEditMode && onDelete && (
+              <Button
+                type="button"
+                onClick={handleDeleteClick}
+                disabled={isSubmitting}
+                variant="danger"
+                size="md"
+                className="w-full sm:mr-auto sm:w-auto"
+              >
+                Delete
+              </Button>
+            )}
+
+            <Button
+              type="button"
+              onClick={onCancel}
+              disabled={isSubmitting}
+              variant="outline"
+              size="md"
+              className="w-full sm:w-auto"
+            >
+              {t("cancel", language)}
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting || isUploadingImage}
+              loading={isSubmitting}
+              variant="brand"
+              size="md"
+              className="w-full sm:w-auto"
+            >
+              {isEditMode
+                ? t("saveService", language)
+                : t("createService", language)}
+            </Button>
+          </div>
         </div>
 
         {errors.submit && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div className="rounded-2xl border border-red-200 bg-red-50/90 p-4 shadow-sm">
             <div className="flex items-start gap-2">
               <svg
                 className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0"

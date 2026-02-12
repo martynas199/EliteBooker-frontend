@@ -154,24 +154,24 @@ export default function SmsReminders() {
         className="min-h-screen"
         style={{
           background:
-            "linear-gradient(to bottom, rgb(249, 250, 251), rgb(255, 255, 255))",
+            "linear-gradient(to bottom, #f8f5ef, #f6f2ea 55%, #efe8dc)",
         }}
       >
         {/* Hero */}
-        <section className="py-20 px-4 bg-gradient-to-br from-emerald-600 to-teal-600 text-white">
+        <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-700 px-4 py-14 text-white sm:py-16 lg:py-20">
           <div className="max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center"
             >
-              <div className="inline-block bg-emerald-500 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+              <div className="mb-6 inline-block rounded-full border border-white/30 bg-white/15 px-4 py-2 text-sm font-semibold text-slate-50">
                 98% Open Rate • 70% Fewer No-Shows
               </div>
-              <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <h1 className="mx-auto mb-5 max-w-5xl text-3xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_6px_26px_rgba(0,0,0,0.78)] sm:text-4xl lg:text-5xl">
                 SMS Appointment Reminders That Actually Get Read
               </h1>
-              <p className="text-xl text-emerald-50 mb-8 max-w-3xl mx-auto">
+              <p className="mx-auto mb-8 max-w-3xl text-base text-slate-50 sm:text-lg">
                 Stop losing money to forgotten appointments. Automated SMS
                 reminders reduce no-shows by 70% with 98% open rate. Unlimited
                 SMS for just £2.99/month (optional).
@@ -179,13 +179,13 @@ export default function SmsReminders() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/signup"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-gray-100 shadow-lg"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-semibold rounded-lg hover:bg-gray-100 shadow-lg"
                 >
                   Start Free Trial
                 </Link>
                 <Link
                   to="/pricing"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-emerald-500 text-white font-semibold rounded-lg hover:bg-emerald-400 border-2 border-white"
+                  className="inline-flex items-center justify-center rounded-lg border-2 border-white bg-slate-800 px-8 py-4 font-semibold text-white hover:bg-slate-700"
                 >
                   View Pricing
                 </Link>
@@ -199,25 +199,25 @@ export default function SmsReminders() {
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-4 gap-8 text-center">
               <div>
-                <div className="text-5xl font-bold text-emerald-600 mb-2">
+                <div className="mb-2 text-4xl font-bold text-slate-700 sm:text-5xl">
                   98%
                 </div>
                 <div className="text-gray-600">SMS Open Rate</div>
               </div>
               <div>
-                <div className="text-5xl font-bold text-emerald-600 mb-2">
+                <div className="mb-2 text-4xl font-bold text-slate-700 sm:text-5xl">
                   70%
                 </div>
                 <div className="text-gray-600">Fewer No-Shows</div>
               </div>
               <div>
-                <div className="text-5xl font-bold text-emerald-600 mb-2">
+                <div className="mb-2 text-4xl font-bold text-slate-700 sm:text-5xl">
                   3min
                 </div>
                 <div className="text-gray-600">Average Read Time</div>
               </div>
               <div>
-                <div className="text-5xl font-bold text-emerald-600 mb-2">
+                <div className="mb-2 text-4xl font-bold text-slate-700 sm:text-5xl">
                   £2.99
                 </div>
                 <div className="text-gray-600">Unlimited Per Month</div>
@@ -227,9 +227,9 @@ export default function SmsReminders() {
         </section>
 
         {/* How It Works */}
-        <section className="py-20 px-4">
+        <section className="px-4 py-14 sm:py-16">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               How SMS Reminders Work
             </h2>
             <div className="space-y-8">
@@ -242,7 +242,7 @@ export default function SmsReminders() {
                   transition={{ delay: idx * 0.1 }}
                   className="flex items-start gap-6 bg-white p-6 rounded-xl border-2 border-gray-200"
                 >
-                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
+                  <div className="w-16 h-16 bg-gradient-to-br from-slate-900 to-slate-700 rounded-xl flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
                     {step.step}
                   </div>
                   <div>
@@ -258,9 +258,9 @@ export default function SmsReminders() {
         </section>
 
         {/* Benefits */}
-        <section className="py-20 px-4 bg-gray-50">
+        <section className="bg-gray-50 px-4 py-14 sm:py-16">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               Why SMS Reminders Beat Everything Else
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
@@ -271,9 +271,9 @@ export default function SmsReminders() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
-                  className="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-emerald-500 transition-all"
+                  className="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-slate-500 transition-all"
                 >
-                  <benefit.icon className="w-12 h-12 text-emerald-600 mb-4" />
+                  <benefit.icon className="w-12 h-12 text-slate-700 mb-4" />
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     {benefit.title}
                   </h3>
@@ -285,34 +285,34 @@ export default function SmsReminders() {
         </section>
 
         {/* Pricing */}
-        <section className="py-20 px-4">
+        <section className="px-4 py-14 sm:py-16">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-8">
+            <h2 className="mb-8 text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               Simple, Transparent Pricing
             </h2>
-            <div className="bg-gradient-to-br from-emerald-600 to-teal-600 text-white p-8 rounded-2xl text-center">
-              <div className="text-6xl font-bold mb-4">£2.99/month</div>
-              <div className="text-2xl text-emerald-50 mb-6">
+            <div className="bg-gradient-to-br from-slate-900 to-slate-700 text-white p-8 rounded-2xl text-center">
+              <div className="mb-4 text-4xl font-bold sm:text-5xl">£2.99/month</div>
+              <div className="mb-6 text-xl text-slate-50 sm:text-2xl">
                 Unlimited SMS Reminders
               </div>
-              <ul className="text-left max-w-md mx-auto space-y-3 text-emerald-50 mb-8">
+              <ul className="mx-auto mb-8 max-w-md space-y-3 text-left text-slate-50">
                 <li>✓ Unlimited appointment reminders</li>
                 <li>✓ Unlimited confirmations</li>
                 <li>✓ Two-way SMS replies</li>
                 <li>✓ Customize message content & timing</li>
                 <li>✓ Cancel anytime (optional add-on)</li>
               </ul>
-              <p className="text-emerald-100 mb-6">
+              <p className="mb-6 text-slate-50">
                 Compare: 100 SMS/month at 5p each = £5/month with competitors.
                 We charge flat £2.99 for unlimited.
               </p>
               <Link
                 to="/signup"
-                className="inline-flex items-center justify-center px-8 py-4 bg-white text-emerald-600 font-bold rounded-lg hover:bg-gray-100 shadow-lg"
+                className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-bold rounded-lg hover:bg-gray-100 shadow-lg"
               >
                 Start Free Trial
               </Link>
-              <p className="text-emerald-100 mt-4 text-sm">
+              <p className="mt-4 text-sm text-slate-50">
                 14-day free trial • No credit card required • Cancel anytime
               </p>
             </div>
@@ -320,9 +320,9 @@ export default function SmsReminders() {
         </section>
 
         {/* FAQs */}
-        <section className="py-20 px-4 bg-gray-50">
+        <section className="bg-gray-50 px-4 py-14 sm:py-16">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               Frequently Asked Questions
             </h2>
             <div className="space-y-6">
@@ -342,22 +342,22 @@ export default function SmsReminders() {
         </section>
 
         {/* CTA */}
-        <section className="py-20 px-4 bg-gradient-to-br from-emerald-600 to-teal-600 text-white">
+        <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-700 px-4 py-14 text-white sm:py-16 lg:py-20">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">
+            <h2 className="mx-auto mb-5 max-w-4xl text-3xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_6px_24px_rgba(0,0,0,0.78)] sm:text-4xl">
               Ready to Reduce No-Shows by 70%?
             </h2>
-            <p className="text-xl text-emerald-50 mb-8">
+            <p className="mb-8 text-base text-slate-50 sm:text-lg">
               Join 1,000+ UK salons using Elite Booker's SMS reminders. Set up
               in 5 minutes, see results immediately.
             </p>
             <Link
               to="/signup"
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-emerald-600 font-bold rounded-lg hover:bg-gray-100 shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-bold rounded-lg hover:bg-gray-100 shadow-lg"
             >
               Start Your Free Trial
             </Link>
-            <p className="text-emerald-100 mt-4">
+            <p className="mt-4 text-slate-50">
               <Link
                 to="/blog/reduce-salon-no-shows"
                 className="underline hover:text-white"
@@ -372,3 +372,7 @@ export default function SmsReminders() {
     </>
   );
 }
+
+
+
+

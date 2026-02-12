@@ -57,27 +57,27 @@ export default function VsFresha() {
     },
     {
       feature: "Own Your Client Data",
-      elite: <Check className="text-emerald-600" />,
-      fresha: <X className="text-red-500" />,
+      elite: <Check className="text-slate-700" />,
+      fresha: <X className="text-slate-500" />,
     },
     {
       feature: "No Marketplace Competition",
-      elite: <Check className="text-emerald-600" />,
-      fresha: <X className="text-red-500" />,
+      elite: <Check className="text-slate-700" />,
+      fresha: <X className="text-slate-500" />,
     },
     {
       feature: "White Label Branding",
-      elite: <Check className="text-emerald-600" />,
+      elite: <Check className="text-slate-700" />,
       fresha: "Paid upgrade",
     },
     {
       feature: "Google Calendar Sync",
-      elite: <Check className="text-emerald-600" />,
+      elite: <Check className="text-slate-700" />,
       fresha: <Check className="text-gray-400" />,
     },
     {
       feature: "Deposit Protection",
-      elite: <Check className="text-emerald-600" />,
+      elite: <Check className="text-slate-700" />,
       fresha: <Check className="text-gray-400" />,
     },
     { feature: "Staff Management", elite: "Unlimited", fresha: "Unlimited" },
@@ -104,26 +104,26 @@ export default function VsFresha() {
 
       <div
         className="min-h-screen"
-        style={{ background: "rgb(249, 250, 251)" }}
+        style={{ background: "linear-gradient(180deg, #f8f5ef 0%, #f6f2ea 52%, #efe8dc 100%)" }}
       >
         {/* Hero */}
-        <section className="py-20 px-4 bg-gradient-to-br from-emerald-600 to-teal-600 text-white">
+        <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-700 px-4 py-14 text-white sm:py-16 lg:py-20">
           <div className="max-w-6xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h1 className="text-5xl font-bold mb-6">
+              <h1 className="mx-auto mb-5 max-w-5xl text-3xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_6px_26px_rgba(0,0,0,0.78)] sm:text-4xl lg:text-5xl">
                 Elite Booker vs Fresha: Which Saves You More?
               </h1>
-              <p className="text-xl text-emerald-50 mb-8 max-w-3xl mx-auto">
+              <p className="mx-auto mb-8 max-w-3xl text-base text-slate-50 sm:text-lg">
                 Fresha charges £14.95/month (£179/year) plus 20% commission on
                 new clients and payment processing fees. Elite Booker starts at
                 £0/month with no commission. Own your data, keep your profits.
               </p>
               <Link
                 to="/signup"
-                className="inline-flex items-center justify-center px-8 py-4 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-gray-100 shadow-lg"
+                className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-semibold rounded-lg hover:bg-gray-100 shadow-lg"
               >
                 Start Free Trial <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
@@ -159,14 +159,14 @@ export default function VsFresha() {
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
               Feature-by-Feature Comparison
             </h2>
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              <table className="w-full">
+            <div className="overflow-x-auto rounded-2xl bg-white shadow-xl">
+              <table className="w-full min-w-[760px]">
                 <thead>
                   <tr className="bg-gray-100">
                     <th className="py-4 px-6 text-left text-gray-900 font-semibold">
                       Feature
                     </th>
-                    <th className="py-4 px-6 text-center text-emerald-600 font-semibold">
+                    <th className="py-4 px-6 text-center text-slate-700 font-semibold">
                       Elite Booker
                     </th>
                     <th className="py-4 px-6 text-center text-gray-600 font-semibold">
@@ -178,7 +178,7 @@ export default function VsFresha() {
                   {comparisons.map((row, i) => (
                     <tr key={i} className="border-t border-gray-200">
                       <td className="py-4 px-6 text-gray-900">{row.feature}</td>
-                      <td className="py-4 px-6 text-center font-semibold text-emerald-600">
+                      <td className="py-4 px-6 text-center font-semibold text-slate-700">
                         <div className="flex items-center justify-center">
                           {row.elite}
                         </div>
@@ -208,7 +208,7 @@ export default function VsFresha() {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="bg-emerald-50 p-8 rounded-2xl border-2 border-emerald-600"
+                className="bg-slate-50 p-8 rounded-2xl border-2 border-slate-700"
               >
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">
                   Elite Booker (Basic Plan)
@@ -216,13 +216,13 @@ export default function VsFresha() {
                 <div className="space-y-4">
                   <div className="flex justify-between">
                     <span className="text-gray-700">Subscription</span>
-                    <span className="font-semibold text-emerald-600">£0</span>
+                    <span className="font-semibold text-slate-700">£0</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-700">
                       Commission per booking
                     </span>
-                    <span className="font-semibold text-emerald-600">£0</span>
+                    <span className="font-semibold text-slate-700">£0</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-700">
@@ -234,9 +234,9 @@ export default function VsFresha() {
                     <span className="text-gray-700">Payment processing</span>
                     <span className="font-semibold">Stripe standard</span>
                   </div>
-                  <div className="border-t-2 border-emerald-600 pt-4 flex justify-between text-xl font-bold">
+                  <div className="border-t-2 border-slate-700 pt-4 flex justify-between text-xl font-bold">
                     <span>Total Annual Cost</span>
-                    <span className="text-emerald-600">£0 - £36</span>
+                    <span className="text-slate-700">£0 - £36</span>
                   </div>
                 </div>
               </motion.div>
@@ -283,7 +283,7 @@ export default function VsFresha() {
             </div>
 
             <div className="mt-8 text-center">
-              <div className="inline-block bg-emerald-600 text-white px-8 py-4 rounded-lg">
+              <div className="inline-block bg-slate-800 text-white px-8 py-4 rounded-lg">
                 <p className="text-sm font-semibold mb-1">
                   YOUR ANNUAL SAVINGS
                 </p>
@@ -313,7 +313,7 @@ export default function VsFresha() {
                   no surprises."
                 </p>
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                  <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-white font-bold mr-4">
                     EM
                   </div>
                   <div>
@@ -335,7 +335,7 @@ export default function VsFresha() {
                   them. With Elite Booker, we own the customer relationship."
                 </p>
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                  <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-white font-bold mr-4">
                     SJ
                   </div>
                   <div>
@@ -349,21 +349,21 @@ export default function VsFresha() {
         </section>
 
         {/* CTA */}
-        <section className="py-20 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+        <section className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-700 px-4 py-14 text-white sm:py-16 lg:py-20">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">
+            <h2 className="mx-auto mb-5 max-w-4xl text-3xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_6px_24px_rgba(0,0,0,0.78)] sm:text-4xl">
               Ready to Save £180+/Year?
             </h2>
-            <p className="text-xl text-emerald-50 mb-8">
+            <p className="mb-8 text-base text-slate-50 sm:text-lg">
               Switch to Elite Booker today. Migration support included free.
             </p>
             <Link
               to="/signup"
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-gray-100 shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-semibold rounded-lg hover:bg-gray-100 shadow-lg"
             >
               Start Your Free Trial <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
-            <p className="mt-4 text-emerald-50 text-sm">
+            <p className="mt-4 text-sm text-slate-50">
               14-day free trial • No credit card required • Cancel anytime
             </p>
           </div>
@@ -373,3 +373,7 @@ export default function VsFresha() {
     </>
   );
 }
+
+
+
+

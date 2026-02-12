@@ -83,18 +83,18 @@ export default function LashTechnicians() {
         className="min-h-screen"
         style={{
           background:
-            "linear-gradient(to bottom, rgb(249, 250, 251), rgb(255, 255, 255))",
+            "linear-gradient(to bottom, #f8f5ef, #f6f2ea 55%, #efe8dc)",
         }}
       >
         {/* Hero Section */}
-        <section className="py-20 px-4">
+        <section className="px-4 py-14 sm:py-16">
           <div className="max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center"
             >
-              <h1 className="text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="mb-5 text-3xl font-bold text-gray-900 sm:text-4xl lg:text-5xl">
                 Booking Software Built for UK Lash Technicians
               </h1>
               <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
@@ -106,14 +106,14 @@ export default function LashTechnicians() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/signup"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-slate-900 to-slate-700 text-white font-semibold rounded-lg hover:from-slate-800 hover:to-slate-700 transition-all shadow-lg"
                 >
                   Start Free Trial
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
                 <Link
                   to="/book-demo"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-emerald-600 font-semibold rounded-lg border-2 border-emerald-600 hover:bg-emerald-50 transition-all"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-semibold rounded-lg border-2 border-slate-700 hover:bg-slate-50 transition-all"
                 >
                   Book a Demo
                 </Link>
@@ -140,55 +140,55 @@ export default function LashTechnicians() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
                 {
-                  icon: <Smartphone className="w-8 h-8 text-emerald-600" />,
+                  icon: <Smartphone className="w-8 h-8 text-slate-700" />,
                   title: "24/7 Online Booking",
                   description:
                     "Clients book appointments directly through your custom booking page or website widget, even while you're working on another client",
                 },
                 {
-                  icon: <Clock className="w-8 h-8 text-emerald-600" />,
+                  icon: <Clock className="w-8 h-8 text-slate-700" />,
                   title: "Automated SMS Reminders",
                   description:
                     "Reduce no-shows by up to 70% with automatic appointment reminders sent 48 hours and 24 hours before",
                 },
                 {
-                  icon: <Shield className="w-8 h-8 text-emerald-600" />,
+                  icon: <Shield className="w-8 h-8 text-slate-700" />,
                   title: "Deposit Protection",
                   description:
                     "Require deposits for new clients or high-value treatments. Payments automatically processed via Stripe",
                 },
                 {
-                  icon: <CheckCircle className="w-8 h-8 text-emerald-600" />,
+                  icon: <CheckCircle className="w-8 h-8 text-slate-700" />,
                   title: "Patch Test Tracking",
                   description:
                     "Record patch test dates and receive automatic alerts when they're due for renewal—essential for compliance",
                 },
                 {
-                  icon: <Calendar className="w-8 h-8 text-emerald-600" />,
+                  icon: <Calendar className="w-8 h-8 text-slate-700" />,
                   title: "Treatment Duration Management",
                   description:
                     "Set accurate timings for different services (classic sets, volume, infills, removals) so your calendar reflects reality",
                 },
                 {
-                  icon: <Camera className="w-8 h-8 text-emerald-600" />,
+                  icon: <Camera className="w-8 h-8 text-slate-700" />,
                   title: "Client History & Photos",
                   description:
                     "Store before/after photos, lash length preferences, glue sensitivities, and retention issues—everything for personalised service",
                 },
                 {
-                  icon: <Smartphone className="w-8 h-8 text-emerald-600" />,
+                  icon: <Smartphone className="w-8 h-8 text-slate-700" />,
                   title: "Mobile-Friendly Dashboard",
                   description:
                     "Manage your bookings on the go from your phone. Perfect for mobile lash techs working from multiple locations",
                 },
                 {
-                  icon: <CreditCard className="w-8 h-8 text-emerald-600" />,
+                  icon: <CreditCard className="w-8 h-8 text-slate-700" />,
                   title: "No Commission Fees",
                   description:
                     "Keep 100% of your booking revenue. We never take a cut of your hard-earned income",
                 },
                 {
-                  icon: <Gift className="w-8 h-8 text-emerald-600" />,
+                  icon: <Gift className="w-8 h-8 text-slate-700" />,
                   title: "Gift Cards & Google Calendar Sync",
                   description:
                     "Sell digital gift cards and sync with your personal calendar to prevent double bookings",
@@ -225,7 +225,7 @@ export default function LashTechnicians() {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="bg-white p-8 rounded-lg shadow-lg border-l-4 border-emerald-600"
+                className="bg-white p-8 rounded-lg shadow-lg border-l-4 border-slate-700"
               >
                 <p className="text-gray-700 mb-4 italic">
                   "Since switching to Elite Booker, I've cut my no-show rate
@@ -235,7 +235,7 @@ export default function LashTechnicians() {
                   schedule."
                 </p>
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 font-bold mr-4">
+                  <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-700 font-bold mr-4">
                     CM
                   </div>
                   <div>
@@ -251,7 +251,7 @@ export default function LashTechnicians() {
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="bg-white p-8 rounded-lg shadow-lg border-l-4 border-teal-600"
+                className="bg-white p-8 rounded-lg shadow-lg border-l-4 border-slate-700"
               >
                 <p className="text-gray-700 mb-4 italic">
                   "I love that I can manage everything from my phone between
@@ -260,7 +260,7 @@ export default function LashTechnicians() {
                   and professional."
                 </p>
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 font-bold mr-4">
+                  <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-700 font-bold mr-4">
                     ST
                   </div>
                   <div>
@@ -303,12 +303,12 @@ export default function LashTechnicians() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 px-4 bg-gradient-to-r from-emerald-600 to-teal-600">
+        <section className="bg-gradient-to-r from-slate-900 to-slate-700 px-4 py-14 sm:py-16 lg:py-20">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold text-white mb-6">
+            <h2 className="mb-5 text-3xl font-bold text-white sm:text-4xl">
               Get Started in 10 Minutes
             </h2>
-            <p className="text-xl text-emerald-50 mb-8">
+            <p className="text-xl text-slate-100 mb-8">
               Setting up Elite Booker takes less time than scrolling through
               Instagram. Create your account, add your lash services, and share
               your booking link. Your clients can start booking immediately.
@@ -316,14 +316,14 @@ export default function LashTechnicians() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/signup"
-                className="inline-flex items-center justify-center px-8 py-4 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-gray-100 transition-all shadow-lg"
+                className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-semibold rounded-lg hover:bg-gray-100 transition-all shadow-lg"
               >
                 Start Your Free Trial
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
               <Link
                 to="/pricing"
-                className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white font-semibold rounded-lg border-2 border-white hover:bg-white hover:text-emerald-600 transition-all"
+                className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white font-semibold rounded-lg border-2 border-white hover:bg-white hover:text-slate-700 transition-all"
               >
                 See Pricing
               </Link>
@@ -335,3 +335,7 @@ export default function LashTechnicians() {
     </>
   );
 }
+
+
+
+

@@ -13,6 +13,7 @@ import {
   Waves,
   Hand,
 } from "lucide-react";
+import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 /**
@@ -83,42 +84,7 @@ export default function BusinessesLandingPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="border-b border-gray-200 bg-white sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white font-black text-lg">
-                E
-              </div>
-              <span className="text-xl font-black text-gray-900">
-                Elite Booker
-              </span>
-            </Link>
-
-            <div className="flex items-center space-x-4">
-              <Link
-                to="/business"
-                className="text-sm font-medium text-gray-700 hover:text-gray-900"
-              >
-                Browse All
-              </Link>
-              <Link
-                to="/admin/login"
-                className="text-sm font-medium text-gray-700 hover:text-gray-900"
-              >
-                For Business
-              </Link>
-              <Link
-                to="/signup"
-                className="px-4 py-2 text-sm font-semibold text-white bg-black rounded-lg hover:bg-gray-900 transition-colors"
-              >
-                Sign Up
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-gray-50 to-white py-16 sm:py-24">

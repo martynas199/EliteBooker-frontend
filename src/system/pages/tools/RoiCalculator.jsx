@@ -171,7 +171,7 @@ export default function RoiCalculator() {
 
       <Header />
 
-      <main className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-fuchsia-50">
+      <main className="min-h-screen bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
         {/* Hero Section */}
         <section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center">
@@ -180,8 +180,8 @@ export default function RoiCalculator() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-violet-100 mb-6">
-                <Calculator className="w-5 h-5 text-violet-600" />
+              <div className="inline-flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-slate-200 mb-6">
+                <Calculator className="w-5 h-5 text-slate-700" />
                 <span className="text-sm font-medium text-gray-700">
                   Free Tool - No Signup Required
                 </span>
@@ -212,7 +212,7 @@ export default function RoiCalculator() {
                 className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200"
               >
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <Calculator className="w-6 h-6 text-violet-600" />
+                  <Calculator className="w-6 h-6 text-slate-700" />
                   Your Business Details
                 </h2>
 
@@ -228,7 +228,7 @@ export default function RoiCalculator() {
                       onChange={(e) =>
                         setMonthlyBookings(Number(e.target.value))
                       }
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-violet-600 focus:outline-none text-lg"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-slate-700 focus:outline-none text-lg"
                       min="1"
                       max="1000"
                     />
@@ -250,7 +250,7 @@ export default function RoiCalculator() {
                         onChange={(e) =>
                           setAveragePrice(Number(e.target.value))
                         }
-                        className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:border-violet-600 focus:outline-none text-lg"
+                        className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:border-slate-700 focus:outline-none text-lg"
                         min="1"
                         max="1000"
                       />
@@ -268,7 +268,7 @@ export default function RoiCalculator() {
                     <select
                       value={currentPlatform}
                       onChange={(e) => setCurrentPlatform(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-violet-600 focus:outline-none text-lg bg-white"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-slate-700 focus:outline-none text-lg bg-white"
                     >
                       <option value="fresha">
                         Fresha (20% commission + £14.95/mo)
@@ -289,7 +289,7 @@ export default function RoiCalculator() {
                       id="sms"
                       checked={includesSMS}
                       onChange={(e) => setIncludesSMS(e.target.checked)}
-                      className="mt-1 w-5 h-5 text-violet-600 border-gray-300 rounded focus:ring-violet-600"
+                      className="mt-1 w-5 h-5 text-slate-700 border-gray-300 rounded focus:ring-slate-500"
                     />
                     <label htmlFor="sms" className="text-sm text-gray-700">
                       <span className="font-semibold">
@@ -325,7 +325,7 @@ export default function RoiCalculator() {
                 className="space-y-6"
               >
                 {/* Savings Highlight */}
-                <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-2xl p-8 text-white">
+                <div className="bg-gradient-to-br from-slate-900 to-slate-700 rounded-2xl shadow-2xl p-8 text-white">
                   <div className="flex items-center gap-2 mb-4">
                     <TrendingDown className="w-6 h-6" />
                     <h3 className="text-xl font-bold">
@@ -469,7 +469,7 @@ export default function RoiCalculator() {
                 </div>
 
                 {/* CTA */}
-                <div className="bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-2xl p-6 text-white text-center">
+                <div className="bg-gradient-to-r from-slate-900 to-slate-700 rounded-2xl p-6 text-white text-center">
                   <h3 className="text-2xl font-bold mb-2">
                     Save £{Math.round(annualSavings).toLocaleString()} This Year
                   </h3>
@@ -478,7 +478,7 @@ export default function RoiCalculator() {
                   </p>
                   <a
                     href="/signup"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-white text-violet-600 font-bold rounded-full hover:shadow-2xl transition-all text-lg"
+                    className="inline-flex items-center gap-2 px-8 py-4 bg-white text-slate-700 font-bold rounded-full hover:shadow-2xl transition-all text-lg"
                   >
                     Get Started Free
                     <ArrowRight className="w-5 h-5" />
@@ -553,7 +553,7 @@ export default function RoiCalculator() {
                 >
                   <summary className="font-semibold text-lg text-gray-900 cursor-pointer list-none flex items-center justify-between">
                     {faq.name}
-                    <span className="text-violet-600 group-open:rotate-180 transition-transform">
+                    <span className="text-slate-700 group-open:rotate-180 transition-transform">
                       ▼
                     </span>
                   </summary>
@@ -571,3 +571,7 @@ export default function RoiCalculator() {
     </>
   );
 }
+
+
+
+

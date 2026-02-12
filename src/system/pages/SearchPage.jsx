@@ -578,10 +578,19 @@ export default function SearchPage() {
     }
   }, [getMapBBox, superclusterIndex, activeVenueId, updateMarkerAppearance]);
 
+  const mobileDrawerHeightPx = useMemo(() => {
+    const vh =
+      viewportHeight ||
+      (typeof window !== "undefined" ? window.innerHeight : 0);
+    if (!vh) return 0;
+    return Math.round((drawerHeight / 100) * vh);
+  }, [drawerHeight, viewportHeight]);
+
   const locationButtonBottom = useMemo(() => {
-    if (viewportWidth >= 1024) return "24px"; // desktop: keep near bottom right
-    return `calc(${drawerHeight}vh + 12px)`; // sit just above the drawer on mobile
-  }, [viewportWidth, drawerHeight]);
+    if (viewportWidth >= 1024) return "28px";
+    const offset = Math.max(88, mobileDrawerHeightPx + 14);
+    return `${offset}px`;
+  }, [viewportWidth, mobileDrawerHeightPx]);
 
   const recenterToUser = useCallback(() => {
     const map = googleMapRef.current;
@@ -942,81 +951,46 @@ export default function SearchPage() {
     }
   }, [drawerHeight]);
 
-  // Error state with inline styles for mobile compatibility
+  const resetFilters = useCallback(() => {
+    setFilters((prev) => ({
+      ...prev,
+      search: "",
+      distance: "all",
+      rating: "all",
+      priceRange: "all",
+      availability: "all",
+    }));
+  }, []);
+
   if (error) {
     return (
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#fee",
-          padding: "20px",
-          overflow: "auto",
-          zIndex: 9999,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <h1 style={{ color: "red", marginBottom: "10px" }}>
-          Error loading search page
-        </h1>
-        <p style={{ marginBottom: "20px" }}>{error}</p>
-        <Link
-          to="/"
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#333",
-            color: "white",
-            borderRadius: "5px",
-            textDecoration: "none",
-          }}
-        >
-          Go Back Home
-        </Link>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#f6f2ea] p-4">
+        <div className="w-full max-w-md rounded-3xl border border-red-200 bg-white p-6 text-center shadow-xl sm:p-8">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">
+            !
+          </div>
+          <h1 className="mb-2 text-xl font-semibold text-slate-950">
+            Error loading search page
+          </h1>
+          <p className="mb-6 text-sm text-slate-600">{error}</p>
+          <Link
+            to="/"
+            className="inline-flex h-11 items-center justify-center rounded-full bg-slate-900 px-6 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+          >
+            Go back home
+          </Link>
+        </div>
       </div>
     );
   }
 
-  // Simple loading state with inline styles
   if (loading && venues.length === 0) {
     return (
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "white",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 9999,
-        }}
-      >
-        <div
-          style={{
-            width: "48px",
-            height: "48px",
-            border: "4px solid #f3f3f3",
-            borderTop: "4px solid #7c3aed",
-            borderRadius: "50%",
-            animation: "spin 1s linear infinite",
-          }}
-        />
-        <p style={{ marginTop: "20px", color: "#666" }}>Loading venues...</p>
-        <style>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
+      <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#f6f2ea] px-6 text-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-slate-900" />
+        <p className="mt-4 text-sm font-medium text-slate-600">
+          Loading venues near you...
+        </p>
       </div>
     );
   }
@@ -1028,25 +1002,29 @@ export default function SearchPage() {
         description="Find and book beauty salons, spas, and wellness businesses near you"
       />
       <div
-        className="fixed inset-0 bg-white flex flex-col"
+        className="fixed inset-0 flex flex-col bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]"
         style={{ minHeight: "100vh", height: "100dvh" }}
       >
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-slate-900/10 to-transparent" />
         <header
           ref={headerRef}
-          className={`absolute lg:relative top-0 left-0 right-0 z-[110] flex-shrink-0 transition-opacity duration-300 bg-transparent lg:bg-white ${
+          className={`absolute left-0 right-0 top-0 z-[110] flex-shrink-0 transition-opacity duration-300 lg:relative lg:bg-transparent ${
             drawerHeight > 80
               ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto"
               : "opacity-100"
           }`}
         >
-          <div className="px-4 lg:px-6 py-4 lg:py-5">
-            <div className="flex items-center gap-3 lg:gap-4 max-w-screen-2xl mx-auto lg:justify-center">
+          <div
+            className="px-3 pb-2 pt-3 sm:px-4 lg:px-6 lg:pt-5"
+            style={{ paddingTop: "max(env(safe-area-inset-top), 0.75rem)" }}
+          >
+            <div className="mx-auto flex max-w-screen-2xl items-center gap-2.5 rounded-2xl border border-slate-200/80 bg-white/92 px-2.5 py-2 shadow-[0_16px_35px_-22px_rgba(15,23,42,0.7)] backdrop-blur-xl lg:w-[760px] lg:rounded-full lg:px-3.5">
               <Link
                 to="/"
-                className="w-10 h-10 lg:w-10 lg:h-10 flex items-center justify-center rounded-full lg:rounded-full bg-white shadow-lg lg:shadow-none lg:bg-gray-50 hover:bg-gray-50 lg:hover:bg-gray-100 transition-colors flex-shrink-0"
+                className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-900 transition-colors hover:bg-slate-50"
               >
                 <svg
-                  className="w-5 h-5 lg:w-6 lg:h-6 text-gray-900"
+                  className="h-5 w-5 text-slate-900 lg:h-5 lg:w-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1059,9 +1037,9 @@ export default function SearchPage() {
                   />
                 </svg>
               </Link>
-              <div className="flex-1 lg:flex-initial max-w-2xl lg:max-w-none lg:w-[700px] relative">
+              <div className="relative flex-1 lg:w-[640px]">
                 <svg
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                  className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1080,18 +1058,18 @@ export default function SearchPage() {
                   onChange={(e) =>
                     setFilters((prev) => ({ ...prev, search: e.target.value }))
                   }
-                  className="w-full pl-11 pr-4 py-3 lg:py-3 bg-white lg:bg-white/70 lg:backdrop-blur-md border border-gray-300 lg:border-gray-200 rounded-full focus:outline-none focus:ring-0 focus:border-gray-900 lg:focus:border-gray-300 text-sm lg:text-base transition-all shadow-lg"
+                  className="w-full rounded-full border border-slate-200 bg-white px-4 py-3 pl-10 text-sm text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-slate-900 focus:outline-none"
                   style={{ fontSize: "16px", touchAction: "manipulation" }}
                 />
               </div>
               <button
                 type="button"
                 onClick={() => navigate("/menu")}
-                className="w-10 h-10 lg:w-10 lg:h-10 rounded-full bg-white lg:bg-gray-50 flex items-center justify-center hover:bg-gray-200 lg:hover:bg-gray-100 transition-colors flex-shrink-0 border border-gray-200 lg:border-transparent shadow-lg lg:shadow-none"
+                className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition-colors hover:bg-slate-50"
                 aria-label="Open menu"
               >
                 <svg
-                  className="w-5 h-5 lg:w-6 lg:h-6 text-gray-600 lg:text-gray-800"
+                  className="h-5 w-5 text-slate-700 lg:h-5 lg:w-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1107,14 +1085,17 @@ export default function SearchPage() {
             </div>
           </div>
         </header>
-        <div className="flex-1 overflow-hidden relative flex flex-row">
-          <div className="hidden lg:flex lg:flex-col lg:w-[850px] xl:w-[900px] 2xl:w-[950px] h-full bg-white overflow-hidden">
+        <div className="relative flex flex-1 flex-row overflow-hidden">
+          <div className="hidden h-full overflow-hidden border-r border-slate-200/80 bg-white/95 lg:flex lg:w-[850px] lg:flex-col xl:w-[900px] 2xl:w-[950px]">
             <div className="flex-shrink-0 px-5 py-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-3.5">
                 <div>
-                  <p className="text-sm text-gray-600">
-                    <strong className="font-semibold text-gray-900">
-                      {filteredVenuesWithDistance.length}k+
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    Search results
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600">
+                    <strong className="font-semibold text-slate-900">
+                      {filteredVenuesWithDistance.length.toLocaleString()}
                     </strong>{" "}
                     venues nearby
                   </p>
@@ -1173,24 +1154,31 @@ export default function SearchPage() {
                   {Array.from({ length: 6 }).map((_, i) => (
                     <div
                       key={i}
-                      className="rounded-2xl border border-gray-100 overflow-hidden"
+                      className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
                     >
-                      <div className="h-32 bg-gray-100 animate-pulse" />
-                      <div className="p-3 space-y-2">
-                        <div className="h-3 w-2/3 bg-gray-100 animate-pulse rounded" />
-                        <div className="h-2 w-1/2 bg-gray-100 animate-pulse rounded" />
+                      <div className="h-32 animate-pulse bg-slate-100" />
+                      <div className="space-y-2 p-3">
+                        <div className="h-3 w-2/3 animate-pulse rounded bg-slate-100" />
+                        <div className="h-2 w-1/2 animate-pulse rounded bg-slate-100" />
                       </div>
                     </div>
                   ))}
                 </div>
               ) : filteredVenuesWithDistance.length === 0 ? (
-                <div className="text-center py-20 col-span-2">
-                  <p className="text-gray-900 font-medium mb-2">
+                <div className="col-span-2 mx-auto mt-10 max-w-md rounded-3xl border border-slate-200 bg-white px-6 py-10 text-center shadow-sm">
+                  <p className="mb-2 text-lg font-semibold text-slate-900">
                     No venues found
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-slate-500">
                     Try adjusting your search or filters
                   </p>
+                  <button
+                    type="button"
+                    onClick={resetFilters}
+                    className="mt-5 inline-flex h-11 items-center justify-center rounded-full border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-50"
+                  >
+                    Reset filters
+                  </button>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-3">
@@ -1226,15 +1214,17 @@ export default function SearchPage() {
               )}
             </div>
           </div>
-          <div className="absolute lg:relative inset-0 lg:inset-auto lg:flex-1 h-full w-full bg-white lg:p-4">
+          <div className="absolute inset-0 h-full w-full bg-[#f6f2ea] lg:relative lg:inset-auto lg:flex-1 lg:p-4">
             <div
               ref={mapRef}
-              className="w-full h-full lg:rounded-2xl lg:overflow-hidden lg:shadow-sm"
+              className="h-full w-full lg:overflow-hidden lg:rounded-[28px] lg:border lg:border-slate-200/80 lg:shadow-[0_24px_48px_-30px_rgba(15,23,42,0.45)]"
             />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/25 to-transparent lg:hidden" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/10 to-transparent lg:hidden" />
             <button
               type="button"
               onClick={recenterToUser}
-              className="absolute right-4 lg:right-8 z-[200] w-11 h-11 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform"
+              className="absolute right-4 z-[200] flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-800 shadow-[0_14px_26px_-16px_rgba(15,23,42,0.7)] transition-transform active:scale-95 hover:bg-slate-50 lg:right-8"
               style={{ bottom: locationButtonBottom }}
               aria-label="Center on your location"
             >
@@ -1264,26 +1254,40 @@ export default function SearchPage() {
           </div>
         </div>
         <div
-          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-[20px] shadow-lg z-[100] transition-all flex flex-col"
+          className="fixed bottom-0 left-0 right-0 z-[120] flex flex-col rounded-t-[30px] border border-white/70 bg-white/95 shadow-[0_-22px_48px_-30px_rgba(15,23,42,0.7)] backdrop-blur-xl transition-all lg:hidden"
           style={{
-            height: `${drawerHeight}vh`,
+            height: mobileDrawerHeightPx
+              ? `${mobileDrawerHeightPx}px`
+              : `${drawerHeight}vh`,
             transition: isDragging ? "none" : "height 0.25s ease-out",
+            paddingBottom: "max(env(safe-area-inset-bottom), 0.5rem)",
           }}
         >
           <div
-            className="drawer-handle flex items-center justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
+            className="drawer-handle flex cursor-grab items-center justify-center pb-2 pt-3 active:cursor-grabbing"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
             <div
-              className={`w-10 h-1 rounded-full ${
-                isDragging ? "bg-gray-400" : "bg-gray-300"
+              className={`h-1.5 w-12 rounded-full ${
+                isDragging ? "bg-slate-500" : "bg-slate-300"
               }`}
             />
           </div>
-          <div className="px-4 py-3 border-b border-gray-200 flex-shrink-0">
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3">
+          <div className="flex-shrink-0 border-b border-slate-200/90 px-4 pb-3 pt-1">
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                Nearby venues
+              </p>
+              <p className="text-xs text-slate-600">
+                <strong className="font-semibold text-slate-900">
+                  {filteredVenuesWithDistance.length.toLocaleString()}
+                </strong>{" "}
+                results
+              </p>
+            </div>
+            <div className="scrollbar-hide flex gap-2 overflow-x-auto pb-1">
               <FilterChip
                 label="All distances"
                 active={filters.distance === "all"}
@@ -1320,18 +1324,10 @@ export default function SearchPage() {
                 }
               />
             </div>
-            <div className="pt-2">
-              <p className="text-xs text-gray-600">
-                <strong className="font-semibold text-gray-900">
-                  {filteredVenuesWithDistance.length}
-                </strong>{" "}
-                venues
-              </p>
-            </div>
           </div>
           <div
             ref={contentScrollRef}
-            className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-3 pb-32"
+            className="flex-1 min-h-0 space-y-3 overflow-y-auto px-4 py-3 pb-20"
             style={{
               WebkitOverflowScrolling: "touch",
               overflowY: "auto",
@@ -1354,25 +1350,32 @@ export default function SearchPage() {
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div
                     key={i}
-                    className="rounded-2xl border border-gray-100 overflow-hidden"
+                    className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
                   >
-                    <div className="h-36 bg-gray-100 animate-pulse" />
+                    <div className="h-36 animate-pulse bg-slate-100" />
                     <div className="p-4 space-y-3">
-                      <div className="h-4 w-2/3 bg-gray-100 animate-pulse rounded" />
-                      <div className="h-3 w-1/2 bg-gray-100 animate-pulse rounded" />
-                      <div className="h-10 w-full bg-gray-100 animate-pulse rounded-xl" />
+                      <div className="h-4 w-2/3 animate-pulse rounded bg-slate-100" />
+                      <div className="h-3 w-1/2 animate-pulse rounded bg-slate-100" />
+                      <div className="h-10 w-full animate-pulse rounded-xl bg-slate-100" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : filteredVenuesWithDistance.length === 0 ? (
-              <div className="text-center py-20">
-                <p className="text-gray-900 font-medium mb-2">
+              <div className="mx-auto mt-8 max-w-sm rounded-3xl border border-slate-200 bg-white px-6 py-10 text-center shadow-sm">
+                <p className="mb-2 text-lg font-semibold text-slate-900">
                   No venues found
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Try adjusting your search or filters
                 </p>
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="mt-5 inline-flex h-11 items-center justify-center rounded-full border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-50"
+                >
+                  Reset filters
+                </button>
               </div>
             ) : (
               filteredVenuesWithDistance.map((venue) => (
@@ -1404,10 +1407,10 @@ const FilterChip = React.memo(function FilterChip({
     <motion.button
       whileTap={{ scale: 0.96 }}
       onClick={onClick}
-      className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 flex items-center gap-2 ${
+      className={`flex h-10 flex-shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-4 text-[13px] font-semibold transition-all ${
         active
-          ? "bg-gray-900 text-white"
-          : "bg-white text-gray-700 border border-gray-300 hover:border-gray-900 hover:bg-gray-50"
+          ? "border-slate-900 bg-gradient-to-r from-slate-900 to-slate-700 text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,0.9)]"
+          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
       }`}
     >
       {icon}

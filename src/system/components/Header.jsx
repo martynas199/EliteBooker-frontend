@@ -5,6 +5,13 @@ import MenuDropdown from "../../shared/components/ui/MenuDropdown";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 import eliteLogo from "../../assets/elite.png";
 
+const navButtonClass =
+  "flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900";
+const desktopDropdownClass =
+  "absolute left-0 top-full z-50 w-56 rounded-xl border border-slate-200 bg-white py-2 shadow-xl";
+const mobileMenuItemClass =
+  "w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900";
+
 export default function Header() {
   const navigate = useNavigate();
   const { client, isAuthenticated, logout } = useClientAuth();
@@ -14,11 +21,12 @@ export default function Header() {
   const [showFeaturesDropdown, setShowFeaturesDropdown] = useState(false);
 
   const handleLogin = () => {
-    if (isAuthenticated) {
-      navigate("/client/profile");
-    } else {
-      navigate("/client/login");
-    }
+    navigate(isAuthenticated ? "/client/profile" : "/client/login");
+  };
+
+  const handleMenuNavigation = (path) => {
+    navigate(path);
+    setShowMenuDropdown(false);
   };
 
   const customerLinks = isAuthenticated
@@ -28,14 +36,8 @@ export default function Header() {
           onClick: () => navigate("/client/profile"),
           primary: true,
         },
-        {
-          label: "My Bookings",
-          onClick: () => navigate("/client/profile"),
-        },
-        {
-          label: "Settings",
-          onClick: () => navigate("/client/profile"),
-        },
+        { label: "My Bookings", onClick: () => navigate("/client/profile") },
+        { label: "Settings", onClick: () => navigate("/client/profile") },
         {
           label: "Log out",
           onClick: async () => {
@@ -51,65 +53,47 @@ export default function Header() {
           onClick: handleLogin,
           primary: true,
         },
-        {
-          label: "Find a business",
-          href: "/search",
-        },
-        {
-          label: "Help and support",
-          href: "/help",
-        },
+        { label: "Find a business", href: "/search" },
+        { label: "Help and support", href: "/help" },
       ];
 
   const businessLinks = [
-    {
-      label: "List your business",
-      href: "/signup",
-    },
-    {
-      label: "Business log in",
-      href: "/admin/login",
-    },
-    {
-      label: "Join referral program",
-      href: "/join-referral-program",
-    },
+    { label: "List your business", href: "/signup" },
+    { label: "Business log in", href: "/admin/login" },
+    { label: "Join referral program", href: "/join-referral-program" },
   ];
 
   return (
     <header
-      className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200"
+      className="sticky z-50 border-b border-amber-100/80 bg-[#f6f2ea]/92 backdrop-blur-xl supports-[backdrop-filter]:bg-[#f6f2ea]/80"
       style={{
         top: "env(safe-area-inset-top, 0px)",
         paddingTop: "env(safe-area-inset-top, 0px)",
       }}
     >
-      <div className="max-w-8xl mx-auto px-4 sm:px-8 lg:px-10">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-[4.25rem] items-center justify-between sm:h-16">
           <Link to="/" className="flex items-center gap-4">
             <img
               src={eliteLogo}
               alt="Elite Booker Logo"
               width="140"
               height="80"
-              className="h-20 sm:h-28 w-auto"
+              className="h-16 w-auto sm:h-20"
               loading="eager"
             />
           </Link>
 
-          {/* Center Navigation - Desktop */}
-          <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
-            {/* Industries Dropdown */}
+          <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex">
             <div
-              className="relative"
+              className="relative -mb-2 pb-2"
               onMouseEnter={() => setShowIndustriesDropdown(true)}
               onMouseLeave={() => setShowIndustriesDropdown(false)}
             >
-              <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all flex items-center gap-1">
+              <button className={navButtonClass}>
                 Industries
                 <svg
-                  className="w-4 h-4"
+                  className="h-4 w-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -123,22 +107,22 @@ export default function Header() {
                 </svg>
               </button>
               {showIndustriesDropdown && (
-                <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-100 py-2 w-56 z-50">
+                <div className={desktopDropdownClass}>
                   <button
                     onClick={() => navigate("/industries/lash-technicians")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
                   >
                     Lash Technicians
                   </button>
                   <button
                     onClick={() => navigate("/industries/hair-salons")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
                   >
                     Hair Salons
                   </button>
                   <button
                     onClick={() => navigate("/industries/barbers")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
                   >
                     Barbers
                   </button>
@@ -146,16 +130,15 @@ export default function Header() {
               )}
             </div>
 
-            {/* Compare Dropdown */}
             <div
-              className="relative"
+              className="relative -mb-2 pb-2"
               onMouseEnter={() => setShowCompareDropdown(true)}
               onMouseLeave={() => setShowCompareDropdown(false)}
             >
-              <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all flex items-center gap-1">
+              <button className={navButtonClass}>
                 Compare
                 <svg
-                  className="w-4 h-4"
+                  className="h-4 w-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -169,16 +152,16 @@ export default function Header() {
                 </svg>
               </button>
               {showCompareDropdown && (
-                <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-100 py-2 w-56 z-50">
+                <div className={desktopDropdownClass}>
                   <button
                     onClick={() => navigate("/compare/vs-fresha")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
                   >
                     vs Fresha
                   </button>
                   <button
                     onClick={() => navigate("/compare/vs-treatwell")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
                   >
                     vs Treatwell
                   </button>
@@ -186,16 +169,15 @@ export default function Header() {
               )}
             </div>
 
-            {/* Features Dropdown */}
             <div
-              className="relative"
+              className="relative -mb-2 pb-2"
               onMouseEnter={() => setShowFeaturesDropdown(true)}
               onMouseLeave={() => setShowFeaturesDropdown(false)}
             >
-              <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all flex items-center gap-1">
+              <button className={navButtonClass}>
                 Features
                 <svg
-                  className="w-4 h-4"
+                  className="h-4 w-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -209,28 +191,28 @@ export default function Header() {
                 </svg>
               </button>
               {showFeaturesDropdown && (
-                <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-100 py-2 w-56 z-50">
+                <div className={desktopDropdownClass}>
                   <button
                     onClick={() => navigate("/features/sms-reminders")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
                   >
                     SMS Reminders
                   </button>
                   <button
                     onClick={() => navigate("/features/no-show-protection")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
                   >
                     No-Show Protection
                   </button>
                   <button
                     onClick={() => navigate("/features/calendar-sync")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
                   >
                     Calendar Sync
                   </button>
                   <button
                     onClick={() => navigate("/features/online-booking")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
                   >
                     Online Booking
                   </button>
@@ -238,32 +220,29 @@ export default function Header() {
               )}
             </div>
 
-            {/* Pricing Link */}
             <button
               onClick={() => navigate("/pricing")}
-              className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50 rounded-lg transition-all"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
             >
               Pricing
             </button>
           </nav>
 
-          {/* Right Actions - Desktop */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden items-center gap-3 md:flex">
             {!isAuthenticated && (
               <button
                 onClick={() => navigate("/signup")}
-                className="px-4 py-2 text-sm font-medium border border-gray-300 rounded-full text-gray-900 hover:border-gray-400 transition-all"
+                className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:border-slate-400 hover:bg-white"
               >
                 List your business
               </button>
             )}
 
-            {/* Menu Button */}
             <div className="relative">
               {isAuthenticated ? (
                 <button
                   onClick={() => setShowMenuDropdown(!showMenuDropdown)}
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white font-semibold hover:shadow-lg transition-all overflow-hidden"
+                  className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-slate-900 to-slate-700 font-semibold text-white shadow-sm transition-shadow hover:shadow-md"
                   title={client?.name || "Account"}
                 >
                   {client?.avatar ? (
@@ -272,23 +251,21 @@ export default function Header() {
                       alt={client?.name || "User"}
                       width="40"
                       height="40"
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-cover"
                       loading="lazy"
                     />
                   ) : (
-                    <span className="text-white font-semibold">
-                      {client?.name?.charAt(0).toUpperCase() || "U"}
-                    </span>
+                    <span>{client?.name?.charAt(0).toUpperCase() || "U"}</span>
                   )}
                 </button>
               ) : (
                 <button
                   onClick={() => setShowMenuDropdown(!showMenuDropdown)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-full text-gray-900 hover:border-gray-400 transition-all"
+                  className="flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:border-slate-400 hover:bg-white"
                 >
                   Menu
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -303,7 +280,6 @@ export default function Header() {
                 </button>
               )}
 
-              {/* Menu Dropdown */}
               {isAuthenticated ? (
                 showMenuDropdown && (
                   <>
@@ -312,7 +288,7 @@ export default function Header() {
                       onClick={() => setShowMenuDropdown(false)}
                     />
                     <div
-                      className="absolute right-0 top-full mt-2 bg-white rounded-2xl shadow-2xl overflow-hidden z-[999]"
+                      className="absolute right-0 top-full z-[999] mt-2 overflow-hidden rounded-2xl bg-white shadow-2xl"
                       style={{ minWidth: "320px" }}
                     >
                       <ProfileMenu
@@ -320,6 +296,7 @@ export default function Header() {
                         onLogout={logout}
                         variant="dropdown"
                         onItemClick={() => setShowMenuDropdown(false)}
+                        onGiftCardClick={() => navigate("/gift-cards")}
                       />
                     </div>
                   </>
@@ -336,30 +313,33 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center gap-3">
+          <div className="flex items-center gap-3 md:hidden">
             {isAuthenticated ? (
               <button
-                onClick={() => setShowMenuDropdown(!showMenuDropdown)}
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white"
+                onClick={() => navigate("/menu")}
+                className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-slate-900 to-slate-700 text-white"
+                title={client?.name || "Account"}
               >
                 {client?.avatar ? (
                   <img
                     src={client.avatar}
-                    alt={client?.name}
-                    className="w-full h-full object-cover rounded-full"
+                    alt={client?.name || "User"}
+                    className="h-full w-full rounded-full object-cover"
                   />
                 ) : (
-                  <span>{client?.name?.charAt(0).toUpperCase() || "U"}</span>
+                  <span className="text-sm font-semibold">
+                    {client?.name?.charAt(0).toUpperCase() || "U"}
+                  </span>
                 )}
               </button>
             ) : (
               <button
                 onClick={() => setShowMenuDropdown(!showMenuDropdown)}
-                className="p-2 text-gray-600 hover:text-violet-600"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700"
+                aria-label="Open menu"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="h-5 w-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -374,131 +354,59 @@ export default function Header() {
               </button>
             )}
 
-            {/* Mobile Dropdown */}
-            {showMenuDropdown && (
+            {!isAuthenticated && showMenuDropdown && (
               <>
                 <div
                   className="fixed inset-0 z-[998] bg-black/20"
                   onClick={() => setShowMenuDropdown(false)}
                 />
-                <div className="fixed top-16 right-4 left-4 bg-white rounded-2xl shadow-2xl z-[999] p-4 max-h-[80vh] overflow-y-auto">
-                  {isAuthenticated ? (
-                    <ProfileMenu
-                      client={client}
-                      onLogout={logout}
-                      variant="mobile"
-                      onItemClick={() => setShowMenuDropdown(false)}
-                    />
-                  ) : (
-                    <div className="space-y-1">
-                      {/* Customer Links Section */}
-                      <div className="pb-2 mb-2">
-                        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
-                          FOR CUSTOMERS
-                        </div>
-                        <button
-                          onClick={() => {
-                            handleLogin();
-                            setShowMenuDropdown(false);
-                          }}
-                          className="w-full px-4 py-3 text-left text-violet-600 hover:bg-violet-50 rounded-xl font-medium"
-                        >
-                          Log in or sign up
-                        </button>
-                        <button
-                          onClick={() => {
-                            navigate("/search");
-                            setShowMenuDropdown(false);
-                          }}
-                          className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-xl"
-                        >
-                          Find a business
-                        </button>
-                        <button
-                          onClick={() => {
-                            navigate("/help");
-                            setShowMenuDropdown(false);
-                          }}
-                          className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-xl"
-                        >
-                          Help and support
-                        </button>
-                      </div>
-
-                      {/* Business Links Section */}
-                      <div className="bg-gray-50 -mx-4 px-4 py-4 rounded-xl">
-                        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
-                          FOR BUSINESSES
-                        </div>
-                        <button
-                          onClick={() => {
-                            navigate("/signup");
-                            setShowMenuDropdown(false);
-                          }}
-                          className="w-full px-4 py-3 text-left text-gray-900 hover:bg-white rounded-xl font-medium flex items-center justify-between"
-                        >
-                          <span>List your business</span>
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                <div className="fixed inset-x-4 top-[max(env(safe-area-inset-top),4.5rem)] z-[999] max-h-[80vh] overflow-y-auto rounded-3xl border border-slate-200 bg-white p-4 shadow-2xl">
+                  <div className="space-y-3">
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-3">
+                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                        For Customers
+                      </p>
+                      <div className="space-y-1.5">
+                        {customerLinks.map((link) => (
+                          <button
+                            key={link.label}
+                            onClick={() => {
+                              if (link.onClick) {
+                                link.onClick();
+                                setShowMenuDropdown(false);
+                              } else if (link.href) {
+                                handleMenuNavigation(link.href);
+                              }
+                            }}
+                            className={`${mobileMenuItemClass} ${
+                              link.primary
+                                ? "bg-slate-900 text-white hover:bg-slate-800 hover:text-white"
+                                : ""
+                            }`}
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={() => {
-                            navigate("/admin/login");
-                            setShowMenuDropdown(false);
-                          }}
-                          className="w-full px-4 py-3 text-left text-gray-900 hover:bg-white rounded-xl font-medium flex items-center justify-between"
-                        >
-                          <span>Business log in</span>
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={() => {
-                            navigate("/join-referral-program");
-                            setShowMenuDropdown(false);
-                          }}
-                          className="w-full px-4 py-3 text-left text-gray-900 hover:bg-white rounded-xl font-medium flex items-center justify-between"
-                        >
-                          <span>Join referral program</span>
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
-                        </button>
+                            {link.label}
+                          </button>
+                        ))}
                       </div>
                     </div>
-                  )}
+
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-3">
+                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                        For Businesses
+                      </p>
+                      <div className="space-y-1.5">
+                        {businessLinks.map((link) => (
+                          <button
+                            key={link.label}
+                            onClick={() => handleMenuNavigation(link.href)}
+                            className={mobileMenuItemClass}
+                          >
+                            {link.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </>
             )}

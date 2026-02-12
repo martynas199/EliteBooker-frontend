@@ -1,19 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-/**
- * MenuDropdown Component
- * A reusable dropdown menu with sections for customers and businesses
- * Matches Fresha's design pattern
- * When user is logged in (businessLinks is empty), shows single-section menu
- *
- * @param {Object} props
- * @param {boolean} props.isOpen - Controls dropdown visibility
- * @param {Function} props.onClose - Callback when dropdown should close
- * @param {Array} props.customerLinks - Array of links for customer section
- * @param {Array} props.businessLinks - Array of links for business section (optional)
- * @param {string} props.position - Position of dropdown: 'left' | 'right' (default: 'right')
- */
 export default function MenuDropdown({
   isOpen,
   onClose,
@@ -24,7 +11,6 @@ export default function MenuDropdown({
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
-  // Close on escape key
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape" && isOpen) {
@@ -55,14 +41,14 @@ export default function MenuDropdown({
   const isMobile = position === "mobile";
   const positionClasses = position === "left" ? "left-0" : "right-0";
 
-  // If no business links, show simple single-section menu (logged in state)
   const isSimpleMenu = businessLinks.length === 0;
 
   return (
     <>
-      {/* Click outside to close dropdown */}
       <div
-        className={`fixed inset-0 z-[998] ${isMobile ? "bg-black/20" : ""}`}
+        className={`fixed inset-0 z-[998] ${
+          isMobile ? "bg-black/20 backdrop-blur-[1px]" : ""
+        }`}
         onClick={onClose}
       />
 
@@ -70,28 +56,31 @@ export default function MenuDropdown({
         ref={dropdownRef}
         className={
           isMobile
-            ? "fixed inset-4 top-16 bg-white rounded-2xl shadow-2xl overflow-y-auto z-[999]"
-            : `absolute ${positionClasses} top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl overflow-hidden z-[999]`
+            ? "fixed inset-x-4 top-[max(env(safe-area-inset-top),4.5rem)] z-[999] max-h-[80vh] overflow-y-auto rounded-3xl border border-slate-200 bg-white shadow-2xl"
+            : `absolute ${positionClasses} top-full z-[999] mt-2 w-80 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl`
         }
-        style={isMobile ? {} : { minWidth: "320px" }}
+        style={
+          isMobile
+            ? { paddingBottom: "max(env(safe-area-inset-bottom), 0.75rem)" }
+            : { minWidth: "320px" }
+        }
       >
-        {/* For Customers Section */}
         {customerLinks.length > 0 && (
-          <div className="p-6 bg-white">
+          <div className="bg-white p-4 sm:p-5">
             {!isSimpleMenu && (
-              <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
-                FOR CUSTOMERS
-              </div>
+              <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                For Customers
+              </p>
             )}
-            <div className="flex flex-col gap-1">
-              {customerLinks.map((link, index) => (
+            <div className="space-y-1.5">
+              {customerLinks.map((link) => (
                 <button
-                  key={index}
+                  key={link.label}
                   onClick={() => handleLinkClick(link)}
-                  className={`w-full text-left px-4 py-3 hover:bg-gray-50 rounded-xl transition-colors text-base block ${
+                  className={`w-full rounded-xl border px-3.5 py-2.5 text-left text-sm font-medium transition-colors ${
                     link.primary
-                      ? "text-violet-600 hover:bg-violet-50 font-medium"
-                      : "text-gray-700"
+                      ? "border-slate-900 bg-gradient-to-r from-slate-900 to-slate-700 text-white hover:from-slate-800 hover:to-slate-700"
+                      : "border-slate-200 bg-white text-slate-800 hover:bg-slate-50"
                   }`}
                   disabled={link.disabled}
                 >
@@ -102,24 +91,23 @@ export default function MenuDropdown({
           </div>
         )}
 
-        {/* For Businesses Section - only show if we have business links */}
         {businessLinks.length > 0 && (
-          <div className="bg-gray-50 p-6">
-            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
-              FOR BUSINESSES
-            </div>
-            <div className="flex flex-col gap-1">
-              {businessLinks.map((link, index) => (
+          <div className="border-t border-slate-200 bg-slate-50/80 p-4 sm:p-5">
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+              For Businesses
+            </p>
+            <div className="space-y-1.5">
+              {businessLinks.map((link) => (
                 <button
-                  key={index}
+                  key={link.label}
                   onClick={() => handleLinkClick(link)}
-                  className="w-full flex items-center justify-between px-4 py-3 text-gray-900 hover:bg-white rounded-xl transition-colors text-base font-medium"
+                  className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50"
                   disabled={link.disabled}
                 >
                   <span>{link.label}</span>
                   {link.showArrow !== false && (
                     <svg
-                      className="w-5 h-5 flex-shrink-0"
+                      className="h-4 w-4 flex-shrink-0 text-slate-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -127,7 +115,7 @@ export default function MenuDropdown({
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={1.8}
                         d="M9 5l7 7-7 7"
                       />
                     </svg>

@@ -153,7 +153,8 @@ export default function SearchPageSimple() {
         left: 0,
         width: "100vw",
         height: "100vh",
-        backgroundColor: "white",
+        background:
+          "linear-gradient(180deg, #f8f5ef 0%, #f6f2ea 52%, #efe8dc 100%)",
         display: "flex",
         flexDirection: "column",
         zIndex: 9999,
@@ -167,9 +168,10 @@ export default function SearchPageSimple() {
           alignItems: "center",
           gap: "12px",
           padding: "16px",
-          borderBottom: "1px solid #e5e7eb",
+          borderBottom: "1px solid #e2e8f0",
           flexShrink: 0,
-          backgroundColor: "white",
+          backgroundColor: "rgba(255, 255, 255, 0.92)",
+          backdropFilter: "blur(6px)",
         }}
       >
         <button
@@ -205,10 +207,12 @@ export default function SearchPageSimple() {
           style={{
             flex: 1,
             padding: "12px 16px",
-            border: "1px solid #e5e7eb",
+            border: "1px solid #cbd5e1",
             borderRadius: "12px",
             fontSize: "16px",
             outline: "none",
+            backgroundColor: "#ffffff",
+            color: "#0f172a",
           }}
         />
       </div>
@@ -229,7 +233,7 @@ export default function SearchPageSimple() {
             width: "100%",
             height: "40%",
             minHeight: "200px",
-            backgroundColor: "#e5e7eb",
+            backgroundColor: "#e2e8f0",
           }}
         />
 
@@ -257,7 +261,7 @@ export default function SearchPageSimple() {
                   width: "40px",
                   height: "40px",
                   border: "4px solid #f3f3f3",
-                  borderTop: "4px solid #7c3aed",
+                  borderTop: "4px solid #1e293b",
                   borderRadius: "50%",
                   animation: "spin 1s linear infinite",
                 }}
@@ -274,7 +278,7 @@ export default function SearchPageSimple() {
               style={{
                 textAlign: "center",
                 padding: "40px 20px",
-                color: "#666",
+                color: "#475569",
               }}
             >
               <p>No businesses found</p>
@@ -291,12 +295,13 @@ export default function SearchPageSimple() {
                   style={{
                     display: "block",
                     padding: "16px",
-                    backgroundColor: "white",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "12px",
+                    backgroundColor: "rgba(255, 255, 255, 0.95)",
+                    border: "1px solid #cbd5e1",
+                    borderRadius: "16px",
                     textDecoration: "none",
                     color: "inherit",
                     transition: "all 0.2s",
+                    boxShadow: "0 8px 24px -18px rgba(15, 23, 42, 0.45)",
                   }}
                 >
                   <h3
@@ -304,7 +309,7 @@ export default function SearchPageSimple() {
                       fontSize: "18px",
                       fontWeight: 600,
                       marginBottom: "8px",
-                      color: "#111",
+                      color: "#0f172a",
                     }}
                   >
                     {venue.businessName || venue.name}
@@ -313,7 +318,7 @@ export default function SearchPageSimple() {
                     <p
                       style={{
                         fontSize: "14px",
-                        color: "#666",
+                        color: "#475569",
                         marginBottom: "4px",
                       }}
                     >

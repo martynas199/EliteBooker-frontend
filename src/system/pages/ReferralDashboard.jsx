@@ -1,15 +1,10 @@
-/**
- * Referral Dashboard
- *
- * Dashboard for referral partners to view their code, stats, and referred businesses
- */
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../shared/lib/apiClient";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { motion } from "framer-motion";
-import eliteLogo from "../../assets/elite.png";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import {
   Gift,
   Copy,
@@ -22,7 +17,72 @@ import {
   Loader,
   XCircle,
   Info,
+  Building2,
 } from "lucide-react";
+
+const getStatusMeta = (status) => {
+  if (status === "active") {
+    return {
+      label: "Active",
+      badgeClass: "bg-slate-100 text-slate-700",
+      icon: CheckCircle,
+    };
+  }
+
+  if (status === "pending") {
+    return {
+      label: "Pending",
+      badgeClass: "bg-amber-100 text-amber-700",
+      icon: Clock,
+    };
+  }
+
+  return {
+    label: "Churned",
+    badgeClass: "bg-slate-100 text-slate-700",
+    icon: XCircle,
+  };
+};
+
+const statCards = [
+  {
+    key: "totalReferrals",
+    title: "Total Referrals",
+    icon: Users,
+    iconClass: "text-slate-700",
+  },
+  {
+    key: "activeReferrals",
+    title: "Active Businesses",
+    icon: TrendingUp,
+    iconClass: "text-emerald-600",
+  },
+  {
+    key: "pendingReferrals",
+    title: "Pending Signups",
+    icon: Clock,
+    iconClass: "text-amber-600",
+  },
+];
+
+const journeySteps = [
+  {
+    number: 1,
+    title: "Share Your Code",
+    description: "Send your code to salons, spas, and beauty professionals.",
+  },
+  {
+    number: 2,
+    title: "They Sign Up",
+    description: "Businesses create an account using your referral code.",
+  },
+  {
+    number: 3,
+    title: "Earn Rewards",
+    description:
+      "Rewards unlock once they stay active for 30 days with at least one appointment.",
+  },
+];
 
 export default function ReferralDashboard() {
   const navigate = useNavigate();
@@ -43,81 +103,30 @@ export default function ReferralDashboard() {
   const [copied, setCopied] = useState(false);
   const [generatingCode, setGeneratingCode] = useState(false);
 
-  console.log(
-    "[ReferralDashboard MOUNT] Current pathname:",
-    window.location.pathname,
-  );
-  console.log("[ReferralDashboard MOUNT] authLoading:", authLoading);
-  console.log("[ReferralDashboard MOUNT] isAuthenticated:", isAuthenticated);
-  console.log("[ReferralDashboard MOUNT] client:", client);
-
-  useEffect(() => {
-    console.log("[ReferralDashboard] useEffect triggered");
-    console.log("[ReferralDashboard] authLoading:", authLoading);
-    console.log("[ReferralDashboard] isAuthenticated:", isAuthenticated);
-    console.log("[ReferralDashboard] client:", client);
-    console.log(
-      "[ReferralDashboard] Token in localStorage:",
-      localStorage.getItem("clientToken") ? "YES" : "NO",
-    );
-
-    // Wait for auth to finish loading before checking authentication
-    if (authLoading) {
-      console.log("[ReferralDashboard] Still loading auth, waiting...");
-      return;
-    }
-
-    if (!isAuthenticated) {
-      console.log(
-        "[ReferralDashboard] Not authenticated, redirecting to login...",
-      );
-      navigate("/client/login");
-      return;
-    }
-
-    console.log("[ReferralDashboard] Authenticated! Fetching referral data...");
-    fetchReferralData();
-  }, [authLoading, isAuthenticated, navigate]);
-
-  const fetchReferralData = async () => {
-    console.log("[ReferralDashboard] fetchReferralData called");
+  const fetchReferralData = useCallback(async () => {
     try {
       setLoading(true);
 
-      // Try to get existing referral code
       try {
-        console.log("[ReferralDashboard] Fetching referral code...");
         const codeResponse = await api.get("/referrals/my-code");
-        console.log(
-          "[ReferralDashboard] Referral code response:",
-          codeResponse.data,
-        );
         setReferralCode(codeResponse.data.data.code);
       } catch (err) {
-        // If no code exists (404), that's okay - we'll show generate button
         if (err.response?.status !== 404) {
           console.error("Error fetching referral code:", err);
         }
       }
 
-      // Try to get stats (might fail if no code yet)
       try {
         const statsResponse = await api.get("/referrals/stats");
-        console.log("[ReferralDashboard] Stats response:", statsResponse.data);
         if (statsResponse.data.success && statsResponse.data.data?.totalStats) {
           setStats(statsResponse.data.data.totalStats);
         }
       } catch (err) {
-        console.log("No stats available yet", err);
+        console.error("Error fetching stats:", err);
       }
 
-      // Try to get dashboard data with referrals list
       try {
         const dashboardResponse = await api.get("/referrals/dashboard");
-        console.log(
-          "[ReferralDashboard] Dashboard response:",
-          dashboardResponse.data,
-        );
         if (
           dashboardResponse.data.success &&
           dashboardResponse.data.data.referrals
@@ -125,14 +134,27 @@ export default function ReferralDashboard() {
           setReferrals(dashboardResponse.data.data.referrals);
         }
       } catch (err) {
-        console.log("No referrals list available yet");
+        console.error("Error fetching referrals list:", err);
       }
     } catch (err) {
       console.error("Error fetching referral data:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+
+    if (!isAuthenticated) {
+      navigate("/referral-login");
+      return;
+    }
+
+    fetchReferralData();
+  }, [authLoading, isAuthenticated, navigate, fetchReferralData]);
 
   const generateReferralCode = async () => {
     try {
@@ -147,15 +169,21 @@ export default function ReferralDashboard() {
     }
   };
 
-  const copyReferralLink = () => {
-    const link = `${window.location.origin}/signup?ref=${referralCode}`;
-    navigator.clipboard.writeText(link);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+    }
 
-  const copyCode = () => {
-    navigator.clipboard.writeText(referralCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -165,331 +193,334 @@ export default function ReferralDashboard() {
     navigate("/");
   };
 
+  const referralLink = referralCode
+    ? `${window.location.origin}/signup?ref=${referralCode}`
+    : "";
+
+  const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
+
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
-        <Loader className="w-8 h-8 animate-spin text-emerald-600" />
+      <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+        <Header />
+        <main className="mx-auto flex min-h-[60vh] w-full max-w-7xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+          <div className="rounded-2xl border border-slate-200 bg-white/90 p-8 text-center shadow-lg">
+            <Loader className="mx-auto h-8 w-8 animate-spin text-slate-700" />
+            <p className="mt-4 text-sm text-slate-600">Loading dashboard...</p>
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <img src={eliteLogo} alt="Elite Booker" className="h-8" />
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">
-              {client?.name || client?.email}
-            </span>
+    <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <Header />
+
+      <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <motion.section
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-lg sm:p-8"
+        >
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Referral Dashboard
+              </p>
+              <h1 className="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl">
+                Welcome back{client?.name ? `, ${client.name}` : ""}
+              </h1>
+              <p className="mt-2 text-sm text-slate-600 sm:text-base">
+                Share your code with businesses and monitor your referral
+                rewards in one view.
+              </p>
+            </div>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50"
             >
-              <LogOut className="w-4 h-4" />
-              Logout
+              <LogOut className="h-4 w-4" />
+              Log out
             </button>
           </div>
-        </div>
-      </div>
+        </motion.section>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Welcome Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Welcome to Your Referral Dashboard! 🎉
-          </h1>
-          <p className="text-lg text-gray-600">
-            Share your referral code with businesses and earn rewards
-          </p>
-        </motion.div>
-
-        {/* Referral Code Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white rounded-2xl shadow-lg p-8 mb-6"
+          transition={{ delay: 0.05 }}
+          className="mb-6 rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-lg sm:p-8"
         >
           {referralCode ? (
             <>
-              <div className="flex items-center justify-between mb-6">
+              <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-1">
-                    Your Referral Code
+                  <h2 className="text-2xl font-bold text-slate-900">
+                    Your referral code
                   </h2>
-                  <p className="text-gray-600">
-                    Share this code with beauty & wellness businesses
+                  <p className="mt-1 text-sm text-slate-600">
+                    Share this with beauty and wellness businesses.
                   </p>
                 </div>
-                <Gift className="w-12 h-12 text-emerald-600" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-700">
+                  <Gift className="h-6 w-6" />
+                </div>
               </div>
 
-              <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl p-8 text-center mb-6">
-                <div className="text-white text-6xl font-bold tracking-widest mb-4">
+              <div className="rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 p-6 text-center text-white sm:p-8">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-300">
+                  Code
+                </p>
+                <p className="mt-2 break-all text-4xl font-bold tracking-[0.2em] sm:text-5xl">
                   {referralCode}
-                </div>
-                <div className="flex gap-3 justify-center">
+                </p>
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-center">
                   <button
-                    onClick={copyCode}
-                    className="bg-white text-emerald-600 px-6 py-3 rounded-lg font-semibold hover:bg-emerald-50 transition-all flex items-center gap-2"
+                    onClick={() => copyToClipboard(referralCode)}
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-100"
                   >
                     {copied ? (
-                      <CheckCircle className="w-5 h-5" />
+                      <CheckCircle className="h-5 w-5" />
                     ) : (
-                      <Copy className="w-5 h-5" />
+                      <Copy className="h-5 w-5" />
                     )}
-                    {copied ? "Copied!" : "Copy Code"}
+                    {copied ? "Copied" : "Copy code"}
                   </button>
                   <button
-                    onClick={copyReferralLink}
-                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all flex items-center gap-2 border border-white/40"
+                    onClick={() => copyToClipboard(referralLink)}
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/40 bg-white/10 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/20"
                   >
-                    <Share2 className="w-5 h-5" />
-                    Copy Signup Link
+                    <Share2 className="h-5 w-5" />
+                    Copy signup link
                   </button>
                 </div>
               </div>
 
-              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
-                <p className="text-sm text-emerald-800">
-                  <strong>Your referral link:</strong>
-                  <br />
-                  <code className="text-xs bg-white px-2 py-1 rounded mt-1 inline-block">
-                    {window.location.origin}/signup?ref={referralCode}
-                  </code>
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  Referral link
                 </p>
+                <code className="mt-2 block overflow-x-auto rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 sm:text-sm">
+                  {referralLink}
+                </code>
               </div>
             </>
           ) : (
-            <div className="text-center py-8">
-              <Gift className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Generate Your Referral Code
+            <div className="py-4 text-center sm:py-8">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+                <Gift className="h-7 w-7" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-900">
+                Generate your referral code
               </h3>
-              <p className="text-gray-600 mb-6">
-                Get your unique code to start referring businesses
+              <p className="mt-2 text-sm text-slate-600">
+                Create your unique code to start referring businesses.
               </p>
               <button
                 onClick={generateReferralCode}
                 disabled={generatingCode}
-                className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2 mx-auto"
+                className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-slate-900 to-slate-700 px-6 text-sm font-semibold text-white transition-all hover:from-slate-800 hover:to-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {generatingCode ? (
                   <>
-                    <Loader className="w-5 h-5 animate-spin" />
+                    <Loader className="h-5 w-5 animate-spin" />
                     Generating...
                   </>
                 ) : (
                   <>
-                    <Gift className="w-5 h-5" />
-                    Generate My Code
+                    <Gift className="h-5 w-5" />
+                    Generate my code
                   </>
                 )}
               </button>
             </div>
           )}
-        </motion.div>
+        </motion.section>
 
-        {/* Stats Cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="grid md:grid-cols-3 gap-6 mb-8"
+          transition={{ delay: 0.08 }}
+          className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between mb-2">
-              <Users className="w-8 h-8 text-blue-600" />
-              <span className="text-3xl font-bold text-gray-900">
-                {stats.totalReferrals}
-              </span>
-            </div>
-            <h3 className="text-gray-600 font-medium">Total Referrals</h3>
-          </div>
+          {statCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <article
+                key={card.key}
+                className="rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-sm"
+              >
+                <div className="flex items-center justify-between">
+                  <Icon className={`h-7 w-7 ${card.iconClass}`} />
+                  <span className="text-3xl font-bold text-slate-900">
+                    {stats[card.key]}
+                  </span>
+                </div>
+                <p className="mt-3 text-sm font-medium text-slate-600">
+                  {card.title}
+                </p>
+              </article>
+            );
+          })}
+        </motion.section>
 
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between mb-2">
-              <TrendingUp className="w-8 h-8 text-green-600" />
-              <span className="text-3xl font-bold text-gray-900">
-                {stats.activeReferrals}
-              </span>
-            </div>
-            <h3 className="text-gray-600 font-medium">Active Businesses</h3>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between mb-2">
-              <Clock className="w-8 h-8 text-orange-600" />
-              <span className="text-3xl font-bold text-gray-900">
-                {stats.pendingReferrals}
-              </span>
-            </div>
-            <h3 className="text-gray-600 font-medium">Pending Signups</h3>
-          </div>
-        </motion.div>
-
-        {/* How It Works */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white rounded-2xl shadow-lg p-8"
+          transition={{ delay: 0.11 }}
+          className="mb-6 rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-lg sm:p-8"
         >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            How to Earn Rewards
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-emerald-600 font-bold text-xl">1</span>
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Share Your Code
-              </h3>
-              <p className="text-sm text-gray-600">
-                Give your code to salons, spas, and beauty professionals
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-emerald-600 font-bold text-xl">2</span>
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">They Sign Up</h3>
-              <p className="text-sm text-gray-600">
-                Business creates an account using your referral code
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-emerald-600 font-bold text-xl">3</span>
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Earn Rewards</h3>
-              <p className="text-sm text-gray-600">
-                Get paid after they stay active for 30 days with at least 1
-                appointment
-              </p>
-            </div>
+          <h2 className="text-2xl font-bold text-slate-900">How it works</h2>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {journeySteps.map((step) => (
+              <article
+                key={step.number}
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center"
+              >
+                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+                  {step.number}
+                </div>
+                <h3 className="text-sm font-semibold text-slate-900 sm:text-base">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                  {step.description}
+                </p>
+              </article>
+            ))}
           </div>
-        </motion.div>
+        </motion.section>
 
-        {/* Referred Businesses */}
         {referrals.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+          <motion.section
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white rounded-2xl shadow-lg p-8 mt-6"
+            transition={{ delay: 0.14 }}
+            className="rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-lg sm:p-8"
           >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Your Referred Businesses
+            <h2 className="text-2xl font-bold text-slate-900">
+              Referred businesses
             </h2>
 
-            {/* Status Legend */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <div className="flex items-start gap-2">
-                <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-gray-700">
-                  <p className="font-semibold text-gray-900 mb-2">
-                    Status Guide:
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div className="flex items-start gap-2 text-sm text-slate-700">
+                <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-700" />
+                <div className="space-y-2">
+                  <p className="font-semibold text-slate-900">Status guide</p>
+                  <p>
+                    <span className="font-semibold">Pending:</span> waiting for
+                    30 days of active use and at least one appointment.
                   </p>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Pending:</span>
-                      <span>
-                        Waiting for business to stay active for 30 days and
-                        complete at least 1 appointment
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span className="font-medium">Active:</span>
-                      <span>Business met the criteria - reward earned!</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <XCircle className="w-4 h-4 text-gray-600" />
-                      <span className="font-medium">Churned:</span>
-                      <span>
-                        Business canceled subscription or became inactive
-                      </span>
-                    </div>
-                  </div>
+                  <p>
+                    <span className="font-semibold">Active:</span> requirements
+                    met, reward eligible.
+                  </p>
+                  <p>
+                    <span className="font-semibold">Churned:</span> business is
+                    no longer active.
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="overflow-x-auto">
+            <div className="mt-5 space-y-3 md:hidden">
+              {referrals.map((referral) => {
+                const status = referral.status || "pending";
+                const statusMeta = getStatusMeta(status);
+                const StatusIcon = statusMeta.icon;
+
+                return (
+                  <article
+                    key={referral.id}
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">
+                          {referral.businessName || "N/A"}
+                        </p>
+                        <p className="mt-1 text-xs text-slate-600">
+                          {referral.businessEmail || "N/A"}
+                        </p>
+                      </div>
+                      <span
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${statusMeta.badgeClass}`}
+                      >
+                        <StatusIcon className="h-3.5 w-3.5" />
+                        {statusMeta.label}
+                      </span>
+                    </div>
+                    <p className="mt-3 text-xs text-slate-500">
+                      Signed up: {formatDate(referral.signupDate)}
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
+
+            <div className="mt-5 hidden overflow-x-auto md:block">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                  <tr className="border-b border-slate-200">
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">
                       Business Name
                     </th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">
                       Email
                     </th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">
                       Signup Date
                     </th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">
                       Status
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {referrals.map((referral) => (
-                    <tr
-                      key={referral.id}
-                      className="border-b border-gray-100 hover:bg-gray-50"
-                    >
-                      <td className="py-4 px-4 font-medium text-gray-900">
-                        {referral.businessName || "N/A"}
-                      </td>
-                      <td className="py-4 px-4 text-gray-600">
-                        {referral.businessEmail || "N/A"}
-                      </td>
-                      <td className="py-4 px-4 text-gray-600">
-                        {new Date(referral.signupDate).toLocaleDateString()}
-                      </td>
-                      <td className="py-4 px-4 relative">
-                        <div className="flex items-center gap-2">
+                  {referrals.map((referral) => {
+                    const status = referral.status || "pending";
+                    const statusMeta = getStatusMeta(status);
+                    const StatusIcon = statusMeta.icon;
+
+                    return (
+                      <tr
+                        key={referral.id}
+                        className="border-b border-slate-100 hover:bg-slate-50"
+                      >
+                        <td className="px-4 py-4 text-sm font-medium text-slate-900">
+                          <div className="flex items-center gap-2">
+                            <Building2 className="h-4 w-4 text-slate-400" />
+                            {referral.businessName || "N/A"}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 text-sm text-slate-600">
+                          {referral.businessEmail || "N/A"}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-slate-600">
+                          {formatDate(referral.signupDate)}
+                        </td>
+                        <td className="px-4 py-4">
                           <span
-                            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${
-                              referral.status === "active"
-                                ? "bg-green-100 text-green-700"
-                                : referral.status === "pending"
-                                ? "bg-orange-100 text-orange-700"
-                                : "bg-gray-100 text-gray-700"
-                            }`}
+                            className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-medium ${statusMeta.badgeClass}`}
                           >
-                            {referral.status === "active" && (
-                              <CheckCircle className="w-4 h-4" />
-                            )}
-                            {referral.status === "pending" && (
-                              <Clock className="w-4 h-4" />
-                            )}
-                            {referral.status === "churned" && (
-                              <XCircle className="w-4 h-4" />
-                            )}
-                            {referral.status.charAt(0).toUpperCase() +
-                              referral.status.slice(1)}
+                            <StatusIcon className="h-4 w-4" />
+                            {statusMeta.label}
                           </span>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
-          </motion.div>
+          </motion.section>
         )}
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }
+

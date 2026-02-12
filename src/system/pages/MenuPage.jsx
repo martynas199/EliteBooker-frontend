@@ -4,6 +4,9 @@ import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 
+const itemClass =
+  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50";
+
 export default function MenuPage() {
   const navigate = useNavigate();
   const { client, isAuthenticated, logout } = useClientAuth();
@@ -11,12 +14,16 @@ export default function MenuPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Force page to top and prevent scroll
+    const previousOverflow = document.body.style.overflow;
+    const previousOverscroll = document.body.style.overscrollBehaviorY;
+
     window.scrollTo(0, 0);
     document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehaviorY = "none";
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
+      document.body.style.overscrollBehaviorY = previousOverscroll;
     };
   }, []);
 
@@ -24,257 +31,185 @@ export default function MenuPage() {
     try {
       await logout();
       navigate("/");
-    } catch (err) {
-      setError(err.message);
+    } catch (logoutError) {
+      setError(logoutError.message || "Unable to sign out");
     }
   };
 
-  if (error) {
-    return (
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#fee",
-          padding: "20px",
-          overflow: "auto",
-          zIndex: 9999,
-        }}
-      >
-        <h1 style={{ color: "red" }}>Error: {error}</h1>
-        <button
-          onClick={() => navigate(-1)}
-          style={{ marginTop: "20px", padding: "10px" }}
-        >
-          Go Back
-        </button>
-      </div>
-    );
-  }
-
-  const handleLogin = () => {
-    navigate("/client/login");
-  };
-
   const customerLinks = isAuthenticated
-    ? []
+    ? [
+        { label: "Find a business", href: "/search" },
+        { label: "Help and support", href: "/help" },
+      ]
     : [
-        {
-          label: "Log in or sign up",
-          onClick: handleLogin,
-          primary: true,
-        },
-        {
-          label: "Find a business",
-          href: "/search",
-        },
-        {
-          label: "Help and support",
-          href: "/help",
-        },
+        { label: "Log in or sign up", href: "/client/login", primary: true },
+        { label: "Find a business", href: "/search" },
+        { label: "Help and support", href: "/help" },
       ];
 
   const businessLinks = [
-    {
-      label: "List your business",
-      href: "/signup",
-    },
-    {
-      label: "Business log in",
-      href: "/admin/login",
-    },
+    { label: "List your business", href: "/signup" },
+    { label: "Business log in", href: "/admin/login" },
+    { label: "Join referral program", href: "/join-referral-program" },
   ];
 
-  // Public (not logged in) menu
-  if (!isAuthenticated) {
+  if (error) {
     return (
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100vw",
-          height: "100vh",
-          backgroundColor: "white",
-          display: "flex",
-          flexDirection: "column",
-          zIndex: 9999,
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "16px",
-            borderBottom: "1px solid #e5e7eb",
-            flexShrink: 0,
-          }}
-        >
-          <h1 style={{ fontSize: "18px", fontWeight: 600 }}>Menu</h1>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#f6f2ea] p-4">
+        <div className="w-full max-w-md rounded-3xl border border-red-200 bg-white p-6 text-center shadow-xl sm:p-8">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">
+            !
+          </div>
+          <h1 className="mb-2 text-xl font-semibold text-slate-950">
+            Something went wrong
+          </h1>
+          <p className="mb-6 text-sm text-slate-600">{error}</p>
           <button
             onClick={() => navigate(-1)}
-            style={{
-              padding: "8px",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              borderRadius: "999px",
-            }}
+            className="inline-flex h-11 items-center justify-center rounded-full bg-slate-900 px-6 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
           >
-            <svg
-              style={{ width: "24px", height: "24px" }}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            Go back
           </button>
-        </div>
-
-        <div
-          style={{
-            flex: 1,
-            overflowY: "auto",
-            overflowX: "hidden",
-            WebkitOverflowScrolling: "touch",
-          }}
-        >
-          <nav className="px-4 py-4 space-y-3">
-            <div className="pt-3 border-t border-gray-200">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                For Customers
-              </p>
-              {customerLinks.map((link, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    if (link.onClick) {
-                      link.onClick();
-                    } else if (link.href) {
-                      navigate(link.href);
-                    }
-                  }}
-                  className={`w-full text-left py-2 font-medium transition-colors ${
-                    link.primary
-                      ? "text-violet-600 hover:text-violet-700"
-                      : "text-gray-600 hover:text-violet-600"
-                  }`}
-                >
-                  {link.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="pt-3 border-t border-gray-200">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                For Businesses
-              </p>
-              {businessLinks.map((link, index) => (
-                <button
-                  key={index}
-                  onClick={() => navigate(link.href)}
-                  className="w-full text-left py-2 text-gray-600 hover:text-violet-600 font-medium transition-colors"
-                >
-                  {link.label}
-                </button>
-              ))}
-            </div>
-          </nav>
         </div>
       </div>
     );
   }
 
-  // Authenticated menu (profile)
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        backgroundColor: "white",
-        display: "flex",
-        flexDirection: "column",
-        zIndex: 9999,
-        overflow: "hidden",
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "16px",
-          borderBottom: "1px solid #e5e7eb",
-          flexShrink: 0,
-        }}
-      >
-        <h1 style={{ fontSize: "18px", fontWeight: 600 }}>Menu</h1>
-        <button
-          onClick={() => navigate(-1)}
-          style={{
-            padding: "8px",
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            borderRadius: "999px",
-          }}
+    <div className="fixed inset-0 z-[9999] bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-slate-900/10 to-transparent" />
+      <div className="relative flex h-full flex-col">
+        <div
+          className="border-b border-slate-200/80 bg-white/90 px-4 pb-3 pt-4 backdrop-blur"
+          style={{ paddingTop: "max(env(safe-area-inset-top), 1rem)" }}
         >
-          <svg
-            style={{ width: "24px", height: "24px" }}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
+          <div className="mx-auto flex w-full max-w-md items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                Navigation
+              </p>
+              <h1 className="text-base font-semibold text-slate-900">Menu</h1>
+            </div>
+            <button
+              onClick={() => navigate(-1)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition-colors hover:bg-slate-50"
+              aria-label="Close menu"
+            >
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
 
-      {/* Scrollable Content */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          overflowX: "hidden",
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
-        <ProfileMenu
-          client={client}
-          onLogout={handleLogout}
-          variant="mobile"
-          onGiftCardClick={() => setShowGiftCardModal(true)}
-        />
-      </div>
+        <div
+          className="flex-1 overflow-y-auto px-4 pb-6 pt-4"
+          style={{ paddingBottom: "max(env(safe-area-inset-bottom), 1.25rem)" }}
+        >
+          <div className="mx-auto w-full max-w-md space-y-4">
+            {isAuthenticated ? (
+              <>
+                <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div className="mb-4 flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-r from-slate-900 to-slate-700 text-sm font-semibold text-white">
+                      {client?.name?.charAt(0).toUpperCase() || "U"}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">
+                        {client?.name || "My Account"}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        Manage profile, bookings and settings
+                      </p>
+                    </div>
+                  </div>
+                  <ProfileMenu
+                    client={client}
+                    onLogout={handleLogout}
+                    variant="mobile"
+                    onGiftCardClick={() => setShowGiftCardModal(true)}
+                  />
+                </div>
 
-      {/* Gift Card Modal */}
-      {showGiftCardModal && (
-        <GiftCardModal
-          isOpen={showGiftCardModal}
-          onClose={() => setShowGiftCardModal(false)}
-          onSuccess={(giftCard) => {}}
-        />
-      )}
+                <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    Quick Links
+                  </p>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => navigate("/search")}
+                      className={itemClass}
+                    >
+                      Find a business
+                    </button>
+                    <button onClick={() => navigate("/help")} className={itemClass}>
+                      Help and support
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    For Customers
+                  </p>
+                  <div className="space-y-2">
+                    {customerLinks.map((link) => (
+                      <button
+                        key={link.label}
+                        onClick={() => navigate(link.href)}
+                        className={`${itemClass} ${
+                          link.primary
+                            ? "border-slate-900 bg-gradient-to-r from-slate-900 to-slate-700 text-white hover:from-slate-800 hover:to-slate-700"
+                            : ""
+                        }`}
+                      >
+                        {link.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    For Businesses
+                  </p>
+                  <div className="space-y-2">
+                    {businessLinks.map((link) => (
+                      <button
+                        key={link.label}
+                        onClick={() => navigate(link.href)}
+                        className={itemClass}
+                      >
+                        {link.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {showGiftCardModal && (
+          <GiftCardModal
+            isOpen={showGiftCardModal}
+            onClose={() => setShowGiftCardModal(false)}
+            onSuccess={() => {}}
+          />
+        )}
+      </div>
     </div>
   );
 }

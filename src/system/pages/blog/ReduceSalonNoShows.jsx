@@ -204,23 +204,23 @@ export default function ReduceSalonNoShows() {
         className="min-h-screen"
         style={{
           background:
-            "linear-gradient(to bottom, rgb(249, 250, 251), rgb(255, 255, 255))",
+            "linear-gradient(to bottom, #f8f5ef, #f6f2ea 55%, #efe8dc)",
         }}
       >
         {/* Hero */}
-        <section className="py-16 px-4 bg-gradient-to-br from-emerald-600 to-teal-600 text-white">
+        <section className="py-16 px-4 bg-gradient-to-br from-slate-900 to-slate-700 text-white">
           <div className="max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <p className="text-emerald-100 mb-4 font-semibold">
+              <p className="text-slate-200 mb-4 font-semibold">
                 Blog • 10 min read • Published Feb 3, 2026
               </p>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 How to Reduce Salon No-Shows by 40%: The Ultimate UK Guide
               </h1>
-              <p className="text-xl text-emerald-50 leading-relaxed">
+              <p className="text-xl text-slate-100 leading-relaxed">
                 The dreaded text: "Sorry, I can't make it today." You've just
                 lost 1-2 hours of revenue. Learn the proven strategies that UK
                 salons use to cut no-shows by 40-70%.
@@ -285,28 +285,28 @@ export default function ReduceSalonNoShows() {
             </h3>
             <ul className="space-y-3 text-lg text-gray-700">
               <li className="flex items-start">
-                <span className="text-emerald-600 mr-3 mt-1">•</span>
+                <span className="text-slate-700 mr-3 mt-1">•</span>
                 <span>
                   <strong>60% simply forgot</strong> the appointment (life got
                   in the way)
                 </span>
               </li>
               <li className="flex items-start">
-                <span className="text-emerald-600 mr-3 mt-1">•</span>
+                <span className="text-slate-700 mr-3 mt-1">•</span>
                 <span>
                   <strong>20% couldn't cancel easily</strong> (no online
                   cancellation, felt awkward calling)
                 </span>
               </li>
               <li className="flex items-start">
-                <span className="text-emerald-600 mr-3 mt-1">•</span>
+                <span className="text-slate-700 mr-3 mt-1">•</span>
                 <span>
                   <strong>15% had no financial commitment</strong> (no deposit =
                   no consequence)
                 </span>
               </li>
               <li className="flex items-start">
-                <span className="text-emerald-600 mr-3 mt-1">•</span>
+                <span className="text-slate-700 mr-3 mt-1">•</span>
                 <span>
                   <strong>5% genuine emergency</strong> or illness
                 </span>
@@ -327,10 +327,10 @@ export default function ReduceSalonNoShows() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
-                  className="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-emerald-500 transition-all"
+                  className="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-slate-500 transition-all"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
+                    <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
                       {strategy.number}
                     </div>
                     <div>
@@ -351,8 +351,8 @@ export default function ReduceSalonNoShows() {
               Strategy 1: Automated SMS Reminder System
             </h2>
 
-            <div className="bg-emerald-50 p-6 rounded-xl mb-6">
-              <h3 className="text-xl font-bold text-emerald-900 mb-4">
+            <div className="bg-slate-50 p-6 rounded-xl mb-6">
+              <h3 className="text-xl font-bold text-slate-900 mb-4">
                 Why SMS Works:
               </h3>
               <ul className="space-y-2 text-gray-800">
@@ -369,19 +369,19 @@ export default function ReduceSalonNoShows() {
               Implementation:
             </h3>
             <div className="space-y-4 text-lg text-gray-700">
-              <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-emerald-600">
+              <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-slate-700">
                 <strong>48-hour reminder:</strong>
                 <br />
                 "Hi Sarah, reminder you have lashes booked tomorrow at 2pm with
                 Emma. Reply YES to confirm or NO to cancel. The Beauty Lounge"
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-emerald-600">
+              <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-slate-700">
                 <strong>24-hour reminder:</strong>
                 <br />
                 "See you in 24 hours! Address: 123 High St, London. Running
                 late? Call us on 020 1234 5678."
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-emerald-600">
+              <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-slate-700">
                 <strong>2-hour reminder (optional for high-value):</strong>
                 <br />
                 "Looking forward to seeing you at 2pm! Don't forget to arrive 5
@@ -389,11 +389,11 @@ export default function ReduceSalonNoShows() {
               </div>
             </div>
 
-            <div className="mt-6 bg-teal-50 p-6 rounded-xl">
-              <h4 className="font-bold text-teal-900 mb-2">The Data:</h4>
+            <div className="mt-6 bg-slate-50 p-6 rounded-xl">
+              <h4 className="font-bold text-slate-900 mb-2">The Data:</h4>
               <p className="text-gray-800">
                 Salons using 2-stage SMS reminders see{" "}
-                <strong className="text-teal-900">
+                <strong className="text-slate-900">
                   50-70% reduction in no-shows
                 </strong>
                 . Cost: £2.99/month unlimited SMS = incredible ROI compared to
@@ -404,7 +404,7 @@ export default function ReduceSalonNoShows() {
             <div className="mt-6 text-center">
               <Link
                 to="/features/sms-reminders"
-                className="inline-flex items-center text-emerald-600 font-semibold hover:text-emerald-700"
+                className="inline-flex items-center text-slate-700 font-semibold hover:text-slate-800"
               >
                 Learn more about SMS Reminders →
               </Link>
@@ -509,13 +509,13 @@ export default function ReduceSalonNoShows() {
               </ul>
             </div>
 
-            <div className="mt-6 bg-emerald-50 p-6 rounded-xl">
-              <h4 className="font-bold text-emerald-900 mb-2">The Results:</h4>
+            <div className="mt-6 bg-slate-50 p-6 rounded-xl">
+              <h4 className="font-bold text-slate-900 mb-2">The Results:</h4>
               <p className="text-gray-800">
                 <strong>Case study:</strong> Manchester salon reduced no-shows
                 from 25% to 4% after implementing £20 deposit policy. Average
                 no-show rate drops to{" "}
-                <strong className="text-emerald-900">
+                <strong className="text-slate-900">
                   5-10% with deposits
                 </strong>
                 .
@@ -552,7 +552,7 @@ export default function ReduceSalonNoShows() {
             <div className="mt-6 text-center">
               <Link
                 to="/features/no-show-protection"
-                className="inline-flex items-center text-emerald-600 font-semibold hover:text-emerald-700"
+                className="inline-flex items-center text-slate-700 font-semibold hover:text-slate-800"
               >
                 Learn more about Deposit Protection →
               </Link>
@@ -591,17 +591,17 @@ export default function ReduceSalonNoShows() {
             <p className="text-lg text-gray-700 mb-4">
               Request explicit confirmation with reply-to-confirm:
             </p>
-            <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-emerald-600 mb-6">
+            <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-slate-700 mb-6">
               "Hi Emma, confirming your lash appointment tomorrow at 2pm. Reply
               YES to confirm or NO to cancel. We're looking forward to seeing
               you!"
             </div>
 
-            <div className="bg-teal-50 p-6 rounded-xl">
-              <h4 className="font-bold text-teal-900 mb-2">The Impact:</h4>
+            <div className="bg-slate-50 p-6 rounded-xl">
+              <h4 className="font-bold text-slate-900 mb-2">The Impact:</h4>
               <p className="text-gray-800">
                 Requiring confirmation cuts no-shows by an additional{" "}
-                <strong className="text-teal-900">20%</strong>. Plus, if they
+                <strong className="text-slate-900">20%</strong>. Plus, if they
                 cancel at 48 hours, you have time to rebook the slot instead of
                 losing revenue.
               </p>
@@ -689,8 +689,8 @@ export default function ReduceSalonNoShows() {
               Building Client Relationships:
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-emerald-50 p-4 rounded-lg">
-                <h4 className="font-bold text-emerald-900 mb-2">
+              <div className="bg-slate-50 p-4 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-2">
                   Personal Touches:
                 </h4>
                 <ul className="text-gray-700 space-y-1">
@@ -700,8 +700,8 @@ export default function ReduceSalonNoShows() {
                   <li>• Follow up after treatments</li>
                 </ul>
               </div>
-              <div className="bg-teal-50 p-4 rounded-lg">
-                <h4 className="font-bold text-teal-900 mb-2">
+              <div className="bg-slate-50 p-4 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-2">
                   Loyalty Rewards:
                 </h4>
                 <ul className="text-gray-700 space-y-1">
@@ -713,8 +713,8 @@ export default function ReduceSalonNoShows() {
               </div>
             </div>
 
-            <div className="mt-6 bg-white border-2 border-emerald-600 p-6 rounded-xl">
-              <h4 className="font-bold text-emerald-900 mb-2">
+            <div className="mt-6 bg-white border-2 border-slate-700 p-6 rounded-xl">
+              <h4 className="font-bold text-slate-900 mb-2">
                 Preferred Client Benefits:
               </h4>
               <p className="text-gray-700">
@@ -800,11 +800,11 @@ export default function ReduceSalonNoShows() {
             <h3 className="text-2xl font-bold text-gray-900 mb-4">
               Automated Waitlist System:
             </h3>
-            <div className="bg-emerald-50 p-6 rounded-xl">
+            <div className="bg-slate-50 p-6 rounded-xl">
               <p className="text-lg text-gray-800 mb-4">
                 When someone cancels, instantly notify clients on your waitlist:
               </p>
-              <div className="bg-white p-4 rounded-lg border-l-4 border-emerald-600">
+              <div className="bg-white p-4 rounded-lg border-l-4 border-slate-700">
                 "Hi Jenny, great news! A slot just opened up tomorrow at 2pm for
                 the gel nails you wanted. Interested? Reply YES to book or
                 IGNORE to stay on waitlist."
@@ -829,7 +829,7 @@ export default function ReduceSalonNoShows() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="bg-white p-6 rounded-xl border-2 border-emerald-600 shadow-lg"
+                  className="bg-white p-6 rounded-xl border-2 border-slate-700 shadow-lg"
                 >
                   <h3 className="text-xl font-bold text-gray-900 mb-3">
                     {study.name}
@@ -845,7 +845,7 @@ export default function ReduceSalonNoShows() {
                       <p className="text-sm text-gray-600 font-semibold mb-1">
                         AFTER:
                       </p>
-                      <p className="text-emerald-700 font-semibold">
+                      <p className="text-slate-800 font-semibold">
                         {study.after}
                       </p>
                     </div>
@@ -854,7 +854,7 @@ export default function ReduceSalonNoShows() {
                     <strong>Strategies used:</strong> {study.strategies}
                   </p>
                   {study.roi && (
-                    <p className="text-emerald-600 font-semibold">
+                    <p className="text-slate-700 font-semibold">
                       {study.roi}
                     </p>
                   )}
@@ -874,97 +874,97 @@ export default function ReduceSalonNoShows() {
 
             <div className="space-y-6">
               <div className="bg-white border-2 border-gray-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-emerald-600 mb-4">
+                <h3 className="text-xl font-bold text-slate-700 mb-4">
                   Week 1: Quick Wins
                 </h3>
                 <ul className="space-y-2 text-gray-700">
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-emerald-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Set up automated SMS reminders (48hr + 24hr)
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-emerald-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Write your cancellation policy
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-emerald-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Display policy on website/booking page
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-emerald-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Add cancellation policy to confirmation messages
                   </li>
                 </ul>
               </div>
 
               <div className="bg-white border-2 border-gray-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-600 mb-4">
+                <h3 className="text-xl font-bold text-slate-700 mb-4">
                   Week 2: Deposit System
                 </h3>
                 <ul className="space-y-2 text-gray-700">
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-teal-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Define deposit amounts by service/client type
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-teal-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Set up Stripe payment processing
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-teal-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Test deposit collection workflow
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-teal-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Communicate new policy to existing clients (email + social)
                   </li>
                 </ul>
               </div>
 
               <div className="bg-white border-2 border-gray-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-emerald-600 mb-4">
+                <h3 className="text-xl font-bold text-slate-700 mb-4">
                   Week 3: Confirmation Workflow
                 </h3>
                 <ul className="space-y-2 text-gray-700">
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-emerald-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Enable confirmation requests in booking system
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-emerald-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Add calendar links to confirmations
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-emerald-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Set up waitlist system
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-emerald-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Test full booking-to-confirmation-to-reminder flow
                   </li>
                 </ul>
               </div>
 
               <div className="bg-white border-2 border-gray-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-600 mb-4">
+                <h3 className="text-xl font-bold text-slate-700 mb-4">
                   Week 4: Measure & Refine
                 </h3>
                 <ul className="space-y-2 text-gray-700">
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-teal-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Track no-show rate (before vs after)
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-teal-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Calculate revenue saved
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-teal-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Identify patterns (which days/times/services still
                     problematic)
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-teal-600 mr-2 mt-1" />{" "}
+                    <CheckCircle className="w-5 h-5 text-slate-700 mr-2 mt-1" />{" "}
                     Adjust deposit amounts or reminder timing based on data
                   </li>
                 </ul>
@@ -994,15 +994,15 @@ export default function ReduceSalonNoShows() {
 
           {/* Conclusion */}
           <section className="mb-16">
-            <div className="bg-gradient-to-br from-emerald-600 to-teal-600 text-white p-8 rounded-2xl">
+            <div className="bg-gradient-to-br from-slate-900 to-slate-700 text-white p-8 rounded-2xl">
               <h2 className="text-3xl font-bold mb-4">
                 Stop Losing Money to No-Shows
               </h2>
-              <p className="text-xl text-emerald-50 mb-6">
+              <p className="text-xl text-slate-100 mb-6">
                 No-shows don't have to be "part of the business." With the right
                 systems, you can cut them by 40-70% starting this week.
               </p>
-              <ul className="space-y-2 text-emerald-50 mb-6">
+              <ul className="space-y-2 text-slate-100 mb-6">
                 <li>✓ SMS reminders slash forgetfulness by 60%</li>
                 <li>✓ Deposits create financial commitment</li>
                 <li>✓ Confirmation workflows give you 48hr notice to rebook</li>
@@ -1010,7 +1010,7 @@ export default function ReduceSalonNoShows() {
                   ✓ Clear policies + easy cancellation = professional business
                 </li>
               </ul>
-              <p className="text-lg text-emerald-50 mb-8">
+              <p className="text-lg text-slate-100 mb-8">
                 <strong>
                   Elite Booker includes all these features built-in:
                 </strong>{" "}
@@ -1021,13 +1021,13 @@ export default function ReduceSalonNoShows() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/signup"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-emerald-600 font-bold rounded-lg hover:bg-gray-100 shadow-lg"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-700 font-bold rounded-lg hover:bg-gray-100 shadow-lg"
                 >
                   Start Free Trial - No Card Required
                 </Link>
                 <a
                   href="#"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-emerald-500 text-white font-bold rounded-lg hover:bg-emerald-400 border-2 border-white"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-slate-500 text-white font-bold rounded-lg hover:bg-slate-400 border-2 border-white"
                 >
                   Watch 2-Min Demo
                 </a>
@@ -1043,9 +1043,9 @@ export default function ReduceSalonNoShows() {
             <div className="grid md:grid-cols-2 gap-4">
               <Link
                 to="/features/sms-reminders"
-                className="p-4 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
+                className="p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
               >
-                <h4 className="font-bold text-emerald-900">
+                <h4 className="font-bold text-slate-900">
                   SMS Reminders Feature →
                 </h4>
                 <p className="text-gray-700 text-sm">
@@ -1054,9 +1054,9 @@ export default function ReduceSalonNoShows() {
               </Link>
               <Link
                 to="/features/no-show-protection"
-                className="p-4 bg-teal-50 rounded-lg hover:bg-teal-100 transition-colors"
+                className="p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
               >
-                <h4 className="font-bold text-teal-900">
+                <h4 className="font-bold text-slate-900">
                   No-Show Protection →
                 </h4>
                 <p className="text-gray-700 text-sm">
@@ -1065,9 +1065,9 @@ export default function ReduceSalonNoShows() {
               </Link>
               <Link
                 to="/industries/hair-salons"
-                className="p-4 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
+                className="p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
               >
-                <h4 className="font-bold text-emerald-900">
+                <h4 className="font-bold text-slate-900">
                   For Hair Salons →
                 </h4>
                 <p className="text-gray-700 text-sm">
@@ -1076,9 +1076,9 @@ export default function ReduceSalonNoShows() {
               </Link>
               <Link
                 to="/pricing"
-                className="p-4 bg-teal-50 rounded-lg hover:bg-teal-100 transition-colors"
+                className="p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
               >
-                <h4 className="font-bold text-teal-900">View Pricing →</h4>
+                <h4 className="font-bold text-slate-900">View Pricing →</h4>
                 <p className="text-gray-700 text-sm">
                   £0 Basic plan + optional £2.99 SMS. No hidden fees.
                 </p>
@@ -1091,3 +1091,7 @@ export default function ReduceSalonNoShows() {
     </>
   );
 }
+
+
+
+

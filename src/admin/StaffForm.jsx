@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import {
+  User,
+  Image as ImageIcon,
+  MapPin,
+  Settings,
+  Clock,
+} from "lucide-react";
 import { useImageUpload } from "../shared/hooks/useImageUpload";
 import { useTenantSettings } from "../shared/hooks/useTenantSettings";
 import { api } from "../shared/lib/apiClient";
@@ -323,10 +330,18 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
     (key) => key !== "submit" && errors[key] != null
   ).length;
 
+  const inputClass = (hasError = false) =>
+    `w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 ${
+      hasError ? "border-red-500" : "border-gray-300"
+    }`;
+
+  const sectionClass =
+    "rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5";
+
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-8 overflow-hidden">
+    <div className="mx-auto mb-8 max-w-5xl rounded-3xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
       {errorCount > 0 && (
-        <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg overflow-hidden">
+        <div className="mb-4 rounded-2xl border border-red-200 bg-red-50/90 p-4 shadow-sm sm:mb-6">
           <div className="flex items-start gap-2 sm:gap-3">
             <svg
               className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0"
@@ -358,13 +373,23 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 sm:space-y-6 overflow-x-hidden"
+        className="space-y-4 overflow-x-hidden pb-24 sm:space-y-6 sm:pb-0"
       >
         {/* Basic Info Section */}
-        <div className="space-y-3 sm:space-y-4">
-          <h3 className="text-base sm:text-lg font-semibold border-b pb-2">
-            Basic Information
-          </h3>
+        <div className={sectionClass}>
+          <div className="mb-4 flex items-start gap-3 border-b border-gray-100 pb-3">
+            <div className="rounded-xl bg-slate-900 p-2 text-white shadow-sm">
+              <User className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900">Basic Information</h3>
+              <p className="text-xs text-gray-500">
+                Add profile details and a clear introduction.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
 
           {/* Name and Email - 2 columns on desktop */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
@@ -379,9 +404,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                 id="name"
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 ${
-                  errors.name ? "border-red-500" : "border-gray-300"
-                }`}
+                className={inputClass(!!errors.name)}
                 aria-invalid={!!errors.name}
               />
             </FormField>
@@ -392,9 +415,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                 id="email"
                 value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 ${
-                  errors.email ? "border-red-500" : "border-gray-300"
-                }`}
+                className={inputClass(!!errors.email)}
                 placeholder="staff@example.com"
                 aria-invalid={!!errors.email}
               />
@@ -409,7 +430,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                className={inputClass(false)}
                 placeholder="+44 20 1234 5678"
               />
             </FormField>
@@ -422,7 +443,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
               value={formData.bio}
               onChange={(e) => handleChange("bio", e.target.value)}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+              className="w-full resize-none rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
               placeholder="Tell us about this staff member..."
             />
           </FormField>
@@ -539,21 +560,32 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
               </div>
             </div>
           </FormField>
+          </div>
         </div>
 
         {/* Specialties Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold border-b pb-2">Specialties</h3>
+        <div className={sectionClass}>
+          <div className="mb-4 flex items-start gap-3 border-b border-gray-100 pb-3">
+            <div className="rounded-xl bg-slate-100 p-2 text-slate-700">
+              <ImageIcon className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900">Specialties</h3>
+              <p className="text-xs text-gray-500">
+                Add tags clients use to discover this staff member.
+              </p>
+            </div>
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="text"
               value={newSpecialty}
               onChange={(e) => setNewSpecialty(e.target.value)}
-              onKeyPress={(e) =>
+              onKeyDown={(e) =>
                 e.key === "Enter" && (e.preventDefault(), addSpecialty())
               }
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+              className={`${inputClass(false)} sm:flex-1`}
               placeholder="e.g., Haircuts, Coloring, Styling"
             />
             <Button
@@ -590,10 +622,18 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
 
         {/* Location Assignment Section - Only show if multi-location is enabled */}
         {isMultiLocationEnabled && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold border-b pb-2">
-              Location Assignment
-            </h3>
+          <div className={sectionClass}>
+            <div className="mb-4 flex items-start gap-3 border-b border-gray-100 pb-3">
+              <div className="rounded-xl bg-slate-100 p-2 text-slate-700">
+                <MapPin className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900">Location Assignment</h3>
+                <p className="text-xs text-gray-500">
+                  Control where this staff member appears for booking.
+                </p>
+              </div>
+            </div>
 
             {loadingLocations ? (
               <div className="text-center py-4">
@@ -616,11 +656,11 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                     <p className="text-sm text-gray-600">
                       Select which locations this staff member works at
                     </p>
-                    <div className="border border-gray-300 rounded-lg p-3 max-h-48 overflow-y-auto bg-white">
+                    <div className="max-h-56 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50 p-2.5">
                       {locations.map((location) => (
                         <label
                           key={location._id}
-                          className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                          className="flex cursor-pointer items-center gap-3 rounded-lg border border-transparent bg-white p-2.5 shadow-sm transition-colors hover:border-gray-200 hover:bg-gray-100"
                         >
                           <input
                             type="checkbox"
@@ -678,7 +718,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                         onChange={(e) =>
                           handleChange("primaryLocationId", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                        className={inputClass(false)}
                       >
                         <option value="">Select primary location...</option>
                         {locations
@@ -707,25 +747,35 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
         )}
 
         {/* Settings Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold border-b pb-2">Settings</h3>
+        <div className={sectionClass}>
+          <div className="mb-4 flex items-start gap-3 border-b border-gray-100 pb-3">
+            <div className="rounded-xl bg-slate-100 p-2 text-slate-700">
+              <Settings className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900">Settings</h3>
+              <p className="text-xs text-gray-500">
+                Manage visibility and payment behavior.
+              </p>
+            </div>
+          </div>
 
           {/* Active Status */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3.5">
             <input
               type="checkbox"
               id="active"
               checked={formData.active}
               onChange={(e) => handleChange("active", e.target.checked)}
-              className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
+              className="h-5 w-5 rounded text-brand-600 focus:ring-brand-500"
             />
-            <label htmlFor="active" className="text-sm font-medium">
+            <label htmlFor="active" className="text-sm font-medium text-gray-900">
               Active (can accept bookings)
             </label>
           </div>
 
           {/* In-Salon Payment */}
-          <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
             <div className="flex items-start gap-3">
               <input
                 type="checkbox"
@@ -734,7 +784,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                 onChange={(e) =>
                   handleChange("inSalonPayment", e.target.checked)
                 }
-                className="mt-1 w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
+                className="mt-1 h-5 w-5 rounded text-brand-600 focus:ring-brand-500"
               />
               <div className="flex-1">
                 <label
@@ -754,17 +804,28 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
         </div>
 
         {/* Divider */}
-        <div className="border-t-2 border-gray-200 my-6"></div>
+        <div className="my-6 border-t border-gray-200"></div>
 
         {/* Working Hours Section */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between border-b pb-2">
-            <h3 className="text-lg font-semibold">Working Hours</h3>
+        <div className={sectionClass}>
+          <div className="mb-4 flex flex-col gap-2 border-b border-gray-100 pb-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="rounded-xl bg-slate-100 p-2 text-slate-700">
+                <Clock className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900">Working Hours</h3>
+                <p className="text-xs text-gray-500">
+                  Define availability blocks shown during booking.
+                </p>
+              </div>
+            </div>
             <Button
               type="button"
               onClick={addWorkingHours}
               variant="brand"
-              size="sm"
+              size="md"
+              className="w-full sm:w-auto"
             >
               + Add Hours
             </Button>
@@ -783,7 +844,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
             return (
               <div
                 key={index}
-                className="flex flex-col sm:flex-row gap-3 items-start sm:items-end p-3 border border-gray-200 rounded-lg bg-gray-50"
+                className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3.5 sm:flex-row sm:items-end"
               >
                 <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
                   <div>
@@ -799,7 +860,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                           parseInt(e.target.value)
                         )
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                      className={inputClass(false)}
                     >
                       {daysOfWeek.map((day) => (
                         <option key={day.value} value={day.value}>
@@ -820,7 +881,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                         handleWorkingHoursChange(index, "start", e.target.value)
                       }
                       style={{ minWidth: 0 }}
-                      className={`w-full px-2 py-2 border rounded-lg text-sm ${
+                      className={`w-full rounded-xl border px-2 py-2 text-sm ${
                         errors[`workingHours_${index}_start`]
                           ? "border-red-500"
                           : "border-gray-300"
@@ -844,7 +905,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                         handleWorkingHoursChange(index, "end", e.target.value)
                       }
                       style={{ minWidth: 0 }}
-                      className={`w-full px-2 py-2 border rounded-lg text-sm ${
+                      className={`w-full rounded-xl border px-2 py-2 text-sm ${
                         errors[`workingHours_${index}_end`]
                           ? "border-red-500"
                           : "border-gray-300"
@@ -861,7 +922,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                 <button
                   type="button"
                   onClick={() => removeWorkingHours(index)}
-                  className="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+                  className="w-full whitespace-nowrap rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-600 hover:text-white sm:w-auto"
                   title="Remove schedule"
                 >
                   Remove
@@ -878,27 +939,27 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
         </div>
 
         {/* Form Actions */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-6 border-t gap-4">
-          <div>
+        <div className="sticky bottom-0 z-20 -mx-1 border-t border-gray-200 bg-white/95 px-1 pb-[max(env(safe-area-inset-bottom),0.6rem)] pt-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
             {isEditMode && (
               <Button
                 type="button"
                 onClick={handleDeleteClick}
                 disabled={isSubmitting}
                 variant="danger"
-                className="w-full sm:w-auto"
+                size="md"
+                className="w-full sm:mr-auto sm:w-auto"
               >
                 Delete Staff Member
               </Button>
             )}
-          </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-3">
             <Button
               type="button"
               onClick={onCancel}
               disabled={isSubmitting}
               variant="outline"
+              size="md"
               className="w-full sm:w-auto"
             >
               Cancel
@@ -908,6 +969,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
               disabled={isSubmitting || isUploadingImage}
               loading={isSubmitting}
               variant="brand"
+              size="md"
               className="w-full sm:w-auto"
             >
               {isEditMode ? "Update Staff" : "Add Staff"}
@@ -916,7 +978,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
         </div>
 
         {errors.submit && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="rounded-2xl border border-red-200 bg-red-50/90 p-4 shadow-sm">
             <div className="flex items-start gap-3">
               <svg
                 className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0"
@@ -952,3 +1014,4 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
     </div>
   );
 }
+

@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ArrowLeft, Mail, MessageCircle, Phone, Book } from "lucide-react";
 import PageTransition from "../../shared/components/ui/PageTransition";
 import SEOHead from "../../shared/components/seo/SEOHead";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function HelpPage() {
-  const navigate = useNavigate();
-
   const helpTopics = [
     {
       icon: <Book className="w-6 h-6" />,
@@ -41,22 +41,19 @@ export default function HelpPage() {
       />
 
       <PageTransition>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50">
-          {/* Header */}
-          <header className="bg-white border-b border-gray-200">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-              <button
-                onClick={() => navigate("/")}
-                className="flex items-center gap-2 text-gray-600 hover:text-violet-600 transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5" />
-                <span className="font-medium">Back to home</span>
-              </button>
-            </div>
-          </header>
+        <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+          <Header />
 
           {/* Hero */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <Link
+              to="/"
+              className="mb-8 inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-slate-400 hover:text-slate-900"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to home</span>
+            </Link>
+
             <div className="text-center mb-16">
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
                 How can we help you?
@@ -76,11 +73,11 @@ export default function HelpPage() {
                   className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all border border-gray-100 group"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-xl bg-gradient-to-br from-violet-100 to-fuchsia-100 text-violet-600 group-hover:scale-110 transition-transform">
+                    <div className="p-3 rounded-xl bg-gradient-to-br from-slate-100 to-slate-50 text-slate-700 group-hover:scale-110 transition-transform">
                       {topic.icon}
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-violet-600 transition-colors">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-slate-700 transition-colors">
                         {topic.title}
                       </h3>
                       <p className="text-gray-600">{topic.description}</p>
@@ -104,13 +101,13 @@ export default function HelpPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <a
                   href="mailto:support@elitebooker.com"
-                  className="flex items-center gap-4 p-6 rounded-xl border-2 border-gray-200 hover:border-violet-600 hover:bg-violet-50 transition-all group"
+                  className="flex items-center gap-4 p-6 rounded-xl border-2 border-gray-200 hover:border-slate-500 hover:bg-slate-50 transition-all group"
                 >
-                  <div className="p-3 rounded-full bg-violet-100 text-violet-600">
+                  <div className="p-3 rounded-full bg-slate-100 text-slate-700">
                     <Mail className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 group-hover:text-violet-600">
+                    <h3 className="font-semibold text-gray-900 group-hover:text-slate-700">
                       Email Support
                     </h3>
                     <p className="text-sm text-gray-600">
@@ -119,12 +116,12 @@ export default function HelpPage() {
                   </div>
                 </a>
 
-                <button className="flex items-center gap-4 p-6 rounded-xl border-2 border-gray-200 hover:border-violet-600 hover:bg-violet-50 transition-all group">
-                  <div className="p-3 rounded-full bg-violet-100 text-violet-600">
+                <button className="flex items-center gap-4 p-6 rounded-xl border-2 border-gray-200 hover:border-slate-500 hover:bg-slate-50 transition-all group">
+                  <div className="p-3 rounded-full bg-slate-100 text-slate-700">
                     <MessageCircle className="w-6 h-6" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-semibold text-gray-900 group-hover:text-violet-600">
+                    <h3 className="font-semibold text-gray-900 group-hover:text-slate-700">
                       Live Chat
                     </h3>
                     <p className="text-sm text-gray-600">Available 9am - 6pm</p>
@@ -143,7 +140,7 @@ export default function HelpPage() {
                 <details className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 group">
                   <summary className="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
                     <span>How do I create an account?</span>
-                    <span className="text-violet-600">+</span>
+                    <span className="text-slate-700">+</span>
                   </summary>
                   <p className="mt-4 text-gray-600">
                     Click "Log in or sign up" in the menu, then sign in with
@@ -155,7 +152,7 @@ export default function HelpPage() {
                 <details className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                   <summary className="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
                     <span>Can I cancel or reschedule my booking?</span>
-                    <span className="text-violet-600">+</span>
+                    <span className="text-slate-700">+</span>
                   </summary>
                   <p className="mt-4 text-gray-600">
                     Yes! You can manage your bookings from your account profile.
@@ -167,7 +164,7 @@ export default function HelpPage() {
                 <details className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                   <summary className="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
                     <span>How do payments work?</span>
-                    <span className="text-violet-600">+</span>
+                    <span className="text-slate-700">+</span>
                   </summary>
                   <p className="mt-4 text-gray-600">
                     Payments are processed securely through Stripe. Some
@@ -180,7 +177,7 @@ export default function HelpPage() {
                 <details className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                   <summary className="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
                     <span>Will I receive a confirmation?</span>
-                    <span className="text-violet-600">+</span>
+                    <span className="text-slate-700">+</span>
                   </summary>
                   <p className="mt-4 text-gray-600">
                     Yes! You'll receive an email confirmation immediately after
@@ -191,8 +188,12 @@ export default function HelpPage() {
               </div>
             </div>
           </div>
+
+          <Footer />
         </div>
       </PageTransition>
     </>
   );
 }
+
+

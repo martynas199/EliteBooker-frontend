@@ -1,16 +1,13 @@
 import { useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
-import MenuDropdown from "../../shared/components/ui/MenuDropdown";
-import ProfileMenu from "../../shared/components/ui/ProfileMenu";
-import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 import DemoRequestModal from "../../shared/components/modals/DemoRequestModal";
 import { motion } from "framer-motion";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import OrganizationSchema from "../../shared/components/Schema/OrganizationSchema";
-import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { useInViewOnce } from "../../shared/hooks/useInViewOnce";
 import { stats } from "./landing/landingData";
-import eliteLogo from "../../assets/elite.png";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // Lazy load below-the-fold sections
 const FeaturesSection = lazy(() => import("./landing/FeaturesSection"));
@@ -23,21 +20,14 @@ const BookingFeeModal = lazy(() => import("./landing/BookingFeeModal"));
 // Lightweight loading fallback
 const SectionFallback = () => (
   <div className="py-20 flex items-center justify-center">
-    <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
+    <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-700 rounded-full animate-spin" />
   </div>
 );
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { client, isAuthenticated, logout } = useClientAuth();
   const [showFeeModal, setShowFeeModal] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showMenuDropdown, setShowMenuDropdown] = useState(false);
-  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
   const [showDemoModal, setShowDemoModal] = useState(false);
-  const [showIndustriesDropdown, setShowIndustriesDropdown] = useState(false);
-  const [showCompareDropdown, setShowCompareDropdown] = useState(false);
-  const [showFeaturesDropdown, setShowFeaturesDropdown] = useState(false);
 
   // IntersectionObserver hooks for lazy rendering sections
   const featuresObserver = useInViewOnce({ rootMargin: "200px" });
@@ -46,80 +36,12 @@ export default function LandingPage() {
   const pricingObserver = useInViewOnce({ rootMargin: "200px" });
   const ctaObserver = useInViewOnce({ rootMargin: "200px" });
 
-  // Handle login - check if already authenticated
-  const handleLogin = () => {
-    if (isAuthenticated) {
-      // Already logged in, go to profile
-      navigate("/client/profile");
-    } else {
-      // Not logged in, go to login page
-      navigate("/client/login");
-    }
-  };
-
-  // Menu dropdown configuration - changes based on auth status
-  const customerLinks = isAuthenticated
-    ? [
-        // When logged in, show profile-related menu items
-        {
-          label: client?.name || "My Profile",
-          onClick: () => navigate("/client/profile"),
-          primary: true,
-        },
-        {
-          label: "My Bookings",
-          onClick: () => navigate("/client/profile"),
-        },
-        {
-          label: "Settings",
-          onClick: () => navigate("/client/profile"),
-        },
-        {
-          label: "Log out",
-          onClick: async () => {
-            await logout();
-            setShowMenuDropdown(false);
-            window.location.replace("/");
-          },
-        },
-      ]
-    : [
-        {
-          label: "Log in or sign up",
-          onClick: handleLogin,
-          primary: true,
-        },
-        {
-          label: "Find a business",
-          href: "/search",
-        },
-        {
-          label: "Help and support",
-          href: "/help",
-        },
-      ];
-
-  const businessLinks = [
-    {
-      label: "List your business",
-      href: "/signup",
-    },
-    {
-      label: "Business log in",
-      href: "/admin/login",
-    },
-    {
-      label: "Join referral program",
-      href: "/join-referral-program",
-    },
-  ];
-
   return (
     <>
       {/* SEO Meta Tags */}
       <SEOHead
         title="Elite Booker - UK's Leading Booking System for Beauty & Wellness"
-        description="Zero commission booking system for UK salons, spas & beauty professionals. Online scheduling, SMS reminders, deposits & POS. From £29/month. Trusted by 500+ UK businesses."
+        description="Zero commission booking system for UK salons, spas & beauty professionals. Online scheduling, SMS reminders, deposits & POS. From GBP 29/month. Trusted by 500+ UK businesses."
         keywords="online booking system UK, salon booking software UK, appointment scheduling UK, beauty booking app, zero commission booking, salon management software"
       />
 
@@ -127,461 +49,12 @@ export default function LandingPage() {
       <OrganizationSchema />
 
       <div className="bg-white">
-        {/* Navigation Header - with safe area for iPhone notch */}
-        <header
-          className="sticky z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200"
-          style={{
-            top: "env(safe-area-inset-top, 0px)",
-            paddingTop: "env(safe-area-inset-top, 0px)",
-          }}
-        >
-          <div className="max-w-8xl mx-auto px-4 sm:px-8 lg:px-10">
-            <div className="flex items-center justify-between h-16">
-              {/* Logo */}
-              <div className="flex items-center gap-4">
-                <img
-                  src={eliteLogo}
-                  alt="Elite Logo"
-                  width="140"
-                  height="80"
-                  className="h-20 sm:h-28 w-auto"
-                  loading="eager"
-                  fetchpriority="high"
-                />
-              </div>
-
-              {/* Center Navigation - Desktop */}
-              <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
-                {/* Industries Dropdown */}
-                <div
-                  className="relative"
-                  onMouseEnter={() => setShowIndustriesDropdown(true)}
-                  onMouseLeave={() => setShowIndustriesDropdown(false)}
-                >
-                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg transition-colors flex items-center gap-1">
-                    Industries
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-                  {showIndustriesDropdown && (
-                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-200 py-2 w-56 z-50">
-                      <button
-                        onClick={() => navigate("/industries/lash-technicians")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        Lash Technicians
-                      </button>
-                      <button
-                        onClick={() => navigate("/industries/hair-salons")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        Hair Salons
-                      </button>
-                      <button
-                        onClick={() => navigate("/industries/barbers")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        Barbers
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Compare Dropdown */}
-                <div
-                  className="relative"
-                  onMouseEnter={() => setShowCompareDropdown(true)}
-                  onMouseLeave={() => setShowCompareDropdown(false)}
-                >
-                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg transition-colors flex items-center gap-1">
-                    Compare
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-                  {showCompareDropdown && (
-                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-200 py-2 w-56 z-50">
-                      <button
-                        onClick={() => navigate("/compare/vs-fresha")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        vs Fresha
-                      </button>
-                      <button
-                        onClick={() => navigate("/compare/vs-treatwell")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        vs Treatwell
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Features Dropdown */}
-                <div
-                  className="relative"
-                  onMouseEnter={() => setShowFeaturesDropdown(true)}
-                  onMouseLeave={() => setShowFeaturesDropdown(false)}
-                >
-                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg transition-colors flex items-center gap-1">
-                    Features
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-                  {showFeaturesDropdown && (
-                    <div className="absolute left-0 top-full mt-0 bg-white rounded-xl shadow-xl border border-gray-200 py-2 w-56 z-50">
-                      <button
-                        onClick={() => navigate("/features/sms-reminders")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        SMS Reminders
-                      </button>
-                      <button
-                        onClick={() => navigate("/features/no-show-protection")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        No-Show Protection
-                      </button>
-                      <button
-                        onClick={() => navigate("/features/calendar-sync")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        Calendar Sync
-                      </button>
-                      <button
-                        onClick={() => navigate("/features/online-booking")}
-                        className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        Online Booking
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Pricing Link */}
-                <button
-                  onClick={() => navigate("/pricing")}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg transition-colors"
-                >
-                  Pricing
-                </button>
-              </nav>
-
-              {/* Right Actions - Desktop */}
-              <div className="hidden md:flex items-center gap-3">
-                {!isAuthenticated && (
-                  /* Not logged in - show log in and list business buttons */
-                  <>
-                    <button
-                      onClick={() => navigate("/signup")}
-                      className="px-4 py-2 text-sm font-medium border border-gray-300 rounded-full text-gray-900 hover:border-gray-400 transition-all"
-                    >
-                      List your business
-                    </button>
-                  </>
-                )}
-
-                {/* Menu Button - shows user avatar when logged in, or Menu button when not */}
-                <div className="relative">
-                  {isAuthenticated ? (
-                    /* Logged in - show profile picture as menu button */
-                    <button
-                      onClick={() => setShowMenuDropdown(!showMenuDropdown)}
-                      className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white font-semibold hover:shadow-lg transition-all overflow-hidden"
-                      title={client?.name || "Account"}
-                    >
-                      {client?.avatar ? (
-                        <img
-                          src={client.avatar}
-                          alt={client?.name || "User"}
-                          width="40"
-                          height="40"
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <span className="text-white font-semibold">
-                          {client?.name?.charAt(0).toUpperCase() || "U"}
-                        </span>
-                      )}
-                    </button>
-                  ) : (
-                    /* Not logged in - show Menu button */
-                    <button
-                      onClick={() => setShowMenuDropdown(!showMenuDropdown)}
-                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-full text-gray-900 hover:border-gray-400 transition-all"
-                    >
-                      Menu
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 6h16M4 12h16M4 18h16"
-                        />
-                      </svg>
-                    </button>
-                  )}
-
-                  {/* Menu Dropdown - shows ProfileMenu when logged in, MenuDropdown when not */}
-                  {isAuthenticated ? (
-                    /* Logged in - show profile menu dropdown */
-                    showMenuDropdown && (
-                      <>
-                        <div
-                          className="fixed inset-0 z-[998]"
-                          onClick={() => setShowMenuDropdown(false)}
-                        />
-                        <div
-                          className="absolute right-0 top-full mt-2 bg-white rounded-2xl shadow-2xl overflow-hidden z-[999]"
-                          style={{ minWidth: "320px" }}
-                        >
-                          <ProfileMenu
-                            client={client}
-                            onLogout={logout}
-                            variant="dropdown"
-                            onItemClick={() => setShowMenuDropdown(false)}
-                            onGiftCardClick={() => {
-                              setShowMenuDropdown(false);
-                              setShowGiftCardModal(true);
-                            }}
-                          />
-                        </div>
-                      </>
-                    )
-                  ) : (
-                    /* Not logged in - show regular menu dropdown */
-                    <MenuDropdown
-                      isOpen={showMenuDropdown}
-                      onClose={() => setShowMenuDropdown(false)}
-                      customerLinks={customerLinks}
-                      businessLinks={businessLinks}
-                      position="right"
-                    />
-                  )}
-                </div>
-              </div>
-
-              {/* Mobile Menu Button */}
-              <div className="md:hidden flex items-center gap-3 relative">
-                {/* Search Button - Mobile */}
-                <button
-                  onClick={() => navigate("/search")}
-                  className="hidden p-2 text-gray-600 hover:text-violet-600 transition-colors"
-                  aria-label="Search"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </button>
-
-                {isAuthenticated ? (
-                  /* Logged in - only show avatar */
-                  <>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        console.log(
-                          "[Mobile Menu] Avatar clicked, navigating to menu",
-                        );
-                        navigate("/menu");
-                      }}
-                      className="flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white font-semibold hover:shadow-lg transition-all overflow-hidden"
-                      title={client?.name || "Account"}
-                    >
-                      {client?.avatar ? (
-                        <img
-                          src={client.avatar}
-                          alt={client?.name || "User"}
-                          width="36"
-                          height="36"
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <span className="text-sm">
-                          {client?.name?.charAt(0).toUpperCase() || "U"}
-                        </span>
-                      )}
-                    </button>
-                  </>
-                ) : (
-                  /* Not logged in - show hamburger menu */
-                  <button
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
-                    aria-label="Toggle menu"
-                  >
-                    {mobileMenuOpen ? (
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    ) : (
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 6h16M4 12h16M4 18h16"
-                        />
-                      </svg>
-                    )}
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile Menu */}
-          <motion.div
-            initial={false}
-            animate={
-              mobileMenuOpen
-                ? { height: "auto", opacity: 1 }
-                : { height: 0, opacity: 0 }
-            }
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden overflow-hidden bg-white border-t border-gray-200"
-          >
-            <nav className="px-4 py-4 space-y-3">
-              {/* Page sections */}
-              <a
-                href="#features"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
-              >
-                Features
-              </a>
-              <a
-                href="#pricing"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
-              >
-                Pricing
-              </a>
-              <a
-                href="#testimonials"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
-              >
-                Testimonials
-              </a>
-
-              {/* Customer Links Section */}
-              <div className="pt-3 border-t border-gray-200">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  For Customers
-                </p>
-                {customerLinks.map((link, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      if (link.onClick) {
-                        link.onClick();
-                      } else if (link.href) {
-                        navigate(link.href);
-                      }
-                    }}
-                    className={`w-full text-left py-2 font-medium transition-colors ${
-                      link.primary
-                        ? "text-gray-900 hover:text-gray-700"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    {link.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Business Links Section */}
-              <div className="pt-3 border-t border-gray-200">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  For Businesses
-                </p>
-                {businessLinks.map((link, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      navigate(link.href);
-                    }}
-                    className="w-full text-left py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
-                  >
-                    {link.label}
-                  </button>
-                ))}
-              </div>
-            </nav>
-          </motion.div>
-        </header>
+        <Header />
 
         {/* Hero Section - Ultra Modern */}
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
           {/* Gradient Mesh Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-indigo-50">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
             {/* Animated Gradient Orbs */}
             <motion.div
               animate={{
@@ -594,7 +67,7 @@ export default function LandingPage() {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-violet-400/20 to-fuchsia-400/20 rounded-full blur-3xl"
+              className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-amber-300/25 to-slate-300/20 rounded-full blur-3xl"
             />
             <motion.div
               animate={{
@@ -607,7 +80,7 @@ export default function LandingPage() {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-cyan-400/20 to-blue-400/20 rounded-full blur-3xl"
+              className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-amber-200/20 to-slate-300/20 rounded-full blur-3xl"
             />
 
             {/* Grid Pattern Overlay */}
@@ -628,10 +101,10 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-100 to-green-100 border border-emerald-200 mb-6"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-slate-100 to-slate-50 border border-slate-200 mb-6"
                 >
                   <svg
-                    className="w-4 h-4 text-emerald-600"
+                    className="w-4 h-4 text-slate-700"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -641,7 +114,7 @@ export default function LandingPage() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-sm font-semibold text-emerald-700">
+                  <span className="text-sm font-semibold text-slate-800">
                     Trusted by 500+ UK Salons & Spas
                   </span>
                 </motion.div>
@@ -649,7 +122,7 @@ export default function LandingPage() {
                 {/* Main Headline - Problem/Solution */}
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
                   <span className="block text-gray-900">Stop Losing</span>
-                  <span className="block bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                  <span className="block bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                     20% Commission
                   </span>
                   <span className="block text-gray-900">to Fresha</span>
@@ -657,7 +130,7 @@ export default function LandingPage() {
 
                 <p className="text-lg md:text-xl text-gray-700 mb-4 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
                   Keep 100% of your earnings. Elite Booker is the UK's only{" "}
-                  <span className="text-emerald-600 font-bold">
+                  <span className="text-slate-700 font-bold">
                     commission-free
                   </span>{" "}
                   booking software.
@@ -667,13 +140,13 @@ export default function LandingPage() {
                 <div className="flex flex-wrap gap-6 mb-8 justify-center lg:justify-start">
                   <div className="flex items-center gap-2">
                     <div className="flex -space-x-2">
-                      <div className="w-8 h-8 rounded-full bg-violet-200 border-2 border-white flex items-center justify-center text-xs font-bold text-violet-700">
+                      <div className="w-8 h-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-xs font-bold text-slate-800">
                         SJ
                       </div>
-                      <div className="w-8 h-8 rounded-full bg-fuchsia-200 border-2 border-white flex items-center justify-center text-xs font-bold text-fuchsia-700">
+                      <div className="w-8 h-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-xs font-bold text-slate-800">
                         MC
                       </div>
-                      <div className="w-8 h-8 rounded-full bg-cyan-200 border-2 border-white flex items-center justify-center text-xs font-bold text-cyan-700">
+                      <div className="w-8 h-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-xs font-bold text-slate-800">
                         LA
                       </div>
                     </div>
@@ -707,9 +180,9 @@ export default function LandingPage() {
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate("/signup")}
-                    className="group relative px-8 py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all overflow-hidden"
+                    className="group relative px-8 py-4 bg-gradient-to-r from-slate-900 to-slate-700 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all overflow-hidden"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-700 to-green-700 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-800 to-slate-700 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="relative flex items-center justify-center gap-2">
                       <span className="text-lg">Start Free Forever</span>
                       <svg
@@ -736,7 +209,7 @@ export default function LandingPage() {
                         document.getElementById("pricing-section");
                       element?.scrollIntoView({ behavior: "smooth" });
                     }}
-                    className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-xl hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-md hover:shadow-lg"
+                    className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-xl hover:border-slate-500 hover:text-slate-700 transition-all shadow-md hover:shadow-lg"
                   >
                     See Pricing →
                   </motion.button>
@@ -746,7 +219,7 @@ export default function LandingPage() {
                 <div className="flex items-center gap-3 text-sm text-gray-600 justify-center lg:justify-start">
                   <div className="flex items-center gap-1.5">
                     <svg
-                      className="w-5 h-5 text-emerald-600"
+                      className="w-5 h-5 text-slate-700"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -761,7 +234,7 @@ export default function LandingPage() {
                   <span className="text-gray-300">•</span>
                   <div className="flex items-center gap-1.5">
                     <svg
-                      className="w-5 h-5 text-emerald-600"
+                      className="w-5 h-5 text-slate-700"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -828,25 +301,25 @@ export default function LandingPage() {
                   </div>
 
                   {/* Elite Booker */}
-                  <div className="p-4 bg-emerald-50 rounded-xl border-2 border-emerald-400">
+                  <div className="p-4 bg-slate-50 rounded-xl border-2 border-slate-300">
                     <div className="flex items-center justify-between mb-3">
                       <span className="font-bold text-gray-900">
                         Elite Booker
                       </span>
-                      <span className="text-emerald-600 font-bold">
+                      <span className="text-slate-700 font-bold">
                         You Keep
                       </span>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Free Plan</span>
-                        <span className="font-semibold text-emerald-600">
+                        <span className="font-semibold text-slate-700">
                           £0/year
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Commission</span>
-                        <span className="font-semibold text-emerald-600">
+                        <span className="font-semibold text-slate-700">
                           £0 Forever
                         </span>
                       </div>
@@ -858,9 +331,9 @@ export default function LandingPage() {
                           £120/year
                         </span>
                       </div>
-                      <div className="border-t-2 border-emerald-400 pt-2 mt-2 flex justify-between">
+                      <div className="border-t-2 border-slate-300 pt-2 mt-2 flex justify-between">
                         <span className="font-bold">Total Cost</span>
-                        <span className="font-bold text-emerald-600 text-lg">
+                        <span className="font-bold text-slate-700 text-lg">
                           £0-£120/year
                         </span>
                       </div>
@@ -868,10 +341,10 @@ export default function LandingPage() {
                   </div>
 
                   {/* Savings */}
-                  <div className="mt-6 p-4 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl text-white text-center">
+                  <div className="mt-6 p-4 bg-gradient-to-r from-slate-900 to-slate-700 rounded-xl text-white text-center">
                     <p className="text-sm font-semibold mb-1">YOU SAVE</p>
                     <p className="text-4xl font-extrabold">£2,759+</p>
-                    <p className="text-sm text-emerald-100 mt-1">
+                    <p className="text-sm text-slate-200 mt-1">
                       per year vs Fresha
                     </p>
                   </div>
@@ -880,7 +353,7 @@ export default function LandingPage() {
                     Based on £12,000 annual revenue.{" "}
                     <button
                       onClick={() => navigate("/compare/vs-fresha")}
-                      className="text-violet-600 hover:underline font-semibold"
+                      className="text-slate-700 hover:underline font-semibold"
                     >
                       See full comparison →
                     </button>
@@ -951,7 +424,7 @@ export default function LandingPage() {
                 {
                   icon: (
                     <svg
-                      className="w-12 h-12 text-emerald-600"
+                      className="w-12 h-12 text-slate-700"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -971,7 +444,7 @@ export default function LandingPage() {
                 {
                   icon: (
                     <svg
-                      className="w-12 h-12 text-blue-600"
+                      className="w-12 h-12 text-slate-700"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -991,7 +464,7 @@ export default function LandingPage() {
                 {
                   icon: (
                     <svg
-                      className="w-12 h-12 text-purple-600"
+                      className="w-12 h-12 text-slate-700"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1011,7 +484,7 @@ export default function LandingPage() {
                 {
                   icon: (
                     <svg
-                      className="w-12 h-12 text-pink-600"
+                      className="w-12 h-12 text-slate-700"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1091,7 +564,6 @@ export default function LandingPage() {
           {demoObserver.inView && (
             <Suspense fallback={<SectionFallback />}>
               <DemoSection
-                onGiftCardClick={() => setShowGiftCardModal(true)}
                 onDemoClick={() => setShowDemoModal(true)}
               />
             </Suspense>
@@ -1125,130 +597,9 @@ export default function LandingPage() {
           )}
         </div>
 
-        {/* Footer */}
-        <footer className="bg-gray-900 text-gray-300 py-12 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-4 gap-8">
-              {/* Company */}
-              <div>
-                <img
-                  src={eliteLogo}
-                  alt="Elite Booker"
-                  className="h-16 mb-4 brightness-0 invert"
-                />
-                <p className="text-sm text-gray-400">
-                  The UK's only commission-free booking software for salons,
-                  spas & wellness businesses.
-                </p>
-              </div>
-
-              {/* Product */}
-              <div>
-                <h3 className="font-bold text-white mb-4">Product</h3>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <button
-                      onClick={() => navigate("/features/sms-reminders")}
-                      className="hover:text-white transition"
-                    >
-                      SMS Reminders
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => navigate("/features/online-booking")}
-                      className="hover:text-white transition"
-                    >
-                      Online Booking
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => navigate("/features/no-show-protection")}
-                      className="hover:text-white transition"
-                    >
-                      No-Show Protection
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => navigate("/pricing")}
-                      className="hover:text-white transition"
-                    >
-                      Pricing
-                    </button>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Compare */}
-              <div>
-                <h3 className="font-bold text-white mb-4">Compare</h3>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <button
-                      onClick={() => navigate("/compare/vs-fresha")}
-                      className="hover:text-white transition"
-                    >
-                      vs Fresha
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => navigate("/compare/vs-treatwell")}
-                      className="hover:text-white transition"
-                    >
-                      vs Treatwell
-                    </button>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Company */}
-              <div>
-                <h3 className="font-bold text-white mb-4">Company</h3>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <button
-                      onClick={() => navigate("/help")}
-                      className="hover:text-white transition"
-                    >
-                      Help Center
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => navigate("/signup")}
-                      className="hover:text-white transition"
-                    >
-                      Sign Up
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => navigate("/admin/login")}
-                      className="hover:text-white transition"
-                    >
-                      Business Login
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-500">
-              <p>© 2026 Elite Booker. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
 
         {/* Modals */}
-        {showGiftCardModal && (
-          <Suspense fallback={null}>
-            <GiftCardModal onClose={() => setShowGiftCardModal(false)} />
-          </Suspense>
-        )}
-
         {showDemoModal && (
           <Suspense fallback={null}>
             <DemoRequestModal onClose={() => setShowDemoModal(false)} />
@@ -1264,8 +615,10 @@ export default function LandingPage() {
           </Suspense>
         )}
       </div>
-
-      <OrganizationSchema />
     </>
   );
 }
+
+
+
+

@@ -237,7 +237,7 @@ https://www.elitebooker.co.uk`;
 
       <Header />
 
-      <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <main className="min-h-screen bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
         {/* Hero */}
         <section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center">
@@ -246,8 +246,8 @@ https://www.elitebooker.co.uk`;
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-blue-100 mb-6">
-                <Shield className="w-5 h-5 text-blue-600" />
+              <div className="inline-flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-slate-200 mb-6">
+                <Shield className="w-5 h-5 text-slate-700" />
                 <span className="text-sm font-medium text-gray-700">
                   HMRC-Compliant • Free Tool
                 </span>
@@ -278,7 +278,7 @@ https://www.elitebooker.co.uk`;
                 className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200"
               >
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <FileText className="w-6 h-6 text-blue-600" />
+                  <FileText className="w-6 h-6 text-slate-700" />
                   Policy Settings
                 </h2>
 
@@ -293,7 +293,7 @@ https://www.elitebooker.co.uk`;
                       value={businessName}
                       onChange={(e) => setBusinessName(e.target.value)}
                       placeholder="e.g., Bella Beauty Salon"
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-600 focus:outline-none text-lg"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-amber-500 focus:outline-none text-lg"
                     />
                   </div>
 
@@ -305,7 +305,7 @@ https://www.elitebooker.co.uk`;
                     <select
                       value={depositType}
                       onChange={(e) => setDepositType(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-600 focus:outline-none text-lg bg-white"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-amber-500 focus:outline-none text-lg bg-white"
                     >
                       <option value="fixed">Fixed amount (£)</option>
                       <option value="percentage">
@@ -323,7 +323,7 @@ https://www.elitebooker.co.uk`;
                       type="number"
                       value={depositAmount}
                       onChange={(e) => setDepositAmount(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-600 focus:outline-none text-lg"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-amber-500 focus:outline-none text-lg"
                       min="1"
                       max={depositType === "percentage" ? "100" : "500"}
                     />
@@ -342,7 +342,7 @@ https://www.elitebooker.co.uk`;
                     <select
                       value={cancellationWindow}
                       onChange={(e) => setCancellationWindow(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-600 focus:outline-none text-lg bg-white"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-amber-500 focus:outline-none text-lg bg-white"
                     >
                       <option value="24">24 hours</option>
                       <option value="48">48 hours (recommended)</option>
@@ -361,7 +361,7 @@ https://www.elitebooker.co.uk`;
                     <select
                       value={refundPolicy}
                       onChange={(e) => setRefundPolicy(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-600 focus:outline-none text-lg bg-white"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-amber-500 focus:outline-none text-lg bg-white"
                     >
                       <option value="full">Full refund with notice</option>
                       <option value="partial">
@@ -374,11 +374,11 @@ https://www.elitebooker.co.uk`;
                   </div>
 
                   {/* Info Box */}
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
                     <div className="flex items-start gap-3">
-                      <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <Shield className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />
                       <div className="text-sm text-gray-700">
-                        <strong className="text-blue-900">
+                        <strong className="text-slate-900">
                           HMRC Compliance:
                         </strong>{" "}
                         This generator creates a policy that follows UK consumer
@@ -405,7 +405,7 @@ https://www.elitebooker.co.uk`;
                     <div className="flex items-center gap-2">
                       <button
                         onClick={handleCopy}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-all"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 text-white font-medium rounded-lg hover:bg-slate-700 transition-all"
                       >
                         {copied ? (
                           <CheckCircle className="w-4 h-4" />
@@ -432,7 +432,7 @@ https://www.elitebooker.co.uk`;
                 </div>
 
                 {/* CTA */}
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-white text-center">
+                <div className="bg-gradient-to-r from-slate-900 to-slate-700 rounded-2xl p-6 text-white text-center">
                   <h3 className="text-2xl font-bold mb-2">
                     Need Deposit Collection Too?
                   </h3>
@@ -442,7 +442,7 @@ https://www.elitebooker.co.uk`;
                   </p>
                   <a
                     href="/features/no-show-protection"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 font-bold rounded-full hover:shadow-2xl transition-all text-lg"
+                    className="inline-flex items-center gap-2 px-8 py-4 bg-white text-slate-700 font-bold rounded-full hover:shadow-2xl transition-all text-lg"
                   >
                     See How It Works
                     <ArrowRight className="w-5 h-5" />
@@ -514,7 +514,7 @@ https://www.elitebooker.co.uk`;
                 >
                   <summary className="font-semibold text-lg text-gray-900 cursor-pointer list-none flex items-center justify-between">
                     {faq.name}
-                    <span className="text-blue-600 group-open:rotate-180 transition-transform">
+                    <span className="text-slate-700 group-open:rotate-180 transition-transform">
                       ▼
                     </span>
                   </summary>
@@ -532,3 +532,6 @@ https://www.elitebooker.co.uk`;
     </>
   );
 }
+
+
+

@@ -1,14 +1,10 @@
-/**
- * Referral Login Page
- * Login page for referral program members
- */
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { motion } from "framer-motion";
-import eliteLogo from "../../assets/elite.png";
-import { Gift, Loader } from "lucide-react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { Gift, Loader, ArrowRight } from "lucide-react";
 
 export default function ReferralLoginPage() {
   const navigate = useNavigate();
@@ -40,10 +36,9 @@ export default function ReferralLoginPage() {
 
     try {
       await login(formData.email, formData.password);
-      // Redirect to referral dashboard after successful login
       navigate("/referral-dashboard");
     } catch (err) {
-      console.error("Login error:", err);
+      console.error("Referral login error:", err);
       setError(
         err.response?.data?.message ||
           err.response?.data?.error ||
@@ -54,95 +49,72 @@ export default function ReferralLoginPage() {
     }
   };
 
+  const inputClass =
+    "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200";
+
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50">
-      {/* Animated background */}
-      <motion.div
-        animate={{
-          x: [0, 100, 0],
-          y: [0, -100, 0],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-emerald-400/25 to-teal-400/25 rounded-full blur-3xl"
-      />
-      <motion.div
-        animate={{
-          x: [0, -80, 0],
-          y: [0, 80, 0],
-          scale: [1, 1.1, 1],
-        }}
-        transition={{
-          duration: 18,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute bottom-1/3 left-1/3 w-80 h-80 bg-gradient-to-tr from-cyan-400/20 to-blue-400/20 rounded-full blur-3xl"
-      />
+    <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <Header />
 
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
-        {/* Logo */}
+      <main className="relative overflow-hidden">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <img
-            src={eliteLogo}
-            alt="Elite Booker"
-            className="h-[160px] mx-auto"
-          />
-        </motion.div>
-
-        {/* Login Card */}
+          animate={{ x: [0, 80, 0], y: [0, -70, 0], scale: [1, 1.12, 1] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="pointer-events-none absolute left-[-8rem] top-10 h-72 w-72 rounded-full bg-amber-300/25 blur-3xl"
+        />
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
-        >
-          <div className="bg-white rounded-3xl shadow-2xl p-8">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl mb-4">
-                <Gift className="w-8 h-8 text-white" />
+          animate={{ x: [0, -70, 0], y: [0, 80, 0], scale: [1.1, 1, 1.1] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          className="pointer-events-none absolute bottom-[-3rem] right-[-6rem] h-96 w-96 rounded-full bg-amber-300/15 blur-3xl"
+        />
+
+        <div className="relative mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto mb-8 max-w-2xl text-center sm:mb-10">
+            <span className="inline-flex min-h-10 items-center rounded-full border border-amber-200 bg-amber-100/70 px-4 text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">
+              Referral Partner Access
+            </span>
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              Sign in to your referral dashboard
+            </h1>
+            <p className="mt-3 text-sm text-slate-600 sm:text-base">
+              Track your referral code, business signups, and reward progress in
+              one place.
+            </p>
+          </div>
+
+          <motion.section
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="mx-auto w-full max-w-lg rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-xl sm:p-8"
+          >
+            <div className="mb-6 flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 text-white">
+                <Gift className="h-5 w-5" />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Welcome Back
-              </h1>
-              <p className="text-gray-600">
-                Sign in to your referral dashboard
-              </p>
+              <div>
+                <p className="text-sm font-semibold text-slate-900">
+                  Welcome back
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                  Use the same email and password you registered with.
+                </p>
+              </div>
             </div>
 
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700"
+                className="mb-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700"
               >
-                <svg
-                  className="w-5 h-5 flex-shrink-0"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>{error}</span>
+                {error}
               </motion.div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Email Address *
                 </label>
                 <input
@@ -150,14 +122,14 @@ export default function ReferralLoginPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                  placeholder="your@email.com"
+                  className={inputClass}
+                  placeholder="you@example.com"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Password *
                 </label>
                 <input
@@ -165,7 +137,7 @@ export default function ReferralLoginPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                  className={inputClass}
                   placeholder="Enter your password"
                   required
                 />
@@ -174,49 +146,49 @@ export default function ReferralLoginPage() {
               <motion.button
                 type="submit"
                 disabled={loading}
-                whileHover={{ scale: loading ? 1 : 1.02 }}
-                whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 rounded-xl font-semibold shadow-lg shadow-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                whileHover={{ scale: loading ? 1 : 1.01 }}
+                whileTap={{ scale: loading ? 1 : 0.99 }}
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:from-slate-800 hover:to-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? (
                   <>
-                    <Loader className="w-5 h-5 animate-spin" />
+                    <Loader className="h-5 w-5 animate-spin" />
                     Signing in...
                   </>
                 ) : (
                   <>
-                    <Gift className="w-5 h-5" />
-                    Sign In
+                    Sign in
+                    <ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </motion.button>
 
-              <p className="text-center text-sm text-gray-600">
-                Don't have an account?{" "}
+              <p className="text-center text-sm text-slate-600">
+                Don&apos;t have an account?{" "}
                 <Link
                   to="/join-referral-program"
-                  className="text-emerald-600 hover:text-emerald-700 font-semibold"
+                  className="font-semibold text-slate-900 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500"
                 >
-                  Join the program
+                  Join the referral program
                 </Link>
               </p>
             </form>
-          </div>
-        </motion.div>
+          </motion.section>
 
-        {/* Footer */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="mt-8 text-center text-sm text-slate-600">
             Are you a business owner?{" "}
             <Link
               to="/signup"
-              className="text-emerald-600 hover:text-emerald-700 font-semibold"
+              className="font-semibold text-slate-900 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500"
             >
-              Sign up for Elite Booker
+              Create a business account
             </Link>
           </p>
         </div>
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }
+
