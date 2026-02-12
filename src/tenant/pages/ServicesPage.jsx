@@ -156,16 +156,16 @@ export default function ServicesPage() {
         <div className="relative bg-white rounded-2xl overflow-hidden mb-12 border border-gray-200">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDU5LDEzMCwyNDYsMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30"></div>
 
-          <div className="relative px-8 py-16 text-center">
+          <div className="relative px-4 sm:px-8 py-10 sm:py-16 text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <h1 className="text-5xl font-semibold text-gray-900 mb-4 tracking-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-900 mb-4 tracking-tight">
                 Services & Online Booking
               </h1>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 {salon?.description ||
                   "Select the services you need and reserve time with our specialists in just a few clicks."}
               </p>
@@ -176,10 +176,10 @@ export default function ServicesPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex justify-center gap-8 mt-10"
+              className="flex justify-center gap-5 sm:gap-8 mt-8 sm:mt-10"
             >
               <div className="text-center">
-                <div className="text-3xl font-semibold text-gray-900">
+                <div className="text-2xl sm:text-3xl font-semibold text-gray-900">
                   {services.length}
                 </div>
                 <div className="text-sm text-gray-600 font-medium">
@@ -188,7 +188,7 @@ export default function ServicesPage() {
               </div>
               <div className="w-px bg-gray-300"></div>
               <div className="text-center">
-                <div className="text-3xl font-semibold text-gray-900">
+                <div className="text-2xl sm:text-3xl font-semibold text-gray-900">
                   {categories.length - 1}
                 </div>
                 <div className="text-sm text-gray-600 font-medium">
@@ -273,7 +273,7 @@ export default function ServicesPage() {
 
         {/* Services Grid */}
         {filteredServices.length === 0 ? (
-          <Card className="p-12 text-center">
+          <Card className="p-6 sm:p-12 text-center">
             <div className="max-w-md mx-auto">
               <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg
@@ -332,14 +332,16 @@ export default function ServicesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="mt-16"
+          className="mt-12 sm:mt-16"
         >
-          <Card className="bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 text-white p-10 text-center relative overflow-hidden">
+          <Card className="bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 text-white p-6 sm:p-10 text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30"></div>
 
             <div className="relative">
-              <h2 className="text-3xl font-black mb-3">Need Help Choosing?</h2>
-              <p className="text-white/90 text-lg mb-6 max-w-2xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-black mb-3">
+                Need Help Choosing?
+              </h2>
+              <p className="text-white/90 text-base sm:text-lg mb-6 max-w-2xl mx-auto">
                 Not sure which service is right for you? Visit our salon details
                 page or contact us directly.
               </p>

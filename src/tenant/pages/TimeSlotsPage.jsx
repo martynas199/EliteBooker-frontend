@@ -262,7 +262,7 @@ export default function TimeSlots() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md mx-auto text-center bg-white/5 backdrop-blur-md rounded-2xl p-12 border border-white/10"
+          className="max-w-md mx-auto text-center bg-white/5 backdrop-blur-md rounded-2xl p-8 sm:p-12 border border-white/10"
         >
           <motion.svg
             animate={{ rotate: [0, 5, -5, 0] }}
@@ -299,7 +299,7 @@ export default function TimeSlots() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md mx-auto text-center bg-white/5 backdrop-blur-md rounded-2xl p-12 border border-white/10"
+          className="max-w-md mx-auto text-center bg-white/5 backdrop-blur-md rounded-2xl p-8 sm:p-12 border border-white/10"
         >
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-500/10 flex items-center justify-center">
             <svg
@@ -373,12 +373,12 @@ export default function TimeSlots() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="lg:max-w-7xl lg:mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center"
+          className="lg:max-w-7xl lg:mx-auto px-4 sm:px-6 lg:px-8 mb-8 sm:mb-12 text-center"
         >
-          <h1 className="text-5xl md:text-6xl font-black text-gray-900 mb-4 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">
             Select a Time
           </h1>
-          <p className="text-xl text-gray-600 font-light">
+          <p className="text-base sm:text-lg text-gray-600 font-light">
             Choose an available date and time for your appointment
           </p>
         </motion.div>
@@ -391,7 +391,7 @@ export default function TimeSlots() {
           className="lg:max-w-7xl lg:mx-auto px-4 sm:px-6 lg:px-8 pb-12"
         >
           {loading ? (
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-12">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 sm:p-12">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 mx-auto mb-4"></div>
                 <p className="text-gray-600">Loading availability...</p>
@@ -412,7 +412,7 @@ export default function TimeSlots() {
               onSelect={handleSlotSelect}
             />
           ) : (
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-12 text-center">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 sm:p-12 text-center">
               <motion.svg
                 animate={{ rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}

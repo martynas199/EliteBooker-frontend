@@ -82,7 +82,7 @@ export default function SeminarsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
+      <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
         </div>
@@ -94,18 +94,18 @@ export default function SeminarsPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h1 className="text-4xl font-bold text-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
             Seminars & Masterclasses
           </h1>
-          <p className="mt-4 text-xl text-gray-600">
+          <p className="mt-4 text-base sm:text-lg text-gray-600">
             Expand your skills with expert-led educational events
           </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
           {/* Filters Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6 sticky top-4">
@@ -113,7 +113,7 @@ export default function SeminarsPage() {
                 <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
                 <button
                   onClick={clearFilters}
-                  className="text-sm text-blue-600 hover:text-blue-800"
+                  className="text-sm text-brand-600 hover:text-brand-700"
                 >
                   Clear All
                 </button>
@@ -130,7 +130,7 @@ export default function SeminarsPage() {
                   onChange={(e) => handleFilterChange("search", e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && loadSeminars()}
                   placeholder="Search seminars..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-black"
                 />
               </div>
 
@@ -144,7 +144,7 @@ export default function SeminarsPage() {
                   onChange={(e) =>
                     handleFilterChange("category", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-black"
                 >
                   <option value="">All Categories</option>
                   <option value="Skincare">Skincare</option>
@@ -164,7 +164,7 @@ export default function SeminarsPage() {
                 <select
                   value={filters.level}
                   onChange={(e) => handleFilterChange("level", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-black"
                 >
                   <option value="">All Levels</option>
                   <option value="Beginner">Beginner</option>
@@ -184,7 +184,7 @@ export default function SeminarsPage() {
                   onChange={(e) =>
                     handleFilterChange("location", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-black"
                 >
                   <option value="">All Locations</option>
                   <option value="physical">In-Person</option>
@@ -206,7 +206,7 @@ export default function SeminarsPage() {
                       handleFilterChange("minPrice", e.target.value)
                     }
                     placeholder="Min"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-black"
                   />
                   <input
                     type="number"
@@ -215,14 +215,14 @@ export default function SeminarsPage() {
                       handleFilterChange("maxPrice", e.target.value)
                     }
                     placeholder="Max"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-black"
                   />
                 </div>
               </div>
 
               <button
                 onClick={loadSeminars}
-                className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                className="w-full bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-colors"
               >
                 Apply Filters
               </button>
@@ -232,7 +232,7 @@ export default function SeminarsPage() {
           {/* Seminars Grid */}
           <div className="lg:col-span-3">
             {seminars.length === 0 ? (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 sm:p-12 text-center">
                 <p className="text-gray-500 text-lg">No seminars found</p>
                 <p className="text-gray-400 mt-2">
                   Try adjusting your filters or check back later
@@ -267,7 +267,7 @@ export default function SeminarsPage() {
                       <div className="p-6">
                         {/* Category & Level */}
                         <div className="flex items-center gap-2 mb-3">
-                          <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded">
+                          <span className="px-2 py-1 bg-brand-100 text-brand-700 text-xs font-medium rounded">
                             {seminar.category}
                           </span>
                           <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded">
@@ -350,7 +350,7 @@ export default function SeminarsPage() {
                                 </p>
                               )}
                           </div>
-                          <span className="text-blue-600 font-medium hover:text-blue-800">
+                          <span className="text-brand-600 font-medium hover:text-brand-700">
                             View Details →
                           </span>
                         </div>

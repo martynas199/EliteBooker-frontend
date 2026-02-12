@@ -15,7 +15,7 @@ function ProfessionalToggle({ value, onChange }) {
     <div className="inline-flex items-center bg-gray-100 rounded-xl p-1.5 shadow-inner">
       <button
         onClick={() => onChange("services")}
-        className={`px-8 py-3 rounded-lg font-semibold transition-all duration-200 ${
+        className={`px-5 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg font-semibold transition-all duration-200 ${
           value === "services"
             ? "bg-white text-brand-600 shadow-md"
             : "text-gray-600 hover:text-gray-900"
@@ -25,7 +25,7 @@ function ProfessionalToggle({ value, onChange }) {
       </button>
       <button
         onClick={() => onChange("specialists")}
-        className={`px-8 py-3 rounded-lg font-semibold transition-all duration-200 ${
+        className={`px-5 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg font-semibold transition-all duration-200 ${
           value === "specialists"
             ? "bg-white text-brand-600 shadow-md"
             : "text-gray-600 hover:text-gray-900"
@@ -171,15 +171,17 @@ export default function LocationServicesView({
   const hasItems = currentItems.length > 0;
 
   return (
-    <div className="py-12">
+    <div className="py-8 sm:py-12">
       {/* Location Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-12"
       >
-        <h2 className="text-4xl font-bold text-white mb-3">{location.name}</h2>
-        <p className="text-white/70 text-lg">
+        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+          {location.name}
+        </h2>
+        <p className="text-gray-600 text-base sm:text-lg">
           {location.address?.street && location.address?.city
             ? `${location.address.street}, ${location.address.city}`
             : "Explore our services and specialists"}
@@ -248,7 +250,7 @@ export default function LocationServicesView({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-center mt-12 text-white/60"
+          className="text-center mt-12 text-gray-500"
         >
           <p className="text-sm">
             Showing {currentItems.length}{" "}

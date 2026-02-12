@@ -136,13 +136,13 @@ export default function SeminarBookingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate(`../seminars/${slug}`)}
-            className="text-blue-600 hover:text-blue-800 text-sm mb-4 inline-flex items-center"
+            className="text-brand-600 hover:text-brand-700 text-sm mb-4 inline-flex items-center"
           >
             <svg
               className="w-4 h-4 mr-1"
@@ -159,12 +159,12 @@ export default function SeminarBookingPage() {
             </svg>
             Back to Seminar Details
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Book: {seminar.title}
           </h1>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Left Column - Form */}
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -174,7 +174,7 @@ export default function SeminarBookingPage() {
                   Selected Session
                 </h2>
                 {selectedSession ? (
-                  <div className="bg-blue-50 border-2 border-blue-600 rounded-lg p-4">
+                  <div className="bg-brand-50 border-2 border-brand-600 rounded-lg p-4">
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="font-semibold text-gray-900 text-lg">
@@ -193,7 +193,7 @@ export default function SeminarBookingPage() {
                       <button
                         type="button"
                         onClick={() => navigate(`..`)}
-                        className="text-sm text-blue-600 hover:text-blue-800 underline"
+                        className="text-sm text-brand-600 hover:text-brand-700 underline"
                       >
                         Change
                       </button>
@@ -205,7 +205,7 @@ export default function SeminarBookingPage() {
                     <button
                       type="button"
                       onClick={() => navigate(`..`)}
-                      className="text-blue-600 hover:text-blue-800 underline"
+                      className="text-brand-600 hover:text-brand-700 underline"
                     >
                       Select a session
                     </button>
@@ -227,7 +227,7 @@ export default function SeminarBookingPage() {
                         setFormData({ ...formData, name: e.target.value })
                       }
                       placeholder="John Doe"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-black"
                       required
                     />
                   </FormField>
@@ -240,7 +240,7 @@ export default function SeminarBookingPage() {
                         setFormData({ ...formData, email: e.target.value })
                       }
                       placeholder="john@example.com"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-black"
                       required
                     />
                   </FormField>
@@ -253,7 +253,7 @@ export default function SeminarBookingPage() {
                         setFormData({ ...formData, phone: e.target.value })
                       }
                       placeholder="+44 123 456 7890"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-black"
                     />
                   </FormField>
 
@@ -268,7 +268,7 @@ export default function SeminarBookingPage() {
                       }
                       placeholder="Any dietary requirements, accessibility needs, or other requests..."
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-black"
                     />
                   </FormField>
                 </div>

@@ -624,7 +624,7 @@ export default function TakePaymentPage() {
               <div
                 key={s}
                 className={`flex-1 h-1 rounded-full transition-all ${
-                  s <= step ? "bg-blue-600" : "bg-gray-200"
+                  s <= step ? "bg-black" : "bg-gray-200"
                 }`}
               />
             ))}
@@ -682,7 +682,7 @@ export default function TakePaymentPage() {
             placeholder="Search by client name or service..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-black focus:border-black"
           />
           <svg
             className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"
@@ -702,12 +702,12 @@ export default function TakePaymentPage() {
         {/* Custom payment option */}
         <button
           onClick={handleCustomPayment}
-          className="w-full p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-left"
+          className="w-full p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-black hover:bg-gray-50 transition-all text-left"
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
               <svg
-                className="w-6 h-6 text-blue-600"
+                className="w-6 h-6 text-gray-900"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -752,7 +752,7 @@ export default function TakePaymentPage() {
               <button
                 key={apt._id}
                 onClick={() => handleSelectAppointment(apt)}
-                className="w-full p-4 bg-white border rounded-lg hover:border-blue-500 hover:shadow-md transition-all text-left"
+                className="w-full p-4 bg-white border rounded-lg hover:border-black hover:shadow-md transition-all text-left"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
@@ -839,7 +839,7 @@ export default function TakePaymentPage() {
               onChange={(e) =>
                 handleAmountChange(parseFloat(e.target.value) * 100)
               }
-              className="w-full pl-12 pr-4 py-4 text-2xl font-bold border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full pl-12 pr-4 py-4 text-2xl font-bold border rounded-lg focus:ring-2 focus:ring-black focus:border-black"
               placeholder="0.00"
               step="0.01"
               min="0"
@@ -884,8 +884,8 @@ export default function TakePaymentPage() {
                 onClick={() => handleTipPercentChange(percent)}
                 className={`px-4 py-3 text-sm font-medium border rounded-lg transition-all ${
                   tipPercent === percent
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "border-gray-300 hover:border-blue-500 hover:bg-blue-50"
+                    ? "bg-black text-white border-black"
+                    : "border-gray-300 hover:border-gray-500 hover:bg-gray-50"
                 }`}
               >
                 {percent === 0 ? "No Tip" : `${percent}%`}
@@ -900,7 +900,7 @@ export default function TakePaymentPage() {
               value={customTip}
               onChange={(e) => handleCustomTipChange(e.target.value)}
               placeholder="Custom tip amount (£)"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:border-black"
               step="0.01"
               min="0"
             />
@@ -927,7 +927,7 @@ export default function TakePaymentPage() {
         <button
           onClick={handleTakePayment}
           disabled={totalAmount <= 0}
-          className="w-full py-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-lg"
+          className="w-full py-4 bg-black text-white font-bold rounded-lg hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-lg"
         >
           Take Payment
         </button>
@@ -940,7 +940,7 @@ export default function TakePaymentPage() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
         {/* Amount display */}
         <div className="mb-8">
-          <p className="text-5xl font-bold mb-2">
+          <p className="text-4xl sm:text-5xl font-bold mb-2 break-words">
             £{(totalAmount / 100).toFixed(2)}
           </p>
           <p className="text-gray-600">
@@ -959,9 +959,9 @@ export default function TakePaymentPage() {
 
         {/* NFC animation */}
         <div className="relative mb-8">
-          <div className="w-48 h-48 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center animate-pulse">
+          <div className="w-40 h-40 sm:w-48 sm:h-48 bg-gradient-to-br from-gray-900 to-black rounded-full flex items-center justify-center animate-pulse">
             <svg
-              className="w-24 h-24 text-white"
+              className="w-20 h-20 sm:w-24 sm:h-24 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -975,7 +975,7 @@ export default function TakePaymentPage() {
             </svg>
           </div>
           {/* Ripple effect */}
-          <div className="absolute inset-0 w-48 h-48 bg-blue-400 rounded-full animate-ping opacity-20" />
+          <div className="absolute inset-0 w-40 h-40 sm:w-48 sm:h-48 bg-gray-500 rounded-full animate-ping opacity-20" />
         </div>
 
         <p className="text-xl font-medium mb-2">Tap card or phone</p>
@@ -986,7 +986,7 @@ export default function TakePaymentPage() {
         {/* Loading spinner */}
         {isProcessing && (
           <div className="mt-8 flex items-center gap-2 text-gray-600">
-            <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
             <span className="text-sm">Processing...</span>
           </div>
         )}
@@ -1064,7 +1064,7 @@ export default function TakePaymentPage() {
             {paymentResult.client?.email && (
               <button
                 onClick={() => handleSendReceipt("email")}
-                className="w-full py-3 border-2 border-blue-600 text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-colors"
+                className="w-full py-3 border-2 border-black text-black font-medium rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Send Receipt via Email
               </button>
@@ -1072,7 +1072,7 @@ export default function TakePaymentPage() {
             {paymentResult.client?.phone && (
               <button
                 onClick={() => handleSendReceipt("sms")}
-                className="w-full py-3 border-2 border-blue-600 text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-colors"
+                className="w-full py-3 border-2 border-black text-black font-medium rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Send Receipt via SMS
               </button>
@@ -1089,7 +1089,7 @@ export default function TakePaymentPage() {
             )}
             <button
               onClick={handleTakeAnotherPayment}
-              className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors"
+              className="w-full py-3 bg-black text-white font-bold rounded-lg hover:bg-gray-800 transition-colors"
             >
               Take Another Payment
             </button>
@@ -1125,7 +1125,7 @@ export default function TakePaymentPage() {
           <div className="w-full space-y-3">
             <button
               onClick={() => goToStep(2)}
-              className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors"
+              className="w-full py-3 bg-black text-white font-bold rounded-lg hover:bg-gray-800 transition-colors"
             >
               Try Again
             </button>

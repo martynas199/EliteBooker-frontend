@@ -113,8 +113,8 @@ export default function SeminarDetailPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Left Column - Images */}
           <div className="space-y-4">
             {/* Main Image */}
@@ -141,7 +141,7 @@ export default function SeminarDetailPage() {
                     onClick={() => setSelectedImageIndex(idx)}
                     className={`aspect-square rounded-lg overflow-hidden border-2 ${
                       idx === selectedImageIndex
-                        ? "border-blue-600"
+                        ? "border-black"
                         : "border-gray-200"
                     }`}
                   >
@@ -160,7 +160,7 @@ export default function SeminarDetailPage() {
           <div className="space-y-6">
             {/* Category & Level Badges */}
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded-full">
+              <span className="px-3 py-1 bg-brand-100 text-brand-700 text-sm font-medium rounded-full">
                 {seminar.category}
               </span>
               <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
@@ -176,12 +176,14 @@ export default function SeminarDetailPage() {
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl font-bold text-gray-900">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
               {seminar.title}
             </h1>
 
             {/* Short Description */}
-            <p className="text-xl text-gray-600">{seminar.shortDescription}</p>
+            <p className="text-base sm:text-lg text-gray-600">
+              {seminar.shortDescription}
+            </p>
 
             {/* Price */}
             <div className="border-t border-b border-gray-200 py-6">
@@ -410,7 +412,7 @@ export default function SeminarDetailPage() {
               {seminar.requirements.map((item, idx) => (
                 <li key={idx} className="flex items-start">
                   <svg
-                    className="w-6 h-6 text-blue-600 mr-3 flex-shrink-0"
+                    className="w-6 h-6 text-brand-600 mr-3 flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

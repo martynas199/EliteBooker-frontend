@@ -177,7 +177,13 @@ export default function FeaturesSection() {
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
             >
-              <Card className="group h-full border border-slate-700/80 bg-slate-900/80 p-5 shadow-lg shadow-black/20 transition-all hover:-translate-y-1 hover:border-amber-300/50 hover:shadow-2xl sm:p-7">
+              <Card
+                className="group h-full !bg-[#111827] border border-slate-700/80 p-5 shadow-lg shadow-black/20 transition-all hover:-translate-y-1 hover:border-amber-300/50 hover:shadow-2xl sm:p-7"
+                style={{
+                  backgroundColor: "#111827",
+                  borderColor: "rgba(51, 65, 85, 0.9)",
+                }}
+              >
                 <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 sm:mb-6 sm:h-16 sm:w-16">
                   <div className={accentColors[idx % accentColors.length]}>
                     <FeatureIcon type={feature.id} />

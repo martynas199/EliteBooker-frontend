@@ -33,9 +33,9 @@ export default function BookingProgress({ currentStep }) {
                     transition-all duration-200
                     ${
                       isComplete
-                        ? "bg-indigo-600 text-white"
+                        ? "bg-black text-white"
                         : isCurrent
-                        ? "bg-indigo-600 text-white ring-4 ring-indigo-100"
+                        ? "bg-black text-white ring-4 ring-gray-200"
                         : "bg-gray-200 text-gray-500"
                     }
                   `}
@@ -64,7 +64,7 @@ export default function BookingProgress({ currentStep }) {
                 <div
                   className={`
                     w-8 sm:w-12 h-0.5 mx-2
-                    ${isComplete ? "bg-indigo-600" : "bg-gray-200"}
+                    ${isComplete ? "bg-black" : "bg-gray-200"}
                   `}
                   aria-hidden="true"
                 />

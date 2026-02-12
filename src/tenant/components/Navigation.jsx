@@ -26,9 +26,27 @@ export default function Navigation() {
 
   const salonName = tenant?.name || "Beauty Salon";
   const ecommerceEnabled = tenant?.features?.enableProducts || false;
+  const tenantBasePath = `/salon/${tenant?.slug}`;
 
   // Check if user is authenticated as either tenant customer OR global client
   const isAuthenticated = user || isClientAuthenticated;
+
+  const isPathActive = (path) =>
+    location.pathname === path || location.pathname.startsWith(`${path}/`);
+
+  const getDesktopLinkClass = (path) =>
+    `px-4 py-2 text-sm font-semibold rounded-lg transition-all relative ${
+      isPathActive(path)
+        ? "bg-gray-900 text-white shadow-sm hover:bg-gray-900 hover:text-white"
+        : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+    }`;
+
+  const getMobileLinkClass = (path) =>
+    `px-4 py-3 text-sm font-semibold rounded-lg transition-all ${
+      isPathActive(path)
+        ? "bg-gray-900 text-white shadow-sm hover:bg-gray-900 hover:text-white"
+        : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+    }`;
 
   // Handle logout for whichever auth type is active
   const handleLogout = () => {
@@ -69,32 +87,47 @@ export default function Navigation() {
 
           {/* Center Navigation - Desktop */}
           <nav className="hidden md:flex gap-1">
-            <Link
-              to={`/salon/${tenant?.slug}/services`}
-              className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all relative group"
-            >
-              Services
-            </Link>
-            <Link
-              to={`/salon/${tenant?.slug}/about`}
-              className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all relative group"
-            >
-              About Us
-            </Link>
-            <Link
-              to={`/salon/${tenant?.slug}/contact`}
-              className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all relative group"
-            >
-              Contact
-            </Link>
-            {ecommerceEnabled && (
-              <Link
-                to={`/salon/${tenant?.slug}/products`}
-                className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all relative group"
-              >
-                Shop
-              </Link>
-            )}
+            {(() => {
+              const servicesPath = `${tenantBasePath}/services`;
+              const aboutPath = `${tenantBasePath}/about`;
+              const contactPath = `${tenantBasePath}/contact`;
+              const productsPath = `${tenantBasePath}/products`;
+
+              return (
+                <>
+                  <Link
+                    to={servicesPath}
+                    aria-current={isPathActive(servicesPath) ? "page" : undefined}
+                    className={getDesktopLinkClass(servicesPath)}
+                  >
+                    Services
+                  </Link>
+                  <Link
+                    to={aboutPath}
+                    aria-current={isPathActive(aboutPath) ? "page" : undefined}
+                    className={getDesktopLinkClass(aboutPath)}
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    to={contactPath}
+                    aria-current={isPathActive(contactPath) ? "page" : undefined}
+                    className={getDesktopLinkClass(contactPath)}
+                  >
+                    Contact
+                  </Link>
+                  {ecommerceEnabled && (
+                    <Link
+                      to={productsPath}
+                      aria-current={isPathActive(productsPath) ? "page" : undefined}
+                      className={getDesktopLinkClass(productsPath)}
+                    >
+                      Shop
+                    </Link>
+                  )}
+                </>
+              );
+            })()}
           </nav>
 
           {/* Right Actions - Desktop */}
@@ -137,19 +170,21 @@ export default function Navigation() {
                       onClick={() => setProfileMenuOpen(false)}
                     />
                     <div
-                      className="absolute right-0 top-full mt-2 bg-white rounded-2xl shadow-2xl overflow-hidden z-[999]"
+                      className="absolute right-0 top-full pt-2 z-[999]"
                       style={{ minWidth: "320px" }}
                     >
-                      <ProfileMenu
-                        client={client}
-                        onLogout={clientLogout}
-                        variant="dropdown"
-                        onItemClick={() => setProfileMenuOpen(false)}
-                        onGiftCardClick={() => {
-                          setProfileMenuOpen(false);
-                          setShowGiftCardModal(true);
-                        }}
-                      />
+                      <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                        <ProfileMenu
+                          client={client}
+                          onLogout={clientLogout}
+                          variant="dropdown"
+                          onItemClick={() => setProfileMenuOpen(false)}
+                          onGiftCardClick={() => {
+                            setProfileMenuOpen(false);
+                            setShowGiftCardModal(true);
+                          }}
+                        />
+                      </div>
                     </div>
                   </>
                 )}
@@ -172,7 +207,7 @@ export default function Navigation() {
 
                 {/* Profile Dropdown */}
                 {profileMenuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-56 z-[100] animate-fade-in">
+                  <div className="absolute right-0 top-full pt-2 w-56 z-[100] animate-fade-in">
                     <div className="bg-white rounded-xl shadow-xl border border-gray-200 py-2 overflow-hidden">
                       <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
                         <p className="text-sm font-bold text-gray-900 truncate">
@@ -313,36 +348,57 @@ export default function Navigation() {
         {mobileMenuOpen && (
           <nav className="md:hidden py-4 border-t border-gray-200 animate-slide-down bg-white">
             <div className="flex flex-col gap-1">
-              <Link
-                to={`/salon/${tenant?.slug}/services`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
-              >
-                Services
-              </Link>
-              <Link
-                to={`/salon/${tenant?.slug}/about`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
-              >
-                About Us
-              </Link>
-              <Link
-                to={`/salon/${tenant?.slug}/contact`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
-              >
-                Contact
-              </Link>
-              {ecommerceEnabled && (
-                <Link
-                  to={`/salon/${tenant?.slug}/products`}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
-                >
-                  Shop
-                </Link>
-              )}
+              {(() => {
+                const servicesPath = `${tenantBasePath}/services`;
+                const aboutPath = `${tenantBasePath}/about`;
+                const contactPath = `${tenantBasePath}/contact`;
+                const productsPath = `${tenantBasePath}/products`;
+
+                return (
+                  <>
+                    <Link
+                      to={servicesPath}
+                      onClick={() => setMobileMenuOpen(false)}
+                      aria-current={
+                        isPathActive(servicesPath) ? "page" : undefined
+                      }
+                      className={getMobileLinkClass(servicesPath)}
+                    >
+                      Services
+                    </Link>
+                    <Link
+                      to={aboutPath}
+                      onClick={() => setMobileMenuOpen(false)}
+                      aria-current={isPathActive(aboutPath) ? "page" : undefined}
+                      className={getMobileLinkClass(aboutPath)}
+                    >
+                      About Us
+                    </Link>
+                    <Link
+                      to={contactPath}
+                      onClick={() => setMobileMenuOpen(false)}
+                      aria-current={
+                        isPathActive(contactPath) ? "page" : undefined
+                      }
+                      className={getMobileLinkClass(contactPath)}
+                    >
+                      Contact
+                    </Link>
+                    {ecommerceEnabled && (
+                      <Link
+                        to={productsPath}
+                        onClick={() => setMobileMenuOpen(false)}
+                        aria-current={
+                          isPathActive(productsPath) ? "page" : undefined
+                        }
+                        className={getMobileLinkClass(productsPath)}
+                      >
+                        Shop
+                      </Link>
+                    )}
+                  </>
+                );
+              })()}
               {/* Sign In link only shown when not authenticated */}
               {!isAuthenticated && (
                 <>

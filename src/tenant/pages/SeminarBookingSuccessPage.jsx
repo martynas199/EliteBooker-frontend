@@ -30,10 +30,10 @@ export default function SeminarBookingSuccessPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Icon */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-10 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6">
             <svg
               className="w-8 h-8 text-green-600"
@@ -50,23 +50,23 @@ export default function SeminarBookingSuccessPage() {
             </svg>
           </div>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
             Booking Confirmed!
           </h1>
-          <p className="text-lg text-gray-600 mb-8">
+          <p className="text-base sm:text-lg text-gray-600 mb-8">
             Thank you for your booking. You will receive a confirmation email
             shortly with all the details.
           </p>
 
           {/* What's Next */}
-          <div className="bg-blue-50 rounded-lg p-6 mb-8 text-left">
+          <div className="bg-brand-50 border border-brand-200 rounded-lg p-6 mb-8 text-left">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               What's Next?
             </h2>
             <ul className="space-y-3 text-sm text-gray-700">
               <li className="flex items-start">
                 <svg
-                  className="w-5 h-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 text-brand-600 mr-2 flex-shrink-0 mt-0.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -84,7 +84,7 @@ export default function SeminarBookingSuccessPage() {
               </li>
               <li className="flex items-start">
                 <svg
-                  className="w-5 h-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 text-brand-600 mr-2 flex-shrink-0 mt-0.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -100,7 +100,7 @@ export default function SeminarBookingSuccessPage() {
               </li>
               <li className="flex items-start">
                 <svg
-                  className="w-5 h-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 text-brand-600 mr-2 flex-shrink-0 mt-0.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -119,7 +119,7 @@ export default function SeminarBookingSuccessPage() {
               </li>
               <li className="flex items-start">
                 <svg
-                  className="w-5 h-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 text-brand-600 mr-2 flex-shrink-0 mt-0.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -141,7 +141,7 @@ export default function SeminarBookingSuccessPage() {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/my-seminars">
-              <button className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+              <button className="w-full sm:w-auto px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition-colors">
                 View My Bookings
               </button>
             </Link>

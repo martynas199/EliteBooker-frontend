@@ -46,8 +46,8 @@ export default function ShopCancelPage() {
           </p>
 
           {orderId && (
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
+            <div className="p-3 bg-brand-50 border border-brand-200 rounded-lg">
+              <p className="text-sm text-brand-900">
                 <strong>Note:</strong> A pending order (ID: {orderId.slice(-8)})
                 may have been created but will be automatically cancelled since
                 payment was not completed.

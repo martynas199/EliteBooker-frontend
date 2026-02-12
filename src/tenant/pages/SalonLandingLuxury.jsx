@@ -561,7 +561,7 @@ export default function SalonLandingLuxury() {
               </>
             )}
 
-            <div className="relative z-10 px-4 sm:px-6 md:px-12 py-16 sm:py-20 md:py-28">
+            <div className="relative z-10 px-4 sm:px-6 md:px-12 py-12 sm:py-16 md:py-24">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -583,7 +583,7 @@ export default function SalonLandingLuxury() {
 
                 {/* Clean Professional Heading */}
                 <motion.h1
-                  className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight leading-tight"
+                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight leading-tight"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
@@ -593,7 +593,7 @@ export default function SalonLandingLuxury() {
 
                 {/* Clear Value Proposition */}
                 <motion.p
-                  className="text-lg sm:text-xl text-white/90 mb-12 max-w-2xl mx-auto leading-relaxed px-4"
+                  className="text-base sm:text-lg text-white/90 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-4"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
@@ -640,7 +640,7 @@ export default function SalonLandingLuxury() {
                           );
                         }
                       }}
-                      className="px-8 py-4 bg-gray-900 text-white font-medium text-base rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
+                      className="px-6 sm:px-8 py-3.5 sm:py-4 bg-gray-900 text-white font-medium text-base rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
                     >
                       <svg
                         className="w-5 h-5"
@@ -661,7 +661,7 @@ export default function SalonLandingLuxury() {
                     {/* Gift Card Button */}
                     <button
                       onClick={() => setShowGiftCardModal(true)}
-                      className="px-8 py-4 bg-gray-900 text-white font-medium text-base rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
+                      className="px-6 sm:px-8 py-3.5 sm:py-4 bg-gray-900 text-white font-medium text-base rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
                     >
                       <svg
                         className="w-5 h-5"
@@ -694,7 +694,7 @@ export default function SalonLandingLuxury() {
                   transition={{ duration: 0.6 }}
                   className="text-center mb-12"
                 >
-                  <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
                     Our Locations
                   </h2>
                   <p className="text-gray-600 text-lg">
@@ -867,7 +867,7 @@ export default function SalonLandingLuxury() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   onClick={() => setSelectedLocation(null)}
-                  className="mb-8 flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+                  className="mb-8 flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   <svg
                     className="w-5 h-5"
@@ -1068,7 +1068,7 @@ export default function SalonLandingLuxury() {
                           transition={{ duration: 0.6 }}
                           className="text-center mb-12"
                         >
-                          <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
+                          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
                             Our Services
                           </h2>
                           <p className="text-gray-600 text-lg">
