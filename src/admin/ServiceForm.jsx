@@ -363,8 +363,12 @@ export default function ServiceForm({
         setIsAIGenerated(true);
         toast.success("AI description generated successfully!");
 
-        // Show info if fallback was used
         if (response.data.data.source === "fallback") {
+          toast(response.data.data.warning, { icon: "⚠️" });
+        }
+
+        // Show info if fallback was used
+        if (false && response.data.data.source === "fallback") {
           toast(response.data.data.warning, { icon: "⚠️" });
         }
       } else {
@@ -397,6 +401,15 @@ export default function ServiceForm({
   ];
   const completedRequiredCount = requiredChecks.filter(Boolean).length;
   const requiredTotalCount = requiredChecks.length;
+  const descriptionLength = formData.description.trim().length;
+  const selectedLocationsCount = formData.availableAt.length;
+  const pricedVariants = formData.variants
+    .map((variant) => Number(variant.price))
+    .filter((price) => Number.isFinite(price) && price > 0);
+  const minVariantPrice =
+    pricedVariants.length > 0 ? Math.min(...pricedVariants) : null;
+  const maxVariantPrice =
+    pricedVariants.length > 0 ? Math.max(...pricedVariants) : null;
 
   const inputClass = (hasError = false) =>
     `w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 ${
@@ -568,6 +581,9 @@ export default function ServiceForm({
                   AI-generated, editable
                 </p>
               )}
+              <p className="text-xs text-gray-500">
+                {descriptionLength} characters
+              </p>
             </div>
           </FormField>
 
