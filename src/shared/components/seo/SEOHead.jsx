@@ -24,7 +24,14 @@ export default function SEOHead({
   schema,
 }) {
   const siteName = "Elite Booker";
-  const fullTitle = title ? `${title} | ${siteName}` : siteName;
+  const titleIncludesSiteName =
+    typeof title === "string" &&
+    title.toLowerCase().includes(siteName.toLowerCase());
+  const fullTitle = title
+    ? titleIncludesSiteName
+      ? title
+      : `${title} | ${siteName}`
+    : siteName;
   const baseUrl = "https://www.elitebooker.co.uk";
   const normalizePath = (path = "/") => {
     const pathOnly = `${path}`.split("?")[0].split("#")[0] || "/";
