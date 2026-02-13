@@ -36,8 +36,9 @@ export default function HelpPage() {
   return (
     <>
       <SEOHead
-        title="Help & Support | EliteBooker"
+        title="Help & Support"
         description="Get help with booking appointments, managing your account, and more."
+        canonical="https://www.elitebooker.co.uk/help"
       />
 
       <PageTransition>

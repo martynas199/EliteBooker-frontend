@@ -357,7 +357,20 @@ export default function SmsReminders() {
             >
               Start Your Free Trial
             </Link>
-            <p className="mt-4 text-slate-50">
+            <p className="mt-4 text-xs text-slate-100 sm:text-sm">
+              <Link to="/pricing" className="underline hover:text-white">
+                View pricing
+              </Link>
+              {" • "}
+              <Link to="/compare/vs-fresha" className="underline hover:text-white">
+                Compare vs Fresha
+              </Link>
+              {" • "}
+              <Link to="/solutions" className="underline hover:text-white">
+                Browse local solutions
+              </Link>
+            </p>
+            <p className="mt-2 text-slate-50">
               <Link
                 to="/blog/reduce-salon-no-shows"
                 className="underline hover:text-white"

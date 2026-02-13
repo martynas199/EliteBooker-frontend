@@ -134,6 +134,13 @@ const generateSitemap = () => {
     <priority>0.9</priority>
   </url>
 
+  <url>
+    <loc>${BASE_URL}/compare</loc>
+    <lastmod>${LAST_MOD}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Feature Pages (good priority - mid-funnel) -->
   <url>
     <loc>${BASE_URL}/features/sms-reminders</loc>
@@ -160,6 +167,21 @@ const generateSitemap = () => {
     <loc>${BASE_URL}/features/online-booking</loc>
     <lastmod>${LAST_MOD}</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>${BASE_URL}/features</loc>
+    <lastmod>${LAST_MOD}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Solutions Hub -->
+  <url>
+    <loc>${BASE_URL}/solutions</loc>
+    <lastmod>${LAST_MOD}</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
@@ -192,7 +214,7 @@ const generateSitemap = () => {
     <priority>0.6</priority>
   </url>
 
-  <!-- Total URLs: ${allEntries.length + 13} -->
+  <!-- Total URLs: ${allEntries.length + 18} -->
   
 </urlset>`;
 
@@ -202,7 +224,7 @@ const generateSitemap = () => {
 // Output
 console.log(generateSitemap());
 console.error(
-  `\n✅ Generated ${UK_CITIES.length * NICHES.length} programmatic pages`,
+  `\nGenerated ${UK_CITIES.length * NICHES.length} programmatic pages`,
 );
-console.error(`✅ Generated ${2} tool pages`);
-console.error(`✅ Total URLs: ${UK_CITIES.length * NICHES.length + 2 + 13}`);
+console.error(`Generated ${2} tool pages`);
+console.error(`Total URLs: ${UK_CITIES.length * NICHES.length + 2 + 18}`);

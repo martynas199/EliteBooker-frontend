@@ -40,9 +40,10 @@ export default function LandingPage() {
     <>
       {/* SEO Meta Tags */}
       <SEOHead
-        title="Elite Booker - UK's Leading Booking System for Beauty & Wellness"
-        description="Zero commission booking system for UK salons, spas & beauty professionals. Online scheduling, SMS reminders, deposits & POS. From GBP 29/month. Trusted by 500+ UK businesses."
+        title="Booking Software for UK Salons, Spas & Barbers"
+        description="Commission-free booking software for UK beauty and wellness businesses. Online scheduling, SMS reminders, deposits and client management. Plans from GBP 0."
         keywords="online booking system UK, salon booking software UK, appointment scheduling UK, beauty booking app, zero commission booking, salon management software"
+        canonical="https://www.elitebooker.co.uk/"
       />
 
       {/* Organization Schema */}

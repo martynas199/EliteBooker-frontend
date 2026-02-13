@@ -687,6 +687,11 @@ export default function ServiceForm({
                   locations
                 </p>
               )}
+              {selectedLocationsCount > 0 && (
+                <p className="mt-1 text-xs text-gray-600">
+                  {selectedLocationsCount} of {locations.length} locations selected
+                </p>
+              )}
             </FormField>
           )}
 
@@ -1076,6 +1081,14 @@ export default function ServiceForm({
             <p className="text-xs text-gray-600">
               Create different versions of this service with unique durations and prices. Example: "Quick Trim (15 min, £20)" and "Full Cut & Style (45 min, £45)".
             </p>
+            {minVariantPrice !== null && maxVariantPrice !== null && (
+              <p className="mt-2 text-xs font-medium text-gray-700">
+                Current price range: £{minVariantPrice.toFixed(2)}
+                {minVariantPrice !== maxVariantPrice
+                  ? ` - £${maxVariantPrice.toFixed(2)}`
+                  : ""}
+              </p>
+            )}
           </div>
 
           {/* Variant Cards */}

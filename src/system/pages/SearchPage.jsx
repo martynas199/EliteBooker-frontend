@@ -998,8 +998,9 @@ export default function SearchPage() {
   return (
     <>
       <SEOHead
-        title="Discover Beauty & Wellness - EliteBooker"
-        description="Find and book beauty salons, spas, and wellness businesses near you"
+        title="Find Beauty & Wellness Businesses Near You"
+        description="Search and book trusted salons, spas, and wellness businesses across the UK."
+        canonical="https://www.elitebooker.co.uk/search"
       />
       <div
         className="fixed inset-0 flex flex-col bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]"

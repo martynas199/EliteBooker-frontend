@@ -25,6 +25,7 @@ const ReferralDashboard = lazy(() =>
 const SignupSuccessPage = lazy(() =>
   import("../system/pages/SignupSuccessPage"),
 );
+const NotFoundPage = lazy(() => import("../system/pages/NotFoundPage"));
 
 // Industry landing pages
 const LashTechnicians = lazy(() =>
@@ -37,6 +38,7 @@ const Barbers = lazy(() => import("../system/pages/industries/Barbers"));
 const PricingPage = lazy(() => import("../system/pages/PricingPage"));
 
 // Comparison pages
+const ComparePage = lazy(() => import("../system/pages/ComparePage"));
 const VsFresha = lazy(() => import("../system/pages/compare/VsFresha"));
 const VsTreatwell = lazy(() => import("../system/pages/compare/VsTreatwell"));
 
@@ -46,6 +48,8 @@ const ReduceSalonNoShows = lazy(() =>
 );
 
 // Feature pages
+const FeaturesPage = lazy(() => import("../system/pages/FeaturesPage"));
+const SolutionsPage = lazy(() => import("../system/pages/SolutionsPage"));
 const SmsReminders = lazy(() =>
   import("../system/pages/features/SmsReminders"),
 );
@@ -339,6 +343,9 @@ export default function AppRoutes() {
         {/* Help & Support */}
         <Route path="/help" element={<HelpPage />} />
 
+        {/* Not Found */}
+        <Route path="/404" element={<NotFoundPage />} />
+
         {/* Pricing Page */}
         <Route
           path="/pricing"
@@ -377,6 +384,14 @@ export default function AppRoutes() {
 
         {/* Comparison Pages */}
         <Route
+          path="/compare"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <ComparePage />
+            </Suspense>
+          }
+        />
+        <Route
           path="/compare/vs-fresha"
           element={
             <Suspense fallback={<LoadingSpinner />}>
@@ -404,6 +419,14 @@ export default function AppRoutes() {
         />
 
         {/* Feature Pages */}
+        <Route
+          path="/features"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <FeaturesPage />
+            </Suspense>
+          }
+        />
         <Route
           path="/features/sms-reminders"
           element={
@@ -433,6 +456,16 @@ export default function AppRoutes() {
           element={
             <Suspense fallback={<LoadingSpinner />}>
               <OnlineBooking />
+            </Suspense>
+          }
+        />
+
+        {/* Solutions Hub + Programmatic Local Solutions */}
+        <Route
+          path="/solutions"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <SolutionsPage />
             </Suspense>
           }
         />
@@ -825,8 +858,8 @@ export default function AppRoutes() {
           />
         </Route>
 
-        {/* Customer Routes */}
-        <Route path="*" element={<CustomerLayout />} />
+        {/* Catch-all */}
+        <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>
     </>
   );

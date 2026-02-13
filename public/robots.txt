@@ -4,15 +4,21 @@
 User-agent: *
 Allow: /
 Allow: /features
+Allow: /compare
 Allow: /pricing
-Allow: /testimonials
-Allow: /demo
+Allow: /solutions
+Allow: /industries
+Allow: /tools
+Allow: /blog
 Allow: /help
 Allow: /search
 
 # Block admin pages from search engines
 Disallow: /admin/
 Disallow: /admin/*
+
+# Block client account/private pages
+Disallow: /client/
 
 # Block checkout and payment pages (contains sensitive info)
 Disallow: /checkout
@@ -31,6 +37,13 @@ Disallow: /cancel
 Disallow: /shop/success
 Disallow: /shop/cancel
 Disallow: /token-debug
+Disallow: /menu
+Disallow: /404
+Disallow: /auth/success
+Disallow: /referral-login
+Disallow: /referral-dashboard
+Disallow: /appointments/consent
+Disallow: /consent/
 
 # Block order success pages (contain customer info)
 Disallow: /order-success/*

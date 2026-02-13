@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { motion } from "framer-motion";
+import SEOHead from "../../shared/components/seo/SEOHead";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Gift, TrendingUp, DollarSign, Users, ArrowRight } from "lucide-react";
@@ -98,6 +99,12 @@ export default function ReferralSignupPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <SEOHead
+        title="Join the Referral Program"
+        description="Join the Elite Booker referral program and earn rewards by introducing beauty and wellness businesses."
+        canonical="https://www.elitebooker.co.uk/referral-signup"
+      />
+
       <Header />
 
       <main className="relative overflow-hidden">

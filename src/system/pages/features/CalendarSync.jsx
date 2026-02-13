@@ -340,6 +340,19 @@ export default function CalendarSync() {
             >
               Start Your Free Trial
             </Link>
+            <p className="mt-4 text-xs text-slate-100 sm:text-sm">
+              <Link to="/pricing" className="underline hover:text-white">
+                View pricing
+              </Link>
+              {" • "}
+              <Link to="/features" className="underline hover:text-white">
+                All features
+              </Link>
+              {" • "}
+              <Link to="/solutions" className="underline hover:text-white">
+                Browse local solutions
+              </Link>
+            </p>
           </div>
         </section>
       </div>

@@ -9,6 +9,8 @@ const navButtonClass =
   "flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900";
 const desktopDropdownClass =
   "absolute left-0 top-full z-50 w-56 rounded-xl border border-slate-200 bg-white py-2 shadow-xl";
+const desktopDropdownItemClass =
+  "block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100";
 const mobileMenuItemClass =
   "w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900";
 
@@ -31,6 +33,10 @@ export default function Header() {
 
   const customerLinks = isAuthenticated
     ? [
+        { label: "Features", href: "/features" },
+        { label: "Compare platforms", href: "/compare" },
+        { label: "Local solutions", href: "/solutions" },
+        { label: "Pricing", href: "/pricing" },
         {
           label: client?.name || "My Profile",
           onClick: () => navigate("/client/profile"),
@@ -53,6 +59,10 @@ export default function Header() {
           onClick: handleLogin,
           primary: true,
         },
+        { label: "Features", href: "/features" },
+        { label: "Compare platforms", href: "/compare" },
+        { label: "Local solutions", href: "/solutions" },
+        { label: "Pricing", href: "/pricing" },
         { label: "Find a business", href: "/search" },
         { label: "Help and support", href: "/help" },
       ];
@@ -108,24 +118,27 @@ export default function Header() {
               </button>
               {showIndustriesDropdown && (
                 <div className={desktopDropdownClass}>
-                  <button
-                    onClick={() => navigate("/industries/lash-technicians")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                  <Link
+                    to="/industries/lash-technicians"
+                    className={desktopDropdownItemClass}
+                    onClick={() => setShowIndustriesDropdown(false)}
                   >
                     Lash Technicians
-                  </button>
-                  <button
-                    onClick={() => navigate("/industries/hair-salons")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                  </Link>
+                  <Link
+                    to="/industries/hair-salons"
+                    className={desktopDropdownItemClass}
+                    onClick={() => setShowIndustriesDropdown(false)}
                   >
                     Hair Salons
-                  </button>
-                  <button
-                    onClick={() => navigate("/industries/barbers")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                  </Link>
+                  <Link
+                    to="/industries/barbers"
+                    className={desktopDropdownItemClass}
+                    onClick={() => setShowIndustriesDropdown(false)}
                   >
                     Barbers
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
@@ -135,7 +148,7 @@ export default function Header() {
               onMouseEnter={() => setShowCompareDropdown(true)}
               onMouseLeave={() => setShowCompareDropdown(false)}
             >
-              <button className={navButtonClass}>
+              <Link to="/compare" className={navButtonClass}>
                 Compare
                 <svg
                   className="h-4 w-4"
@@ -150,21 +163,30 @@ export default function Header() {
                     d="M19 9l-7 7-7-7"
                   />
                 </svg>
-              </button>
+              </Link>
               {showCompareDropdown && (
                 <div className={desktopDropdownClass}>
-                  <button
-                    onClick={() => navigate("/compare/vs-fresha")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                  <Link
+                    to="/compare"
+                    className={desktopDropdownItemClass}
+                    onClick={() => setShowCompareDropdown(false)}
+                  >
+                    All Comparisons
+                  </Link>
+                  <Link
+                    to="/compare/vs-fresha"
+                    className={desktopDropdownItemClass}
+                    onClick={() => setShowCompareDropdown(false)}
                   >
                     vs Fresha
-                  </button>
-                  <button
-                    onClick={() => navigate("/compare/vs-treatwell")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                  </Link>
+                  <Link
+                    to="/compare/vs-treatwell"
+                    className={desktopDropdownItemClass}
+                    onClick={() => setShowCompareDropdown(false)}
                   >
                     vs Treatwell
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
@@ -174,7 +196,7 @@ export default function Header() {
               onMouseEnter={() => setShowFeaturesDropdown(true)}
               onMouseLeave={() => setShowFeaturesDropdown(false)}
             >
-              <button className={navButtonClass}>
+              <Link to="/features" className={navButtonClass}>
                 Features
                 <svg
                   className="h-4 w-4"
@@ -189,53 +211,70 @@ export default function Header() {
                     d="M19 9l-7 7-7-7"
                   />
                 </svg>
-              </button>
+              </Link>
               {showFeaturesDropdown && (
                 <div className={desktopDropdownClass}>
-                  <button
-                    onClick={() => navigate("/features/sms-reminders")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                  <Link
+                    to="/features"
+                    className={desktopDropdownItemClass}
+                    onClick={() => setShowFeaturesDropdown(false)}
+                  >
+                    All Features
+                  </Link>
+                  <Link
+                    to="/features/sms-reminders"
+                    className={desktopDropdownItemClass}
+                    onClick={() => setShowFeaturesDropdown(false)}
                   >
                     SMS Reminders
-                  </button>
-                  <button
-                    onClick={() => navigate("/features/no-show-protection")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                  </Link>
+                  <Link
+                    to="/features/no-show-protection"
+                    className={desktopDropdownItemClass}
+                    onClick={() => setShowFeaturesDropdown(false)}
                   >
                     No-Show Protection
-                  </button>
-                  <button
-                    onClick={() => navigate("/features/calendar-sync")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                  </Link>
+                  <Link
+                    to="/features/calendar-sync"
+                    className={desktopDropdownItemClass}
+                    onClick={() => setShowFeaturesDropdown(false)}
                   >
                     Calendar Sync
-                  </button>
-                  <button
-                    onClick={() => navigate("/features/online-booking")}
-                    className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                  </Link>
+                  <Link
+                    to="/features/online-booking"
+                    className={desktopDropdownItemClass}
+                    onClick={() => setShowFeaturesDropdown(false)}
                   >
                     Online Booking
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
 
-            <button
-              onClick={() => navigate("/pricing")}
+            <Link
+              to="/solutions"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
+            >
+              Solutions
+            </Link>
+            <Link
+              to="/pricing"
               className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
             >
               Pricing
-            </button>
+            </Link>
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
             {!isAuthenticated && (
-              <button
-                onClick={() => navigate("/signup")}
+              <Link
+                to="/signup"
                 className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:border-slate-400 hover:bg-white"
               >
                 List your business
-              </button>
+              </Link>
             )}
 
             <div className="relative">

@@ -363,6 +363,19 @@ export default function VsFresha() {
             >
               Start Your Free Trial <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
+            <p className="mt-4 text-xs text-slate-100 sm:text-sm">
+              <Link to="/pricing" className="underline hover:text-white">
+                View pricing
+              </Link>
+              {" • "}
+              <Link to="/features" className="underline hover:text-white">
+                Explore features
+              </Link>
+              {" • "}
+              <Link to="/solutions" className="underline hover:text-white">
+                Browse local solutions
+              </Link>
+            </p>
             <p className="mt-4 text-sm text-slate-50">
               14-day free trial • No credit card required • Cancel anytime
             </p>

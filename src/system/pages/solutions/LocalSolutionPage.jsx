@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { getLandingPageData } from "../../data/ukCitiesNiches";
+import { UK_CITIES, getLandingPageData } from "../../data/ukCitiesNiches";
 
 /**
  * Programmatic Local + Industry Landing Page
@@ -26,14 +26,26 @@ import { getLandingPageData } from "../../data/ukCitiesNiches";
  */
 export default function LocalSolutionPage() {
   const { slugCombination } = useParams();
+  const normalizedSlug = (slugCombination || "").toLowerCase().trim();
+  const sortedCities = [...UK_CITIES].sort(
+    (left, right) => right.slug.length - left.slug.length,
+  );
+  const matchedCity = sortedCities.find(
+    (city) =>
+      normalizedSlug === city.slug || normalizedSlug.endsWith(`-${city.slug}`),
+  );
 
-  // Extract niche and city from combined param (e.g., "barbers-london")
-  const parts = slugCombination.split("-");
-  const lastWord = parts[parts.length - 1];
+  if (!matchedCity) {
+    return <Navigate to="/404" replace />;
+  }
 
-  // Try to find the city (last word) and niche (everything before)
-  const potentialCitySlug = lastWord;
-  const potentialNicheSlug = parts.slice(0, -1).join("-");
+  const potentialCitySlug = matchedCity.slug;
+  const nicheSuffixLength = potentialCitySlug.length + 1;
+  const potentialNicheSlug = normalizedSlug.slice(0, -nicheSuffixLength);
+
+  if (!potentialNicheSlug) {
+    return <Navigate to="/404" replace />;
+  }
 
   const data = getLandingPageData(potentialNicheSlug, potentialCitySlug);
 

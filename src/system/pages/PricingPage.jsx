@@ -421,6 +421,19 @@ export default function PricingPage() {
             <p className="mt-4 text-sm text-slate-400">
               Join 500+ UK salons, spas, and beauty businesses using Elite Booker
             </p>
+            <p className="mt-2 text-xs text-slate-300 sm:text-sm">
+              <Link to="/compare" className="underline hover:text-white">
+                Compare alternatives
+              </Link>
+              {" • "}
+              <Link to="/features" className="underline hover:text-white">
+                Explore features
+              </Link>
+              {" • "}
+              <Link to="/solutions" className="underline hover:text-white">
+                Find local solutions
+              </Link>
+            </p>
           </div>
         </section>
       </div>

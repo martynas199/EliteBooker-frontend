@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../shared/lib/apiClient";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { motion } from "framer-motion";
+import SEOHead from "../../shared/components/seo/SEOHead";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import {
@@ -202,6 +203,13 @@ export default function ReferralDashboard() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+        <SEOHead
+          title="Referral Dashboard"
+          description="Track referral code activity and rewards in your Elite Booker dashboard."
+          canonical="https://www.elitebooker.co.uk/referral-dashboard"
+          noindex
+        />
+
         <Header />
         <main className="mx-auto flex min-h-[60vh] w-full max-w-7xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
           <div className="rounded-2xl border border-slate-200 bg-white/90 p-8 text-center shadow-lg">
@@ -216,6 +224,13 @@ export default function ReferralDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <SEOHead
+        title="Referral Dashboard"
+        description="Track referral code activity and rewards in your Elite Booker dashboard."
+        canonical="https://www.elitebooker.co.uk/referral-dashboard"
+        noindex
+      />
+
       <Header />
 
       <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">

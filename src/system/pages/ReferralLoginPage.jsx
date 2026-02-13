@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { motion } from "framer-motion";
+import SEOHead from "../../shared/components/seo/SEOHead";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Gift, Loader, ArrowRight } from "lucide-react";
@@ -54,6 +55,13 @@ export default function ReferralLoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <SEOHead
+        title="Referral Partner Login"
+        description="Sign in to access your Elite Booker referral dashboard."
+        canonical="https://www.elitebooker.co.uk/referral-login"
+        noindex
+      />
+
       <Header />
 
       <main className="relative overflow-hidden">

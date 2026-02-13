@@ -26,7 +26,21 @@ export default function SEOHead({
   const siteName = "Elite Booker";
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
   const baseUrl = "https://www.elitebooker.co.uk";
-  const canonicalUrl = canonical || window.location.href;
+  const normalizePath = (path = "/") => {
+    const pathOnly = `${path}`.split("?")[0].split("#")[0] || "/";
+    if (pathOnly === "/") return "/";
+    return pathOnly.endsWith("/") ? pathOnly.slice(0, -1) : pathOnly;
+  };
+
+  const canonicalPath = canonical
+    ? canonical.startsWith("http")
+      ? canonical
+      : `${baseUrl}${normalizePath(canonical)}`
+    : typeof window !== "undefined"
+      ? `${baseUrl}${normalizePath(window.location.pathname)}`
+      : baseUrl;
+
+  const canonicalUrl = canonicalPath;
 
   // Default keywords focused on appointment booking software - optimized for ranking #1
   const defaultKeywords = [

@@ -260,6 +260,19 @@ export default function VsTreatwell() {
             >
               Start Free Trial <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
+            <p className="mt-4 text-xs text-slate-100 sm:text-sm">
+              <Link to="/pricing" className="underline hover:text-white">
+                View pricing
+              </Link>
+              {" • "}
+              <Link to="/features" className="underline hover:text-white">
+                Explore features
+              </Link>
+              {" • "}
+              <Link to="/solutions" className="underline hover:text-white">
+                Browse local solutions
+              </Link>
+            </p>
           </div>
         </section>
       </div>

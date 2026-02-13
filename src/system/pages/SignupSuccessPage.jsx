@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
+import SEOHead from "../../shared/components/seo/SEOHead";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { ArrowRight } from "lucide-react";
@@ -28,6 +29,13 @@ export default function SignupSuccessPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <SEOHead
+        title="Signup Complete"
+        description="Your Elite Booker account has been created successfully."
+        canonical="https://www.elitebooker.co.uk/signup/success"
+        noindex
+      />
+
       <Header />
 
       <main className="relative overflow-hidden">

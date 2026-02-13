@@ -2,13 +2,16 @@ import { Link } from "react-router-dom";
 import eliteLogo from "../../assets/elite.png";
 
 const productLinks = [
+  { label: "All Features", path: "/features" },
   { label: "SMS Reminders", path: "/features/sms-reminders" },
   { label: "Online Booking", path: "/features/online-booking" },
   { label: "No-Show Protection", path: "/features/no-show-protection" },
+  { label: "Local Solutions", path: "/solutions" },
   { label: "Pricing", path: "/pricing" },
 ];
 
 const compareLinks = [
+  { label: "All Comparisons", path: "/compare" },
   { label: "vs Fresha", path: "/compare/vs-fresha" },
   { label: "vs Treatwell", path: "/compare/vs-treatwell" },
 ];

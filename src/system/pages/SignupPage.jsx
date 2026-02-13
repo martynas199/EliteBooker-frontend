@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { api } from "../../shared/lib/apiClient";
 import { motion } from "framer-motion";
+import SEOHead from "../../shared/components/seo/SEOHead";
 import eliteLogo from "../../assets/elite.png";
 
 export default function TenantSignup() {
@@ -174,6 +175,12 @@ export default function TenantSignup() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#f7f3ec] via-[#f6f2ea] to-[#f2ece2]">
+      <SEOHead
+        title="Create Your Business Account"
+        description="Start your Elite Booker account for your salon, barbershop, or wellness business. Set up in minutes and begin accepting bookings."
+        canonical="https://www.elitebooker.co.uk/signup"
+      />
+
       <motion.div
         animate={{ x: [0, 80, 0], y: [0, -80, 0], scale: [1, 1.15, 1] }}
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
