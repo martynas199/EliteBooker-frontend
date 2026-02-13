@@ -2,14 +2,21 @@
  * Sitemap Generator for Programmatic Pages
  * Generates XML entries for 400+ city/niche landing pages + tools
  *
- * Usage: node generateSitemap.js > sitemap-programmatic.xml
- * Then merge with main sitemap.xml
+ * Usage:
+ *   node generateSitemap.js            # writes UTF-8 sitemap to /public/sitemap.xml
+ *   node generateSitemap.js --stdout   # prints XML to stdout
  */
 
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { UK_CITIES, NICHES } from "../src/system/data/ukCitiesNiches.js";
 
 const BASE_URL = "https://www.elitebooker.co.uk";
 const LAST_MOD = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const OUTPUT_PATH = path.resolve(__dirname, "../public/sitemap.xml");
 
 // Generate programmatic landing page URLs
 const generateProgrammaticPages = () => {
@@ -222,7 +229,16 @@ const generateSitemap = () => {
 };
 
 // Output
-console.log(generateSitemap());
+const sitemapXml = generateSitemap();
+const shouldWriteToStdout = process.argv.includes("--stdout");
+
+if (shouldWriteToStdout) {
+  console.log(sitemapXml);
+} else {
+  fs.writeFileSync(OUTPUT_PATH, sitemapXml, "utf8");
+  console.error(`Sitemap written to: ${OUTPUT_PATH}`);
+}
+
 console.error(
   `\nGenerated ${UK_CITIES.length * NICHES.length} programmatic pages`,
 );
