@@ -1,25 +1,26 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { motion } from "framer-motion";
+import { Eye, EyeOff, Lock } from "lucide-react";
+import toast from "react-hot-toast";
+import eliteLogo from "../../assets/elite.png";
 import { setAuth } from "../../shared/state/authSlice";
 import { useAdminLogin } from "../../shared/hooks/useAuthQueries";
-import eliteLogo from "../../assets/elite.png";
-import Button from "../../shared/components/ui/Button";
-import FormField from "../../shared/components/forms/FormField";
-import toast from "react-hot-toast";
-import { motion } from "framer-motion";
+
+const inputClassName =
+  "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200 disabled:cursor-not-allowed disabled:bg-slate-100";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const loginMutation = useAdminLogin();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const loginMutation = useAdminLogin();
-
-  // Load remembered email on mount
   useEffect(() => {
     const rememberedEmail = localStorage.getItem("adminRememberedEmail");
     if (rememberedEmail) {
@@ -28,8 +29,8 @@ export default function AdminLogin() {
     }
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     if (!email || !password) {
       toast.error("Please fill in all fields");
@@ -40,20 +41,16 @@ export default function AdminLogin() {
       { email, password },
       {
         onSuccess: (data) => {
-          // Store admin data in Redux
           const { admin } = data;
-          dispatch(setAuth({ token: null, admin })); // Token is in httpOnly cookie
+          dispatch(setAuth({ token: null, admin }));
 
-          // Handle remember me
           if (rememberMe) {
             localStorage.setItem("adminRememberedEmail", email);
           } else {
             localStorage.removeItem("adminRememberedEmail");
           }
 
-          toast.success("Login successful!");
-
-          // Redirect to admin dashboard
+          toast.success("Login successful");
           navigate("/admin");
         },
         onError: (error) => {
@@ -64,99 +61,52 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50">
-      {/* Animated gradient orbs */}
-      <motion.div
-        animate={{
-          x: [0, 100, 0],
-          y: [0, -100, 0],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-violet-400/20 to-fuchsia-400/20 rounded-full blur-3xl"
-      />
-      <motion.div
-        animate={{
-          x: [0, -100, 0],
-          y: [0, 100, 0],
-          scale: [1.2, 1, 1.2],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-cyan-400/20 to-blue-400/20 rounded-full blur-3xl"
-      />
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc] px-4 py-10 sm:py-14">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-28 right-8 h-56 w-56 rounded-full bg-amber-200/40 blur-3xl sm:right-20 sm:h-72 sm:w-72" />
+        <div className="absolute bottom-0 left-0 h-56 w-56 rounded-full bg-indigo-200/30 blur-3xl sm:h-72 sm:w-72" />
+      </div>
 
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-
-      <div className="relative min-h-screen flex items-center justify-center px-4">
+      <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-md items-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-md w-full"
+          transition={{ duration: 0.35 }}
+          className="w-full"
         >
-          {/* Logo/Title */}
-          <div className="text-center mb-10">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1 }}
-              className="flex justify-center mb-6"
-            >
-              <img src={eliteLogo} alt="Elite Booker" className="h-20 w-auto" />
-            </motion.div>
-            <motion.h1
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-4xl font-bold bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600 bg-clip-text text-transparent mb-2"
-            >
-              Welcome Back
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-gray-600 text-lg"
-            >
-              Sign in to your dashboard
-            </motion.p>
+          <div className="mb-6 text-center sm:mb-8">
+            <img
+              src={eliteLogo}
+              alt="Elite Booker"
+              className="mx-auto h-16 w-auto sm:h-20"
+            />
+            <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Admin Portal
+            </p>
+            <h1 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
+              Sign in
+            </h1>
+            <p className="mt-2 text-sm text-slate-600 sm:text-base">
+              Manage services, bookings, and payments from one dashboard.
+            </p>
           </div>
 
-          {/* Login Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="bg-white rounded-3xl shadow-2xl border border-gray-200 p-8"
-          >
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">
-              Sign In to Dashboard
-            </h2>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-xl sm:p-8">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-semibold text-gray-700 mb-2"
+                  className="mb-2 block text-sm font-semibold text-slate-700"
                 >
-                  Email Address
+                  Email address
                 </label>
                 <input
-                  type="email"
                   id="email"
+                  type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(event) => setEmail(event.target.value)}
                   placeholder="admin@example.com"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                  className={inputClassName}
                   required
                   autoComplete="email"
                   autoFocus
@@ -167,168 +117,80 @@ export default function AdminLogin() {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-semibold text-gray-700 mb-2"
+                  className="mb-2 block text-sm font-semibold text-slate-700"
                 >
                   Password
                 </label>
                 <div className="relative">
                   <input
-                    type={showPassword ? "text" : "password"}
                     id="password"
+                    type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(event) => setPassword(event.target.value)}
                     placeholder="••••••••"
-                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+                    className={`${inputClassName} pr-11`}
                     required
                     autoComplete="current-password"
                     disabled={loginMutation.isPending}
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition-colors hover:text-slate-700"
                     tabIndex={-1}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
-                        />
-                      </svg>
+                      <EyeOff className="h-5 w-5" />
                     ) : (
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg>
+                      <Eye className="h-5 w-5" />
                     )}
                   </button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center cursor-pointer">
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <label className="inline-flex cursor-pointer items-center gap-2 text-slate-600">
                   <input
                     type="checkbox"
                     checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500"
+                    onChange={(event) => setRememberMe(event.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500"
                   />
-                  <span className="ml-2 text-gray-600">Remember me</span>
+                  Remember me
                 </label>
                 <Link
                   to="/admin/forgot-password"
-                  className="font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+                  className="font-semibold text-slate-700 transition-colors hover:text-slate-900"
                 >
                   Forgot password?
                 </Link>
               </div>
 
-              <motion.button
+              <button
                 type="submit"
                 disabled={loginMutation.isPending}
-                whileHover={{ scale: loginMutation.isPending ? 1 : 1.02 }}
-                whileTap={{ scale: loginMutation.isPending ? 1 : 0.98 }}
-                className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-4 rounded-xl font-semibold shadow-lg shadow-violet-500/50 hover:shadow-xl hover:shadow-violet-500/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition-all hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {loginMutation.isPending ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                        fill="none"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                    Signing in...
-                  </>
-                ) : (
-                  <>
-                    Sign In to Dashboard
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
-                    </svg>
-                  </>
-                )}
-              </motion.button>
+                {loginMutation.isPending ? "Signing in..." : "Sign in to dashboard"}
+              </button>
             </form>
 
-            <div className="mt-8 text-center text-sm text-gray-600">
-              <p>
-                Don't have an account?{" "}
-                <Link
-                  to="/signup"
-                  className="font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
-                >
-                  Get Started Free
-                </Link>
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Footer */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="mt-8 text-center"
-          >
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-              <svg
-                className="w-4 h-4 text-green-500"
-                fill="currentColor"
-                viewBox="0 0 20 20"
+            <div className="mt-6 border-t border-slate-200 pt-5 text-center text-sm text-slate-600">
+              Don&apos;t have an account?{" "}
+              <Link
+                to="/signup"
+                className="font-semibold text-slate-800 transition-colors hover:text-black"
               >
-                <path
-                  fillRule="evenodd"
-                  d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span>Secure encrypted connection</span>
+                Start free trial
+              </Link>
             </div>
-          </motion.div>
+          </div>
+
+          <p className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-500 sm:text-sm">
+            <Lock className="h-4 w-4" />
+            Secure encrypted connection
+          </p>
         </motion.div>
       </div>
     </div>

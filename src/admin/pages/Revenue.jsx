@@ -216,7 +216,7 @@ export default function Revenue() {
         </div>
 
         {/* Quick Range Buttons */}
-        <div className="flex flex-wrap gap-1 mb-2">
+        <div className="flex flex-wrap gap-1.5 mb-2">
           {[
             { label: "Today", value: "today" },
             { label: "Yesterday", value: "yesterday" },
@@ -228,7 +228,7 @@ export default function Revenue() {
             <button
               key={range.value}
               onClick={() => setQuickRange(range.value)}
-              className="px-2.5 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 rounded-md transition-colors"
+              className="rounded-md bg-gray-100 px-3 py-2 text-[13px] font-medium text-gray-800 transition-colors hover:bg-gray-200 active:bg-gray-300"
             >
               {range.label}
             </button>
@@ -246,13 +246,13 @@ export default function Revenue() {
                 setShowStartPicker(!showStartPicker);
                 setShowEndPicker(false);
               }}
-              className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-xs text-left bg-white hover:bg-gray-50 transition-colors flex items-center justify-between"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm text-left bg-white hover:bg-gray-50 transition-colors flex items-center justify-between"
             >
               <span className="text-gray-900 font-medium">
                 {dayjs(startDate).format("MMM DD, YYYY")}
               </span>
               <svg
-                className="w-4 h-4 text-gray-400 flex-shrink-0"
+                className="w-4 h-4 text-gray-500 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -301,13 +301,13 @@ export default function Revenue() {
                 setShowEndPicker(!showEndPicker);
                 setShowStartPicker(false);
               }}
-              className="w-full px-2.5 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-xs text-left bg-white hover:bg-gray-50 transition-colors flex items-center justify-between"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm text-left bg-white hover:bg-gray-50 transition-colors flex items-center justify-between"
             >
               <span className="text-gray-900 font-medium">
                 {dayjs(endDate).format("MMM DD, YYYY")}
               </span>
               <svg
-                className="w-4 h-4 text-gray-400 flex-shrink-0"
+                className="w-4 h-4 text-gray-500 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -393,8 +393,11 @@ export default function Revenue() {
 
       {/* Loading State */}
       {loading && (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
+        <div className="flex items-center justify-center gap-3 py-12">
+          <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-brand-600"></div>
+          <span className="text-sm font-medium text-gray-700">
+            Loading revenue data...
+          </span>
         </div>
       )}
 
@@ -411,7 +414,7 @@ export default function Revenue() {
                 <div className="col-span-2 lg:col-span-1 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg shadow-sm p-2.5">
                   <div className="flex items-center gap-2 mb-1.5">
                     <svg
-                      className="w-4 h-4 text-gray-400"
+                      className="w-4 h-4 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -800,7 +803,7 @@ export default function Revenue() {
           ) : (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
               <svg
-                className="w-12 h-12 text-gray-400 mx-auto mb-3"
+                className="w-12 h-12 text-gray-500 mx-auto mb-3"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"

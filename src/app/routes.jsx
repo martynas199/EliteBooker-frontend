@@ -11,6 +11,9 @@ const BusinessesLandingPage = lazy(() =>
 );
 const SearchPage = lazy(() => import("../system/pages/SearchPage"));
 const HelpPage = lazy(() => import("../system/pages/HelpPage"));
+const PrivacyPage = lazy(() => import("../system/pages/PrivacyPage"));
+const TermsPage = lazy(() => import("../system/pages/TermsPage"));
+const SecurityPage = lazy(() => import("../system/pages/SecurityPage"));
 const MenuPage = lazy(() => import("../system/pages/MenuPage"));
 const TenantSignup = lazy(() => import("../system/pages/SignupPage"));
 const ReferralSignupPage = lazy(() =>
@@ -342,6 +345,9 @@ export default function AppRoutes() {
 
         {/* Help & Support */}
         <Route path="/help" element={<HelpPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/security" element={<SecurityPage />} />
 
         {/* Not Found */}
         <Route path="/404" element={<NotFoundPage />} />

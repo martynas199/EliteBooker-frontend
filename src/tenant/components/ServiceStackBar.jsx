@@ -17,7 +17,6 @@ export default function ServiceStackBar() {
   const { tenant } = useTenant();
   const { formatPrice } = useCurrency();
   const services = useSelector((state) => state.booking.services);
-  const specialist = useSelector((state) => state.booking.specialist);
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!services || services.length === 0) return null;
@@ -30,11 +29,7 @@ export default function ServiceStackBar() {
   );
 
   const handleContinue = () => {
-    if (specialist) {
-      navigate(`/salon/${tenant?.slug}/times`);
-    } else {
-      navigate(`/salon/${tenant?.slug}/specialists`);
-    }
+    navigate(`/salon/${tenant?.slug}/times`);
   };
 
   const handleRemoveService = (index) => {

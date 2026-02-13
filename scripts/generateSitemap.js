@@ -221,7 +221,29 @@ const generateSitemap = () => {
     <priority>0.6</priority>
   </url>
 
-  <!-- Total URLs: ${allEntries.length + 18} -->
+  <!-- Legal Pages -->
+  <url>
+    <loc>${BASE_URL}/privacy</loc>
+    <lastmod>${LAST_MOD}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>${BASE_URL}/terms</loc>
+    <lastmod>${LAST_MOD}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>${BASE_URL}/security</loc>
+    <lastmod>${LAST_MOD}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- Total URLs: ${allEntries.length + 21} -->
   
 </urlset>`;
 
@@ -243,4 +265,4 @@ console.error(
   `\nGenerated ${UK_CITIES.length * NICHES.length} programmatic pages`,
 );
 console.error(`Generated ${2} tool pages`);
-console.error(`Total URLs: ${UK_CITIES.length * NICHES.length + 2 + 18}`);
+console.error(`Total URLs: ${UK_CITIES.length * NICHES.length + 2 + 21}`);
