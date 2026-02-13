@@ -238,7 +238,7 @@ export default function Revenue() {
         {/* Custom Date Inputs */}
         <div className="grid grid-cols-2 gap-2">
           <div className="relative date-picker-container">
-            <label className="block text-[10px] font-semibold text-gray-600 mb-1 uppercase tracking-wide">
+            <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wide">
               Start Date
             </label>
             <button
@@ -293,7 +293,7 @@ export default function Revenue() {
             )}
           </div>
           <div className="relative date-picker-container">
-            <label className="block text-[10px] font-semibold text-gray-600 mb-1 uppercase tracking-wide">
+            <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wide">
               End Date
             </label>
             <button
@@ -423,7 +423,7 @@ export default function Revenue() {
                         d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
+                    <span className="text-xs font-bold text-gray-200 uppercase tracking-wide">
                       Total Revenue
                     </span>
                   </div>
@@ -432,7 +432,7 @@ export default function Revenue() {
                       data.platform?.bookingsRevenue || filteredTotalRevenue
                     )}
                   </div>
-                  <div className="text-[9px] text-gray-500">
+                  <div className="text-xs text-gray-300">
                     {dayjs(startDate).format("MMM D")} -{" "}
                     {dayjs(endDate).format("MMM D, YY")}
                   </div>
@@ -454,14 +454,14 @@ export default function Revenue() {
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                       />
                     </svg>
-                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-wide">
+                    <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">
                       Bookings
                     </span>
                   </div>
                   <div className="text-2xl font-bold text-gray-900 mb-1">
                     {data.platform?.totalBookings || filteredTotalBookings}
                   </div>
-                  <div className="text-[9px] text-gray-500">Completed</div>
+                  <div className="text-xs text-gray-600">Completed</div>
                 </div>
 
                 {/* Average Per Booking */}
@@ -480,7 +480,7 @@ export default function Revenue() {
                         d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
                       />
                     </svg>
-                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-wide">
+                    <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">
                       Average
                     </span>
                   </div>
@@ -494,7 +494,7 @@ export default function Revenue() {
                         )
                       : formatCurrency(0)}
                   </div>
-                  <div className="text-[9px] text-gray-500">Per booking</div>
+                  <div className="text-xs text-gray-600">Per booking</div>
                 </div>
 
                 {/* Specialist Count */}
@@ -513,14 +513,14 @@ export default function Revenue() {
                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                       />
                     </svg>
-                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-wide">
+                    <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">
                       Specialists
                     </span>
                   </div>
                   <div className="text-2xl font-bold text-gray-900 mb-1">
                     {filteredSpecialists.length}
                   </div>
-                  <div className="text-[9px] text-gray-500">Active team</div>
+                  <div className="text-xs text-gray-600">Active team</div>
                 </div>
               </div>
 
@@ -723,7 +723,7 @@ export default function Revenue() {
                           {/* Stats */}
                           <div className="space-y-1.5">
                             <div className="flex items-center justify-between py-1 border-b border-gray-100">
-                              <span className="text-[10px] text-gray-500 uppercase tracking-wide font-semibold">
+                              <span className="text-xs text-gray-600 uppercase tracking-wide font-semibold">
                                 Revenue
                               </span>
                               <span className="text-sm font-bold text-gray-900">
@@ -731,7 +731,7 @@ export default function Revenue() {
                               </span>
                             </div>
                             <div className="flex items-center justify-between py-1 border-b border-gray-100">
-                              <span className="text-[10px] text-gray-500 uppercase tracking-wide font-semibold">
+                              <span className="text-xs text-gray-600 uppercase tracking-wide font-semibold">
                                 Bookings
                               </span>
                               <span className="text-sm font-bold text-gray-900">
@@ -739,7 +739,7 @@ export default function Revenue() {
                               </span>
                             </div>
                             <div className="flex items-center justify-between py-1">
-                              <span className="text-[10px] text-gray-500 uppercase tracking-wide font-semibold">
+                              <span className="text-xs text-gray-600 uppercase tracking-wide font-semibold">
                                 Average
                               </span>
                               <span className="text-xs font-semibold text-gray-700">
@@ -762,7 +762,7 @@ export default function Revenue() {
                           </div>
                           <div className="flex items-center gap-4">
                             <div>
-                              <span className="text-[9px] text-gray-400 uppercase tracking-wide font-semibold block">
+                              <span className="text-xs text-gray-300 uppercase tracking-wide font-semibold block">
                                 Revenue
                               </span>
                               <span className="text-sm font-bold text-white">
@@ -770,7 +770,7 @@ export default function Revenue() {
                               </span>
                             </div>
                             <div>
-                              <span className="text-[9px] text-gray-400 uppercase tracking-wide font-semibold block">
+                              <span className="text-xs text-gray-300 uppercase tracking-wide font-semibold block">
                                 Bookings
                               </span>
                               <span className="text-sm font-bold text-white">
@@ -780,7 +780,7 @@ export default function Revenue() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <span className="text-[9px] text-gray-400 uppercase tracking-wide font-semibold block">
+                          <span className="text-xs text-gray-300 uppercase tracking-wide font-semibold block">
                             Average
                           </span>
                           <span className="text-lg font-bold text-white">

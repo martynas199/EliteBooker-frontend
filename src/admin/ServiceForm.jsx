@@ -458,7 +458,7 @@ export default function ServiceForm({
       <div className="mb-4 rounded-2xl border border-gray-200 bg-white p-3.5 shadow-sm sm:p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
               Form Progress
             </p>
             <p className="text-sm font-semibold text-gray-900">
@@ -488,7 +488,7 @@ export default function ServiceForm({
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-900">Service Details</h3>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-600">
                 Add core information your clients will see first.
               </p>
             </div>
@@ -581,7 +581,7 @@ export default function ServiceForm({
                   AI-generated, editable
                 </p>
               )}
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-600">
                 {descriptionLength} characters
               </p>
             </div>
@@ -610,19 +610,12 @@ export default function ServiceForm({
               } ${!isSuperAdmin ? "bg-gray-100 cursor-not-allowed" : ""}`}
             />
             {!isSuperAdmin && !admin?.specialistId && (
-              <p className="sr-only">
-                ⚠️ Your admin account is not linked to a specialist. Please
-                contact your administrator to link your account before creating
-                services.
-              </p>
-            )}
-            {!isSuperAdmin && !admin?.specialistId && (
               <p className="mt-1 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
                 Your admin account is not linked to a specialist. Contact your administrator before creating services.
               </p>
             )}
             {!isSuperAdmin && admin?.specialistId && (
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-gray-600 mt-1">
                 {t("youCanOnlyCreateForYourself", language)}
               </p>
             )}
@@ -636,9 +629,9 @@ export default function ServiceForm({
               hint="Select which locations offer this service. Leave empty for all locations."
             >
               {loadingLocations ? (
-                <p className="text-sm text-gray-500">Loading locations...</p>
+                <p className="text-sm text-gray-600">Loading locations...</p>
               ) : locations.length === 0 ? (
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-600">
                   No locations available. Create locations first in the
                   Locations page.
                 </p>
@@ -701,7 +694,7 @@ export default function ServiceForm({
             </div>
             <div>
               <h4 className="text-sm font-semibold text-gray-900">Media & Visibility</h4>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-600">
                 Upload a clean thumbnail and control listing behavior.
               </p>
             </div>
@@ -783,7 +776,7 @@ export default function ServiceForm({
                         <p className="mb-1 text-sm font-semibold text-gray-700">
                           Click to upload service image
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-600">
                           PNG, JPG or WebP (MAX. 2MB)
                         </p>
                       </>
@@ -809,7 +802,7 @@ export default function ServiceForm({
             </div>
             <div>
               <h4 className="text-sm font-semibold text-gray-900">Service Settings</h4>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-600">
                 Configure status, pricing behavior, and slot mode.
               </p>
             </div>
@@ -876,12 +869,6 @@ export default function ServiceForm({
                 className="mt-0.5 h-6 w-6 flex-shrink-0 cursor-pointer rounded text-gray-900 focus:ring-gray-500"
               />
               <div className="flex-1 min-w-0">
-                <label
-                  htmlFor="useFixedSlots"
-                  className="sr-only"
-                >
-                  🕐 Use Fixed Time Slots
-                </label>
                 <span className="block cursor-pointer text-sm font-semibold text-gray-900">
                   Use Fixed Time Slots
                 </span>
@@ -958,7 +945,7 @@ export default function ServiceForm({
                               );
                               toast.success("Removed");
                             }}
-                            className="inline-flex items-center justify-center rounded px-2 py-1 text-xs font-medium text-transparent transition-colors hover:bg-red-50 sm:text-sm"
+                            className="inline-flex items-center justify-center rounded px-2 py-1 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 sm:text-sm"
                           >
                             <svg
                               className="h-4 w-4 text-red-600"
@@ -975,23 +962,19 @@ export default function ServiceForm({
                               />
                             </svg>
                             <span className="sr-only">Remove</span>
-                            ✕
                           </button>
                         </div>
                       ))}
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs sm:text-sm text-gray-500 italic py-2">
+                  <p className="text-xs sm:text-sm text-gray-600 italic py-2">
                     Add your first time slot above
                   </p>
                 )}
 
                 {/* Quick Presets */}
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-2.5 sm:p-3">
-                  <p className="sr-only">
-                    💡 Quick Presets:
-                  </p>
                   <p className="mb-2 text-xs font-medium text-gray-700">
                     Quick presets:
                   </p>

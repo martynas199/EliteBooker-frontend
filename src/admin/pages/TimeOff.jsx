@@ -1,12 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TimeOffAPI as timeOffAPI } from "../components/timeoff/timeoff.api";
 import { api } from "../../shared/lib/apiClient";
 import Card from "../../shared/components/ui/Card";
 import Button from "../../shared/components/ui/Button";
-import { Input } from "../../shared/components/ui/Input";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
-import { useLanguage } from "../../shared/contexts/LanguageContext";
-import { t } from "../../locales/adminTranslations";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import dayjs from "dayjs";
@@ -14,9 +11,9 @@ import {
   SelectDrawer,
   SelectButton,
 } from "../../shared/components/ui/SelectDrawer";
+import AdminPageShell from "../components/AdminPageShell";
 
 export default function TimeOff() {
-  const { language } = useLanguage();
   const [timeOffList, setTimeOffList] = useState([]);
   const [specialists, setSpecialists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -189,77 +186,89 @@ export default function TimeOff() {
     .filter((t) => !isCurrent(t.start, t.end) && !isUpcoming(t.start))
     .sort((a, b) => new Date(b.start) - new Date(a.start));
 
+  const timeOffSummary = useMemo(
+    () => ({
+      current: currentTimeOff.length,
+      upcoming: upcomingTimeOff.length,
+      specialists: specialists.length,
+      total: timeOffList.length,
+    }),
+    [currentTimeOff.length, upcomingTimeOff.length, specialists.length, timeOffList.length]
+  );
+
+  const pageAction = (
+    <Button
+      type="button"
+      onClick={() => setShowAddForm((prev) => !prev)}
+      variant={showAddForm ? "outline" : "brand"}
+      size="md"
+      className="w-full sm:w-auto"
+    >
+      {showAddForm ? "Close Form" : "Add Time Off"}
+    </Button>
+  );
+
   if (loading) {
-    return <LoadingSpinner center size="lg" />;
+    return (
+      <AdminPageShell
+        title="Time Off Management"
+        description="Schedule and manage specialist availability."
+        action={pageAction}
+        maxWidth="2xl"
+      >
+        <Card className="border border-gray-200 py-10 shadow-sm">
+          <LoadingSpinner center size="lg" />
+        </Card>
+      </AdminPageShell>
+    );
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
-          Time Off Management
-        </h2>
-        <button
-          onClick={() => setShowAddForm(!showAddForm)}
-          className="px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
-        >
-          {showAddForm ? "Cancel" : "Add Time Off"}
-        </button>
-      </div>
-
-      {/* Stats Cards - kept but simplified */}
-      {timeOffList.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              </div>
-              <div>
-                <div className="text-2xl font-semibold text-gray-900">
-                  {currentTimeOff.length}
-                </div>
-                <div className="text-sm text-gray-600">Active Now</div>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-2xl font-semibold text-gray-900">
-                  {upcomingTimeOff.length}
-                </div>
-                <div className="text-sm text-gray-600">Upcoming</div>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center">
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <div>
-                <span className="text-2xl font-semibold text-gray-900">
-                  {specialists.length}
-                </span>
-                <div className="text-sm text-gray-600">Team Members</div>
-              </div>
-            </div>
-          </div>
+    <AdminPageShell
+      title="Time Off Management"
+      description="Schedule and manage specialist availability."
+      action={pageAction}
+      maxWidth="2xl"
+      contentClassName="space-y-6"
+    >
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+        <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+            Total
+          </p>
+          <p className="mt-1 text-lg font-semibold text-gray-900">
+            {timeOffSummary.total}
+          </p>
         </div>
-      )}
+        <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+            Active Now
+          </p>
+          <p className="mt-1 text-lg font-semibold text-red-700">
+            {timeOffSummary.current}
+          </p>
+        </div>
+        <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+            Upcoming
+          </p>
+          <p className="mt-1 text-lg font-semibold text-blue-700">
+            {timeOffSummary.upcoming}
+          </p>
+        </div>
+        <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+            Team Members
+          </p>
+          <p className="mt-1 text-lg font-semibold text-gray-900">
+            {timeOffSummary.specialists}
+          </p>
+        </div>
+      </div>
 
       {/* Add Time Off Form */}
       {showAddForm && (
-        <Card className="overflow-visible shadow-sm border border-gray-200">
+        <Card className="overflow-visible border border-gray-200 shadow-sm">
           <div className="bg-white border-b border-gray-200 px-6 py-4">
             <h2 className="text-lg font-semibold text-gray-900">
               Add Time Off Period
@@ -273,7 +282,7 @@ export default function TimeOff() {
               {/* Specialist Selection */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Staff Member <span className="text-red-500">*</span>
+                  Staff Member <span className="text-red-600">*</span>
                 </label>
                 <SelectButton
                   value={formData.specialistId}
@@ -288,7 +297,7 @@ export default function TimeOff() {
                   }`}
                 />
                 {errors.specialistId && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="text-red-600 text-sm mt-1">
                     {errors.specialistId}
                   </p>
                 )}
@@ -298,7 +307,7 @@ export default function TimeOff() {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Reason{" "}
-                  <span className="text-gray-400 font-normal">(optional)</span>
+                  <span className="text-gray-600 font-normal">(optional)</span>
                 </label>
                 <input
                   type="text"
@@ -307,7 +316,8 @@ export default function TimeOff() {
                     setFormData({ ...formData, reason: e.target.value })
                   }
                   placeholder="e.g., Vacation, Sick leave, Holiday"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl font-medium focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+                  className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 font-medium text-gray-900 transition-all focus:border-gray-900 focus:ring-2 focus:ring-gray-900"
+                  style={{ fontSize: "16px" }}
                 />
                 <p className="text-xs text-gray-600 mt-2 font-medium">
                   Optional note visible to team
@@ -317,7 +327,7 @@ export default function TimeOff() {
               {/* Start Date */}
               <div className="date-picker-container relative">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Start Date <span className="text-red-500">*</span>
+                  Start Date <span className="text-red-600">*</span>
                 </label>
                 <button
                   type="button"
@@ -335,7 +345,7 @@ export default function TimeOff() {
                       : "Select start date"}
                   </span>
                   <svg
-                    className="w-5 h-5 text-gray-400"
+                    className="w-5 h-5 text-gray-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -386,7 +396,7 @@ export default function TimeOff() {
                   First day of time off
                 </p>
                 {errors.start && (
-                  <p className="text-red-500 text-sm mt-1 font-semibold">
+                  <p className="text-red-600 text-sm mt-1 font-semibold">
                     {errors.start}
                   </p>
                 )}
@@ -395,7 +405,7 @@ export default function TimeOff() {
               {/* End Date */}
               <div className="date-picker-container relative">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  End Date <span className="text-red-500">*</span>
+                  End Date <span className="text-red-600">*</span>
                 </label>
                 <button
                   type="button"
@@ -413,7 +423,7 @@ export default function TimeOff() {
                       : "Select end date"}
                   </span>
                   <svg
-                    className="w-5 h-5 text-gray-400"
+                    className="w-5 h-5 text-gray-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -467,7 +477,7 @@ export default function TimeOff() {
                   Last day of time off
                 </p>
                 {errors.end && (
-                  <p className="text-red-500 text-sm mt-1 font-semibold">
+                  <p className="text-red-600 text-sm mt-1 font-semibold">
                     {errors.end}
                   </p>
                 )}
@@ -534,7 +544,7 @@ export default function TimeOff() {
                   });
                   setErrors({});
                 }}
-                className="w-full sm:w-auto px-6 bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 rounded-lg border border-gray-300 transition-colors"
+                className="w-full sm:w-auto px-6 bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 rounded-lg border border-gray-300 transition-colors"
               >
                 Cancel
               </button>
@@ -756,7 +766,7 @@ export default function TimeOff() {
         <Card className="p-16 text-center shadow-sm border border-gray-200">
           <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
             <svg
-              className="w-12 h-12 text-gray-400"
+              className="w-12 h-12 text-gray-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -810,7 +820,7 @@ export default function TimeOff() {
         value={formData.specialistId}
         onChange={(value) => setFormData({ ...formData, specialistId: value })}
       />
-    </div>
+    </AdminPageShell>
   );
 }
 
@@ -819,17 +829,10 @@ function TimeOffCard({ timeOff, onDelete, status }) {
 
   const bgClass =
     status === "current"
-      ? "bg-white border-red-200 shadow-lg hover:shadow-xl"
+      ? "bg-white border-red-200 shadow-sm hover:shadow-md"
       : status === "upcoming"
-      ? "bg-white border-blue-200 shadow-lg hover:shadow-xl"
-      : "bg-gray-50 border-gray-200 shadow-md hover:shadow-lg";
-
-  const badgeClass =
-    status === "current"
-      ? "bg-red-100 text-red-700 border-red-300"
-      : status === "upcoming"
-      ? "bg-blue-100 text-blue-700 border-blue-300"
-      : "bg-gray-200 text-gray-700 border-gray-300";
+      ? "bg-white border-blue-200 shadow-sm hover:shadow-md"
+      : "bg-gray-50 border-gray-200 shadow-sm hover:shadow-md";
 
   return (
     <div className={`p-5 border-2 rounded-xl transition-all ${bgClass}`}>
@@ -868,7 +871,7 @@ function TimeOffCard({ timeOff, onDelete, status }) {
         {status !== "past" && (
           <button
             onClick={() => onDelete(timeOff)}
-            className="w-full sm:w-auto sm:flex-shrink-0 px-4 py-2 text-red-700 bg-red-50 hover:bg-red-100 rounded-lg text-sm font-bold transition-all shadow-md hover:shadow-lg mt-3 sm:mt-0"
+            className="mt-3 w-full rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition-colors hover:bg-red-100 sm:mt-0 sm:w-auto sm:flex-shrink-0"
             title="Remove this time-off period"
           >
             Remove

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import {
@@ -10,11 +10,12 @@ import {
   Clock,
   Phone,
   Mail,
-  Image as ImageIcon,
   X,
 } from "lucide-react";
 import { api } from "../../shared/lib/apiClient";
 import Card from "../../shared/components/ui/Card";
+import Button from "../../shared/components/ui/Button";
+import AdminPageShell from "../components/AdminPageShell";
 
 export default function Locations() {
   const [locations, setLocations] = useState([]);
@@ -60,19 +61,35 @@ export default function Locations() {
     "Saturday",
   ];
 
+  const inputClass = (hasError = false) =>
+    `w-full rounded-lg border px-3 py-2.5 text-sm text-gray-900 shadow-sm transition-all focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 ${
+      hasError ? "border-red-500" : "border-gray-300"
+    }`;
+
+  const locationSummary = useMemo(() => {
+    const primaryCount = locations.filter((location) => location?.isPrimary).length;
+    const withContactCount = locations.filter(
+      (location) => Boolean(location?.phone || location?.email)
+    ).length;
+
+    return {
+      total: locations.length,
+      primary: primaryCount,
+      withContact: withContactCount,
+      withoutContact: locations.length - withContactCount,
+    };
+  }, [locations]);
+
   useEffect(() => {
     fetchLocations();
   }, []);
 
   const fetchLocations = async () => {
     try {
-      console.log("[ADMIN LOCATIONS] Fetching locations...");
       const response = await api.get("/locations");
-      console.log("[ADMIN LOCATIONS] Response:", response.data);
-      console.log("[ADMIN LOCATIONS] Locations count:", response.data.length);
       setLocations(response.data);
     } catch (error) {
-      console.error("[ADMIN LOCATIONS] Error:", error);
+      console.error("Failed to load locations:", error);
       toast.error("Failed to load locations");
     } finally {
       setLoading(false);
@@ -219,46 +236,96 @@ export default function Locations() {
     });
   };
 
+  const pageAction = (
+    <Button
+      onClick={() => setShowModal(true)}
+      variant="brand"
+      size="md"
+      className="w-full sm:w-auto"
+      icon={Plus}
+    >
+      Add Location
+    </Button>
+  );
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
+      <AdminPageShell
+        title="Locations"
+        description="Manage branch details and public contact information."
+        action={pageAction}
+        maxWidth="2xl"
+      >
+        <Card className="border border-gray-200 py-10 shadow-sm">
+          <div className="flex flex-col items-center justify-center gap-3 text-center">
+            <div className="h-10 w-10 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900" />
+            <p className="text-sm font-medium text-gray-600">Loading locations...</p>
+          </div>
+        </Card>
+      </AdminPageShell>
     );
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6 overflow-x-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
-          Locations
-        </h2>
-        <button
-          onClick={() => setShowModal(true)}
-          className="px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
-        >
-          <Plus className="w-4 h-4 inline-block mr-2" />
-          Add Location
-        </button>
+    <AdminPageShell
+      title="Locations"
+      description="Manage branch details, contact info, and booking visibility."
+      action={pageAction}
+      maxWidth="2xl"
+      contentClassName="space-y-4 overflow-x-hidden"
+    >
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+        <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+            Total
+          </p>
+          <p className="mt-1 text-lg font-semibold text-gray-900">
+            {locationSummary.total}
+          </p>
+        </div>
+        <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+            Primary
+          </p>
+          <p className="mt-1 text-lg font-semibold text-brand-700">
+            {locationSummary.primary}
+          </p>
+        </div>
+        <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+            With Contact
+          </p>
+          <p className="mt-1 text-lg font-semibold text-green-700">
+            {locationSummary.withContact}
+          </p>
+        </div>
+        <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+            Missing Contact
+          </p>
+          <p className="mt-1 text-lg font-semibold text-gray-700">
+            {locationSummary.withoutContact}
+          </p>
+        </div>
       </div>
 
       {/* Locations Grid */}
       {locations.length === 0 ? (
-        <Card className="text-center py-12">
-          <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <Card className="border border-gray-200 py-12 text-center shadow-sm">
+          <MapPin className="w-12 h-12 text-gray-500 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
             No locations yet
           </h3>
           <p className="text-gray-600 mb-4">
             Get started by adding your first location
           </p>
-          <button
+          <Button
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            variant="brand"
+            size="md"
           >
             Add Location
-          </button>
+          </Button>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -267,7 +334,7 @@ export default function Locations() {
               key={location._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
             >
               {/* Location Header */}
               <div className="p-6">
@@ -279,7 +346,7 @@ export default function Locations() {
                     </h3>
                   </div>
                   {location.isPrimary && (
-                    <span className="flex items-center gap-1 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">
+                    <span className="flex items-center gap-1 rounded border border-yellow-200 bg-yellow-100 px-2 py-1 text-xs font-semibold text-yellow-800">
                       <Star className="w-3 h-3" />
                       Primary
                     </span>
@@ -337,7 +404,7 @@ export default function Locations() {
                         </div>
                       ))}
                       {location.workingHours.length > 3 && (
-                        <p className="text-gray-500 italic">
+                        <p className="text-gray-600 italic">
                           +{location.workingHours.length - 3} more days
                         </p>
                       )}
@@ -364,7 +431,7 @@ export default function Locations() {
                             </span>
                           ))}
                         {location.settings.amenities.length > 3 && (
-                          <span className="px-2 py-0.5 text-gray-500 text-xs">
+                          <span className="px-2 py-0.5 text-gray-600 text-xs">
                             +{location.settings.amenities.length - 3}
                           </span>
                         )}
@@ -377,7 +444,7 @@ export default function Locations() {
               <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-end gap-2">
                 <button
                   onClick={() => handleEdit(location)}
-                  className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                  className="inline-flex items-center justify-center rounded-lg border border-brand-200 p-2 text-brand-700 transition-colors hover:bg-brand-50"
                   title="Edit"
                 >
                   <Edit className="w-4 h-4" />
@@ -385,7 +452,7 @@ export default function Locations() {
                 {!location.isPrimary && (
                   <button
                     onClick={() => handleDelete(location._id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+                    className="inline-flex items-center justify-center rounded-lg border border-red-200 p-2 text-red-700 transition-colors hover:bg-red-50"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -400,26 +467,26 @@ export default function Locations() {
       {/* Modal */}
       <AnimatePresence>
         {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white shadow-2xl"
             >
-              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
+              <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 sm:px-6 sm:py-4">
                 <h2 className="text-xl font-semibold text-gray-900">
                   {editingLocation ? "Edit Location" : "Add New Location"}
                 </h2>
                 <button
                   onClick={handleCloseModal}
-                  className="p-1 hover:bg-gray-100 rounded transition-colors"
+                  className="rounded p-1 transition-colors hover:bg-gray-100"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6 p-4 sm:p-6">
                 {/* Basic Info */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -431,9 +498,8 @@ export default function Locations() {
                       setFormData({ ...formData, name: e.target.value });
                       if (errors.name) setErrors({ ...errors, name: null });
                     }}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.name ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className={inputClass(Boolean(errors.name))}
+                    style={{ fontSize: "16px" }}
                     placeholder="Downtown Office"
                   />
                   {errors.name && (
@@ -451,13 +517,14 @@ export default function Locations() {
                       setFormData({ ...formData, description: e.target.value })
                     }
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={`${inputClass(false)} resize-none`}
+                    style={{ fontSize: "16px" }}
                     placeholder="Brief description of this location..."
                   />
                 </div>
 
                 {/* Contact Info */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Phone
@@ -468,7 +535,8 @@ export default function Locations() {
                       onChange={(e) =>
                         setFormData({ ...formData, phone: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className={inputClass(false)}
+                      style={{ fontSize: "16px" }}
                       placeholder="+1-555-0100"
                     />
                   </div>
@@ -482,7 +550,8 @@ export default function Locations() {
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className={inputClass(false)}
+                      style={{ fontSize: "16px" }}
                       placeholder="location@business.com"
                     />
                   </div>
@@ -511,9 +580,8 @@ export default function Locations() {
                         if (errors.street)
                           setErrors({ ...errors, street: null });
                       }}
-                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                        errors.street ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className={inputClass(Boolean(errors.street))}
+                      style={{ fontSize: "16px" }}
                       placeholder="123 Main Street"
                     />
                     {errors.street && (
@@ -523,7 +591,7 @@ export default function Locations() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         City *
@@ -541,9 +609,8 @@ export default function Locations() {
                           });
                           if (errors.city) setErrors({ ...errors, city: null });
                         }}
-                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                          errors.city ? "border-red-500" : "border-gray-300"
-                        }`}
+                        className={inputClass(Boolean(errors.city))}
+                        style={{ fontSize: "16px" }}
                         placeholder="New York"
                       />
                       {errors.city && (
@@ -571,11 +638,8 @@ export default function Locations() {
                           if (errors.postalCode)
                             setErrors({ ...errors, postalCode: null });
                         }}
-                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                          errors.postalCode
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        }`}
+                        className={inputClass(Boolean(errors.postalCode))}
+                        style={{ fontSize: "16px" }}
                         placeholder="10001"
                       />
                       {errors.postalCode && (
@@ -602,33 +666,40 @@ export default function Locations() {
                           },
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className={inputClass(false)}
+                      style={{ fontSize: "16px" }}
                       placeholder="United States"
                     />
                   </div>
                 </div>
 
                 {/* Submit Buttons */}
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
-                  <button
-                    type="button"
-                    onClick={handleCloseModal}
-                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    {editingLocation ? "Update Location" : "Create Location"}
-                  </button>
+                <div className="sticky bottom-0 z-20 -mx-1 border-t border-gray-200 bg-white/95 px-1 pb-[max(env(safe-area-inset-bottom),0.6rem)] pt-3 shadow-[0_-6px_16px_rgba(15,23,42,0.08)] backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-2 sm:shadow-none">
+                  <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
+                    <Button
+                      type="button"
+                      onClick={handleCloseModal}
+                      variant="outline"
+                      size="md"
+                      className="w-full sm:w-auto"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="brand"
+                      size="md"
+                      className="w-full sm:w-auto"
+                    >
+                      {editingLocation ? "Update Location" : "Create Location"}
+                    </Button>
+                  </div>
                 </div>
               </form>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
-    </div>
+    </AdminPageShell>
   );
 }

@@ -236,14 +236,14 @@ export default function ClientsPage() {
 
         {/* Segments Overview */}
         {segments && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-3">
-            <div className="bg-white rounded-lg border border-gray-200 p-2.5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 mb-3">
+            <div className="bg-white rounded-lg border border-gray-200 p-3">
               <div className="flex items-center justify-between mb-1.5">
                 <div>
-                  <p className="text-[10px] text-gray-600 mb-0.5 font-semibold uppercase tracking-wide">
+                  <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
                     VIP Clients
                   </p>
-                  <p className="text-[9px] text-gray-500">
+                  <p className="text-xs text-gray-600">
                     £500+ spent, 10+ visits
                   </p>
                 </div>
@@ -254,13 +254,13 @@ export default function ClientsPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-2.5">
+            <div className="bg-white rounded-lg border border-gray-200 p-3">
               <div className="flex items-center justify-between mb-1.5">
                 <div>
-                  <p className="text-[10px] text-gray-600 mb-0.5 font-semibold uppercase tracking-wide">
+                  <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
                     At Risk
                   </p>
-                  <p className="text-[9px] text-gray-500">
+                  <p className="text-xs text-gray-600">
                     90+ days inactive, 3+ visits
                   </p>
                 </div>
@@ -271,13 +271,13 @@ export default function ClientsPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-2.5">
+            <div className="bg-white rounded-lg border border-gray-200 p-3">
               <div className="flex items-center justify-between mb-1.5">
                 <div>
-                  <p className="text-[10px] text-gray-600 mb-0.5 font-semibold uppercase tracking-wide">
+                  <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
                     New Clients
                   </p>
-                  <p className="text-[9px] text-gray-500">1 visit or less</p>
+                  <p className="text-xs text-gray-600">1 visit or less</p>
                 </div>
                 <Sparkles className="h-5 w-5 text-green-600" />
               </div>
@@ -286,13 +286,13 @@ export default function ClientsPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-2.5">
+            <div className="bg-white rounded-lg border border-gray-200 p-3">
               <div className="flex items-center justify-between mb-1.5">
                 <div>
-                  <p className="text-[10px] text-gray-600 mb-0.5 font-semibold uppercase tracking-wide">
+                  <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
                     Active
                   </p>
-                  <p className="text-[9px] text-gray-500">
+                  <p className="text-xs text-gray-600">
                     Visited in last 90 days
                   </p>
                 </div>
@@ -463,8 +463,8 @@ export default function ClientsPage() {
                       <span className="text-gray-600">visits</span>
                     </div>
 
-                    <div className="col-span-2 flex items-center gap-1.5 text-[11px]">
-                      <span className="text-gray-500">
+                    <div className="col-span-2 flex items-center gap-1.5 text-xs">
+                      <span className="text-gray-600">
                         {client.lastVisit &&
                         new Date(client.lastVisit) > new Date()
                           ? "Next:"
@@ -481,7 +481,7 @@ export default function ClientsPage() {
                       {client.tags.map((tag, idx) => (
                         <span
                           key={idx}
-                          className="px-1.5 py-0.5 text-[10px] bg-gray-100 text-gray-700 rounded font-medium"
+                          className="px-1.5 py-0.5 text-xs bg-gray-100 text-gray-700 rounded font-medium"
                         >
                           {tag}
                         </span>
@@ -657,7 +657,7 @@ export default function ClientsPage() {
                   {clientDetails.relationship.internalNotes}
                 </p>
               ) : (
-                <p className="text-sm text-gray-500 bg-gray-50 rounded-lg p-4 italic">
+                <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-4 italic">
                   No notes added yet. Click "Add" to add notes about this
                   client.
                 </p>
@@ -669,7 +669,7 @@ export default function ClientsPage() {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">
                   Recent Bookings{" "}
-                  <span className="text-sm font-normal text-gray-500">
+                  <span className="text-sm font-normal text-gray-600">
                     (Last 5 bookings - all statuses)
                   </span>
                 </h3>
@@ -687,7 +687,7 @@ export default function ClientsPage() {
                         </p>
                         {(booking.specialistId?.name ||
                           booking.specialist?.name) && (
-                          <p className="text-gray-500 text-xs mt-0.5">
+                          <p className="text-gray-600 text-xs mt-0.5">
                             with{" "}
                             {booking.specialistId?.name ||
                               booking.specialist?.name}

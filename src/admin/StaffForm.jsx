@@ -383,7 +383,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-900">Basic Information</h3>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-600">
                 Add profile details and a clear introduction.
               </p>
             </div>
@@ -554,7 +554,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                   disabled={isUploadingImage}
                   className="hidden"
                 />
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-xs text-gray-600 mt-2">
                   PNG, JPG or WEBP (max 5MB)
                 </p>
               </div>
@@ -571,7 +571,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-900">Specialties</h3>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-600">
                 Add tags clients use to discover this staff member.
               </p>
             </div>
@@ -629,7 +629,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-gray-900">Location Assignment</h3>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-600">
                   Control where this staff member appears for booking.
                 </p>
               </div>
@@ -698,8 +698,8 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                       ))}
                     </div>
                     {formData.locationIds.length === 0 && (
-                      <p className="text-xs text-amber-600 mt-1">
-                        ⚠️ No locations selected. Staff will be available at all
+                      <p className="text-xs text-amber-700 mt-1">
+                        No locations selected. Staff will be available at all
                         locations by default.
                       </p>
                     )}
@@ -734,8 +734,8 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                       </select>
                       {!formData.primaryLocationId &&
                         formData.locationIds.length > 0 && (
-                          <p className="text-xs text-amber-600 mt-1">
-                            ⚠️ Please select a primary location
+                          <p className="text-xs text-amber-700 mt-1">
+                            Please select a primary location
                           </p>
                         )}
                     </div>
@@ -754,7 +754,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-900">Settings</h3>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-600">
                 Manage visibility and payment behavior.
               </p>
             </div>
@@ -815,7 +815,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-gray-900">Working Hours</h3>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-600">
                   Define availability blocks shown during booking.
                 </p>
               </div>
@@ -832,7 +832,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
           </div>
 
           {formData.workingHours.length === 0 && (
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-600 text-sm">
               No working hours set. Add hours to specify availability.
             </p>
           )}
@@ -888,7 +888,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                       }`}
                     />
                     {errors[`workingHours_${index}_start`] && (
-                      <p className="text-red-500 text-xs mt-1">
+                      <p className="text-red-600 text-xs mt-1">
                         {errors[`workingHours_${index}_start`]}
                       </p>
                     )}
@@ -912,7 +912,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                       }`}
                     />
                     {errors[`workingHours_${index}_end`] && (
-                      <p className="text-red-500 text-xs mt-1">
+                      <p className="text-red-600 text-xs mt-1">
                         {errors[`workingHours_${index}_end`]}
                       </p>
                     )}
@@ -929,7 +929,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
                 </button>
 
                 {errors[`workingHours_${index}_range`] && (
-                  <p className="text-red-500 text-xs mt-1 w-full">
+                  <p className="text-red-600 text-xs mt-1 w-full">
                     {errors[`workingHours_${index}_range`]}
                   </p>
                 )}
@@ -939,7 +939,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
         </div>
 
         {/* Form Actions */}
-        <div className="sticky bottom-0 z-20 -mx-1 border-t border-gray-200 bg-white/95 px-1 pb-[max(env(safe-area-inset-bottom),0.6rem)] pt-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-3">
+        <div className="sticky bottom-0 z-20 -mx-1 border-t border-gray-200 bg-white/95 px-1 pb-[max(env(safe-area-inset-bottom),0.6rem)] pt-3 shadow-[0_-6px_16px_rgba(15,23,42,0.08)] backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-3 sm:shadow-none">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
             {isEditMode && (
               <Button

@@ -1,10 +1,9 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { selectAdmin } from "../../shared/state/authSlice";
 import { api } from "../../shared/lib/apiClient";
-import { queryKeys } from "../../shared/lib/queryClient";
 import { useSharedData } from "../../shared/hooks/useSharedData";
 import Modal from "../../shared/components/ui/Modal";
 import FormField from "../../shared/components/forms/FormField";
@@ -26,12 +25,14 @@ import {
   SelectButton,
 } from "../../shared/components/ui/SelectDrawer";
 import AdminPageShell from "../components/AdminPageShell";
+import AppointmentsMetricsStrip from "../components/appointments/AppointmentsMetricsStrip";
+import AppointmentConfirmDialog from "../components/appointments/AppointmentConfirmDialog";
 
 export default function Appointments() {
   const { language } = useLanguage();
   const admin = useSelector(selectAdmin);
-  const queryClient = useQueryClient();
   const isSuperAdmin = admin?.role === "super_admin";
+  const hasAppointmentAccess = isSuperAdmin || Boolean(admin?.specialistId);
 
   // Use shared data hook for cached specialists and services
   const {
@@ -57,83 +58,20 @@ export default function Appointments() {
     key: "start",
     direction: "desc",
   });
+  const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    type: null,
+    payload: null,
+    title: "",
+    description: "",
+    confirmLabel: "Confirm",
+    tone: "danger",
+  });
+  const [confirmSubmitting, setConfirmSubmitting] = useState(false);
 
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState(null);
-
-  // React Query for appointments with pagination
-  const {
-    data: appointmentsData,
-    isLoading,
-    refetch: refetchAppointments,
-  } = useQuery({
-    queryKey: ["appointments", pagination.page],
-    queryFn: async ({ signal }) => {
-      const response = await api.get(
-        `/appointments?page=${pagination.page}&limit=50`,
-        {
-          signal,
-        }
-      );
-
-      let appointments = [];
-      let paginationData = pagination;
-
-      if (response.data.data) {
-        // Paginated response
-        appointments = response.data.data || [];
-        paginationData = response.data.pagination || pagination;
-      } else {
-        // Legacy response (array)
-        appointments = response.data || [];
-      }
-
-      // Filter appointments based on admin role and linked specialist
-      if (isSuperAdmin) {
-        // Super admin sees all appointments
-      } else if (admin?.specialistId) {
-        // Regular admin with linked specialist - only show their specialist's appointments
-        appointments = appointments.filter(
-          (apt) => apt.specialistId?._id === admin.specialistId
-        );
-
-        // Recalculate pagination for filtered results
-        const filteredTotal = appointments.length;
-        paginationData = {
-          page: 1,
-          limit: 50,
-          total: filteredTotal,
-          totalPages: Math.ceil(filteredTotal / 50),
-          hasMore: false,
-        };
-      } else {
-        // Regular admin without linked specialist - show no appointments
-        appointments = [];
-        paginationData = {
-          page: 1,
-          limit: 50,
-          total: 0,
-          totalPages: 0,
-          hasMore: false,
-        };
-      }
-
-      return {
-        appointments,
-        pagination: paginationData,
-      };
-    },
-    enabled: !!admin, // Only fetch when admin is loaded
-    staleTime: 30 * 1000, // 30 seconds - appointments change frequently
-    gcTime: 2 * 60 * 1000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: true,
-  });
-
-  const rows = appointmentsData?.appointments || [];
-  const loading = sharedDataLoading || isLoading;
 
   // Create modal state
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -153,20 +91,182 @@ export default function Appointments() {
 
   // Filter state
   const [selectedSpecialistId, setSelectedSpecialistId] = useState("");
-  const [dateFilter, setDateFilter] = useState(""); // "", day, week, month, custom
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("all");
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
   const [showSpecialistDrawer, setShowSpecialistDrawer] = useState(false);
+  const [showStatusDrawer, setShowStatusDrawer] = useState(false);
   const [showDateDrawer, setShowDateDrawer] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
+
+  const getDateRange = useCallback(() => {
+    const now = new Date();
+    let start;
+    let end;
+
+    switch (dateFilter) {
+      case "day":
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        break;
+      case "week": {
+        const dayOfWeek = now.getDay();
+        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Monday as start of week
+        start = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() + diff,
+        );
+        end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
+        break;
+      }
+      case "month":
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        break;
+      case "custom":
+        if (customStartDate && customEndDate) {
+          start = new Date(customStartDate);
+          end = new Date(customEndDate);
+          end.setHours(23, 59, 59, 999);
+        }
+        break;
+      default:
+        return null;
+    }
+
+    return start && end ? { start, end } : null;
+  }, [dateFilter, customStartDate, customEndDate]);
 
   // Consent state - tracks which appointments have signed consents
   const [consentsMap, setConsentsMap] = useState({});
 
   // Debounce search query to avoid excessive filtering
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const effectiveSpecialistId = isSuperAdmin
+    ? selectedSpecialistId
+    : admin?.specialistId || "";
+  const activeDateRange = useMemo(() => getDateRange(), [getDateRange]);
+
+  const appointmentFilters = useMemo(
+    () => ({
+      specialistId: effectiveSpecialistId,
+      status: statusFilter,
+      search: debouncedSearchQuery.trim(),
+      dateFrom: activeDateRange?.start?.toISOString() || "",
+      dateTo: activeDateRange?.end?.toISOString() || "",
+    }),
+    [
+      activeDateRange?.end,
+      activeDateRange?.start,
+      debouncedSearchQuery,
+      effectiveSpecialistId,
+      statusFilter,
+    ],
+  );
+
+  useEffect(() => {
+    if (!isSuperAdmin && admin?.specialistId) {
+      setSelectedSpecialistId(admin.specialistId);
+    }
+  }, [admin?.specialistId, isSuperAdmin]);
+
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, page: 1 }));
+  }, [
+    appointmentFilters.specialistId,
+    appointmentFilters.status,
+    appointmentFilters.search,
+    appointmentFilters.dateFrom,
+    appointmentFilters.dateTo,
+  ]);
+
+  // React Query for appointments with pagination + server-side filters
+  const {
+    data: appointmentsData,
+    isLoading,
+    refetch: refetchAppointments,
+  } = useQuery({
+    queryKey: [
+      "appointments",
+      pagination.page,
+      pagination.limit,
+      appointmentFilters.specialistId,
+      appointmentFilters.status,
+      appointmentFilters.search,
+      appointmentFilters.dateFrom,
+      appointmentFilters.dateTo,
+    ],
+    queryFn: async ({ signal, queryKey }) => {
+      const [
+        ,
+        page,
+        limit,
+        specialistId,
+        status,
+        search,
+        dateFrom,
+        dateTo,
+      ] = queryKey;
+
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+      });
+
+      if (specialistId) params.set("specialistId", specialistId);
+      if (status && status !== "all") params.set("status", status);
+      if (search) params.set("search", search);
+      if (dateFrom) params.set("dateFrom", dateFrom);
+      if (dateTo) params.set("dateTo", dateTo);
+
+      const response = await api.get(`/appointments?${params.toString()}`, {
+        signal,
+      });
+
+      if (response.data?.data) {
+        return {
+          appointments: response.data.data || [],
+          pagination: response.data.pagination || pagination,
+        };
+      }
+
+      return {
+        appointments: Array.isArray(response.data) ? response.data : [],
+        pagination,
+      };
+    },
+    enabled: !!admin && hasAppointmentAccess,
+    staleTime: 30 * 1000,
+    gcTime: 2 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+  });
+
+  const { data: appointmentMetrics, isLoading: metricsLoading } = useQuery({
+    queryKey: ["appointments-metrics", effectiveSpecialistId || "all"],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (effectiveSpecialistId) {
+        params.set("specialistId", effectiveSpecialistId);
+      }
+      const queryString = params.toString();
+      const response = await api.get(
+        `/appointments/metrics${queryString ? `?${queryString}` : ""}`,
+      );
+      return response.data;
+    },
+    enabled: !!admin && hasAppointmentAccess,
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  const rows = appointmentsData?.appointments || [];
+  const loading = sharedDataLoading || isLoading;
 
   // Update pagination data when appointmentsData changes
   useEffect(() => {
@@ -204,95 +304,9 @@ export default function Appointments() {
     setSortConfig({ key, direction });
   };
 
-  // Helper function to get date range based on filter
-  const getDateRange = () => {
-    const now = new Date();
-    let start, end;
-
-    switch (dateFilter) {
-      case "day":
-        start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-        break;
-      case "week":
-        const dayOfWeek = now.getDay();
-        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Monday as start of week
-        start = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate() + diff
-        );
-        end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
-        break;
-      case "month":
-        start = new Date(now.getFullYear(), now.getMonth(), 1);
-        end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-        break;
-      case "custom":
-        if (customStartDate && customEndDate) {
-          start = new Date(customStartDate);
-          end = new Date(customEndDate);
-          end.setHours(23, 59, 59, 999); // Include the entire end date
-        }
-        break;
-      default:
-        return null;
-    }
-
-    return start && end ? { start, end } : null;
-  };
-
-  // Memoize filtered and sorted appointments to prevent unnecessary recalculations
+  // Sort current page results client-side for immediate table interactions
   const sortedRows = useMemo(() => {
-    let filteredRows = rows;
-
-    // Apply specialist filter
-    if (selectedSpecialistId) {
-      filteredRows = filteredRows.filter((r) => {
-        const specialistId =
-          typeof r.specialistId === "object" && r.specialistId?._id
-            ? r.specialistId._id
-            : r.specialistId;
-        return String(specialistId) === String(selectedSpecialistId);
-      });
-    }
-
-    // Apply date filter
-    const dateRange = getDateRange();
-    if (dateRange) {
-      filteredRows = filteredRows.filter((r) => {
-        const appointmentDate = new Date(r.start);
-        return (
-          appointmentDate >= dateRange.start && appointmentDate < dateRange.end
-        );
-      });
-    }
-
-    // Apply search filter - uses debounced query
-    if (debouncedSearchQuery.trim()) {
-      const query = debouncedSearchQuery.toLowerCase();
-      filteredRows = filteredRows.filter((r) => {
-        return (
-          r.client?.name?.toLowerCase().includes(query) ||
-          r.client?.email?.toLowerCase().includes(query) ||
-          r.client?.phone?.toLowerCase().includes(query) ||
-          r.specialist?.name?.toLowerCase().includes(query) ||
-          r.service?.name?.toLowerCase().includes(query) ||
-          (r.services &&
-            r.services.length > 0 &&
-            r.services.some(
-              (svc) =>
-                svc.service?.name?.toLowerCase().includes(query) ||
-                svc.serviceName?.toLowerCase().includes(query) ||
-                svc.variantName?.toLowerCase().includes(query)
-            )) ||
-          r.variantName?.toLowerCase().includes(query)
-        );
-      });
-    }
-
-    // Sort filtered results
-    return [...filteredRows].sort((a, b) => {
+    return [...rows].sort((a, b) => {
       let aVal, bVal;
 
       switch (sortConfig.key) {
@@ -338,16 +352,7 @@ export default function Appointments() {
       if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
       return 0;
     });
-  }, [
-    rows,
-    selectedSpecialistId,
-    dateFilter,
-    customStartDate,
-    customEndDate,
-    debouncedSearchQuery,
-    sortConfig.key,
-    sortConfig.direction,
-  ]);
+  }, [rows, sortConfig.key, sortConfig.direction]);
 
   async function openCancelModal(id) {
     try {
@@ -388,108 +393,107 @@ export default function Appointments() {
     }
   }
 
-  async function deleteAppointment(id) {
-    if (
-      !window.confirm(
-        "Delete this canceled appointment? This cannot be undone."
-      )
-    ) {
-      return;
-    }
+  const closeConfirmDialog = () => {
+    setConfirmDialog({
+      open: false,
+      type: null,
+      payload: null,
+      title: "",
+      description: "",
+      confirmLabel: "Confirm",
+      tone: "danger",
+    });
+  };
 
+  const openConfirmDialog = (config) => {
+    setConfirmDialog({
+      open: true,
+      type: config.type,
+      payload: config.payload || null,
+      title: config.title,
+      description: config.description,
+      confirmLabel: config.confirmLabel || "Confirm",
+      tone: config.tone || "danger",
+    });
+  };
+
+  async function handleConfirmAction() {
+    if (!confirmDialog.type) return;
+
+    setConfirmSubmitting(true);
     try {
-      await api.delete(`/appointments/${id}`);
-      await refetchAppointments();
-      toast.success("Appointment deleted successfully");
-    } catch (e) {
-      toast.error(e.message || "Failed to delete appointment");
+      if (confirmDialog.type === "delete-appointment") {
+        await api.delete(`/appointments/${confirmDialog.payload?.appointmentId}`);
+        await refetchAppointments();
+        toast.success("Appointment deleted successfully");
+      }
+
+      if (confirmDialog.type === "no-show") {
+        await api.patch(`/appointments/${confirmDialog.payload?.appointmentId}/status`, {
+          status: "no_show",
+        });
+        await refetchAppointments();
+        toast.success("Marked as No Show");
+      }
+
+      if (confirmDialog.type === "delete-all") {
+        const specialistId = confirmDialog.payload?.specialistId;
+        const res = await api.delete(`/appointments/specialist/${specialistId}`);
+        await refetchAppointments();
+        toast.success(
+          res.data?.message || `Deleted ${res.data?.deletedCount || 0} appointment(s)`,
+        );
+      }
+
+      closeConfirmDialog();
+    } catch (error) {
+      toast.error(
+        error.response?.data?.error ||
+          error.message ||
+          "Action could not be completed",
+      );
+    } finally {
+      setConfirmSubmitting(false);
     }
   }
 
-  async function handleDeleteAll() {
+  function deleteAppointment(id) {
+    openConfirmDialog({
+      type: "delete-appointment",
+      payload: { appointmentId: id },
+      title: "Delete canceled appointment",
+      description: "This permanently removes the canceled appointment.",
+      confirmLabel: "Delete appointment",
+      tone: "danger",
+    });
+  }
+
+  function handleDeleteAll() {
     if (!admin?.specialistId) {
       toast.error("No specialist linked to this account");
       return;
     }
 
-    toast(
-      (t) => (
-        <span className="flex items-center gap-3">
-          <span>Delete ALL your appointments? This cannot be undone!</span>
-          <button
-            className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-            onClick={async () => {
-              toast.dismiss(t.id);
-              try {
-                const res = await api.delete(
-                  `/appointments/specialist/${admin.specialistId}`
-                );
-
-                // Refetch appointments to update the list
-                await refetchAppointments();
-
-                toast.success(
-                  res.data.message ||
-                    `Deleted ${res.data.deletedCount} appointment(s)`
-                );
-              } catch (e) {
-                toast.error(
-                  e.response?.data?.error ||
-                    e.message ||
-                    "Failed to delete appointments"
-                );
-              }
-            }}
-          >
-            Yes, Delete All
-          </button>
-          <button
-            className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300"
-            onClick={() => toast.dismiss(t.id)}
-          >
-            Cancel
-          </button>
-        </span>
-      ),
-      { duration: 10000 }
-    );
+    openConfirmDialog({
+      type: "delete-all",
+      payload: { specialistId: admin.specialistId },
+      title: "Delete all appointments",
+      description:
+        "This removes every appointment linked to your specialist profile. This cannot be undone.",
+      confirmLabel: "Delete all appointments",
+      tone: "danger",
+    });
   }
 
-  async function markAsNoShow(id) {
-    toast(
-      (t) => (
-        <span className="flex items-center gap-3">
-          <span>Mark this appointment as No Show?</span>
-          <button
-            className="px-3 py-1 bg-orange-600 text-white text-sm rounded hover:bg-orange-700"
-            onClick={async () => {
-              toast.dismiss(t.id);
-              try {
-                const res = await api
-                  .patch(`/appointments/${id}/status`, {
-                    status: "no_show",
-                  })
-                  .then((r) => r.data);
-
-                await refetchAppointments();
-                toast.success("Marked as No Show");
-              } catch (e) {
-                toast.error(e.message || "Failed to update status");
-              }
-            }}
-          >
-            Yes, Mark No Show
-          </button>
-          <button
-            className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300"
-            onClick={() => toast.dismiss(t.id)}
-          >
-            Cancel
-          </button>
-        </span>
-      ),
-      { duration: 8000 }
-    );
+  function markAsNoShow(id) {
+    openConfirmDialog({
+      type: "no-show",
+      payload: { appointmentId: id },
+      title: "Mark appointment as no-show",
+      description: "Use this only when the client did not attend the booking.",
+      confirmLabel: "Mark as no-show",
+      tone: "warning",
+    });
   }
 
   // Check if an appointment has a signed consent
@@ -736,6 +740,56 @@ export default function Appointments() {
     ? t("viewAppointmentsLinkedBeauticianOnly", language)
     : "Manage appointments and availability";
 
+  const specialistOptions = isSuperAdmin
+    ? [
+        { label: "All Specialists", value: "" },
+        ...specialists.map((specialist) => ({
+          label: specialist.name,
+          value: specialist._id,
+        })),
+      ]
+    : specialists
+        .filter((specialist) => specialist._id === admin?.specialistId)
+        .map((specialist) => ({
+          label: specialist.name,
+          value: specialist._id,
+        }));
+
+  const statusOptions = [
+    { label: "All Statuses", value: "all" },
+    { label: "Confirmed", value: "confirmed" },
+    { label: "Reserved Unpaid", value: "reserved_unpaid" },
+    { label: "No Show", value: "no_show" },
+    { label: "Cancelled", value: "cancelled" },
+  ];
+
+  const dateOptions = [
+    { label: "All Time", value: "all" },
+    { label: "Today", value: "day" },
+    { label: "This Week", value: "week" },
+    { label: "This Month", value: "month" },
+    { label: "Custom Range", value: "custom" },
+  ];
+
+  const hasActiveFilters =
+    searchQuery.trim().length > 0 ||
+    (isSuperAdmin && selectedSpecialistId) ||
+    statusFilter !== "all" ||
+    dateFilter !== "all";
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    if (isSuperAdmin) {
+      setSelectedSpecialistId("");
+    } else if (admin?.specialistId) {
+      setSelectedSpecialistId(admin.specialistId);
+    }
+    setStatusFilter("all");
+    setDateFilter("all");
+    setCustomStartDate("");
+    setCustomEndDate("");
+  };
+
   return (
     <AdminPageShell
       title={t("appointments", language)}
@@ -785,8 +839,17 @@ export default function Appointments() {
         </div>
       )}
 
+      {hasAppointmentAccess && (
+        <div className="mb-4">
+          <AppointmentsMetricsStrip
+            metrics={appointmentMetrics}
+            loading={metricsLoading}
+          />
+        </div>
+      )}
+
       {/* Filters - only show if admin has access */}
-      {(isSuperAdmin || admin?.specialistId) && (
+      {hasAppointmentAccess && (
         <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 space-y-4">
           {/* Search Bar */}
           <div className="relative">
@@ -833,7 +896,7 @@ export default function Appointments() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {/* Specialist Filter */}
             <div className="space-y-1.5">
               <label className="block text-xs font-medium text-gray-700">
@@ -842,30 +905,43 @@ export default function Appointments() {
               <SelectButton
                 value={selectedSpecialistId}
                 placeholder="Select one..."
-                options={[
-                  { label: "All Specialists", value: "" },
-                  ...specialists.map((b) => ({
-                    label: b.name,
-                    value: b._id,
-                  })),
-                ]}
-                onClick={() => setShowSpecialistDrawer(true)}
+                options={specialistOptions}
+                onClick={() => isSuperAdmin && setShowSpecialistDrawer(true)}
+                disabled={!isSuperAdmin}
               />
               <SelectDrawer
                 open={showSpecialistDrawer}
                 onClose={() => setShowSpecialistDrawer(false)}
                 title="Select Specialist"
-                options={[
-                  { label: "All Specialists", value: "" },
-                  ...specialists.map((b) => ({
-                    label: b.name,
-                    value: b._id,
-                  })),
-                ]}
+                options={specialistOptions}
                 value={selectedSpecialistId}
                 onChange={(value) => {
                   setSelectedSpecialistId(value);
                   setShowSpecialistDrawer(false);
+                }}
+              />
+            </div>
+
+            {/* Status Filter */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Status
+              </label>
+              <SelectButton
+                value={statusFilter}
+                placeholder="Select one..."
+                options={statusOptions}
+                onClick={() => setShowStatusDrawer(true)}
+              />
+              <SelectDrawer
+                open={showStatusDrawer}
+                onClose={() => setShowStatusDrawer(false)}
+                title="Select Status"
+                options={statusOptions}
+                value={statusFilter}
+                onChange={(value) => {
+                  setStatusFilter(value);
+                  setShowStatusDrawer(false);
                 }}
               />
             </div>
@@ -878,26 +954,14 @@ export default function Appointments() {
               <SelectButton
                 value={dateFilter}
                 placeholder="Select one..."
-                options={[
-                  { label: "All Time", value: "all" },
-                  { label: "Today", value: "day" },
-                  { label: "This Week", value: "week" },
-                  { label: "This Month", value: "month" },
-                  { label: "Custom Range", value: "custom" },
-                ]}
+                options={dateOptions}
                 onClick={() => setShowDateDrawer(true)}
               />
               <SelectDrawer
                 open={showDateDrawer}
                 onClose={() => setShowDateDrawer(false)}
                 title="Select Date Range"
-                options={[
-                  { label: "All Time", value: "all" },
-                  { label: "Today", value: "day" },
-                  { label: "This Week", value: "week" },
-                  { label: "This Month", value: "month" },
-                  { label: "Custom Range", value: "custom" },
-                ]}
+                options={dateOptions}
                 value={dateFilter}
                 onChange={(value) => {
                   setDateFilter(value);
@@ -906,6 +970,32 @@ export default function Appointments() {
               />
             </div>
           </div>
+
+          {(hasActiveFilters || (!isSuperAdmin && admin?.specialistId)) && (
+            <div className="flex flex-wrap justify-end gap-2">
+              {hasActiveFilters && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearFilters}
+                >
+                  Clear filters
+                </Button>
+              )}
+              {!isSuperAdmin && admin?.specialistId && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="text-red-600 hover:bg-red-50"
+                  onClick={handleDeleteAll}
+                >
+                  Delete all my appointments
+                </Button>
+              )}
+            </div>
+          )}
 
           {/* Custom Date Range */}
           {dateFilter === "custom" && (
@@ -1200,7 +1290,7 @@ export default function Appointments() {
                       {r.client?.name}
                     </div>
                     {r.client?.email && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-600">
                         {r.client.email}
                       </div>
                     )}
@@ -1225,14 +1315,14 @@ export default function Appointments() {
                             <div className="font-medium text-gray-900">
                               {svc.service?.name || svc.serviceId || "Service"}
                             </div>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-gray-600">
                               {svc.variantName} •{" "}
                               {svc.duration || svc.durationMin || 0} min
                             </div>
                           </div>
                         ))}
                         {r.services.length > 1 && (
-                          <div className="text-xs text-gray-500 font-medium mt-1">
+                          <div className="text-xs text-gray-600 font-medium mt-1">
                             {r.services.length} services
                           </div>
                         )}
@@ -1242,7 +1332,7 @@ export default function Appointments() {
                         <div className="font-medium text-gray-900">
                           {r.service?.name || r.serviceId}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-gray-600">
                           {r.variantName}
                         </div>
                       </div>
@@ -1256,7 +1346,7 @@ export default function Appointments() {
                         year: "numeric",
                       })}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-600">
                       {new Date(r.start).toLocaleTimeString("en-GB", {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -1412,7 +1502,7 @@ export default function Appointments() {
 
                       // Default when no payment info
                       return (
-                        <span className="text-xs text-gray-400 italic">
+                        <span className="text-xs text-gray-500 italic">
                           N/A
                         </span>
                       );
@@ -1619,7 +1709,7 @@ export default function Appointments() {
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-5">
               <svg
-                className="w-8 h-8 text-gray-400"
+                className="w-8 h-8 text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -1636,7 +1726,10 @@ export default function Appointments() {
               No appointments found
             </h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              {searchQuery || selectedSpecialistId || dateFilter !== "all"
+              {searchQuery ||
+              selectedSpecialistId ||
+              statusFilter !== "all" ||
+              dateFilter !== "all"
                 ? "Try adjusting your filters or search criteria to find appointments."
                 : "Get started by creating your first appointment."}
             </p>
@@ -1653,19 +1746,19 @@ export default function Appointments() {
               className="bg-white rounded-lg border border-gray-200 overflow-hidden"
             >
               {/* Compact Header */}
-              <div className="px-3 py-2.5 border-b border-gray-100 flex items-center justify-between gap-2">
+              <div className="px-3 py-3 border-b border-gray-100 flex items-center justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-sm text-gray-900 truncate">
                     {r.client?.name}
                   </div>
                   {r.client?.email && (
-                    <div className="text-xs text-gray-500 truncate">
+                    <div className="text-xs text-gray-600 truncate">
                       {r.client.email}
                     </div>
                   )}
                 </div>
                 <span
-                  className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase whitespace-nowrap ${
+                  className={`px-2 py-1 rounded-md text-[11px] font-bold uppercase whitespace-nowrap ${
                     r.status === "confirmed"
                       ? "bg-green-100 text-green-700"
                       : r.status === "reserved_unpaid"
@@ -1681,7 +1774,7 @@ export default function Appointments() {
                 </span>
                 {consentsMap[r._id] ? (
                   <span
-                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-200"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-200"
                     title="Consent Signed"
                   >
                     <svg
@@ -1701,7 +1794,7 @@ export default function Appointments() {
                   </span>
                 ) : (
                   <span
-                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-gray-100 text-gray-700 border border-gray-200"
                     title="Consent Not Signed"
                   >
                     <svg
@@ -1723,7 +1816,7 @@ export default function Appointments() {
               </div>
 
               {/* Compact Details */}
-              <div className="px-3 py-3 space-y-2.5">
+              <div className="px-3 py-3.5 space-y-3">
                 {/* Staff */}
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-full bg-gray-900 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
@@ -1732,7 +1825,7 @@ export default function Appointments() {
                       .toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[10px] text-gray-500 uppercase tracking-wide font-medium">
+                    <div className="text-xs text-gray-600 uppercase tracking-wide font-medium">
                       Staff
                     </div>
                     <div className="font-medium text-sm text-gray-900 truncate">
@@ -1761,7 +1854,7 @@ export default function Appointments() {
                       </svg>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[9px] text-gray-500 uppercase tracking-wide font-medium">
+                      <div className="text-[11px] text-gray-600 uppercase tracking-wide font-medium">
                         {r.services && r.services.length > 1
                           ? "Services"
                           : "Service"}
@@ -1776,14 +1869,14 @@ export default function Appointments() {
                                   "Service"}
                               </div>
                               {idx === 0 && (
-                                <div className="text-[10px] text-gray-600 truncate">
+                                <div className="text-xs text-gray-700 truncate">
                                   {svc.variantName}
                                 </div>
                               )}
                             </div>
                           ))}
                           {r.services.length > 1 && (
-                            <div className="text-[9px] text-gray-500">
+                            <div className="text-[11px] text-gray-600">
                               +{r.services.length - 1} more
                             </div>
                           )}
@@ -1794,7 +1887,7 @@ export default function Appointments() {
                             {r.service?.name || r.serviceId}
                           </div>
                           {r.variantName && (
-                            <div className="text-[10px] text-gray-600 truncate">
+                            <div className="text-xs text-gray-700 truncate">
                               {r.variantName}
                             </div>
                           )}
@@ -1821,7 +1914,7 @@ export default function Appointments() {
                       </svg>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[9px] text-gray-500 uppercase tracking-wide font-medium">
+                      <div className="text-[11px] text-gray-600 uppercase tracking-wide font-medium">
                         Date
                       </div>
                       <div className="font-medium text-xs text-gray-900 truncate">
@@ -1830,7 +1923,7 @@ export default function Appointments() {
                           month: "short",
                         })}
                       </div>
-                      <div className="text-[10px] text-gray-600">
+                      <div className="text-xs text-gray-700">
                         {new Date(r.start).toLocaleTimeString("en-GB", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -1843,7 +1936,7 @@ export default function Appointments() {
                 {/* Price & Payment - Compact */}
                 <div className="flex items-center justify-between pt-1.5 border-t border-gray-100">
                   <div>
-                    <div className="text-[10px] text-gray-500 uppercase tracking-wide font-medium">
+                    <div className="text-xs text-gray-600 uppercase tracking-wide font-medium">
                       Price
                     </div>
                     <div className="font-bold text-lg text-gray-900">
@@ -1863,7 +1956,7 @@ export default function Appointments() {
                     return (
                       <div className="text-right">
                         <span
-                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-bold uppercase ${
+                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-bold uppercase ${
                             isDeposit
                               ? "bg-purple-100 text-purple-700"
                               : isFullPayment || isPayNow
@@ -1886,7 +1979,7 @@ export default function Appointments() {
                                 ? (r.payment.amountTotal - 50) / 100
                                 : null);
                             return depositAmount ? (
-                              <div className="text-[10px] text-gray-600 mt-0.5">
+                              <div className="text-xs text-gray-700 mt-0.5">
                                 £{depositAmount.toFixed(2)} paid
                               </div>
                             ) : null;
@@ -2046,7 +2139,7 @@ export default function Appointments() {
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gray-100 mb-4">
               <svg
-                className="w-7 h-7 text-gray-400"
+                className="w-7 h-7 text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -2063,7 +2156,10 @@ export default function Appointments() {
               No appointments found
             </h3>
             <p className="text-sm text-gray-600 mb-5">
-              {searchQuery || selectedSpecialistId || dateFilter !== "all"
+              {searchQuery ||
+              selectedSpecialistId ||
+              statusFilter !== "all" ||
+              dateFilter !== "all"
                 ? "Try adjusting your filters or search criteria."
                 : "Get started by creating your first appointment."}
             </p>
@@ -2177,6 +2273,17 @@ export default function Appointments() {
         onSave={saveNewAppointment}
         submitting={submitting}
         isSuperAdmin={isSuperAdmin}
+      />
+
+      <AppointmentConfirmDialog
+        open={confirmDialog.open}
+        title={confirmDialog.title}
+        description={confirmDialog.description}
+        confirmLabel={confirmDialog.confirmLabel}
+        tone={confirmDialog.tone}
+        submitting={confirmSubmitting}
+        onConfirm={handleConfirmAction}
+        onClose={closeConfirmDialog}
       />
     </AdminPageShell>
   );
@@ -2565,7 +2672,7 @@ function EditModal({
                         </h2>
                         <button
                           onClick={() => setShowTimePicker(false)}
-                          className="text-gray-400 hover:text-gray-600 transition-colors"
+                          className="rounded-md p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
                         >
                           <svg
                             className="w-6 h-6"
@@ -2946,7 +3053,7 @@ function CreateModal({
               disabled={!isSuperAdmin}
             />
             {!isSuperAdmin && appointment.specialistId && (
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-600 mt-1">
                 Pre-selected for your specialist account
               </p>
             )}
@@ -3051,7 +3158,7 @@ function CreateModal({
                         </h2>
                         <button
                           onClick={() => setShowTimePicker(false)}
-                          className="text-gray-400 hover:text-gray-600 transition-colors"
+                          className="rounded-md p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
                         >
                           <svg
                             className="w-6 h-6"
@@ -3123,7 +3230,7 @@ function CreateModal({
                 />
                 <span className="text-gray-600 font-medium">%</span>
                 {appointment.price > 0 && (
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-600">
                     = £
                     {(
                       (appointment.price * appointment.depositAmount) /
@@ -3132,7 +3239,7 @@ function CreateModal({
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-600 mt-1">
                 Customer will pay this percentage as a deposit. Remaining
                 balance due at salon.
               </p>

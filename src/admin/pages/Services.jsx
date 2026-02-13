@@ -15,6 +15,7 @@ import ServicesList from "../ServicesList";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Modal from "../../shared/components/ui/Modal";
 import { testApiConnection } from "../../shared/utils/apiTest";
+import AdminPageShell from "../components/AdminPageShell";
 
 /**
  * Services Page - Manage services with modal form overlay
@@ -182,89 +183,101 @@ export default function Services() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <LoadingSpinner size="lg" />
-        <span className="ml-3 text-gray-600">Loading services...</span>
-      </div>
+      <AdminPageShell
+        title="Services"
+        description="Create, price, and manage services offered to clients."
+        maxWidth="2xl"
+        contentClassName="space-y-4 overflow-x-hidden"
+      >
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-center gap-3 py-4">
+            <LoadingSpinner size="lg" />
+            <span className="text-gray-700">Loading services...</span>
+          </div>
+        </div>
+      </AdminPageShell>
     );
   }
 
   // Error state
   if (servicesError) {
     return (
-      <div className="p-6 bg-red-50 border border-red-200 rounded-lg">
-        <h3 className="text-lg font-semibold text-red-800 mb-2">
-          Error Loading Services
-        </h3>
-        <p className="text-red-600 mb-2">
-          {servicesErrorData?.message || "Failed to load services"}
-        </p>
-
-        {/* Debug information */}
-        <details className="mb-4">
-          <summary className="cursor-pointer text-sm text-red-500 hover:text-red-700">
-            Show debug information
-          </summary>
-          <div className="mt-2 p-3 bg-red-100 rounded text-sm font-mono">
-            <p>
-              <strong>Error:</strong>{" "}
-              {servicesErrorData?.message || "Unknown error"}
-            </p>
-            <p>
-              <strong>Status:</strong>{" "}
-              {servicesErrorData?.response?.status || "No status"}
-            </p>
-            <p>
-              <strong>Backend URL:</strong>{" "}
-              {import.meta.env.VITE_API_URL || "http://localhost:3000"}
-            </p>
-            <p>
-              <strong>Endpoint:</strong> /api/services
-            </p>
-          </div>
-        </details>
-
-        <div className="space-x-3">
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Reload Page
-          </button>
-
-          <button
-            onClick={() => testApiConnection()}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Test API (Check Console)
-          </button>
-
-          <button
-            onClick={() => {
-              // Force refetch services
-              window.location.hash = "#refresh";
-              window.location.reload();
-            }}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Retry Services
-          </button>
-        </div>
-
-        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
-          <p className="text-sm text-yellow-700">
-            <strong>Troubleshooting:</strong>
+      <AdminPageShell
+        title="Services"
+        description="Create, price, and manage services offered to clients."
+        maxWidth="2xl"
+        contentClassName="space-y-4 overflow-x-hidden"
+      >
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-red-900 mb-2">
+            Error loading services
+          </h3>
+          <p className="text-red-700 mb-3">
+            {servicesErrorData?.message || "Failed to load services"}
           </p>
-          <ul className="text-sm text-yellow-600 mt-1 list-disc list-inside">
-            <li>Make sure the backend server is running on port 3000</li>
-            <li>
-              Check if you can access{" "}
-              <code>http://localhost:3000/api/services</code> directly
-            </li>
-            <li>Verify your internet connection</li>
-          </ul>
+
+          <details className="mb-4">
+            <summary className="cursor-pointer text-sm text-red-700 hover:text-red-900">
+              Show debug information
+            </summary>
+            <div className="mt-2 rounded-lg border border-red-200 bg-red-100 p-3 text-sm font-mono text-red-900">
+              <p>
+                <strong>Error:</strong>{" "}
+                {servicesErrorData?.message || "Unknown error"}
+              </p>
+              <p>
+                <strong>Status:</strong>{" "}
+                {servicesErrorData?.response?.status || "No status"}
+              </p>
+              <p>
+                <strong>Backend URL:</strong>{" "}
+                {import.meta.env.VITE_API_URL || "http://localhost:3000"}
+              </p>
+              <p>
+                <strong>Endpoint:</strong> /api/services
+              </p>
+            </div>
+          </details>
+
+          <div className="flex flex-wrap gap-2.5">
+            <button
+              onClick={() => window.location.reload()}
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+            >
+              Reload page
+            </button>
+            <button
+              onClick={() => testApiConnection()}
+              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 transition-colors hover:bg-gray-100"
+            >
+              Test API (console)
+            </button>
+            <button
+              onClick={() => {
+                window.location.hash = "#refresh";
+                window.location.reload();
+              }}
+              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 transition-colors hover:bg-gray-100"
+            >
+              Retry services
+            </button>
+          </div>
+
+          <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
+            <p className="text-sm font-semibold text-yellow-800">
+              Troubleshooting:
+            </p>
+            <ul className="mt-1 list-inside list-disc text-sm text-yellow-700">
+              <li>Make sure the backend server is running on port 3000</li>
+              <li>
+                Check if you can access{" "}
+                <code>http://localhost:3000/api/services</code> directly
+              </li>
+              <li>Verify your internet connection</li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </AdminPageShell>
     );
   }
 

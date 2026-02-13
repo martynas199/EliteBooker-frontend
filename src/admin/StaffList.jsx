@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Edit, Trash2, Plus, Search } from "lucide-react";
 import Button from "../shared/components/ui/Button";
 import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
 import { BeauticianCardSkeleton } from "../shared/components/ui/Skeleton";
+import { useDebounce } from "../shared/hooks/useDebounce";
 import {
   SelectDrawer,
   SelectButton,
@@ -36,49 +37,56 @@ export default function StaffList({
   // Drawer states for mobile
   const [showActiveDrawer, setShowActiveDrawer] = useState(false);
   const [showServiceDrawer, setShowServiceDrawer] = useState(false);
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const normalizedSearchTerm = debouncedSearchTerm.trim().toLowerCase();
 
   // Filter staff
-  const filteredStaff = staff.filter((member) => {
-    // Skip null/undefined members
-    if (!member || !member._id) return false;
+  const filteredStaff = useMemo(
+    () =>
+      staff.filter((member) => {
+        // Skip null/undefined members
+        if (!member || !member._id) return false;
 
-    const matchesSearch =
-      member.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.specialties?.some((s) =>
-        s?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+        const matchesSearch =
+          !normalizedSearchTerm ||
+          member.name?.toLowerCase().includes(normalizedSearchTerm) ||
+          member.email?.toLowerCase().includes(normalizedSearchTerm) ||
+          member.specialties?.some((s) =>
+            s?.toLowerCase().includes(normalizedSearchTerm)
+          );
 
-    const matchesActive =
-      filterActive === "all" ||
-      (filterActive === "active" && member.active) ||
-      (filterActive === "inactive" && !member.active);
+        const matchesActive =
+          filterActive === "all" ||
+          (filterActive === "active" && member.active) ||
+          (filterActive === "inactive" && !member.active);
 
-    // Check if staff is assigned to the filtered service
-    const matchesService =
-      filterService === "all" ||
-      services.some((s) => {
-        if (!s || !s._id || s._id !== filterService) return false;
+        // Check if staff is assigned to the filtered service
+        const matchesService =
+          filterService === "all" ||
+          services.some((s) => {
+            if (!s || !s._id || s._id !== filterService) return false;
 
-        // Compare as strings to handle ObjectId comparison
-        const primaryId =
-          typeof s.primaryBeauticianId === "object"
-            ? s.primaryBeauticianId?._id || s.primaryBeauticianId?.toString()
-            : s.primaryBeauticianId;
+            // Compare as strings to handle ObjectId comparison
+            const primaryId =
+              typeof s.primaryBeauticianId === "object"
+                ? s.primaryBeauticianId?._id || s.primaryBeauticianId?.toString()
+                : s.primaryBeauticianId;
 
-        const hasAsPrimary = primaryId === member._id;
-        const hasAsAdditional = s.additionalBeauticianIds?.some((id) => {
-          if (!id) return false;
-          const additionalId =
-            typeof id === "object" ? id?._id || id?.toString() : id;
-          return additionalId === member._id;
-        });
+            const hasAsPrimary = primaryId === member._id;
+            const hasAsAdditional = s.additionalBeauticianIds?.some((id) => {
+              if (!id) return false;
+              const additionalId =
+                typeof id === "object" ? id?._id || id?.toString() : id;
+              return additionalId === member._id;
+            });
 
-        return hasAsPrimary || hasAsAdditional;
-      });
+            return hasAsPrimary || hasAsAdditional;
+          });
 
-    return matchesSearch && matchesActive && matchesService;
-  });
+        return matchesSearch && matchesActive && matchesService;
+      }),
+    [staff, normalizedSearchTerm, filterActive, filterService, services]
+  );
 
   // Get services assigned to a staff member
   const getAssignedServices = (staffId) => {
@@ -100,6 +108,32 @@ export default function StaffList({
         })
       );
     });
+  };
+
+  const staffSummary = useMemo(() => {
+    const activeCount = staff.filter((member) => member?.active).length;
+    const inactiveCount = staff.length - activeCount;
+    const withAssignedServicesCount = staff.filter((member) =>
+      getAssignedServices(member?._id).length > 0
+    ).length;
+
+    return {
+      total: staff.length,
+      active: activeCount,
+      inactive: inactiveCount,
+      withAssignedServices: withAssignedServicesCount,
+    };
+  }, [staff, services]);
+
+  const hasActiveFilters =
+    searchTerm.trim().length > 0 ||
+    filterActive !== "all" ||
+    filterService !== "all";
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setFilterActive("all");
+    setFilterService("all");
   };
 
   const pageAction = (
@@ -156,57 +190,106 @@ export default function StaffList({
       contentClassName="space-y-6 overflow-x-hidden"
     >
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        {/* Search */}
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search staff..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors shadow-sm"
-            style={{ fontSize: "16px" }}
+      <div className="space-y-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
+          {/* Search */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search staff..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 py-3 pl-11 pr-4 text-sm shadow-sm transition-colors focus:border-gray-900 focus:outline-none"
+              style={{ fontSize: "16px" }}
+            />
+          </div>
+
+          {/* Active Filter */}
+          <SelectButton
+            value={filterActive}
+            placeholder="All Status"
+            options={[
+              { value: "all", label: "All Status" },
+              { value: "active", label: "Active Only" },
+              { value: "inactive", label: "Inactive Only" },
+            ]}
+            onClick={() => setShowActiveDrawer(true)}
+            className="bg-white px-4 py-3 text-sm rounded-lg border border-gray-300 hover:border-gray-900 transition-colors shadow-sm"
+          />
+
+          {/* Service Filter */}
+          <SelectButton
+            value={filterService}
+            placeholder="All Services"
+            options={[
+              { value: "all", label: "All Services" },
+              ...services.map((service) => ({
+                value: service._id,
+                label: service.name,
+              })),
+            ]}
+            onClick={() => setShowServiceDrawer(true)}
+            className="bg-white px-4 py-3 text-sm rounded-lg border border-gray-300 hover:border-gray-900 transition-colors shadow-sm"
           />
         </div>
 
-        {/* Active Filter */}
-        <SelectButton
-          value={filterActive}
-          placeholder="All Status"
-          options={[
-            { value: "all", label: "All Status" },
-            { value: "active", label: "Active Only" },
-            { value: "inactive", label: "Inactive Only" },
-          ]}
-          onClick={() => setShowActiveDrawer(true)}
-          className="px-4 py-3 rounded-lg border border-gray-300"
-        />
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+              Total
+            </p>
+            <p className="mt-1 text-lg font-semibold text-gray-900">
+              {staffSummary.total}
+            </p>
+          </div>
+          <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+              Active
+            </p>
+            <p className="mt-1 text-lg font-semibold text-green-700">
+              {staffSummary.active}
+            </p>
+          </div>
+          <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+              Inactive
+            </p>
+            <p className="mt-1 text-lg font-semibold text-gray-700">
+              {staffSummary.inactive}
+            </p>
+          </div>
+          <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+              Assigned
+            </p>
+            <p className="mt-1 text-lg font-semibold text-brand-700">
+              {staffSummary.withAssignedServices}
+            </p>
+          </div>
+        </div>
 
-        {/* Service Filter */}
-        <SelectButton
-          value={filterService}
-          placeholder="All Services"
-          options={[
-            { value: "all", label: "All Services" },
-            ...services.map((service) => ({
-              value: service._id,
-              label: service.name,
-            })),
-          ]}
-          onClick={() => setShowServiceDrawer(true)}
-          className="px-4 py-3 rounded-xl"
-        />
-
-        <div className="text-sm font-medium text-gray-600">
-          Showing {filteredStaff.length} of {staff.length} staff members
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="text-sm text-gray-600">
+            Showing {filteredStaff.length} of {staff.length} staff members
+          </div>
+          {hasActiveFilters && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+            >
+              Clear filters
+            </Button>
+          )}
         </div>
       </div>
 
       {/* Staff Table / Cards */}
       {filteredStaff.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-12 text-center">
-          <p className="text-gray-500 text-lg mb-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+          <p className="text-gray-600 text-lg mb-4">
             {staff.length === 0
               ? "No staff members yet"
               : "No staff match your filters"}
@@ -228,7 +311,7 @@ export default function StaffList({
                 <div
                   key={member._id}
                   data-testid="staff-item"
-                  className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden"
+                  className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
                 >
                   <div className="p-4">
                     {/* Staff Header */}
@@ -254,7 +337,7 @@ export default function StaffList({
                           {member.name}
                         </h3>
                         {member.bio && (
-                          <p className="text-sm text-gray-500 line-clamp-2 mb-2">
+                          <p className="text-sm text-gray-600 line-clamp-2 mb-2">
                             {member.bio}
                           </p>
                         )}
@@ -274,7 +357,7 @@ export default function StaffList({
                     <div className="space-y-2 mb-3 pt-3 border-t border-gray-200">
                       <div className="flex items-center gap-2 text-sm">
                         <svg
-                          className="w-4 h-4 text-gray-400"
+                          className="w-4 h-4 text-gray-500"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -292,7 +375,7 @@ export default function StaffList({
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <svg
-                          className="w-4 h-4 text-gray-400"
+                          className="w-4 h-4 text-gray-500"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -314,7 +397,7 @@ export default function StaffList({
                     <div className="space-y-2 mb-3 pb-3 border-b border-gray-200">
                       {member.specialties && member.specialties.length > 0 && (
                         <div>
-                          <div className="text-xs text-gray-500 mb-1">
+                          <div className="text-xs text-gray-600 mb-1">
                             Specialties
                           </div>
                           <div className="flex flex-wrap gap-1">
@@ -331,14 +414,14 @@ export default function StaffList({
                       )}
                       {assignedServices.length > 0 && (
                         <div>
-                          <div className="text-xs text-gray-500 mb-1">
+                          <div className="text-xs text-gray-600 mb-1">
                             Assigned Services
                           </div>
                           <div className="text-sm text-brand-600 font-medium">
                             {assignedServices.length} service
                             {assignedServices.length !== 1 ? "s" : ""}
                           </div>
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="text-xs text-gray-600 mt-1">
                             {assignedServices
                               .slice(0, 2)
                               .map((s) => s.name)
@@ -381,22 +464,22 @@ export default function StaffList({
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Staff Member
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Contact
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Specialties
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Services
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -409,7 +492,7 @@ export default function StaffList({
                       <tr
                         key={member._id}
                         data-testid="staff-item"
-                        className="hover:bg-gray-50"
+                        className="hover:bg-gray-50 transition-colors"
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-center">
@@ -434,7 +517,7 @@ export default function StaffList({
                                 {member.name}
                               </div>
                               {member.bio && (
-                                <div className="text-sm text-gray-500 line-clamp-1 max-w-xs">
+                                <div className="text-sm text-gray-600 line-clamp-1 max-w-xs">
                                   {member.bio}
                                 </div>
                               )}
@@ -445,7 +528,7 @@ export default function StaffList({
                           <div className="text-gray-900">
                             {member.email || "—"}
                           </div>
-                          <div className="text-gray-500">
+                          <div className="text-gray-600">
                             {member.phone || "—"}
                           </div>
                         </td>
@@ -464,13 +547,13 @@ export default function StaffList({
                                   </span>
                                 ))}
                               {member.specialties.length > 2 && (
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-gray-600">
                                   +{member.specialties.length - 2} more
                                 </span>
                               )}
                             </div>
                           ) : (
-                            <span className="text-sm text-gray-500">—</span>
+                            <span className="text-sm text-gray-600">—</span>
                           )}
                         </td>
                         <td className="px-6 py-4 text-sm">
@@ -480,7 +563,7 @@ export default function StaffList({
                                 {assignedServices.length} service
                                 {assignedServices.length !== 1 ? "s" : ""}
                               </span>
-                              <div className="text-xs text-gray-500 mt-1">
+                              <div className="text-xs text-gray-600 mt-1">
                                 {assignedServices
                                   .slice(0, 2)
                                   .map((s) => s.name)
@@ -490,7 +573,7 @@ export default function StaffList({
                               </div>
                             </div>
                           ) : (
-                            <span className="text-gray-500">None</span>
+                            <span className="text-gray-600">None</span>
                           )}
                         </td>
                         <td className="px-6 py-4">

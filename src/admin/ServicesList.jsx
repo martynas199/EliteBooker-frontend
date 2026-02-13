@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Search, Edit, Trash2, Plus } from "lucide-react";
 import Button from "../shared/components/ui/Button";
 import ConfirmDeleteModal from "../shared/components/forms/ConfirmDeleteModal";
@@ -93,17 +93,79 @@ export default function ServicesList({
     }).format(price);
   };
 
-  // Get the first variant's price or fallback to service.price
-  const getServicePrice = (service) => {
-    if (
-      service.variants &&
-      service.variants.length > 0 &&
-      service.variants[0].price
-    ) {
-      return service.variants[0].price;
+  const getServicePriceRange = (service) => {
+    const variantPrices = (service.variants || [])
+      .map((variant) => Number(variant.price))
+      .filter((price) => Number.isFinite(price) && price > 0);
+
+    if (variantPrices.length > 0) {
+      return {
+        min: Math.min(...variantPrices),
+        max: Math.max(...variantPrices),
+      };
     }
-    return service.price || 0;
+
+    const fallbackPrice = Number(service.price || 0);
+    return {
+      min: fallbackPrice,
+      max: fallbackPrice,
+    };
   };
+
+  const formatPriceRange = (service) => {
+    const { min, max } = getServicePriceRange(service);
+    if (!min && !max) return "—";
+    if (min === max) return formatPrice(min);
+    return `${formatPrice(min)} - ${formatPrice(max)}`;
+  };
+
+  const getServiceDurationRange = (service) => {
+    const variantDurations = (service.variants || [])
+      .map((variant) => Number(variant.durationMin))
+      .filter((duration) => Number.isFinite(duration) && duration > 0);
+
+    if (variantDurations.length > 0) {
+      return {
+        min: Math.min(...variantDurations),
+        max: Math.max(...variantDurations),
+      };
+    }
+
+    const fallbackDuration = Number(service.durationMin || 0);
+    return {
+      min: fallbackDuration,
+      max: fallbackDuration,
+    };
+  };
+
+  const formatDurationRange = (service) => {
+    const { min, max } = getServiceDurationRange(service);
+    if (!min && !max) return "—";
+    if (min === max) return `${min} min`;
+    return `${min}-${max} min`;
+  };
+
+  const serviceSummary = useMemo(() => {
+    const activeCount = services.filter((service) => service.active).length;
+    const inactiveCount = services.length - activeCount;
+
+    const servicePrices = services
+      .map((service) => getServicePriceRange(service).min)
+      .filter((price) => Number.isFinite(price) && price > 0);
+
+    const averagePrice =
+      servicePrices.length > 0
+        ? servicePrices.reduce((sum, price) => sum + price, 0) /
+          servicePrices.length
+        : 0;
+
+    return {
+      total: services.length,
+      active: activeCount,
+      inactive: inactiveCount,
+      averagePrice,
+    };
+  }, [services]);
 
   const pageAction = (
     <Button
@@ -187,6 +249,41 @@ export default function ServicesList({
             onClick={() => setShowCategoryDrawer(true)}
             className="px-4 py-3 text-sm rounded-lg border border-gray-300 hover:border-gray-900 transition-colors shadow-sm bg-white"
           />
+        </div>
+
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+              Total
+            </p>
+            <p className="mt-1 text-lg font-semibold text-gray-900">
+              {serviceSummary.total}
+            </p>
+          </div>
+          <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+              Active
+            </p>
+            <p className="mt-1 text-lg font-semibold text-green-700">
+              {serviceSummary.active}
+            </p>
+          </div>
+          <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+              Inactive
+            </p>
+            <p className="mt-1 text-lg font-semibold text-gray-700">
+              {serviceSummary.inactive}
+            </p>
+          </div>
+          <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+              Avg. Price
+            </p>
+            <p className="mt-1 text-lg font-semibold text-gray-900">
+              {formatPrice(serviceSummary.averagePrice)}
+            </p>
+          </div>
         </div>
 
         <div className="text-sm text-gray-600">
@@ -299,22 +396,18 @@ export default function ServicesList({
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span className="font-semibold text-gray-900">
-                        {formatPrice(getServicePrice(service))}
+                        {formatPriceRange(service)}
                       </span>
                     </div>
 
                     {/* Duration */}
-                    {(service.durationMin || service.variants?.[0]?.durationMin) && (
-                      <div className="flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <circle cx="12" cy="12" r="10" />
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 2" />
-                        </svg>
-                        <span>
-                          {service.durationMin || service.variants?.[0]?.durationMin} mins
-                        </span>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 2" />
+                      </svg>
+                      <span>{formatDurationRange(service)}</span>
+                    </div>
 
                     {/* Variants */}
                     {service.variants?.length > 0 && (
@@ -356,25 +449,25 @@ export default function ServicesList({
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
                   <tr>
-                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Service
                     </th>
-                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Category
                     </th>
-                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Price
                     </th>
-                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Duration
                     </th>
-                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Variants
                     </th>
-                    <th className="px-4 py-2.5 text-left text-[10px] font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-4 py-2.5 text-right text-[10px] font-bold text-gray-700 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -400,7 +493,7 @@ export default function ServicesList({
                               {service.name}
                             </div>
                             {service.description && (
-                              <div className="text-xs text-gray-500 line-clamp-1">
+                              <div className="text-xs text-gray-600 line-clamp-1">
                                 {service.description}
                               </div>
                             )}
@@ -411,15 +504,10 @@ export default function ServicesList({
                         {service.category || "—"}
                       </td>
                       <td className="px-4 py-3 text-xs text-gray-900">
-                        {formatPrice(getServicePrice(service))}
+                        {formatPriceRange(service)}
                       </td>
                       <td className="px-4 py-3 text-xs text-gray-900">
-                        {service.durationMin ||
-                          service.variants?.[0]?.durationMin ||
-                          "—"}
-                        {(service.durationMin ||
-                          service.variants?.[0]?.durationMin) &&
-                          " min"}
+                        {formatDurationRange(service)}
                       </td>
                       <td className="px-4 py-3 text-xs text-gray-900">
                         {service.variants?.length > 0 ? (
@@ -433,7 +521,7 @@ export default function ServicesList({
                       <td className="px-4 py-3">
                         <div className="flex flex-wrap gap-1.5">
                           <span
-                            className={`inline-flex px-1.5 py-0.5 text-[10px] font-semibold rounded-full ${
+                            className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${
                               service.active
                                 ? "bg-green-100 text-green-800"
                                 : "bg-gray-100 text-gray-800"
@@ -443,8 +531,8 @@ export default function ServicesList({
                           </span>
                           {service.fixedTimeSlots &&
                             service.fixedTimeSlots.length > 0 && (
-                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold rounded-full bg-purple-100 text-purple-800">
-                                🕐 Fixed Times
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                                Fixed Times
                               </span>
                             )}
                         </div>

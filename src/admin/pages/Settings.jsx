@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api } from "../../shared/lib/apiClient";
 import Button from "../../shared/components/ui/Button";
 import Modal from "../../shared/components/ui/Modal";
@@ -7,6 +7,16 @@ import toast from "react-hot-toast";
 import AdminPageShell, {
   AdminSectionCard,
 } from "../components/AdminPageShell";
+
+const DAY_NAMES = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 export default function Settings() {
   const [formData, setFormData] = useState({
@@ -30,6 +40,9 @@ export default function Settings() {
   const [editWeeklyModalOpen, setEditWeeklyModalOpen] = useState(false);
   const [editingDayOfWeek, setEditingDayOfWeek] = useState(null);
   const [weeklyDayHours, setWeeklyDayHours] = useState([]);
+
+  const inputClass =
+    "w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
 
   useEffect(() => {
     loadSettings();
@@ -266,6 +279,23 @@ export default function Settings() {
     }
   };
 
+  const workingHoursSummary = useMemo(() => {
+    const daySlots = DAY_NAMES.map((_, dayOfWeek) =>
+      workingHours.filter((wh) => wh.dayOfWeek === dayOfWeek)
+    );
+    const openDays = daySlots.filter((slots) => slots.length > 0).length;
+    const totalTimeSlots = daySlots.reduce(
+      (sum, slots) => sum + slots.length,
+      0
+    );
+
+    return {
+      openDays,
+      closedDays: DAY_NAMES.length - openDays,
+      totalTimeSlots,
+    };
+  }, [workingHours]);
+
   return (
     <AdminPageShell
       title="Contact Page / Business Details"
@@ -273,7 +303,9 @@ export default function Settings() {
       maxWidth="md"
     >
       {loading ? (
-        <div className="text-center py-8 text-gray-500">Loading...</div>
+        <div className="rounded-xl border border-gray-200 bg-white py-8 text-center text-sm font-medium text-gray-600 shadow-sm">
+          Loading settings...
+        </div>
       ) : (
         <div className="space-y-6">
           {/* Contact Information Form */}
@@ -310,7 +342,24 @@ export default function Settings() {
                   value={formData.salonName}
                   onChange={(e) => handleChange("salonName", e.target.value)}
                   placeholder="e.g., Your Business Name"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                  className={inputClass}
+                  style={{ fontSize: "16px" }}
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-700">
+                  Business Description
+                </label>
+                <textarea
+                  value={formData.salonDescription}
+                  onChange={(e) =>
+                    handleChange("salonDescription", e.target.value)
+                  }
+                  placeholder="Describe your business in a few sentences..."
+                  rows={3}
+                  className={`${inputClass} resize-none`}
+                  style={{ fontSize: "16px" }}
                 />
               </div>
 
@@ -333,9 +382,10 @@ export default function Settings() {
                       }))
                     }
                     placeholder="Street Address"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                    className={inputClass}
+                    style={{ fontSize: "16px" }}
                   />
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <input
                       type="text"
                       value={formData.salonAddress.city}
@@ -349,7 +399,8 @@ export default function Settings() {
                         }))
                       }
                       placeholder="City"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                      className={inputClass}
+                      style={{ fontSize: "16px" }}
                     />
                     <input
                       type="text"
@@ -364,7 +415,8 @@ export default function Settings() {
                         }))
                       }
                       placeholder="Postal Code"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                      className={inputClass}
+                      style={{ fontSize: "16px" }}
                     />
                   </div>
                   <input
@@ -380,7 +432,8 @@ export default function Settings() {
                       }))
                     }
                     placeholder="Country"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                    className={inputClass}
+                    style={{ fontSize: "16px" }}
                   />
                 </div>
               </div>
@@ -396,7 +449,8 @@ export default function Settings() {
                     value={formData.salonPhone}
                     onChange={(e) => handleChange("salonPhone", e.target.value)}
                     placeholder="e.g., +44 20 1234 5678"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                    className={inputClass}
+                    style={{ fontSize: "16px" }}
                   />
                 </div>
                 <div>
@@ -408,7 +462,8 @@ export default function Settings() {
                     value={formData.salonEmail}
                     onChange={(e) => handleChange("salonEmail", e.target.value)}
                     placeholder="e.g., info@salon.com"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                    className={inputClass}
+                    style={{ fontSize: "16px" }}
                   />
                 </div>
               </div>
@@ -438,30 +493,49 @@ export default function Settings() {
               displayed to customers on the website.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {[
-                "Sunday",
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday",
-              ].map((dayName, dayOfWeek) => {
+            <div className="mb-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+              <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+                  Open Days
+                </p>
+                <p className="mt-1 text-lg font-semibold text-green-700">
+                  {workingHoursSummary.openDays}
+                </p>
+              </div>
+              <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+                  Closed Days
+                </p>
+                <p className="mt-1 text-lg font-semibold text-gray-700">
+                  {workingHoursSummary.closedDays}
+                </p>
+              </div>
+              <div className="rounded-lg border border-gray-200 bg-white px-3 py-2.5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+                  Time Slots
+                </p>
+                <p className="mt-1 text-lg font-semibold text-brand-700">
+                  {workingHoursSummary.totalTimeSlots}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+              {DAY_NAMES.map((dayName, dayOfWeek) => {
                 const dayHours =
                   workingHours.filter((wh) => wh.dayOfWeek === dayOfWeek) || [];
 
                 return (
                   <div
                     key={dayOfWeek}
-                    className="flex items-center justify-between py-2 px-3 rounded border hover:bg-gray-50 gap-2"
+                    className="flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2.5 shadow-sm transition-colors hover:bg-gray-50"
                   >
                     <span className="font-medium text-gray-700 w-20 sm:w-28 text-sm sm:text-base">
                       {dayName}
                     </span>
                     <div className="flex-1 min-w-0">
                       {dayHours.length === 0 ? (
-                        <span className="text-gray-400 text-xs sm:text-sm">
+                        <span className="text-gray-600 text-xs sm:text-sm">
                           Not working
                         </span>
                       ) : (
@@ -469,7 +543,7 @@ export default function Settings() {
                           {dayHours.map((h, idx) => (
                             <span
                               key={idx}
-                              className="text-[10px] sm:text-xs bg-green-50 text-green-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded border border-green-200 whitespace-nowrap"
+                              className="rounded border border-green-200 bg-green-50 px-2 py-1 text-xs font-medium text-green-700 whitespace-nowrap"
                             >
                               {h.start} - {h.end}
                             </span>
@@ -479,7 +553,7 @@ export default function Settings() {
                     </div>
                     <button
                       onClick={() => openWeeklyEditModal(dayOfWeek)}
-                      className="ml-2 px-2 sm:px-3 py-1 text-xs sm:text-sm text-brand-600 hover:text-brand-700 hover:bg-brand-50 rounded border border-brand-200 transition-colors whitespace-nowrap flex-shrink-0"
+                      className="ml-2 rounded border border-brand-200 px-2.5 py-1 text-xs font-medium text-brand-600 transition-colors hover:bg-brand-50 hover:text-brand-700 sm:px-3 sm:text-sm whitespace-nowrap flex-shrink-0"
                     >
                       Edit
                     </button>
@@ -492,10 +566,10 @@ export default function Settings() {
           {/* Message */}
           {message.text && (
             <div
-              className={`p-4 rounded-lg ${
+              className={`rounded-lg border p-4 text-sm font-medium ${
                 message.type === "success"
-                  ? "bg-green-50 text-green-800 border border-green-200"
-                  : "bg-red-50 text-red-800 border border-red-200"
+                  ? "bg-green-50 text-green-800 border-green-200"
+                  : "bg-red-50 text-red-800 border-red-200"
               }`}
             >
               {message.text}
@@ -503,18 +577,26 @@ export default function Settings() {
           )}
 
           {/* Save Button */}
-          <div className="flex justify-end gap-3">
-            <Button onClick={loadSettings} variant="outline" disabled={saving}>
-              Reset
-            </Button>
-            <Button
-              onClick={handleSave}
-              disabled={saving}
-              loading={saving}
-              variant="brand"
-            >
-              Save Settings
-            </Button>
+          <div className="sticky bottom-0 z-20 -mx-1 border-t border-gray-200 bg-white/95 px-1 pb-[max(env(safe-area-inset-bottom),0.6rem)] pt-3 shadow-[0_-6px_16px_rgba(15,23,42,0.08)] backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-0 sm:shadow-none">
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
+              <Button
+                onClick={loadSettings}
+                variant="outline"
+                disabled={saving}
+                className="w-full sm:w-auto"
+              >
+                Reset
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={saving}
+                loading={saving}
+                variant="brand"
+                className="w-full sm:w-auto"
+              >
+                Save Settings
+              </Button>
+            </div>
           </div>
         </div>
       )}
@@ -526,22 +608,12 @@ export default function Settings() {
         variant="dashboard"
         title={
           editingDayOfWeek !== null
-            ? `Edit ${
-                [
-                  "Sunday",
-                  "Monday",
-                  "Tuesday",
-                  "Wednesday",
-                  "Thursday",
-                  "Friday",
-                  "Saturday",
-                ][editingDayOfWeek]
-              } Hours`
+            ? `Edit ${DAY_NAMES[editingDayOfWeek]} Hours`
             : "Edit Hours"
         }
       >
         <div className="space-y-4">
-          <div className="bg-blue-50 border border-blue-200 rounded p-3">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
             <p className="text-sm text-blue-800">
               <strong>Business Hours:</strong> These hours are displayed to
               customers on your website.
@@ -562,17 +634,19 @@ export default function Settings() {
                   <input
                     type="time"
                     id={`salon-start-${index}`}
-                    className="border rounded px-3 py-2 w-full"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                    style={{ fontSize: "16px" }}
                     value={slot.start}
                     onChange={(e) =>
                       updateWeeklyTimeSlot(index, "start", e.target.value)
                     }
                   />
-                  <span className="text-gray-500">to</span>
+                  <span className="text-gray-600">to</span>
                   <input
                     type="time"
                     id={`salon-end-${index}`}
-                    className="border rounded px-3 py-2 w-full"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                    style={{ fontSize: "16px" }}
                     value={slot.end}
                     onChange={(e) =>
                       updateWeeklyTimeSlot(index, "end", e.target.value)
@@ -584,7 +658,7 @@ export default function Settings() {
                 <button
                   type="button"
                   onClick={() => removeWeeklyTimeSlot(index)}
-                  className="px-2 sm:px-3 py-2 text-xs sm:text-sm text-red-600 hover:bg-red-50 rounded border border-red-200"
+                  className="rounded border border-red-200 px-2 sm:px-3 py-2 text-xs sm:text-sm text-red-700 transition-colors hover:bg-red-50"
                 >
                   Remove
                 </button>
@@ -595,7 +669,7 @@ export default function Settings() {
           <button
             type="button"
             onClick={addWeeklyTimeSlot}
-            className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm text-brand-600 border border-brand-300 rounded hover:bg-brand-50"
+            className="w-full rounded-lg border border-brand-300 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-brand-600 transition-colors hover:bg-brand-50"
           >
             + Add Another Time Slot
           </button>
@@ -604,7 +678,7 @@ export default function Settings() {
             <button
               type="button"
               onClick={clearWeeklySchedule}
-              className="px-3 sm:px-4 py-2 text-red-600 hover:bg-red-50 rounded text-xs sm:text-sm order-2 sm:order-1"
+              className="order-2 rounded px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-red-700 transition-colors hover:bg-red-50 sm:order-1"
             >
               Clear Hours
             </button>
