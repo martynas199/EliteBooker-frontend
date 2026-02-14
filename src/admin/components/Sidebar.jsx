@@ -171,13 +171,20 @@ const SidebarItem = ({
 
   const hasItems = item.items && item.items.length > 0;
   const Icon = iconMap[item.icon];
+  const matchesPath = (targetPath) => {
+    if (!targetPath) return false;
+    const [pathname, hash = ""] = targetPath.split("#");
+    if (location.pathname !== pathname) return false;
+    if (hash) return location.hash === `#${hash}`;
+    return true;
+  };
 
   // Check if current path matches this item
-  const isActive = item.path && location.pathname === item.path;
+  const isActive = matchesPath(item.path);
 
   // Check if any nested item is active
   const hasActiveChild =
-    hasItems && item.items.some((child) => child.path === location.pathname);
+    hasItems && item.items.some((child) => matchesPath(child.path));
 
   if (hasItems) {
     // Mobile: Clean minimal design

@@ -30,6 +30,14 @@ export default function Settings() {
     },
     salonPhone: "",
     salonEmail: "",
+    socialLinks: {
+      instagram: "",
+      facebook: "",
+      tiktok: "",
+      youtube: "",
+      linkedin: "",
+      x: "",
+    },
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -49,6 +57,13 @@ export default function Settings() {
     loadWorkingHours();
   }, []);
 
+  const normalizeSocialLink = (value) => {
+    const trimmedValue = String(value || "").trim();
+    if (!trimmedValue) return "";
+    if (/^https?:\/\//i.test(trimmedValue)) return trimmedValue;
+    return `https://${trimmedValue}`;
+  };
+
   const loadSettings = async () => {
     setLoading(true);
     try {
@@ -65,6 +80,14 @@ export default function Settings() {
         },
         salonPhone: settings.salonPhone || "",
         salonEmail: settings.salonEmail || "",
+        socialLinks: {
+          instagram: settings.socialLinks?.instagram || "",
+          facebook: settings.socialLinks?.facebook || "",
+          tiktok: settings.socialLinks?.tiktok || "",
+          youtube: settings.socialLinks?.youtube || "",
+          linkedin: settings.socialLinks?.linkedin || "",
+          x: settings.socialLinks?.x || "",
+        },
       });
 
       // Load working hours from settings
@@ -246,6 +269,16 @@ export default function Settings() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleSocialLinkChange = (platform, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      socialLinks: {
+        ...prev.socialLinks,
+        [platform]: value,
+      },
+    }));
+  };
+
   const handleSave = async () => {
     setSaving(true);
     setMessage({ type: "", text: "" });
@@ -258,6 +291,14 @@ export default function Settings() {
         salonAddress: formData.salonAddress,
         salonPhone: formData.salonPhone,
         salonEmail: formData.salonEmail,
+        socialLinks: {
+          instagram: normalizeSocialLink(formData.socialLinks.instagram),
+          facebook: normalizeSocialLink(formData.socialLinks.facebook),
+          tiktok: normalizeSocialLink(formData.socialLinks.tiktok),
+          youtube: normalizeSocialLink(formData.socialLinks.youtube),
+          linkedin: normalizeSocialLink(formData.socialLinks.linkedin),
+          x: normalizeSocialLink(formData.socialLinks.x),
+        },
       });
 
       setMessage({
@@ -467,6 +508,59 @@ export default function Settings() {
                   />
                 </div>
               </div>
+            </div>
+          </AdminSectionCard>
+
+          <AdminSectionCard id="social-links">
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2h-2m-4-4v4m0-4v-4m0 4h-4m4 0h4M3 10a2 2 0 012-2h2"
+                />
+              </svg>
+              <span>Social Media Links</span>
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              These links are displayed on your public footer. Add full URLs or
+              usernames (we&apos;ll auto-prefix with https://).
+            </p>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {[
+                { key: "instagram", label: "Instagram" },
+                { key: "facebook", label: "Facebook" },
+                { key: "tiktok", label: "TikTok" },
+                { key: "youtube", label: "YouTube" },
+                { key: "linkedin", label: "LinkedIn" },
+                { key: "x", label: "X (Twitter)" },
+              ].map((socialField) => (
+                <div key={socialField.key}>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {socialField.label}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.socialLinks[socialField.key]}
+                    onChange={(event) =>
+                      handleSocialLinkChange(
+                        socialField.key,
+                        event.target.value
+                      )
+                    }
+                    placeholder={`https://${socialField.key}.com/...`}
+                    className={inputClass}
+                    style={{ fontSize: "16px" }}
+                  />
+                </div>
+              ))}
             </div>
           </AdminSectionCard>
 

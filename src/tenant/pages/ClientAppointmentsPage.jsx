@@ -138,8 +138,8 @@ export default function ClientAppointmentsPage() {
             );
             const data = response.data.data;
             requirements[serviceId] = {
-              required: data?.required || false,
-              signed: !data?.required || false, // If not required, consider it "complete"
+              required: Boolean(data?.required),
+              signed: Boolean(data?.signed),
             };
           } catch (error) {
             console.error(

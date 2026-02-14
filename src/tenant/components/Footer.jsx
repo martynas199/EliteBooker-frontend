@@ -24,6 +24,18 @@ export default function TenantFooter() {
     selectedServicesCount > 0
       ? "calc(7rem + env(safe-area-inset-bottom))"
       : "max(env(safe-area-inset-bottom), 1rem)";
+  const socialLinks = settings?.socialLinks || {};
+  const socialPlatforms = [
+    { key: "instagram", label: "Instagram" },
+    { key: "facebook", label: "Facebook" },
+    { key: "tiktok", label: "TikTok" },
+    { key: "youtube", label: "YouTube" },
+    { key: "linkedin", label: "LinkedIn" },
+    { key: "x", label: "X" },
+  ];
+  const activeSocialLinks = socialPlatforms.filter(
+    (platform) => typeof socialLinks[platform.key] === "string" && socialLinks[platform.key].trim()
+  );
 
   const formattedAddress = salonAddress
     ? [
@@ -246,6 +258,27 @@ export default function TenantFooter() {
                 </>
               )}
             </ul>
+
+            {activeSocialLinks.length > 0 && (
+              <div className="mt-8">
+                <h4 className="mb-3 text-sm font-semibold text-gray-900">
+                  Follow Us
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {activeSocialLinks.map((platform) => (
+                    <a
+                      key={platform.key}
+                      href={socialLinks[platform.key]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:border-gray-500 hover:text-gray-900"
+                    >
+                      {platform.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
