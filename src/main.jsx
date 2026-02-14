@@ -16,12 +16,16 @@ import { LanguageProvider } from "./shared/contexts/LanguageContext";
 import { TenantProvider } from "./shared/contexts/TenantContext";
 import ToastProvider from "./shared/components/ui/ToastProvider";
 import { queryClient } from "./shared/lib/queryClient";
+import { initSentry } from "./shared/lib/sentry";
 import "./styles.css";
 import {
   initializeCapacitor,
   addSafeAreaSupport,
   disablePullToRefresh,
 } from "./capacitor/appInit";
+
+// Initialize monitoring as early as possible
+initSentry();
 
 // Initialize Capacitor for mobile apps
 initializeCapacitor();

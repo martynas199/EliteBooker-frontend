@@ -39,24 +39,20 @@ export default function MenuPage() {
 
   const customerLinks = isAuthenticated
     ? [
-        { label: "Features", href: "/features" },
-        { label: "Compare platforms", href: "/compare" },
-        { label: "Local solutions", href: "/solutions" },
-        { label: "Pricing", href: "/pricing" },
         { label: "Find a business", href: "/search" },
         { label: "Help and support", href: "/help" },
       ]
     : [
         { label: "Log in or sign up", href: "/client/login", primary: true },
-        { label: "Features", href: "/features" },
-        { label: "Compare platforms", href: "/compare" },
-        { label: "Local solutions", href: "/solutions" },
-        { label: "Pricing", href: "/pricing" },
         { label: "Find a business", href: "/search" },
         { label: "Help and support", href: "/help" },
       ];
 
   const businessLinks = [
+    { label: "Features", href: "/features" },
+    { label: "Compare platforms", href: "/compare" },
+    { label: "Local solutions", href: "/solutions" },
+    { label: "Pricing", href: "/pricing" },
     { label: "List your business", href: "/signup" },
     { label: "Business log in", href: "/admin/login" },
     { label: "Join referral program", href: "/join-referral-program" },
@@ -179,35 +175,28 @@ export default function MenuPage() {
                         Find a business
                       </button>
                       <button
-                        onClick={() => navigate("/features")}
-                        className={itemClass}
-                      >
-                        Features
-                      </button>
-                      <button
-                        onClick={() => navigate("/compare")}
-                        className={itemClass}
-                      >
-                        Compare platforms
-                      </button>
-                      <button
-                        onClick={() => navigate("/solutions")}
-                        className={itemClass}
-                      >
-                        Local solutions
-                      </button>
-                      <button
-                        onClick={() => navigate("/pricing")}
-                        className={itemClass}
-                      >
-                        Pricing
-                      </button>
-                      <button
                         onClick={() => navigate("/help")}
                         className={itemClass}
                       >
                         Help and support
                       </button>
+                    </div>
+                  </div>
+
+                  <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      For Businesses
+                    </p>
+                    <div className="space-y-2">
+                      {businessLinks.map((link) => (
+                        <button
+                          key={link.label}
+                          onClick={() => navigate(link.href)}
+                          className={itemClass}
+                        >
+                          {link.label}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </>

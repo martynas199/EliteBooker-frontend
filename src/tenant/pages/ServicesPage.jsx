@@ -13,6 +13,7 @@ import SEOHead from "../../shared/components/seo/SEOHead";
 import PageTransition from "../../shared/components/ui/PageTransition";
 import ServiceCard from "../components/ServiceCard";
 import ServiceStackBar from "../components/ServiceStackBar";
+import { getEffectiveServicePrice } from "../utils/servicePricing";
 import toast from "react-hot-toast";
 
 export default function ServicesPage() {
@@ -93,6 +94,11 @@ export default function ServicesPage() {
   });
 
   const handleServiceClick = (service, selectedVariant) => {
+    const effectivePrice = getEffectiveServicePrice({
+      service,
+      variant: selectedVariant,
+    });
+
     // Get specialist ID from service
     const serviceSpecialistId =
       service.primaryBeauticianId?._id ||
@@ -125,7 +131,7 @@ export default function ServicesPage() {
         serviceId: service._id,
         serviceName: service.name,
         variantName: selectedVariant.name,
-        price: selectedVariant.price,
+        price: effectivePrice,
         durationMin: selectedVariant.durationMin,
         bufferBeforeMin: service.bufferBeforeMin || 0,
         bufferAfterMin: service.bufferAfterMin || 0,

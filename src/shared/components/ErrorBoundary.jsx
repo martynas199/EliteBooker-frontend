@@ -1,4 +1,5 @@
 import { Component } from "react";
+import * as Sentry from "@sentry/react";
 import Button from "./ui/Button";
 
 /**
@@ -19,7 +20,14 @@ export default class ErrorBoundary extends Component {
     console.error("ErrorBoundary caught an error:", error, errorInfo);
     this.setState({ error, errorInfo });
 
-    // TODO: Send error to monitoring service (Sentry, LogRocket, etc.)
+    Sentry.captureException(error, {
+      extra: {
+        componentStack: errorInfo?.componentStack,
+      },
+      tags: {
+        boundary: "app-error-boundary",
+      },
+    });
   }
 
   handleReload = () => {

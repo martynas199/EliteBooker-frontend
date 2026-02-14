@@ -93,26 +93,47 @@ export default function ClientAppointmentsPage() {
 
   const checkConsentRequirements = async (bookings, clientId = null) => {
     try {
-      // Get unique service IDs
-      const serviceIds = [
-        ...new Set(bookings.map((b) => b.serviceId?._id).filter(Boolean)),
-      ];
+      // Get unique service IDs and related tenant IDs
+      const serviceTenantPairs = Array.from(
+        bookings.reduce((acc, booking) => {
+          const serviceId = booking.serviceId?._id;
+          const tenantId = booking.tenantId?._id || booking.tenantId;
+
+          if (!serviceId) {
+            return acc;
+          }
+
+          if (!acc.has(serviceId)) {
+            acc.set(serviceId, tenantId || null);
+          }
+
+          return acc;
+        }, new Map())
+      );
 
       // Use clientId from parameter, or from client context, or from first booking
       const effectiveClientId = clientId || client?.id || bookings[0]?.clientId;
 
-      if (serviceIds.length === 0) return;
+      if (serviceTenantPairs.length === 0) return;
       if (!effectiveClientId) return;
 
       // Check each service for consent requirements
       const requirements = {};
       await Promise.all(
-        serviceIds.map(async (serviceId) => {
+        serviceTenantPairs.map(async ([serviceId, tenantId]) => {
           try {
+            const params = {
+              clientId: effectiveClientId,
+            };
+
+            if (tenantId) {
+              params.tenantId = tenantId;
+            }
+
             const response = await api.get(
               `/consent-templates/check-required/${serviceId}`,
               {
-                params: { clientId: effectiveClientId },
+                params,
               }
             );
             const data = response.data.data;
@@ -598,6 +619,8 @@ export default function ClientAppointmentsPage() {
                                     serviceId: booking.serviceId._id,
                                     serviceName: booking.serviceId.name,
                                     businessName: booking.tenantId?.name,
+                                    tenantId:
+                                      booking.tenantId?._id || booking.tenantId,
                                   },
                                 })
                               }

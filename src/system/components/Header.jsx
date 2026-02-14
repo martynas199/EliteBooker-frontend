@@ -33,10 +33,6 @@ export default function Header() {
 
   const customerLinks = isAuthenticated
     ? [
-        { label: "Features", href: "/features" },
-        { label: "Compare platforms", href: "/compare" },
-        { label: "Local solutions", href: "/solutions" },
-        { label: "Pricing", href: "/pricing" },
         {
           label: client?.name || "My Profile",
           onClick: () => navigate("/client/profile"),
@@ -44,6 +40,8 @@ export default function Header() {
         },
         { label: "My Bookings", onClick: () => navigate("/client/profile") },
         { label: "Settings", onClick: () => navigate("/client/profile") },
+        { label: "Find a business", href: "/search" },
+        { label: "Help and support", href: "/help" },
         {
           label: "Log out",
           onClick: async () => {
@@ -59,15 +57,15 @@ export default function Header() {
           onClick: handleLogin,
           primary: true,
         },
-        { label: "Features", href: "/features" },
-        { label: "Compare platforms", href: "/compare" },
-        { label: "Local solutions", href: "/solutions" },
-        { label: "Pricing", href: "/pricing" },
         { label: "Find a business", href: "/search" },
         { label: "Help and support", href: "/help" },
       ];
 
   const businessLinks = [
+    { label: "Features", href: "/features" },
+    { label: "Compare platforms", href: "/compare" },
+    { label: "Local solutions", href: "/solutions" },
+    { label: "Pricing", href: "/pricing" },
     { label: "List your business", href: "/signup" },
     { label: "Business log in", href: "/admin/login" },
     { label: "Join referral program", href: "/join-referral-program" },

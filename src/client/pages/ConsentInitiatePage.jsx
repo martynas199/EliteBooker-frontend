@@ -31,7 +31,7 @@ export default function ConsentInitiatePage() {
     signature: null,
   });
 
-  const { bookingId, serviceId, serviceName, businessName } =
+  const { bookingId, serviceId, serviceName, businessName, tenantId } =
     location.state || {};
 
   useEffect(() => {
@@ -49,6 +49,7 @@ export default function ConsentInitiatePage() {
     try {
       setLoading(true);
       setLoadingError(null);
+      let resolvedTenantId = tenantId || null;
 
       // Fetch booking to get client ID
       if (bookingId) {
@@ -59,9 +60,12 @@ export default function ConsentInitiatePage() {
         if (booking?.clientId) {
           setClientId(booking.clientId);
         }
+        if (booking?.tenantId) {
+          resolvedTenantId = booking.tenantId?._id || booking.tenantId;
+        }
       }
 
-      await fetchConsentTemplate();
+      await fetchConsentTemplate(resolvedTenantId);
     } catch (error) {
       console.error("Error fetching data:", error);
       setLoadingError("Failed to load consent form");
@@ -69,7 +73,7 @@ export default function ConsentInitiatePage() {
     }
   };
 
-  const fetchConsentTemplate = async () => {
+  const fetchConsentTemplate = async (targetTenantId = null) => {
     try {
       setLoading(true);
       setLoadingError(null);
@@ -79,7 +83,14 @@ export default function ConsentInitiatePage() {
       console.log("📍 Full URL:", url);
 
       // Fetch the active consent template for this service
-      const response = await api.get(url);
+      const params = {};
+      if (targetTenantId) {
+        params.tenantId = targetTenantId;
+      }
+
+      const response = await api.get(url, {
+        params,
+      });
 
       console.log("✅ Consent template response:", response.data);
 

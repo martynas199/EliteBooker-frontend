@@ -20,6 +20,7 @@ import LocationServicesView from "../components/LocationServicesView";
 import GiftCardModal from "../../shared/components/modals/GiftCardModal";
 import LoginDrawer from "../../shared/components/modals/LoginDrawer";
 import ServiceStackBar from "../components/ServiceStackBar";
+import { getEffectiveServicePrice } from "../utils/servicePricing";
 import toast from "react-hot-toast";
 
 /**
@@ -311,6 +312,8 @@ export default function SalonLandingLuxury() {
 
   // Handlers
   const handleServiceClick = (service, variant) => {
+    const effectivePrice = getEffectiveServicePrice({ service, variant });
+
     // Get specialist ID from service
     const serviceSpecialistId =
       service.primaryBeauticianId?._id ||
@@ -343,7 +346,7 @@ export default function SalonLandingLuxury() {
         serviceId: service._id,
         serviceName: service.name,
         variantName: variant.name,
-        price: variant.price,
+        price: effectivePrice,
         durationMin: variant.durationMin,
         bufferBeforeMin: service.bufferBeforeMin || 0,
         bufferAfterMin: service.bufferAfterMin || 0,

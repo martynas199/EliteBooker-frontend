@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import eliteLogo from "../../assets/elite.png";
 import { setAuth } from "../../shared/state/authSlice";
 import { useAdminLogin } from "../../shared/hooks/useAuthQueries";
+import SentryErrorButton from "../../shared/components/dev/SentryErrorButton";
 
 const inputClassName =
   "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200 disabled:cursor-not-allowed disabled:bg-slate-100";
@@ -191,6 +192,12 @@ export default function AdminLogin() {
             <Lock className="h-4 w-4" />
             Secure encrypted connection
           </p>
+
+          {import.meta.env.DEV && (
+            <div className="mt-4 flex justify-center">
+              <SentryErrorButton />
+            </div>
+          )}
         </motion.div>
       </div>
     </div>
