@@ -50,12 +50,33 @@ export default function ComparePage() {
     { name: "Compare", url: "/compare" },
   ];
 
+  const comparePageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Compare Elite Booker",
+    description:
+      "Compare Elite Booker with Fresha and Treatwell using UK pricing and feature breakdowns.",
+    url: "https://www.elitebooker.co.uk/compare",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+    about: [
+      {
+        "@type": "Thing",
+        name: "Booking software comparison",
+      },
+    ],
+  };
+
   return (
     <>
       <SEOHead
         title="Compare Elite Booker"
         description="Compare Elite Booker against Fresha and Treatwell with clear UK pricing and feature breakdowns."
         canonical="https://www.elitebooker.co.uk/compare"
+        schema={comparePageSchema}
       />
       <BreadcrumbSchema items={breadcrumbs} />
 
