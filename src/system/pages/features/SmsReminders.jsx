@@ -126,6 +126,36 @@ export default function SmsReminders() {
     },
   ];
 
+  const smsRemindersPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "SMS Appointment Reminders",
+    description:
+      "Automated SMS reminders for UK salons with one-click confirmations and lower no-show rates.",
+    url: "https://www.elitebooker.co.uk/features/sms-reminders",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+  };
+
+  const smsRemindersServiceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "SMS appointment reminder automation",
+    provider: {
+      "@type": "Organization",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+    areaServed: "GB",
+    audience: {
+      "@type": "BusinessAudience",
+      audienceType: "Beauty salons and barbers",
+    },
+  };
+
   return (
     <>
       <SEOHead
@@ -133,6 +163,7 @@ export default function SmsReminders() {
         description="Automated SMS reminders for UK salons. 98% open rate, one-click confirmations, reduce no-shows by 70%. £2.99/month unlimited. Try free today."
         keywords="SMS appointment reminders UK, automated SMS reminders salon, appointment confirmation SMS, reduce no-shows SMS, beauty salon text reminders"
         canonical="https://www.elitebooker.co.uk/features/sms-reminders"
+        schema={[smsRemindersPageSchema, smsRemindersServiceSchema]}
       />
       <Header />
 

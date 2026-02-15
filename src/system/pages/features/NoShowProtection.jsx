@@ -54,6 +54,36 @@ export default function NoShowProtection() {
     },
   ];
 
+  const noShowProtectionPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "No-Show Protection with Deposits",
+    description:
+      "Deposit and cancellation policy workflows for UK salons to reduce no-shows and protect revenue.",
+    url: "https://www.elitebooker.co.uk/features/no-show-protection",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+  };
+
+  const noShowProtectionServiceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "No-show protection and deposits",
+    provider: {
+      "@type": "Organization",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+    areaServed: "GB",
+    audience: {
+      "@type": "BusinessAudience",
+      audienceType: "Salon and barbershop owners",
+    },
+  };
+
   return (
     <>
       <SEOHead
@@ -61,6 +91,7 @@ export default function NoShowProtection() {
         description="Automated deposit collection for UK salons. Reduce no-shows by 85%. Set custom policies, instant Stripe payments, automatic refunds. Protect your revenue."
         keywords="deposit booking system, no show protection salon, automated deposits, cancellation policy software, salon deposit management UK"
         canonical="https://www.elitebooker.co.uk/features/no-show-protection"
+        schema={[noShowProtectionPageSchema, noShowProtectionServiceSchema]}
       />
       <Header />
 

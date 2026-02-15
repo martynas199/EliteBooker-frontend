@@ -57,6 +57,36 @@ export default function LashTechnicians() {
     { name: "Lash Technicians", url: "/industries/lash-technicians" },
   ];
 
+  const lashTechniciansPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Lash Technician Booking Software UK",
+    description:
+      "Booking software for UK lash artists with online booking, deposits, reminders, and patch test tracking.",
+    url: "https://www.elitebooker.co.uk/industries/lash-technicians",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+  };
+
+  const lashTechniciansServiceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Booking software for lash technicians",
+    provider: {
+      "@type": "Organization",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+    areaServed: "GB",
+    audience: {
+      "@type": "BusinessAudience",
+      audienceType: "Lash technicians",
+    },
+  };
+
   return (
     <>
       <SEOHead
@@ -64,6 +94,7 @@ export default function LashTechnicians() {
         description="Booking system built for lash techs. Online scheduling, deposit protection, client reminders & patch test tracking. Trusted by UK lash artists."
         keywords="lash technician booking software UK, lash booking system, online booking for lash artists, lash appointment software, mobile lash booking app"
         canonical="https://www.elitebooker.co.uk/industries/lash-technicians"
+        schema={[lashTechniciansPageSchema, lashTechniciansServiceSchema]}
       />
       <Header />
 

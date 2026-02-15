@@ -82,6 +82,34 @@ export default function PricingPage() {
     { name: "Pricing", url: "/pricing" },
   ];
 
+  const pricingPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Elite Booker Pricing",
+    description:
+      "Simple pricing for UK salons with free and paid plans, no commission, and no long-term contracts.",
+    url: "https://www.elitebooker.co.uk/pricing",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+  };
+
+  const pricingSoftwareSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Elite Booker",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "GBP",
+      lowPrice: "0",
+      highPrice: "49.99",
+    },
+  };
+
   const renderCell = (value, isHighlighted = false, compact = false) => {
     if (value === true) {
       return (
@@ -116,6 +144,7 @@ export default function PricingPage() {
         description="Simple pricing for UK salons. Free Basic plan forever. Professional GBP 9.99/month. Enterprise GBP 49.99/month. No commission and no contracts."
         keywords="booking system pricing UK, salon software cost, appointment scheduling pricing, beauty booking software price, zero commission booking"
         canonical="https://www.elitebooker.co.uk/pricing"
+        schema={[pricingPageSchema, pricingSoftwareSchema]}
       />
       <Header />
 

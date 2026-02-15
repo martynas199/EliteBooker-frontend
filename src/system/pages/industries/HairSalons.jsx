@@ -51,12 +51,43 @@ export default function HairSalons() {
     { name: "Hair Salons", url: "/industries/hair-salons" },
   ];
 
+  const hairSalonsPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Salon Management Software UK",
+    description:
+      "All-in-one software for UK hair salons with booking, staff scheduling, POS, and reporting.",
+    url: "https://www.elitebooker.co.uk/industries/hair-salons",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+  };
+
+  const hairSalonsServiceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Booking software for hair salons",
+    provider: {
+      "@type": "Organization",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+    areaServed: "GB",
+    audience: {
+      "@type": "BusinessAudience",
+      audienceType: "Hair salons",
+    },
+  };
+
   return (
     <>
       <SEOHead
         title="Salon Management Software UK - Elite Booker"
         description="Complete management system for UK hair salons. Online booking, client database, stock control, POS & reporting. Used by 1000+ salons nationwide."
         canonical="https://www.elitebooker.co.uk/industries/hair-salons"
+        schema={[hairSalonsPageSchema, hairSalonsServiceSchema]}
       />
       <Header />
 

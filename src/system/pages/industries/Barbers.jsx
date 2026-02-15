@@ -50,12 +50,43 @@ export default function Barbers() {
     { name: "Barbers", url: "/industries/barbers" },
   ];
 
+  const barbersPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Barber Shop Booking System UK",
+    description:
+      "Booking and queue management software for UK barber shops with reminders and staff scheduling.",
+    url: "https://www.elitebooker.co.uk/industries/barbers",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+  };
+
+  const barbersServiceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Booking software for barbershops",
+    provider: {
+      "@type": "Organization",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+    areaServed: "GB",
+    audience: {
+      "@type": "BusinessAudience",
+      audienceType: "Barber shops",
+    },
+  };
+
   return (
     <>
       <SEOHead
         title="Barber Shop Booking System UK - Reduce No-Shows"
         description="Modern booking software for UK barber shops. Walk-in queue management, online bookings, SMS reminders & staff scheduling. No commission fees."
         canonical="https://www.elitebooker.co.uk/industries/barbers"
+        schema={[barbersPageSchema, barbersServiceSchema]}
       />
       <Header />
 

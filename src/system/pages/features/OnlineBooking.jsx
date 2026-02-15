@@ -54,6 +54,36 @@ export default function OnlineBooking() {
     },
   ];
 
+  const onlineBookingPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "24/7 Online Booking System",
+    description:
+      "Online appointment booking for UK salons with real-time availability and instant confirmations.",
+    url: "https://www.elitebooker.co.uk/features/online-booking",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+  };
+
+  const onlineBookingServiceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Online appointment booking",
+    provider: {
+      "@type": "Organization",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+    areaServed: "GB",
+    audience: {
+      "@type": "BusinessAudience",
+      audienceType: "Beauty businesses",
+    },
+  };
+
   return (
     <>
       <SEOHead
@@ -61,6 +91,7 @@ export default function OnlineBooking() {
         description="Let UK clients book appointments 24/7. Mobile-optimized, real-time availability, instant confirmations. Increase bookings 30% with online scheduling."
         keywords="24/7 booking software, online appointment booking UK, mobile booking system, salon online scheduling, beauty booking platform"
         canonical="https://www.elitebooker.co.uk/features/online-booking"
+        schema={[onlineBookingPageSchema, onlineBookingServiceSchema]}
       />
       <Header />
 

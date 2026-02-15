@@ -54,6 +54,36 @@ export default function CalendarSync() {
     },
   ];
 
+  const calendarSyncPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Google Calendar and Outlook Sync",
+    description:
+      "Two-way calendar sync between Elite Booker and Google, Apple, and Outlook calendars.",
+    url: "https://www.elitebooker.co.uk/features/calendar-sync",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+  };
+
+  const calendarSyncServiceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Calendar sync for appointment scheduling",
+    provider: {
+      "@type": "Organization",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+    areaServed: "GB",
+    audience: {
+      "@type": "BusinessAudience",
+      audienceType: "Beauty and wellness businesses",
+    },
+  };
+
   return (
     <>
       <SEOHead
@@ -61,6 +91,7 @@ export default function CalendarSync() {
         description="Sync appointments with Google Calendar, Apple Calendar, Outlook. Two-way sync, real-time updates, mobile app integration. Never double-book again."
         keywords="Google Calendar booking, calendar sync appointment software UK, two-way calendar sync, iCal sync booking system, Outlook calendar integration"
         canonical="https://www.elitebooker.co.uk/features/calendar-sync"
+        schema={[calendarSyncPageSchema, calendarSyncServiceSchema]}
       />
       <Header />
 
