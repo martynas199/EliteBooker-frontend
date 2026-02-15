@@ -311,7 +311,9 @@ export default function SmsReminders() {
               Simple, Transparent Pricing
             </h2>
             <div className="bg-gradient-to-br from-slate-900 to-slate-700 text-white p-8 rounded-2xl text-center">
-              <div className="mb-4 text-4xl font-bold sm:text-5xl">£2.99/month</div>
+              <div className="mb-4 text-4xl font-bold sm:text-5xl">
+                £2.99/month
+              </div>
               <div className="mb-6 text-xl text-slate-50 sm:text-2xl">
                 Unlimited SMS Reminders
               </div>
@@ -382,7 +384,10 @@ export default function SmsReminders() {
                 View pricing
               </Link>
               {" • "}
-              <Link to="/compare/vs-fresha" className="underline hover:text-white">
+              <Link
+                to="/compare/vs-fresha"
+                className="underline hover:text-white"
+              >
                 Compare vs Fresha
               </Link>
               {" • "}
@@ -405,7 +410,3 @@ export default function SmsReminders() {
     </>
   );
 }
-
-
-
-

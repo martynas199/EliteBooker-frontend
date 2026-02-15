@@ -470,6 +470,3 @@ export default function OnlineBooking() {
     </>
   );
 }
-
-
-

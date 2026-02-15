@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import { api } from "../../shared/lib/apiClient";
 import Button from "../../shared/components/ui/Button";
 import Modal from "../../shared/components/ui/Modal";
 import FormField from "../../shared/components/forms/FormField";
 import toast from "react-hot-toast";
+import { selectAdmin } from "../../shared/state/authSlice";
 import AdminPageShell, {
   AdminSectionCard,
 } from "../components/AdminPageShell";
@@ -19,6 +21,7 @@ const DAY_NAMES = [
 ];
 
 export default function Settings() {
+  const admin = useSelector(selectAdmin);
   const [formData, setFormData] = useState({
     salonName: "",
     salonDescription: "",
@@ -42,6 +45,12 @@ export default function Settings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [shareSettings, setShareSettings] = useState({
+    shareTitle: "",
+    shareDescription: "",
+    shareImageUrl: "",
+  });
+  const [shareImageUploading, setShareImageUploading] = useState(false);
 
   // Working hours state
   const [workingHours, setWorkingHours] = useState([]);
@@ -69,6 +78,28 @@ export default function Settings() {
     try {
       const response = await api.get("/settings");
       const settings = response.data;
+      const heroSectionsRes = await api.get("/hero-sections").catch(() => ({
+        data: [],
+      }));
+      const heroSections = Array.isArray(heroSectionsRes?.data)
+        ? heroSectionsRes.data
+        : [];
+      const activeHeroSection =
+        heroSections.find((section) => section?.active) || heroSections[0] || null;
+      const businessName = settings.salonName || "";
+      const defaultShareTitle = businessName
+        ? `Book with ${businessName}`
+        : "";
+      const defaultShareDescription =
+        settings.salonDescription ||
+        (businessName ? `Book with ${businessName} today.` : "");
+      const defaultShareImageUrl =
+        settings.heroImage?.url ||
+        settings.heroImage ||
+        activeHeroSection?.centerImage?.url ||
+        activeHeroSection?.rightImage?.url ||
+        "";
+
       setFormData({
         salonName: settings.salonName || "",
         salonDescription: settings.salonDescription || "",
@@ -116,6 +147,22 @@ export default function Settings() {
         });
 
         setWorkingHours(hoursArray);
+      }
+
+      if (admin?.tenantId) {
+        const tenantResponse = await api.get(`/tenants/${admin.tenantId}`);
+        const tenant = tenantResponse.data || {};
+        setShareSettings({
+          shareTitle: tenant.shareTitle || defaultShareTitle,
+          shareDescription: tenant.shareDescription || defaultShareDescription,
+          shareImageUrl: tenant.shareImageUrl || defaultShareImageUrl,
+        });
+      } else {
+        setShareSettings({
+          shareTitle: defaultShareTitle,
+          shareDescription: defaultShareDescription,
+          shareImageUrl: defaultShareImageUrl,
+        });
       }
     } catch (error) {
       console.error("Failed to load settings:", error);
@@ -279,6 +326,59 @@ export default function Settings() {
     }));
   };
 
+  const handleShareChange = (field, value) => {
+    setShareSettings((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleShareImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    const maxSizeBytes = 5 * 1024 * 1024;
+
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Please upload a JPG, PNG, or WebP image.");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > maxSizeBytes) {
+      toast.error("Image must be 5MB or smaller.");
+      event.target.value = "";
+      return;
+    }
+
+    setShareImageUploading(true);
+    try {
+      const payload = new FormData();
+      payload.append("image", file);
+
+      const response = await api.post("/settings/upload-hero", payload, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const uploadedUrl = response?.data?.heroImage?.url;
+      if (!uploadedUrl) {
+        throw new Error("Uploaded image URL not returned");
+      }
+
+      setShareSettings((prev) => ({
+        ...prev,
+        shareImageUrl: uploadedUrl,
+      }));
+      toast.success("Share image uploaded");
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Failed to upload share image");
+    } finally {
+      setShareImageUploading(false);
+      event.target.value = "";
+    }
+  };
+
   const handleSave = async () => {
     setSaving(true);
     setMessage({ type: "", text: "" });
@@ -300,6 +400,14 @@ export default function Settings() {
           x: normalizeSocialLink(formData.socialLinks.x),
         },
       });
+
+      if (admin?.tenantId) {
+        await api.put(`/tenants/${admin.tenantId}`, {
+          shareTitle: shareSettings.shareTitle,
+          shareDescription: shareSettings.shareDescription,
+          shareImageUrl: shareSettings.shareImageUrl,
+        });
+      }
 
       setMessage({
         type: "success",
@@ -508,6 +616,109 @@ export default function Settings() {
                   />
                 </div>
               </div>
+            </div>
+          </AdminSectionCard>
+
+          <AdminSectionCard id="share-settings">
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 10-5.656-5.656l-1.102 1.101"
+                />
+              </svg>
+              <span>Share Settings</span>
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              Control the title, description, and image used in social link previews.
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Share Title
+                </label>
+                <input
+                  type="text"
+                  value={shareSettings.shareTitle}
+                  onChange={(e) => handleShareChange("shareTitle", e.target.value)}
+                  placeholder="e.g., Book with London Lash & Beauty"
+                  className={inputClass}
+                  maxLength={120}
+                  style={{ fontSize: "16px" }}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Share Description
+                </label>
+                <textarea
+                  value={shareSettings.shareDescription}
+                  onChange={(e) =>
+                    handleShareChange("shareDescription", e.target.value)
+                  }
+                  placeholder="Short text shown in WhatsApp/Facebook link previews"
+                  rows={3}
+                  className={`${inputClass} resize-none`}
+                  maxLength={240}
+                  style={{ fontSize: "16px" }}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Share Image URL
+                </label>
+                <input
+                  type="url"
+                  value={shareSettings.shareImageUrl}
+                  onChange={(e) => handleShareChange("shareImageUrl", e.target.value)}
+                  placeholder="https://..."
+                  className={inputClass}
+                  style={{ fontSize: "16px" }}
+                />
+                <p className="mt-2 text-xs text-gray-500">
+                  Recommended size: 1200×630, JPG/PNG/WebP, max 5MB.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Upload Share Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleShareImageUpload}
+                  disabled={shareImageUploading || saving}
+                  className="w-full text-sm text-gray-700 file:mr-3 file:rounded-md file:border-0 file:bg-brand-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-brand-700 hover:file:bg-brand-100"
+                />
+                {shareImageUploading && (
+                  <p className="mt-2 text-xs text-gray-500">Uploading image...</p>
+                )}
+              </div>
+
+              {shareSettings.shareImageUrl && (
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+                  <p className="mb-2 text-xs font-medium text-gray-700">
+                    Current Share Preview Image
+                  </p>
+                  <img
+                    src={shareSettings.shareImageUrl}
+                    alt="Share preview"
+                    className="h-32 w-full rounded-md object-cover sm:h-40"
+                    loading="lazy"
+                  />
+                </div>
+              )}
             </div>
           </AdminSectionCard>
 

@@ -380,7 +380,3 @@ export default function CalendarSync() {
     </>
   );
 }
-
-
-
-

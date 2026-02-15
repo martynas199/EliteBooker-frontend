@@ -103,7 +103,10 @@ export default function VsTreatwell() {
 
       <div
         className="min-h-screen"
-        style={{ background: "linear-gradient(180deg, #f8f5ef 0%, #f6f2ea 52%, #efe8dc 100%)" }}
+        style={{
+          background:
+            "linear-gradient(180deg, #f8f5ef 0%, #f6f2ea 52%, #efe8dc 100%)",
+        }}
       >
         {/* Hero */}
         <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-700 px-4 py-14 text-white sm:py-16 lg:py-20">
@@ -299,7 +302,3 @@ export default function VsTreatwell() {
     </>
   );
 }
-
-
-
-

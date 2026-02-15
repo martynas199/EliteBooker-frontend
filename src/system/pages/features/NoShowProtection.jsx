@@ -412,7 +412,10 @@ export default function NoShowProtection() {
                 View pricing
               </Link>
               {" • "}
-              <Link to="/compare/vs-treatwell" className="underline hover:text-white">
+              <Link
+                to="/compare/vs-treatwell"
+                className="underline hover:text-white"
+              >
                 Compare vs Treatwell
               </Link>
               {" • "}
@@ -435,7 +438,3 @@ export default function NoShowProtection() {
     </>
   );
 }
-
-
-
-

@@ -157,9 +157,11 @@ export default function ReduceSalonNoShows() {
     },
     datePublished: "2026-02-03",
     dateModified: "2026-02-03",
-    mainEntityOfPage: "https://www.elitebooker.co.uk/blog/reduce-salon-no-shows",
+    mainEntityOfPage:
+      "https://www.elitebooker.co.uk/blog/reduce-salon-no-shows",
     articleSection: "Salon Operations",
-    keywords: "reduce salon no-shows UK, salon cancellation policy, appointment reminders",
+    keywords:
+      "reduce salon no-shows UK, salon cancellation policy, appointment reminders",
   };
 
   const howToSchema = {
@@ -337,16 +339,25 @@ export default function ReduceSalonNoShows() {
 
             <div className="mt-8 rounded-xl border border-slate-200 bg-slate-50 p-5">
               <p className="text-sm text-slate-700">
-                Related resources: {" "}
-                <Link to="/features/sms-reminders" className="underline hover:text-slate-900">
+                Related resources:{" "}
+                <Link
+                  to="/features/sms-reminders"
+                  className="underline hover:text-slate-900"
+                >
                   SMS reminder feature
                 </Link>
                 {" • "}
-                <Link to="/tools/deposit-policy-generator" className="underline hover:text-slate-900">
+                <Link
+                  to="/tools/deposit-policy-generator"
+                  className="underline hover:text-slate-900"
+                >
                   Deposit policy generator
                 </Link>
                 {" • "}
-                <Link to="/compare/vs-fresha" className="underline hover:text-slate-900">
+                <Link
+                  to="/compare/vs-fresha"
+                  className="underline hover:text-slate-900"
+                >
                   Elite Booker vs Fresha
                 </Link>
               </p>
@@ -523,10 +534,7 @@ export default function ReduceSalonNoShows() {
                 <strong>Case study:</strong> Manchester salon reduced no-shows
                 from 25% to 4% after implementing £20 deposit policy. Average
                 no-show rate drops to{" "}
-                <strong className="text-slate-900">
-                  5-10% with deposits
-                </strong>
-                .
+                <strong className="text-slate-900">5-10% with deposits</strong>.
               </p>
             </div>
 
@@ -862,9 +870,7 @@ export default function ReduceSalonNoShows() {
                     <strong>Strategies used:</strong> {study.strategies}
                   </p>
                   {study.roi && (
-                    <p className="text-slate-700 font-semibold">
-                      {study.roi}
-                    </p>
+                    <p className="text-slate-700 font-semibold">{study.roi}</p>
                   )}
                   {study.quote && (
                     <p className="text-gray-600 italic mt-3">"{study.quote}"</p>
@@ -1075,9 +1081,7 @@ export default function ReduceSalonNoShows() {
                 to="/industries/hair-salons"
                 className="p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
               >
-                <h4 className="font-bold text-slate-900">
-                  For Hair Salons →
-                </h4>
+                <h4 className="font-bold text-slate-900">For Hair Salons →</h4>
                 <p className="text-gray-700 text-sm">
                   Booking system designed for multi-stylist salons
                 </p>
@@ -1099,7 +1103,3 @@ export default function ReduceSalonNoShows() {
     </>
   );
 }
-
-
-
-

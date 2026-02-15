@@ -15,22 +15,72 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 const comparisonRows = [
-  { feature: "Online Booking 24/7", basic: true, professional: true, enterprise: true },
-  { feature: "Calendar Management", basic: true, professional: true, enterprise: true },
-  { feature: "Client Database", basic: true, professional: true, enterprise: true },
-  { feature: "Email Confirmations", basic: true, professional: true, enterprise: true },
+  {
+    feature: "Online Booking 24/7",
+    basic: true,
+    professional: true,
+    enterprise: true,
+  },
+  {
+    feature: "Calendar Management",
+    basic: true,
+    professional: true,
+    enterprise: true,
+  },
+  {
+    feature: "Client Database",
+    basic: true,
+    professional: true,
+    enterprise: true,
+  },
+  {
+    feature: "Email Confirmations",
+    basic: true,
+    professional: true,
+    enterprise: true,
+  },
   {
     feature: "Booking Fee",
     basic: "GBP 0.99/booking",
     professional: "GBP 0 (waived)",
     enterprise: "GBP 0 (waived)",
   },
-  { feature: "Staff Members", basic: "Up to 3", professional: "Up to 10", enterprise: "Unlimited" },
-  { feature: "Deposit Collection", basic: false, professional: true, enterprise: true },
-  { feature: "Google Calendar Sync", basic: false, professional: true, enterprise: true },
-  { feature: "Multi-Location Support", basic: false, professional: false, enterprise: true },
-  { feature: "White-Label Branding", basic: false, professional: false, enterprise: true },
-  { feature: "Priority Support", basic: false, professional: true, enterprise: true },
+  {
+    feature: "Staff Members",
+    basic: "Up to 3",
+    professional: "Up to 10",
+    enterprise: "Unlimited",
+  },
+  {
+    feature: "Deposit Collection",
+    basic: false,
+    professional: true,
+    enterprise: true,
+  },
+  {
+    feature: "Google Calendar Sync",
+    basic: false,
+    professional: true,
+    enterprise: true,
+  },
+  {
+    feature: "Multi-Location Support",
+    basic: false,
+    professional: false,
+    enterprise: true,
+  },
+  {
+    feature: "White-Label Branding",
+    basic: false,
+    professional: false,
+    enterprise: true,
+  },
+  {
+    feature: "Priority Support",
+    basic: false,
+    professional: true,
+    enterprise: true,
+  },
 ];
 
 const faqs = [
@@ -114,21 +164,25 @@ export default function PricingPage() {
     if (value === true) {
       return (
         <Check
-          className={`mx-auto text-emerald-600 ${compact ? "h-4 w-4" : "h-5 w-5"}`}
+          className={`mx-auto text-emerald-600 ${
+            compact ? "h-4 w-4" : "h-5 w-5"
+          }`}
         />
       );
     }
     if (value === false) {
       return (
-        <X className={`mx-auto text-slate-300 ${compact ? "h-4 w-4" : "h-5 w-5"}`} />
+        <X
+          className={`mx-auto text-slate-300 ${
+            compact ? "h-4 w-4" : "h-5 w-5"
+          }`}
+        />
       );
     }
 
     return (
       <span
-        className={`${
-          compact ? "text-xs" : "text-sm"
-        } ${
+        className={`${compact ? "text-xs" : "text-sm"} ${
           isHighlighted ? "font-semibold text-emerald-700" : "text-slate-600"
         }`}
       >
@@ -159,7 +213,10 @@ export default function PricingPage() {
           </div>
 
           <div className="relative mx-auto max-w-5xl text-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
               <span className="mb-4 inline-flex items-center rounded-full border border-slate-300 bg-white/95 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-700 sm:px-4 sm:py-2 sm:text-xs">
                 Pricing
               </span>
@@ -237,7 +294,9 @@ export default function PricingPage() {
                         : "border border-slate-200 bg-white/90 shadow-lg"
                     }`}
                   >
-                    <h3 className="mb-2 text-3xl font-bold text-slate-950">{plan.name}</h3>
+                    <h3 className="mb-2 text-3xl font-bold text-slate-950">
+                      {plan.name}
+                    </h3>
                     <p className="mb-5 text-sm text-slate-600 sm:mb-6 sm:min-h-[48px] sm:text-base">
                       {plan.description}
                     </p>
@@ -253,7 +312,8 @@ export default function PricingPage() {
                       )}
                       {activePlan === "annual" && plan.price.annual > 0 && (
                         <p className="mt-2 text-xs font-medium text-emerald-700 sm:text-sm">
-                          Billed GBP {(plan.price.annual * 12).toFixed(2)} annually
+                          Billed GBP {(plan.price.annual * 12).toFixed(2)}{" "}
+                          annually
                         </p>
                       )}
                     </div>
@@ -271,9 +331,14 @@ export default function PricingPage() {
 
                     <ul className="space-y-3">
                       {plan.features.map((feature, featureIndex) => (
-                        <li key={featureIndex} className="flex items-start gap-3">
+                        <li
+                          key={featureIndex}
+                          className="flex items-start gap-3"
+                        >
                           <Check className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-600" />
-                          <span className="text-sm text-slate-700 sm:text-base">{feature}</span>
+                          <span className="text-sm text-slate-700 sm:text-base">
+                            {feature}
+                          </span>
                         </li>
                       ))}
                     </ul>
@@ -295,13 +360,17 @@ export default function PricingPage() {
                   key={row.feature}
                   className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                 >
-                  <h3 className="text-sm font-semibold text-slate-900">{row.feature}</h3>
+                  <h3 className="text-sm font-semibold text-slate-900">
+                    {row.feature}
+                  </h3>
                   <div className="mt-3 grid grid-cols-3 gap-2">
                     <div className="rounded-xl bg-slate-50 p-2 text-center">
                       <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
                         Basic
                       </p>
-                      <div className="mt-1">{renderCell(row.basic, false, true)}</div>
+                      <div className="mt-1">
+                        {renderCell(row.basic, false, true)}
+                      </div>
                     </div>
                     <div className="rounded-xl border border-amber-100 bg-amber-50 p-2 text-center">
                       <p className="text-[10px] font-semibold uppercase tracking-wide text-amber-700">
@@ -320,7 +389,11 @@ export default function PricingPage() {
                         Enterprise
                       </p>
                       <div className="mt-1">
-                        {renderCell(row.enterprise, typeof row.enterprise === "string", true)}
+                        {renderCell(
+                          row.enterprise,
+                          typeof row.enterprise === "string",
+                          true,
+                        )}
                       </div>
                     </div>
                   </div>
@@ -348,13 +421,23 @@ export default function PricingPage() {
                 <tbody className="divide-y divide-slate-200">
                   {comparisonRows.map((row) => (
                     <tr key={row.feature}>
-                      <td className="px-6 py-4 text-sm text-slate-700">{row.feature}</td>
-                      <td className="px-6 py-4 text-center">{renderCell(row.basic)}</td>
-                      <td className="bg-amber-50 px-6 py-4 text-center">
-                        {renderCell(row.professional, typeof row.professional === "string")}
+                      <td className="px-6 py-4 text-sm text-slate-700">
+                        {row.feature}
                       </td>
                       <td className="px-6 py-4 text-center">
-                        {renderCell(row.enterprise, typeof row.enterprise === "string")}
+                        {renderCell(row.basic)}
+                      </td>
+                      <td className="bg-amber-50 px-6 py-4 text-center">
+                        {renderCell(
+                          row.professional,
+                          typeof row.professional === "string",
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {renderCell(
+                          row.enterprise,
+                          typeof row.enterprise === "string",
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -390,7 +473,9 @@ export default function PricingPage() {
                   </Link>
                 </div>
                 <div className="text-left sm:text-right">
-                  <div className="text-3xl font-bold text-slate-950">GBP 2.99</div>
+                  <div className="text-3xl font-bold text-slate-950">
+                    GBP 2.99
+                  </div>
                   <div className="text-sm text-slate-600">/month</div>
                 </div>
               </div>
@@ -412,7 +497,9 @@ export default function PricingPage() {
                   <h3 className="mb-3 text-lg font-bold text-slate-900 sm:text-xl">
                     {faq.question}
                   </h3>
-                  <p className="text-sm text-slate-700 sm:text-base">{faq.answer}</p>
+                  <p className="text-sm text-slate-700 sm:text-base">
+                    {faq.answer}
+                  </p>
                 </div>
               ))}
             </div>
@@ -442,7 +529,8 @@ export default function PricingPage() {
               </button>
             </div>
             <p className="mt-4 text-sm text-slate-400">
-              Join 500+ UK salons, spas, and beauty businesses using Elite Booker
+              Join 500+ UK salons, spas, and beauty businesses using Elite
+              Booker
             </p>
             <p className="mt-2 text-xs text-slate-300 sm:text-sm">
               <Link to="/compare" className="underline hover:text-white">
@@ -465,4 +553,3 @@ export default function PricingPage() {
     </>
   );
 }
-

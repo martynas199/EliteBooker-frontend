@@ -284,12 +284,11 @@ export default function SalonLandingLuxury() {
 
   // Handler for sharing the business
   const handleShare = async () => {
+    const shareUrl = window.location.href;
     const shareData = {
-      title: salonName,
-      text: `Check out ${salonName}${
-        salonDescription ? ` - ${salonDescription}` : ""
-      }`,
-      url: window.location.href,
+      title: shareTitle,
+      text: shareDescription,
+      url: shareUrl,
     };
 
     try {
@@ -298,7 +297,7 @@ export default function SalonLandingLuxury() {
         await navigator.share(shareData);
       } else {
         // Fallback: copy link to clipboard
-        await navigator.clipboard.writeText(window.location.href);
+        await navigator.clipboard.writeText(shareUrl);
         toast.success("Link copied to clipboard!");
       }
     } catch (error) {
@@ -384,6 +383,11 @@ export default function SalonLandingLuxury() {
     tenant?.description ||
     settings?.salonDescription ||
     "Experience luxury beauty treatments";
+  const shareTitle = tenant?.shareTitle || `Book with ${salonName}`;
+  const shareDescription =
+    tenant?.shareDescription ||
+    salonDescription ||
+    `Book with ${salonName} today.`;
   const heroImage =
     heroSection?.centerImage?.url ||
     heroSection?.rightImage?.url ||

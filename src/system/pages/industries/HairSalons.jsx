@@ -223,8 +223,8 @@ export default function HairSalons() {
                   bookings & clients
                 </li>
                 <li className="flex items-center">
-                  <span className="text-slate-700 mr-2">✓</span> Unlimited
-                  staff members
+                  <span className="text-slate-700 mr-2">✓</span> Unlimited staff
+                  members
                 </li>
                 <li className="flex items-center">
                   <span className="text-slate-700 mr-2">✓</span> SMS reminders
@@ -235,8 +235,7 @@ export default function HairSalons() {
                   protection
                 </li>
                 <li className="flex items-center">
-                  <span className="text-slate-700 mr-2">✓</span> Integrated
-                  POS
+                  <span className="text-slate-700 mr-2">✓</span> Integrated POS
                 </li>
                 <li className="flex items-center">
                   <span className="text-slate-700 mr-2">✓</span> Gift cards &
@@ -308,7 +307,3 @@ export default function HairSalons() {
     </>
   );
 }
-
-
-
-
