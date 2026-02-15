@@ -1,5 +1,4 @@
-import { useParams, Navigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { useParams, Navigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   CheckCircle,
@@ -15,7 +14,12 @@ import {
 } from "lucide-react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { UK_CITIES, getLandingPageData } from "../../data/ukCitiesNiches";
+import SEOHead from "../../../shared/components/seo/SEOHead";
+import {
+  NICHES,
+  UK_CITIES,
+  getLandingPageData,
+} from "../../data/ukCitiesNiches";
 
 /**
  * Programmatic Local + Industry Landing Page
@@ -63,6 +67,25 @@ export default function LocalSolutionPage() {
     heroSubheading,
     breadcrumbs,
   } = data;
+
+  const hashSeed = `${city.slug}-${niche.slug}`.split("").reduce((acc, char) => {
+    return acc + char.charCodeAt(0);
+  }, 0);
+  const localAdoptionCount = 50 + (hashSeed % 100);
+  const socialProofCount = 40 + (hashSeed % 70);
+
+  const relatedNiches = NICHES.filter((entry) => entry.slug !== niche.slug).slice(
+    0,
+    4,
+  );
+  const nearbyCities = UK_CITIES.filter(
+    (entry) => entry.slug !== city.slug && entry.region === city.region,
+  ).slice(0, 4);
+  const fallbackCities = UK_CITIES.filter((entry) => entry.slug !== city.slug).slice(
+    0,
+    4,
+  );
+  const suggestedCities = nearbyCities.length > 0 ? nearbyCities : fallbackCities;
 
   // Calculate savings example
   const monthlyBookings = niche.averageMonthlyBookings;
@@ -153,42 +176,41 @@ export default function LocalSolutionPage() {
     ],
   };
 
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: `${niche.name} Booking Software in ${city.name}`,
+    serviceType: "Appointment Booking Software",
+    areaServed: {
+      "@type": "City",
+      name: city.name,
+    },
+    provider: {
+      "@type": "Organization",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "GBP",
+      price: "0",
+      availability: "https://schema.org/InStock",
+    },
+  };
+
+  const canonicalUrl = `https://www.elitebooker.co.uk/solutions/${potentialNicheSlug}-${potentialCitySlug}`;
+
   return (
     <>
-      <Helmet>
-        <title>{title}</title>
-        <meta name="description" content={metaDescription} />
-        <meta
-          name="keywords"
-          content={`${city.name} ${niche.pluralName}, booking software ${
-            city.name
-          }, ${niche.slug} ${
-            city.slug
-          }, appointment software ${niche.pluralName.toLowerCase()}, no commission booking system`}
-        />
-        <link
-          rel="canonical"
-          href={`https://www.elitebooker.co.uk/solutions/${potentialNicheSlug}-${potentialCitySlug}`}
-        />
-
-        {/* Open Graph */}
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={metaDescription} />
-        <meta
-          property="og:url"
-          content={`https://www.elitebooker.co.uk/solutions/${potentialNicheSlug}-${potentialCitySlug}`}
-        />
-        <meta property="og:type" content="website" />
-
-        {/* Schema.org structured data */}
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbSchema)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(ratingSchema)}
-        </script>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      </Helmet>
+      <SEOHead
+        title={title}
+        description={metaDescription}
+        canonical={canonicalUrl}
+        keywords={`${city.name} ${niche.pluralName}, booking software ${
+          city.name
+        }, ${niche.slug} ${city.slug}, appointment software ${niche.pluralName.toLowerCase()}, no commission booking system`}
+        schema={[breadcrumbSchema, ratingSchema, faqSchema, serviceSchema]}
+      />
 
       <Header />
 
@@ -448,7 +470,7 @@ export default function LocalSolutionPage() {
               Trusted by {city.name} {niche.pluralName}
             </h2>
             <p className="text-xl text-gray-600 mb-12 text-center max-w-3xl mx-auto">
-              Join {Math.floor(50 + Math.random() * 100)}{" "}
+              Join {localAdoptionCount}{" "}
               {niche.pluralName.toLowerCase()} in {city.name} who've already
               made the switch.
             </p>
@@ -555,6 +577,49 @@ export default function LocalSolutionPage() {
                   </div>
                 </div>
               </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Related Local Links */}
+        <section className="py-14 px-4 sm:px-6 lg:px-8 bg-gray-50">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Nearby {niche.pluralName} pages
+              </h2>
+              <div className="grid gap-3">
+                {suggestedCities.map((nearbyCity) => (
+                  <Link
+                    key={`${niche.slug}-${nearbyCity.slug}`}
+                    to={`/solutions/${niche.slug}-${nearbyCity.slug}`}
+                    className="inline-flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3 text-slate-800 hover:bg-slate-50"
+                  >
+                    <span>
+                      {niche.pluralName} in {nearbyCity.name}
+                    </span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Other {city.name} booking software options
+              </h2>
+              <div className="grid gap-3">
+                {relatedNiches.map((relatedNiche) => (
+                  <Link
+                    key={`${relatedNiche.slug}-${city.slug}`}
+                    to={`/solutions/${relatedNiche.slug}-${city.slug}`}
+                    className="inline-flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3 text-slate-800 hover:bg-slate-50"
+                  >
+                    <span>{relatedNiche.pluralName} in {city.name}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -696,12 +761,14 @@ export default function LocalSolutionPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-5xl font-bold mb-6">
+        <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white overflow-hidden">
+          <div className="absolute inset-0 bg-black/20 pointer-events-none" aria-hidden="true" />
+          <div className="relative max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl sm:text-5xl font-extrabold mb-6 text-white drop-shadow-lg">
               Join {city.name}'s {niche.pluralName} Who've Already Switched
             </h2>
-            <p className="text-xl mb-10 opacity-90">
+            <p className="text-xl mb-10 text-slate-100">
+              {socialProofCount}+ local businesses already use Elite Booker. 
               Start with our free Basic plan. Upgrade only when you're ready.
               Cancel anytime.
             </p>
@@ -722,18 +789,18 @@ export default function LocalSolutionPage() {
               </a>
             </div>
 
-            <div className="mt-8 flex items-center justify-center gap-8 text-sm opacity-75">
+            <div className="mt-8 flex items-center justify-center gap-8 text-sm text-slate-100">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5" />
-                <span>No credit card required</span>
+                <span className="font-medium">No credit card required</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5" />
-                <span>£0 setup fee</span>
+                <span className="font-medium">£0 setup fee</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5" />
-                <span>Cancel anytime</span>
+                <span className="font-medium">Cancel anytime</span>
               </div>
             </div>
           </div>

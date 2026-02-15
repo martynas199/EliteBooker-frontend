@@ -24,6 +24,9 @@ export default function SEOHead({
   schema,
 }) {
   const siteName = "Elite Booker";
+  const fallbackDescription =
+    "Commission-free booking software for UK beauty and wellness businesses.";
+  const normalizedDescription = `${description || fallbackDescription}`.trim();
   const titleIncludesSiteName =
     typeof title === "string" &&
     title.toLowerCase().includes(siteName.toLowerCase());
@@ -48,6 +51,30 @@ export default function SEOHead({
       : baseUrl;
 
   const canonicalUrl = canonicalPath;
+  const robotsContent = noindex ? "noindex, nofollow" : "index, follow";
+
+  if (import.meta.env.DEV) {
+    if (!title || `${title}`.trim().length < 10) {
+      console.warn("[SEOHead] Missing or weak title", { title, canonicalUrl });
+    }
+    if (!normalizedDescription || normalizedDescription.length < 70) {
+      console.warn("[SEOHead] Missing or weak description", {
+        description: normalizedDescription,
+        canonicalUrl,
+      });
+    }
+    if (fullTitle.length > 65) {
+      console.warn("[SEOHead] Title may be too long", {
+        length: fullTitle.length,
+        fullTitle,
+      });
+    }
+    if (normalizedDescription.length > 165) {
+      console.warn("[SEOHead] Description may be too long", {
+        length: normalizedDescription.length,
+      });
+    }
+  }
 
   // Default keywords focused on appointment booking software - optimized for ranking #1
   const defaultKeywords = [
@@ -76,19 +103,19 @@ export default function SEOHead({
     <Helmet>
       {/* Basic Meta Tags */}
       <title>{fullTitle}</title>
-      <meta name="description" content={description} />
+      <meta name="description" content={normalizedDescription} />
       <meta name="keywords" content={allKeywords.join(", ")} />
 
       {/* Canonical URL */}
       <link rel="canonical" href={canonicalUrl} />
 
       {/* Robots Meta */}
-      {noindex && <meta name="robots" content="noindex, nofollow" />}
+      <meta name="robots" content={robotsContent} />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={description} />
+      <meta property="og:description" content={normalizedDescription} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:site_name" content={siteName} />
       {ogImage && (
@@ -112,7 +139,7 @@ export default function SEOHead({
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
-      <meta name="twitter:description" content={description} />
+      <meta name="twitter:description" content={normalizedDescription} />
       {ogImage && (
         <meta
           name="twitter:image"
@@ -133,20 +160,26 @@ export default function SEOHead({
       <meta name="coverage" content="Worldwide" />
 
       {/* JSON-LD Structured Data */}
-      {schema && (
-        <script type="application/ld+json">{JSON.stringify(schema)}</script>
-      )}
+      {Array.isArray(schema)
+        ? schema.map((schemaEntry, index) => (
+            <script key={index} type="application/ld+json">
+              {JSON.stringify(schemaEntry)}
+            </script>
+          ))
+        : schema && (
+            <script type="application/ld+json">{JSON.stringify(schema)}</script>
+          )}
     </Helmet>
   );
 }
 
 SEOHead.propTypes = {
   title: PropTypes.string,
-  description: PropTypes.string.isRequired,
+  description: PropTypes.string,
   keywords: PropTypes.string,
   canonical: PropTypes.string,
   ogImage: PropTypes.string,
   ogType: PropTypes.string,
   noindex: PropTypes.bool,
-  schema: PropTypes.object,
+  schema: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };

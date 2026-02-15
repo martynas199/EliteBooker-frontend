@@ -14,25 +14,29 @@
  *   node scripts/verifyLiveSeo.js --base=https://www.elitebooker.co.uk
  */
 
+import {
+  getProgrammaticSeoRoutes,
+  getStaticSeoRoutes,
+} from "../src/shared/seo/routeManifest.js";
+
 const DEFAULT_BASE_URL = "https://www.elitebooker.co.uk";
 
-const ROUTE_CHECKS = [
-  { path: "/", indexable: true },
-  { path: "/features", indexable: true },
-  { path: "/features/sms-reminders", indexable: true },
-  { path: "/features/no-show-protection", indexable: true },
-  { path: "/features/calendar-sync", indexable: true },
-  { path: "/features/online-booking", indexable: true },
-  { path: "/compare", indexable: true },
-  { path: "/compare/vs-fresha", indexable: true },
-  { path: "/compare/vs-treatwell", indexable: true },
-  { path: "/solutions", indexable: true },
-  { path: "/solutions/lash-techs-london", indexable: true },
-  { path: "/menu", indexable: false },
-  { path: "/signup/success", indexable: false },
-  { path: "/referral-login", indexable: false },
-  { path: "/referral-dashboard", indexable: false },
-];
+const getRouteChecks = () => {
+  const staticChecks = getStaticSeoRoutes()
+    .filter((route) => route.intent !== "legal")
+    .slice(0, 16)
+    .map((route) => ({
+      path: route.path,
+      indexable: route.indexable !== false,
+    }));
+
+  const sampleProgrammatic = getProgrammaticSeoRoutes()[0];
+  if (sampleProgrammatic) {
+    staticChecks.push({ path: sampleProgrammatic.path, indexable: true });
+  }
+
+  return staticChecks;
+};
 
 const parseArg = (name) => {
   const value = process.argv.find((arg) => arg.startsWith(`${name}=`));
@@ -44,14 +48,14 @@ const normalizeBaseUrl = (baseUrl) => {
   return normalized.endsWith("/") ? normalized.slice(0, -1) : normalized;
 };
 
-const normalizePath = (path = "/") => {
-  if (!path || path === "/") return "/";
-  return path.endsWith("/") ? path.slice(0, -1) : path;
+const normalizePath = (routePath = "/") => {
+  if (!routePath || routePath === "/") return "/";
+  return routePath.endsWith("/") ? routePath.slice(0, -1) : routePath;
 };
 
 const buildCanonical = (baseUrl, routePath) => {
-  const path = normalizePath(routePath);
-  return path === "/" ? `${baseUrl}/` : `${baseUrl}${path}`;
+  const normalized = normalizePath(routePath);
+  return normalized === "/" ? `${baseUrl}/` : `${baseUrl}${normalized}`;
 };
 
 const extractTitle = (html) => {
@@ -85,21 +89,17 @@ const getRouteResult = (route, html, status, baseUrl) => {
   const robots = extractMetaContent(html, "name", "robots");
   const canonical = extractCanonical(html);
   const expectedCanonical = buildCanonical(baseUrl, route.path);
-
   const issues = [];
 
   if (status < 200 || status >= 400) {
     issues.push(`Unexpected status ${status}`);
   }
-
   if (!title) {
     issues.push("Missing <title>");
   }
-
   if (!description) {
     issues.push("Missing meta description");
   }
-
   if (!canonical) {
     issues.push("Missing canonical");
   } else if (canonical !== expectedCanonical) {
@@ -108,14 +108,12 @@ const getRouteResult = (route, html, status, baseUrl) => {
 
   if (!robots) {
     issues.push("Missing robots meta");
-  } else if (route.indexable) {
-    const robotsLower = robots.toLowerCase();
-    if (robotsLower.includes("noindex")) {
-      issues.push(`Indexable route has noindex robots: ${robots}`);
-    }
   } else {
     const robotsLower = robots.toLowerCase();
-    if (!robotsLower.includes("noindex")) {
+    if (route.indexable && robotsLower.includes("noindex")) {
+      issues.push(`Indexable route has noindex robots: ${robots}`);
+    }
+    if (!route.indexable && !robotsLower.includes("noindex")) {
       issues.push(`Non-indexable route missing noindex robots: ${robots}`);
     }
   }
@@ -130,30 +128,30 @@ const getRouteResult = (route, html, status, baseUrl) => {
 };
 
 const checkRoute = async (baseUrl, route) => {
-  const url = `${baseUrl}${route.path}`;
-  const response = await fetch(url, {
+  const response = await fetch(`${baseUrl}${route.path}`, {
     redirect: "follow",
     headers: {
       "user-agent": "elitebooker-seo-verifier/1.0",
       accept: "text/html,application/xhtml+xml",
     },
   });
+
   const html = await response.text();
   return getRouteResult(route, html, response.status, baseUrl);
 };
 
 const checkSitemap = async (baseUrl) => {
-  const sitemapUrl = `${baseUrl}/sitemap.xml`;
-  const response = await fetch(sitemapUrl, {
+  const response = await fetch(`${baseUrl}/sitemap.xml`, {
     redirect: "follow",
     headers: {
       "user-agent": "elitebooker-seo-verifier/1.0",
       accept: "application/xml,text/xml,*/*",
     },
   });
-  const xml = await response.text();
 
+  const xml = await response.text();
   const issues = [];
+
   if (response.status < 200 || response.status >= 400) {
     issues.push(`Unexpected status ${response.status}`);
   }
@@ -163,7 +161,9 @@ const checkSitemap = async (baseUrl) => {
   if (!xml.includes(`${baseUrl}/`)) {
     issues.push("Homepage URL missing in sitemap");
   }
-  if (!xml.includes(`${baseUrl}/solutions/lash-techs-london`)) {
+
+  const sampleProgrammaticPath = getProgrammaticSeoRoutes()[0]?.path;
+  if (sampleProgrammaticPath && !xml.includes(`${baseUrl}${sampleProgrammaticPath}`)) {
     issues.push("Programmatic sample URL missing in sitemap");
   }
 
@@ -176,12 +176,13 @@ const checkSitemap = async (baseUrl) => {
 };
 
 const run = async () => {
+  const routeChecks = getRouteChecks();
   const baseUrl = normalizeBaseUrl(parseArg("--base"));
   const routeResults = [];
 
   console.log(`Verifying live SEO tags against: ${baseUrl}`);
 
-  for (const route of ROUTE_CHECKS) {
+  for (const route of routeChecks) {
     try {
       const result = await checkRoute(baseUrl, route);
       routeResults.push(result);
