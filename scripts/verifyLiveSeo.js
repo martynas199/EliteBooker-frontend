@@ -163,7 +163,10 @@ const checkSitemap = async (baseUrl) => {
   }
 
   const sampleProgrammaticPath = getProgrammaticSeoRoutes()[0]?.path;
-  if (sampleProgrammaticPath && !xml.includes(`${baseUrl}${sampleProgrammaticPath}`)) {
+  if (
+    sampleProgrammaticPath &&
+    !xml.includes(`${baseUrl}${sampleProgrammaticPath}`)
+  ) {
     issues.push("Programmatic sample URL missing in sitemap");
   }
 
@@ -229,7 +232,9 @@ const run = async () => {
 
   console.log("");
   console.log(
-    `SEO verification complete: ${allResults.length - failures.length}/${allResults.length} checks passed.`,
+    `SEO verification complete: ${allResults.length - failures.length}/${
+      allResults.length
+    } checks passed.`,
   );
 
   if (failures.length > 0) {

@@ -68,24 +68,25 @@ export default function LocalSolutionPage() {
     breadcrumbs,
   } = data;
 
-  const hashSeed = `${city.slug}-${niche.slug}`.split("").reduce((acc, char) => {
-    return acc + char.charCodeAt(0);
-  }, 0);
+  const hashSeed = `${city.slug}-${niche.slug}`
+    .split("")
+    .reduce((acc, char) => {
+      return acc + char.charCodeAt(0);
+    }, 0);
   const localAdoptionCount = 50 + (hashSeed % 100);
   const socialProofCount = 40 + (hashSeed % 70);
 
-  const relatedNiches = NICHES.filter((entry) => entry.slug !== niche.slug).slice(
-    0,
-    4,
-  );
+  const relatedNiches = NICHES.filter(
+    (entry) => entry.slug !== niche.slug,
+  ).slice(0, 4);
   const nearbyCities = UK_CITIES.filter(
     (entry) => entry.slug !== city.slug && entry.region === city.region,
   ).slice(0, 4);
-  const fallbackCities = UK_CITIES.filter((entry) => entry.slug !== city.slug).slice(
-    0,
-    4,
-  );
-  const suggestedCities = nearbyCities.length > 0 ? nearbyCities : fallbackCities;
+  const fallbackCities = UK_CITIES.filter(
+    (entry) => entry.slug !== city.slug,
+  ).slice(0, 4);
+  const suggestedCities =
+    nearbyCities.length > 0 ? nearbyCities : fallbackCities;
 
   // Calculate savings example
   const monthlyBookings = niche.averageMonthlyBookings;
@@ -208,7 +209,9 @@ export default function LocalSolutionPage() {
         canonical={canonicalUrl}
         keywords={`${city.name} ${niche.pluralName}, booking software ${
           city.name
-        }, ${niche.slug} ${city.slug}, appointment software ${niche.pluralName.toLowerCase()}, no commission booking system`}
+        }, ${niche.slug} ${
+          city.slug
+        }, appointment software ${niche.pluralName.toLowerCase()}, no commission booking system`}
         schema={[breadcrumbSchema, ratingSchema, faqSchema, serviceSchema]}
       />
 
@@ -470,9 +473,8 @@ export default function LocalSolutionPage() {
               Trusted by {city.name} {niche.pluralName}
             </h2>
             <p className="text-xl text-gray-600 mb-12 text-center max-w-3xl mx-auto">
-              Join {localAdoptionCount}{" "}
-              {niche.pluralName.toLowerCase()} in {city.name} who've already
-              made the switch.
+              Join {localAdoptionCount} {niche.pluralName.toLowerCase()} in{" "}
+              {city.name} who've already made the switch.
             </p>
 
             <div className="grid md:grid-cols-3 gap-8">
@@ -615,7 +617,9 @@ export default function LocalSolutionPage() {
                     to={`/solutions/${relatedNiche.slug}-${city.slug}`}
                     className="inline-flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3 text-slate-800 hover:bg-slate-50"
                   >
-                    <span>{relatedNiche.pluralName} in {city.name}</span>
+                    <span>
+                      {relatedNiche.pluralName} in {city.name}
+                    </span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 ))}
@@ -762,13 +766,16 @@ export default function LocalSolutionPage() {
 
         {/* Final CTA */}
         <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white overflow-hidden">
-          <div className="absolute inset-0 bg-black/20 pointer-events-none" aria-hidden="true" />
+          <div
+            className="absolute inset-0 bg-black/20 pointer-events-none"
+            aria-hidden="true"
+          />
           <div className="relative max-w-4xl mx-auto text-center">
             <h2 className="text-3xl sm:text-5xl font-extrabold mb-6 text-white drop-shadow-lg">
               Join {city.name}'s {niche.pluralName} Who've Already Switched
             </h2>
             <p className="text-xl mb-10 text-slate-100">
-              {socialProofCount}+ local businesses already use Elite Booker. 
+              {socialProofCount}+ local businesses already use Elite Booker.
               Start with our free Basic plan. Upgrade only when you're ready.
               Cancel anytime.
             </p>
@@ -811,7 +818,3 @@ export default function LocalSolutionPage() {
     </>
   );
 }
-
-
-
-

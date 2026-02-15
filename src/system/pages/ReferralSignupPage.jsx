@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { motion } from "framer-motion";
 import SEOHead from "../../shared/components/seo/SEOHead";
@@ -36,6 +36,8 @@ const benefitItems = [
 
 export default function ReferralSignupPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isReferralAlias = location.pathname === "/join-referral-program";
   const { register } = useClientAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -103,6 +105,7 @@ export default function ReferralSignupPage() {
         title="Join the Referral Program"
         description="Join the Elite Booker referral program and earn rewards by introducing beauty and wellness businesses."
         canonical="https://www.elitebooker.co.uk/referral-signup"
+        noindex={isReferralAlias}
       />
 
       <Header />
@@ -345,4 +348,3 @@ export default function ReferralSignupPage() {
     </div>
   );
 }
-

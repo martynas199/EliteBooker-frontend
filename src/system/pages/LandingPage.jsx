@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import DemoRequestModal from "../../shared/components/modals/DemoRequestModal";
 import { motion } from "framer-motion";
 import SEOHead from "../../shared/components/seo/SEOHead";
@@ -26,6 +26,8 @@ const SectionFallback = () => (
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isBusinessAlias = location.pathname === "/business";
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [showDemoModal, setShowDemoModal] = useState(false);
 
@@ -44,6 +46,7 @@ export default function LandingPage() {
         description="Commission-free booking software for UK beauty and wellness businesses. Online scheduling, SMS reminders, deposits and client management. Plans from GBP 0."
         keywords="online booking system UK, salon booking software UK, appointment scheduling UK, beauty booking app, zero commission booking, salon management software"
         canonical="https://www.elitebooker.co.uk/"
+        noindex={isBusinessAlias}
       />
 
       {/* Organization Schema */}
@@ -307,9 +310,7 @@ export default function LandingPage() {
                       <span className="font-bold text-gray-900">
                         Elite Booker
                       </span>
-                      <span className="text-slate-700 font-bold">
-                        You Keep
-                      </span>
+                      <span className="text-slate-700 font-bold">You Keep</span>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
@@ -564,9 +565,7 @@ export default function LandingPage() {
         <div ref={demoObserver.ref}>
           {demoObserver.inView && (
             <Suspense fallback={<SectionFallback />}>
-              <DemoSection
-                onDemoClick={() => setShowDemoModal(true)}
-              />
+              <DemoSection onDemoClick={() => setShowDemoModal(true)} />
             </Suspense>
           )}
         </div>
@@ -619,7 +618,3 @@ export default function LandingPage() {
     </>
   );
 }
-
-
-
-

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import {
   Calculator,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 
 /**
  * ROI Calculator Tool - Product-Led SEO
@@ -130,44 +130,13 @@ export default function RoiCalculator() {
 
   return (
     <>
-      <Helmet>
-        <title>
-          Salon Commission Calculator UK | Compare Fresha vs Elite Booker Costs
-        </title>
-        <meta
-          name="description"
-          content="Free calculator to see how much you'll save by switching from Fresha or Treatwell. Compare booking software costs for UK salons, spas, and beauty businesses."
-        />
-        <meta
-          name="keywords"
-          content="salon commission calculator UK, booking software cost comparison, fresha alternative calculator, treatwell cost calculator, salon software savings"
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/tools/roi-calculator"
-        />
-
-        {/* Open Graph */}
-        <meta
-          property="og:title"
-          content="Salon Commission Calculator UK | See Your Savings"
-        />
-        <meta
-          property="og:description"
-          content="Free calculator: Compare Fresha, Treatwell, and Elite Booker costs. See how much you'll save in 30 seconds."
-        />
-        <meta
-          property="og:url"
-          content="https://www.elitebooker.co.uk/tools/roi-calculator"
-        />
-        <meta property="og:type" content="website" />
-
-        {/* Schema */}
-        <script type="application/ld+json">
-          {JSON.stringify(calculatorSchema)}
-        </script>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      </Helmet>
+      <SEOHead
+        title="Salon Commission Calculator UK | Elite Booker"
+        description="Free calculator to see how much you'll save by switching from Fresha or Treatwell. Compare booking software costs for UK salons, spas, and beauty businesses."
+        keywords="salon commission calculator UK, booking software cost comparison, fresha alternative calculator, treatwell cost calculator, salon software savings"
+        canonical="https://www.elitebooker.co.uk/tools/roi-calculator"
+        schema={[calculatorSchema, faqSchema]}
+      />
 
       <Header />
 
@@ -571,7 +540,3 @@ export default function RoiCalculator() {
     </>
   );
 }
-
-
-
-

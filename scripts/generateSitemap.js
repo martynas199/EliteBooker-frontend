@@ -92,8 +92,12 @@ console.error(
   `\nGenerated ${getProgrammaticSeoRoutes().length} programmatic pages`,
 );
 console.error(
-  `Generated ${getStaticSeoRoutes().filter((route) => route.intent === "tool").length} tool pages`,
+  `Generated ${
+    getStaticSeoRoutes().filter((route) => route.intent === "tool").length
+  } tool pages`,
 );
 console.error(
-  `Total indexable URLs: ${getAllSeoRoutes().filter((route) => route.indexable !== false).length} (${SEO_BASE_URL})`,
+  `Total indexable URLs: ${
+    getAllSeoRoutes().filter((route) => route.indexable !== false).length
+  } (${SEO_BASE_URL})`,
 );

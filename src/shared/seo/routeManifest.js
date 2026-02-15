@@ -20,10 +20,10 @@ export const MARKETING_ROUTE_MANIFEST = [
     description:
       "Commission-free booking software for UK beauty and wellness businesses. Online scheduling, SMS reminders, deposits and client management. Plans from GBP 0.",
     canonical: `${SEO_BASE_URL}/`,
-    indexable: true,
+    indexable: false,
     changefreq: "monthly",
-    priority: 0.9,
-    intent: "core",
+    priority: 0.2,
+    intent: "utility",
   },
   {
     path: "/pricing",
@@ -240,10 +240,10 @@ export const MARKETING_ROUTE_MANIFEST = [
     description:
       "Join the Elite Booker referral program and earn rewards by introducing beauty and wellness businesses.",
     canonical: `${SEO_BASE_URL}/referral-signup`,
-    indexable: true,
+    indexable: false,
     changefreq: "monthly",
-    priority: 0.3,
-    intent: "referral",
+    priority: 0.2,
+    intent: "utility",
   },
   {
     path: "/referral-login",
@@ -285,7 +285,8 @@ export const MARKETING_ROUTE_MANIFEST = [
   {
     path: "/privacy",
     title: "Privacy Policy | Elite Booker",
-    description: "Read Elite Booker privacy policy for data handling and GDPR commitments.",
+    description:
+      "Read Elite Booker privacy policy for data handling and GDPR commitments.",
     indexable: true,
     changefreq: "monthly",
     priority: 0.4,
@@ -294,7 +295,8 @@ export const MARKETING_ROUTE_MANIFEST = [
   {
     path: "/terms",
     title: "Terms of Service | Elite Booker",
-    description: "Read Elite Booker terms for usage, billing, and account responsibilities.",
+    description:
+      "Read Elite Booker terms for usage, billing, and account responsibilities.",
     indexable: true,
     changefreq: "monthly",
     priority: 0.4,
@@ -303,7 +305,8 @@ export const MARKETING_ROUTE_MANIFEST = [
   {
     path: "/security",
     title: "Security & Data Protection | Elite Booker",
-    description: "Learn how Elite Booker protects client and business data across the platform.",
+    description:
+      "Learn how Elite Booker protects client and business data across the platform.",
     indexable: true,
     changefreq: "monthly",
     priority: 0.4,
@@ -331,7 +334,9 @@ const dedupeByPath = (routes) => {
 export const canonicalForPath = (path, canonical) => {
   if (canonical) return canonical;
   const normalized = normalizePath(path);
-  return normalized === "/" ? `${SEO_BASE_URL}/` : `${SEO_BASE_URL}${normalized}`;
+  return normalized === "/"
+    ? `${SEO_BASE_URL}/`
+    : `${SEO_BASE_URL}${normalized}`;
 };
 
 export const getStaticSeoRoutes = () => dedupeByPath(MARKETING_ROUTE_MANIFEST);

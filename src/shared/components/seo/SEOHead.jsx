@@ -47,8 +47,8 @@ export default function SEOHead({
       ? canonical
       : `${baseUrl}${normalizePath(canonical)}`
     : typeof window !== "undefined"
-      ? `${baseUrl}${normalizePath(window.location.pathname)}`
-      : baseUrl;
+    ? `${baseUrl}${normalizePath(window.location.pathname)}`
+    : baseUrl;
 
   const canonicalUrl = canonicalPath;
   const robotsContent = noindex ? "noindex, nofollow" : "index, follow";

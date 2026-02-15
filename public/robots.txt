@@ -39,9 +39,11 @@ Disallow: /shop/cancel
 Disallow: /token-debug
 Disallow: /menu
 Disallow: /404
+Disallow: /business
 Disallow: /auth/success
 Disallow: /referral-login
 Disallow: /referral-dashboard
+Disallow: /join-referral-program
 Disallow: /appointments/consent
 Disallow: /consent/
 

@@ -40,7 +40,10 @@ const applyHeadMeta = (htmlTemplate, meta) => {
   const canonical = canonicalForPath(meta.route, meta.canonical);
   const robots = meta.noindex ? "noindex, nofollow" : "index, follow";
 
-  html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(title)}</title>`);
+  html = html.replace(
+    /<title>[\s\S]*?<\/title>/i,
+    `<title>${escapeHtml(title)}</title>`,
+  );
 
   html = upsertTag(
     html,

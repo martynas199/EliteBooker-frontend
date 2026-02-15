@@ -36,7 +36,10 @@ const validateRoutes = (routes) => {
       issues.push(`Title too long (${route.title.length}) for ${route.path}`);
     }
 
-    if (!route.description || route.description.trim().length < minDescriptionLength) {
+    if (
+      !route.description ||
+      route.description.trim().length < minDescriptionLength
+    ) {
       issues.push(`Weak description for ${route.path}`);
     }
     if (route.description && route.description.length > 165) {
@@ -54,7 +57,9 @@ const validateSitemapParity = (sitemapLocs) => {
 
   const indexableRoutes = getIndexableSeoRoutes();
   const expectedLocs = new Set(
-    indexableRoutes.map((route) => canonicalForPath(route.path, route.canonical)),
+    indexableRoutes.map((route) =>
+      canonicalForPath(route.path, route.canonical),
+    ),
   );
 
   for (const expected of expectedLocs) {
@@ -67,7 +72,7 @@ const validateSitemapParity = (sitemapLocs) => {
     .filter((route) => route.indexable === false)
     .forEach((route) => {
       const blocked = canonicalForPath(route.path, route.canonical);
-      if (sitemapLocs.includes(blocked)) {
+      if (sitemapLocs.includes(blocked) && !expectedLocs.has(blocked)) {
         issues.push(`Non-indexable route leaked into sitemap: ${blocked}`);
       }
     });
@@ -79,7 +84,9 @@ const run = () => {
   const routeIssues = validateRoutes(getAllSeoRoutes());
 
   if (!fs.existsSync(SITEMAP_PATH)) {
-    console.error(`Missing sitemap at ${SITEMAP_PATH}. Run npm run sitemap first.`);
+    console.error(
+      `Missing sitemap at ${SITEMAP_PATH}. Run npm run sitemap first.`,
+    );
     process.exit(1);
   }
 
@@ -96,7 +103,9 @@ const run = () => {
   }
 
   console.log(
-    `SEO tripwire check passed: ${getAllSeoRoutes().length} routes validated, ${sitemapLocs.length} sitemap URLs verified.`,
+    `SEO tripwire check passed: ${getAllSeoRoutes().length} routes validated, ${
+      sitemapLocs.length
+    } sitemap URLs verified.`,
   );
 };
 

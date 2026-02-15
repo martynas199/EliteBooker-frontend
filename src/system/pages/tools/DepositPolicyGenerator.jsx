@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import {
   FileText,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 
 /**
  * Deposit Policy Generator - Product-Led SEO Tool
@@ -198,42 +198,13 @@ https://www.elitebooker.co.uk`;
 
   return (
     <>
-      <Helmet>
-        <title>
-          Free Salon Deposit Policy Generator | HMRC-Compliant Template UK
-        </title>
-        <meta
-          name="description"
-          content="Generate a free, HMRC-compliant deposit & cancellation policy for your UK salon, spa, or beauty business in 30 seconds. Copy-paste ready, legally sound."
-        />
-        <meta
-          name="keywords"
-          content="salon cancellation policy template UK, deposit policy generator, HMRC compliant salon policy, beauty business terms and conditions"
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/tools/deposit-policy-generator"
-        />
-
-        {/* Open Graph */}
-        <meta
-          property="og:title"
-          content="Free Salon Deposit Policy Generator UK"
-        />
-        <meta
-          property="og:description"
-          content="Generate an HMRC-compliant deposit policy in 30 seconds. Free template for UK salons."
-        />
-        <meta
-          property="og:url"
-          content="https://www.elitebooker.co.uk/tools/deposit-policy-generator"
-        />
-        <meta property="og:type" content="website" />
-
-        {/* Schema */}
-        <script type="application/ld+json">{JSON.stringify(toolSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      </Helmet>
+      <SEOHead
+        title="Free Salon Deposit Policy Generator | HMRC-Compliant Template UK"
+        description="Generate a free, HMRC-compliant deposit & cancellation policy for your UK salon, spa, or beauty business in 30 seconds. Copy-paste ready, legally sound."
+        keywords="salon cancellation policy template UK, deposit policy generator, HMRC compliant salon policy, beauty business terms and conditions"
+        canonical="https://www.elitebooker.co.uk/tools/deposit-policy-generator"
+        schema={[toolSchema, faqSchema]}
+      />
 
       <Header />
 
@@ -532,6 +503,3 @@ https://www.elitebooker.co.uk`;
     </>
   );
 }
-
-
-
