@@ -4,12 +4,12 @@
  */
 
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Check, X } from "lucide-react";
 import BreadcrumbSchema from "../../shared/components/Schema/BreadcrumbSchema";
 import FAQSchema from "../../shared/components/Schema/FAQSchema";
+import SEOHead from "../../shared/components/seo/SEOHead";
 import { pricingPlans } from "./landing/landingData";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -111,19 +111,13 @@ export default function PricingPage() {
 
   return (
     <>
+      <SEOHead
+        title="Pricing - GBP 0 to GBP 49.99/month | Elite Booker UK"
+        description="Simple pricing for UK salons. Free Basic plan forever. Professional GBP 9.99/month. Enterprise GBP 49.99/month. No commission and no contracts."
+        keywords="booking system pricing UK, salon software cost, appointment scheduling pricing, beauty booking software price, zero commission booking"
+        canonical="https://www.elitebooker.co.uk/pricing"
+      />
       <Header />
-      <Helmet>
-        <title>Pricing - GBP 0 to GBP 49.99/month | Elite Booker UK</title>
-        <meta
-          name="description"
-          content="Simple pricing for UK salons. Free Basic plan forever. Professional GBP 9.99/month. Enterprise GBP 49.99/month. No commission and no contracts."
-        />
-        <meta
-          name="keywords"
-          content="booking system pricing UK, salon software cost, appointment scheduling pricing, beauty booking software price, zero commission booking"
-        />
-        <link rel="canonical" href="https://www.elitebooker.co.uk/pricing" />
-      </Helmet>
 
       <BreadcrumbSchema items={breadcrumbs} />
       <FAQSchema faqs={faqs} />

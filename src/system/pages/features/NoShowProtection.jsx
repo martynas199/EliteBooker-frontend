@@ -3,7 +3,6 @@
  * Target: 'deposit booking system', 'no show protection salon'
  */
 
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "../../components/Header";
@@ -18,6 +17,7 @@ import {
 } from "lucide-react";
 import Breadcrumb from "../../../shared/components/Schema/BreadcrumbSchema";
 import FAQSchema from "../../../shared/components/Schema/FAQSchema";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 
 export default function NoShowProtection() {
   const breadcrumbs = [
@@ -56,24 +56,13 @@ export default function NoShowProtection() {
 
   return (
     <>
+      <SEOHead
+        title="No-Show Protection with Deposits | Reduce No-Shows 85% | Elite Booker"
+        description="Automated deposit collection for UK salons. Reduce no-shows by 85%. Set custom policies, instant Stripe payments, automatic refunds. Protect your revenue."
+        keywords="deposit booking system, no show protection salon, automated deposits, cancellation policy software, salon deposit management UK"
+        canonical="https://www.elitebooker.co.uk/features/no-show-protection"
+      />
       <Header />
-      <Helmet>
-        <title>
-          No-Show Protection with Deposits | Reduce No-Shows 85% | Elite Booker
-        </title>
-        <meta
-          name="description"
-          content="Automated deposit collection for UK salons. Reduce no-shows by 85%. Set custom policies, instant Stripe payments, automatic refunds. Protect your revenue."
-        />
-        <meta
-          name="keywords"
-          content="deposit booking system, no show protection salon, automated deposits, cancellation policy software, salon deposit management UK"
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/features/no-show-protection"
-        />
-      </Helmet>
 
       <Breadcrumb items={breadcrumbs} />
       <FAQSchema faqs={faqs} />

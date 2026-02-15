@@ -39,10 +39,9 @@ const validateTarget = (target) => {
   const issues = [];
 
   const hasSEOHead = /<SEOHead\b/.test(source);
-  const hasHelmet = /<Helmet\b/.test(source);
 
-  if (!hasSEOHead && !hasHelmet) {
-    issues.push("Missing SEO metadata component (<SEOHead> or <Helmet>)");
+  if (!hasSEOHead) {
+    issues.push("Missing SEO metadata component (<SEOHead>)");
   }
 
   if (!source.includes(target.canonical)) {

@@ -3,7 +3,6 @@
  * SEO-optimized industry page
  */
 
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -19,6 +18,7 @@ import {
 } from "lucide-react";
 import BreadcrumbSchema from "../../../shared/components/Schema/BreadcrumbSchema";
 import FAQSchema from "../../../shared/components/Schema/FAQSchema";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -59,22 +59,13 @@ export default function LashTechnicians() {
 
   return (
     <>
+      <SEOHead
+        title="Lash Technician Booking Software UK - Elite Booker"
+        description="Booking system built for lash techs. Online scheduling, deposit protection, client reminders & patch test tracking. Trusted by UK lash artists."
+        keywords="lash technician booking software UK, lash booking system, online booking for lash artists, lash appointment software, mobile lash booking app"
+        canonical="https://www.elitebooker.co.uk/industries/lash-technicians"
+      />
       <Header />
-      <Helmet>
-        <title>Lash Technician Booking Software UK - Elite Booker</title>
-        <meta
-          name="description"
-          content="Booking system built for lash techs. Online scheduling, deposit protection, client reminders & patch test tracking. Trusted by UK lash artists."
-        />
-        <meta
-          name="keywords"
-          content="lash technician booking software UK, lash booking system, online booking for lash artists, lash appointment software, mobile lash booking app"
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/industries/lash-technicians"
-        />
-      </Helmet>
 
       <BreadcrumbSchema items={breadcrumbs} />
       <FAQSchema faqs={faqs} />

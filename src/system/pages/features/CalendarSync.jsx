@@ -3,7 +3,6 @@
  * Target: 'Google Calendar booking', 'calendar sync appointment software UK'
  */
 
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 import BreadcrumbSchema from "../../../shared/components/Schema/BreadcrumbSchema";
 import FAQSchema from "../../../shared/components/Schema/FAQSchema";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -56,24 +56,13 @@ export default function CalendarSync() {
 
   return (
     <>
+      <SEOHead
+        title="Google Calendar Sync | Two-Way Appointment Sync | Elite Booker"
+        description="Sync appointments with Google Calendar, Apple Calendar, Outlook. Two-way sync, real-time updates, mobile app integration. Never double-book again."
+        keywords="Google Calendar booking, calendar sync appointment software UK, two-way calendar sync, iCal sync booking system, Outlook calendar integration"
+        canonical="https://www.elitebooker.co.uk/features/calendar-sync"
+      />
       <Header />
-      <Helmet>
-        <title>
-          Google Calendar Sync | Two-Way Appointment Sync | Elite Booker
-        </title>
-        <meta
-          name="description"
-          content="Sync appointments with Google Calendar, Apple Calendar, Outlook. Two-way sync, real-time updates, mobile app integration. Never double-book again."
-        />
-        <meta
-          name="keywords"
-          content="Google Calendar booking, calendar sync appointment software UK, two-way calendar sync, iCal sync booking system, Outlook calendar integration"
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/features/calendar-sync"
-        />
-      </Helmet>
 
       <BreadcrumbSchema items={breadcrumbs} />
       <FAQSchema faqs={faqs} />

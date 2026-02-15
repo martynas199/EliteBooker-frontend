@@ -3,7 +3,6 @@
  * Target: '24/7 booking software', 'online appointment booking UK'
  */
 
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 import BreadcrumbSchema from "../../../shared/components/Schema/BreadcrumbSchema";
 import FAQSchema from "../../../shared/components/Schema/FAQSchema";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -56,25 +56,13 @@ export default function OnlineBooking() {
 
   return (
     <>
+      <SEOHead
+        title="24/7 Online Booking System | Accept Appointments Anytime | Elite Booker"
+        description="Let UK clients book appointments 24/7. Mobile-optimized, real-time availability, instant confirmations. Increase bookings 30% with online scheduling."
+        keywords="24/7 booking software, online appointment booking UK, mobile booking system, salon online scheduling, beauty booking platform"
+        canonical="https://www.elitebooker.co.uk/features/online-booking"
+      />
       <Header />
-      <Helmet>
-        <title>
-          24/7 Online Booking System | Accept Appointments Anytime | Elite
-          Booker
-        </title>
-        <meta
-          name="description"
-          content="Let UK clients book appointments 24/7. Mobile-optimized, real-time availability, instant confirmations. Increase bookings 30% with online scheduling."
-        />
-        <meta
-          name="keywords"
-          content="24/7 booking software, online appointment booking UK, mobile booking system, salon online scheduling, beauty booking platform"
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/features/online-booking"
-        />
-      </Helmet>
 
       <BreadcrumbSchema items={breadcrumbs} />
       <FAQSchema faqs={faqs} />

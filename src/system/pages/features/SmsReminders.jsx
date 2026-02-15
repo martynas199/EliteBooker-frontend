@@ -3,7 +3,6 @@
  * Target: 'SMS appointment reminders UK', 'automated SMS reminders salon'
  */
 
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 import BreadcrumbSchema from "../../../shared/components/Schema/BreadcrumbSchema";
 import FAQSchema from "../../../shared/components/Schema/FAQSchema";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -128,24 +128,13 @@ export default function SmsReminders() {
 
   return (
     <>
+      <SEOHead
+        title="SMS Appointment Reminders - Reduce No-Shows by 70% | Elite Booker"
+        description="Automated SMS reminders for UK salons. 98% open rate, one-click confirmations, reduce no-shows by 70%. £2.99/month unlimited. Try free today."
+        keywords="SMS appointment reminders UK, automated SMS reminders salon, appointment confirmation SMS, reduce no-shows SMS, beauty salon text reminders"
+        canonical="https://www.elitebooker.co.uk/features/sms-reminders"
+      />
       <Header />
-      <Helmet>
-        <title>
-          SMS Appointment Reminders - Reduce No-Shows by 70% | Elite Booker
-        </title>
-        <meta
-          name="description"
-          content="Automated SMS reminders for UK salons. 98% open rate, one-click confirmations, reduce no-shows by 70%. £2.99/month unlimited. Try free today."
-        />
-        <meta
-          name="keywords"
-          content="SMS appointment reminders UK, automated SMS reminders salon, appointment confirmation SMS, reduce no-shows SMS, beauty salon text reminders"
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/features/sms-reminders"
-        />
-      </Helmet>
 
       <BreadcrumbSchema items={breadcrumbs} />
       <FAQSchema faqs={faqs} />

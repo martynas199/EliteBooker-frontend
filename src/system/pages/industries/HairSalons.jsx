@@ -2,7 +2,6 @@
  * Hair Salon Booking Software Landing Page
  */
 
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "../../components/Header";
@@ -20,6 +19,7 @@ import {
 } from "lucide-react";
 import BreadcrumbSchema from "../../../shared/components/Schema/BreadcrumbSchema";
 import FAQSchema from "../../../shared/components/Schema/FAQSchema";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 
 export default function HairSalons() {
   const faqs = [
@@ -53,18 +53,12 @@ export default function HairSalons() {
 
   return (
     <>
+      <SEOHead
+        title="Salon Management Software UK - Elite Booker"
+        description="Complete management system for UK hair salons. Online booking, client database, stock control, POS & reporting. Used by 1000+ salons nationwide."
+        canonical="https://www.elitebooker.co.uk/industries/hair-salons"
+      />
       <Header />
-      <Helmet>
-        <title>Salon Management Software UK - Elite Booker</title>
-        <meta
-          name="description"
-          content="Complete management system for UK hair salons. Online booking, client database, stock control, POS & reporting. Used by 1000+ salons nationwide."
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/industries/hair-salons"
-        />
-      </Helmet>
 
       <BreadcrumbSchema items={breadcrumbs} />
       <FAQSchema faqs={faqs} />

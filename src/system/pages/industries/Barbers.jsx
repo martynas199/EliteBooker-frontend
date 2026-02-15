@@ -2,7 +2,6 @@
  * Barber Shop Booking System Landing Page
  */
 
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "../../components/Header";
@@ -19,6 +18,7 @@ import {
 } from "lucide-react";
 import BreadcrumbSchema from "../../../shared/components/Schema/BreadcrumbSchema";
 import FAQSchema from "../../../shared/components/Schema/FAQSchema";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 
 export default function Barbers() {
   const faqs = [
@@ -52,18 +52,12 @@ export default function Barbers() {
 
   return (
     <>
+      <SEOHead
+        title="Barber Shop Booking System UK - Reduce No-Shows"
+        description="Modern booking software for UK barber shops. Walk-in queue management, online bookings, SMS reminders & staff scheduling. No commission fees."
+        canonical="https://www.elitebooker.co.uk/industries/barbers"
+      />
       <Header />
-      <Helmet>
-        <title>Barber Shop Booking System UK - Reduce No-Shows</title>
-        <meta
-          name="description"
-          content="Modern booking software for UK barber shops. Walk-in queue management, online bookings, SMS reminders & staff scheduling. No commission fees."
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/industries/barbers"
-        />
-      </Helmet>
 
       <BreadcrumbSchema items={breadcrumbs} />
       <FAQSchema faqs={faqs} />
