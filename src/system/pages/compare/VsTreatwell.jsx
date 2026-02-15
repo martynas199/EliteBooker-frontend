@@ -2,13 +2,13 @@
  * Elite Booker vs Treatwell Comparison Page
  */
 
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { Check, X, ArrowRight, TrendingDown } from "lucide-react";
 import BreadcrumbSchema from "../../../shared/components/Schema/BreadcrumbSchema";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 
 export default function VsTreatwell() {
   const breadcrumbs = [
@@ -65,20 +65,39 @@ export default function VsTreatwell() {
     },
   ];
 
+  const comparisonSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Elite Booker vs Treatwell",
+    description:
+      "Comparison of Elite Booker and Treatwell pricing, commissions, and features for UK salons.",
+    url: "https://www.elitebooker.co.uk/compare/vs-treatwell",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+    about: [
+      {
+        "@type": "Thing",
+        name: "Salon booking software comparison",
+      },
+      {
+        "@type": "Thing",
+        name: "Treatwell alternative",
+      },
+    ],
+  };
+
   return (
     <>
+      <SEOHead
+        title="Elite Booker vs Treatwell - Stop Paying 30% Commission"
+        description="Treatwell charges 30% commission per booking. Elite Booker charges £29/month flat. See how much you could save by switching."
+        canonical="https://www.elitebooker.co.uk/compare/vs-treatwell"
+        schema={comparisonSchema}
+      />
       <Header />
-      <Helmet>
-        <title>Elite Booker vs Treatwell - Stop Paying 30% Commission</title>
-        <meta
-          name="description"
-          content="Treatwell charges 30% commission per booking. Elite Booker charges £29/month flat. See how much you could save by switching."
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/compare/vs-treatwell"
-        />
-      </Helmet>
 
       <BreadcrumbSchema items={breadcrumbs} />
 

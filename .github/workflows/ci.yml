@@ -37,6 +37,9 @@ jobs:
       - name: Run SEO tripwire checks
         run: npm run seo:tripwire
 
+      - name: Run SEO component coverage checks
+        run: npm run seo:coverage
+
       - name: Verify local SEO tags
         if: matrix.node-version == '20.x'
         run: |

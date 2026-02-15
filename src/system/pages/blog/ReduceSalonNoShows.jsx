@@ -4,7 +4,6 @@
  * 2,500+ words, SEO-optimized for UK beauty industry
  */
 
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -18,6 +17,7 @@ import {
 } from "lucide-react";
 import BreadcrumbSchema from "../../../shared/components/Schema/BreadcrumbSchema";
 import FAQSchema from "../../../shared/components/Schema/FAQSchema";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -137,68 +137,59 @@ export default function ReduceSalonNoShows() {
     },
   ];
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: "How to Reduce Salon No-Shows by 40%: The Ultimate UK Guide",
+    description:
+      "Proven strategies to cut no-shows and late cancellations using reminders, deposits, and confirmation workflows.",
+    author: {
+      "@type": "Organization",
+      name: "Elite Booker",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Elite Booker",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://www.elitebooker.co.uk/android-chrome-512x512.png",
+      },
+    },
+    datePublished: "2026-02-03",
+    dateModified: "2026-02-03",
+    mainEntityOfPage: "https://www.elitebooker.co.uk/blog/reduce-salon-no-shows",
+    articleSection: "Salon Operations",
+    keywords: "reduce salon no-shows UK, salon cancellation policy, appointment reminders",
+  };
+
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "How to reduce salon no-shows",
+    description:
+      "Seven practical steps to reduce no-shows and improve booking reliability in UK salons.",
+    totalTime: "P14D",
+    step: strategies.map((strategy) => ({
+      "@type": "HowToStep",
+      name: strategy.title,
+      text: strategy.description,
+    })),
+  };
+
   return (
     <>
+      <SEOHead
+        title="How to Reduce Salon No-Shows by 40% - The UK Guide (2026)"
+        description="Proven strategies to cut no-shows & late cancellations. SMS reminders, deposit policies, confirmation systems. Implement today, see results this week."
+        keywords="reduce salon no-shows UK, how to reduce no shows salon, appointment no-show strategies, salon cancellation policy, deposit policy, SMS reminders"
+        canonical="https://www.elitebooker.co.uk/blog/reduce-salon-no-shows"
+        ogType="article"
+        schema={[articleSchema, howToSchema]}
+      />
       <Header />
-      <Helmet>
-        <title>How to Reduce Salon No-Shows by 40% - The UK Guide (2026)</title>
-        <meta
-          name="description"
-          content="Proven strategies to cut no-shows & late cancellations. SMS reminders, deposit policies, confirmation systems. Implement today, see results this week."
-        />
-        <meta
-          name="keywords"
-          content="reduce salon no-shows UK, how to reduce no shows salon, appointment no-show strategies, salon cancellation policy, deposit policy, SMS reminders"
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/blog/reduce-salon-no-shows"
-        />
-        <meta
-          property="article:published_time"
-          content="2026-02-03T10:00:00Z"
-        />
-        <meta property="article:author" content="Elite Booker" />
-        <meta property="og:type" content="article" />
-        <meta
-          property="og:title"
-          content="How to Reduce Salon No-Shows by 40% - The UK Guide"
-        />
-        <meta
-          property="og:description"
-          content="Proven strategies to cut no-shows & late cancellations. SMS reminders, deposit policies, confirmation systems."
-        />
-      </Helmet>
 
       <BreadcrumbSchema items={breadcrumbs} />
       <FAQSchema faqs={faqs} />
-
-      {/* Article Schema */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Article",
-          headline:
-            "How to Reduce Salon No-Shows by 40%: The Ultimate UK Guide",
-          author: {
-            "@type": "Organization",
-            name: "Elite Booker",
-          },
-          publisher: {
-            "@type": "Organization",
-            name: "Elite Booker",
-            logo: {
-              "@type": "ImageObject",
-              url: "https://www.elitebooker.co.uk/logo.png",
-            },
-          },
-          datePublished: "2026-02-03",
-          dateModified: "2026-02-03",
-          wordCount: 2500,
-          articleBody:
-            "Proven strategies to reduce salon no-shows by 40-70%. SMS reminders, deposits, confirmation workflows.",
-        })}
-      </script>
 
       <div
         className="min-h-screen"
@@ -342,6 +333,23 @@ export default function ReduceSalonNoShows() {
                   </div>
                 </motion.div>
               ))}
+            </div>
+
+            <div className="mt-8 rounded-xl border border-slate-200 bg-slate-50 p-5">
+              <p className="text-sm text-slate-700">
+                Related resources: {" "}
+                <Link to="/features/sms-reminders" className="underline hover:text-slate-900">
+                  SMS reminder feature
+                </Link>
+                {" • "}
+                <Link to="/tools/deposit-policy-generator" className="underline hover:text-slate-900">
+                  Deposit policy generator
+                </Link>
+                {" • "}
+                <Link to="/compare/vs-fresha" className="underline hover:text-slate-900">
+                  Elite Booker vs Fresha
+                </Link>
+              </p>
             </div>
           </section>
 

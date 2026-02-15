@@ -9,6 +9,7 @@
     "prerender": "node scripts/prerenderRoutes.js",
     "sitemap": "node scripts/generateSitemap.js",
     "seo:tripwire": "node scripts/seoTripwireCheck.js",
+    "seo:coverage": "node scripts/seoComponentCoverageCheck.js",
     "seo:check": "npm run sitemap && npm run seo:tripwire",
     "seo:verify": "node scripts/verifyLiveSeo.js",
     "preview": "vite preview",

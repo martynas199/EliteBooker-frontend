@@ -2,7 +2,6 @@
  * Elite Booker vs Fresha Comparison Page
  */
 
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -14,6 +13,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import BreadcrumbSchema from "../../../shared/components/Schema/BreadcrumbSchema";
+import SEOHead from "../../../shared/components/seo/SEOHead";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -83,22 +83,39 @@ export default function VsFresha() {
     { feature: "Staff Management", elite: "Unlimited", fresha: "Unlimited" },
   ];
 
+  const comparisonSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Elite Booker vs Fresha",
+    description:
+      "Comparison of Elite Booker and Fresha pricing, commissions, and features for UK salons.",
+    url: "https://www.elitebooker.co.uk/compare/vs-fresha",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Elite Booker",
+      url: "https://www.elitebooker.co.uk",
+    },
+    about: [
+      {
+        "@type": "Thing",
+        name: "Salon booking software comparison",
+      },
+      {
+        "@type": "Thing",
+        name: "Fresha alternative",
+      },
+    ],
+  };
+
   return (
     <>
+      <SEOHead
+        title="Elite Booker vs Fresha - Which Is Cheaper? (2026 Comparison)"
+        description="Honest comparison: Elite Booker saves you £180+/year vs Fresha. £0/month with no commission. SMS optional. See real cost breakdown with verified pricing."
+        canonical="https://www.elitebooker.co.uk/compare/vs-fresha"
+        schema={comparisonSchema}
+      />
       <Header />
-      <Helmet>
-        <title>
-          Elite Booker vs Fresha - Which Is Cheaper? (2026 Comparison)
-        </title>
-        <meta
-          name="description"
-          content="Honest comparison: Elite Booker saves you £180+/year vs Fresha. £0/month with no commission. SMS optional. See real cost breakdown with verified pricing."
-        />
-        <link
-          rel="canonical"
-          href="https://www.elitebooker.co.uk/compare/vs-fresha"
-        />
-      </Helmet>
 
       <BreadcrumbSchema items={breadcrumbs} />
 
