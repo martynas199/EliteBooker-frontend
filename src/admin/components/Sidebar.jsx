@@ -69,6 +69,7 @@ const navigationConfig = [
         condition: "multiLocation",
       },
       { label: "Services", path: "/admin/services" },
+      { label: "Waitlist", path: "/admin/waitlist" },
       { label: "Staff", path: "/admin/staff", condition: "notSpecialist" },
       { label: "Custom Working Hours", path: "/admin/schedule" },
       { label: "Time Off", path: "/admin/timeoff" },

@@ -201,6 +201,7 @@ const TenantDetails = lazy(() => import("../admin/pages/TenantDetails"));
 const PlatformFeatures = lazy(() => import("../admin/pages/PlatformFeatures"));
 const Clients = lazy(() => import("../admin/pages/ClientsPage"));
 const ClientDetails = lazy(() => import("../admin/pages/ClientDetailsPage"));
+const AdminWaitlist = lazy(() => import("../admin/pages/Waitlist"));
 const TakePaymentPage = lazy(() => import("../tenant/pages/TakePaymentPage"));
 const Seminars = lazy(() => import("../admin/pages/Seminars"));
 const SeminarForm = lazy(() => import("../admin/pages/SeminarForm"));
@@ -595,6 +596,14 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<LoadingSpinner center size="lg" />}>
                 <AdminServices />
+              </Suspense>
+            }
+          />
+          <Route
+            path="waitlist"
+            element={
+              <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                <AdminWaitlist />
               </Suspense>
             }
           />

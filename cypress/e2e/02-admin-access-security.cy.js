@@ -382,7 +382,7 @@ describe("Admin Access & Security", () => {
 
       cy.visit("/admin/bookings");
 
-      cy.intercept("GET", "**/api/bookings*", (req) => {
+      cy.intercept("GET", "**/api/appointments*", (req) => {
         expect(req.headers["x-tenant-slug"]).to.equal(tenant1.slug);
       }).as("getBookings");
 

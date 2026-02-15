@@ -9,6 +9,8 @@ const navButtonClass =
   "flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900";
 const desktopDropdownClass =
   "absolute left-0 top-full z-50 w-56 rounded-xl border border-slate-200 bg-white py-2 shadow-xl";
+const featuresDropdownClass =
+  "absolute left-0 top-full z-50 w-56 rounded-xl border border-slate-200 bg-white py-2 shadow-xl";
 const desktopDropdownItemClass =
   "block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100";
 const mobileMenuItemClass =
@@ -69,6 +71,13 @@ export default function Header() {
     { label: "List your business", href: "/signup" },
     { label: "Business log in", href: "/admin/login" },
     { label: "Join referral program", href: "/join-referral-program" },
+  ];
+  const featureDropdownLinks = [
+    { label: "SMS Reminders", href: "/features/sms-reminders" },
+    { label: "No-Show Protection", href: "/features/no-show-protection" },
+    { label: "Calendar Sync", href: "/features/calendar-sync" },
+    { label: "Online Booking", href: "/features/online-booking" },
+    { label: "See all features", href: "/features" },
   ];
 
   return (
@@ -211,42 +220,21 @@ export default function Header() {
                 </svg>
               </Link>
               {showFeaturesDropdown && (
-                <div className={desktopDropdownClass}>
-                  <Link
-                    to="/features"
-                    className={desktopDropdownItemClass}
-                    onClick={() => setShowFeaturesDropdown(false)}
-                  >
-                    All Features
-                  </Link>
-                  <Link
-                    to="/features/sms-reminders"
-                    className={desktopDropdownItemClass}
-                    onClick={() => setShowFeaturesDropdown(false)}
-                  >
-                    SMS Reminders
-                  </Link>
-                  <Link
-                    to="/features/no-show-protection"
-                    className={desktopDropdownItemClass}
-                    onClick={() => setShowFeaturesDropdown(false)}
-                  >
-                    No-Show Protection
-                  </Link>
-                  <Link
-                    to="/features/calendar-sync"
-                    className={desktopDropdownItemClass}
-                    onClick={() => setShowFeaturesDropdown(false)}
-                  >
-                    Calendar Sync
-                  </Link>
-                  <Link
-                    to="/features/online-booking"
-                    className={desktopDropdownItemClass}
-                    onClick={() => setShowFeaturesDropdown(false)}
-                  >
-                    Online Booking
-                  </Link>
+                <div className={featuresDropdownClass}>
+                  {featureDropdownLinks.map((link, index) => (
+                    <Link
+                      key={`${link.href}-${index}`}
+                      to={link.href}
+                      className={`${desktopDropdownItemClass} ${
+                        index === featureDropdownLinks.length - 1
+                          ? "font-semibold text-slate-900"
+                          : ""
+                      }`}
+                      onClick={() => setShowFeaturesDropdown(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>

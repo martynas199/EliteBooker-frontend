@@ -422,7 +422,7 @@ Cypress.Commands.add("createBooking", (bookingData, tenantSlug) => {
 
   cy.request({
     method: "POST",
-    url: `${apiUrl}/api/bookings`,
+    url: `${apiUrl}/api/appointments`,
     headers: {
       "x-tenant-slug": tenantSlug,
     },

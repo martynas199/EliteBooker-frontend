@@ -64,7 +64,7 @@ describe("Stripe Connect Payment Tests", () => {
       // Verify booking status via API
       cy.get("@appointmentId").then((appointmentId) => {
         cy.request({
-          url: `${Cypress.env("API_URL")}/api/bookings/${appointmentId}`,
+          url: `${Cypress.env("API_URL")}/api/appointments/${appointmentId}`,
           headers: {
             "x-tenant-slug": tenant1.slug,
           },
@@ -114,7 +114,7 @@ describe("Stripe Connect Payment Tests", () => {
       // Verify booking status
       cy.get("@appointmentId").then((appointmentId) => {
         cy.request({
-          url: `${Cypress.env("API_URL")}/api/bookings/${appointmentId}`,
+          url: `${Cypress.env("API_URL")}/api/appointments/${appointmentId}`,
           headers: {
             "x-tenant-slug": tenant1.slug,
           },
@@ -148,7 +148,7 @@ describe("Stripe Connect Payment Tests", () => {
       // Verify appointment includes platform fee
       cy.get("@checkoutSession").then((session) => {
         cy.request({
-          url: `${Cypress.env("API_URL")}/api/bookings/${
+          url: `${Cypress.env("API_URL")}/api/appointments/${
             session.appointmentId
           }`,
           headers: {
@@ -248,7 +248,7 @@ describe("Stripe Connect Payment Tests", () => {
       // Verify booking status remains pending/cancelled
       cy.get("@appointmentId").then((appointmentId) => {
         cy.request({
-          url: `${Cypress.env("API_URL")}/api/bookings/${appointmentId}`,
+          url: `${Cypress.env("API_URL")}/api/appointments/${appointmentId}`,
           failOnStatusCode: false,
           headers: {
             "x-tenant-slug": tenant1.slug,
@@ -314,7 +314,7 @@ describe("Stripe Connect Payment Tests", () => {
 
       cy.get("@failedAppointmentId").then((appointmentId) => {
         cy.request({
-          url: `${Cypress.env("API_URL")}/api/bookings/${appointmentId}`,
+          url: `${Cypress.env("API_URL")}/api/appointments/${appointmentId}`,
           failOnStatusCode: false,
           headers: {
             "x-tenant-slug": tenant1.slug,
@@ -391,15 +391,19 @@ describe("Stripe Connect Payment Tests", () => {
             method: "POST",
             url: `${Cypress.env(
               "API_URL"
-            )}/api/bookings/${appointmentId}/refund`,
+            )}/api/appointments/${appointmentId}/cancel`,
             failOnStatusCode: false,
             headers: {
               Authorization: `Bearer ${token}`,
               "x-tenant-slug": tenant1.slug,
             },
+            body: {
+              requestedBy: "staff",
+              reason: "cypress_refund_test",
+            },
           }).then((response) => {
             if (response.status === 200) {
-              expect(response.body.refunded).to.be.true;
+              expect(response.body.status).to.include("cancelled");
             }
           });
         });

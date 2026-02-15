@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { DayPicker } from "react-day-picker";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -6,6 +6,8 @@ import timezone from "dayjs/plugin/timezone";
 import "react-day-picker/dist/style.css";
 import { useAvailableDates } from "../hooks/useAvailableDates";
 import { useSlots } from "../../tenant/hooks/useSlots";
+import { api } from "../lib/apiClient";
+import toast from "react-hot-toast";
 import { StaggerContainer, StaggerItem } from "./ui/PageTransition";
 import { TimeSlotsGrouped } from "./TimeSlotUtils";
 import { SkeletonTimeSlots } from "./ui/Skeleton";
@@ -26,6 +28,7 @@ dayjs.extend(timezone);
  * @param {function} props.onSelect - Callback when slot selected: (slot) => void
  * @param {object} props.beauticianWorkingHours - Array of { dayOfWeek, start, end }
  * @param {object} props.customSchedule - Custom schedule overrides: { "YYYY-MM-DD": [{ start, end }] }
+ * @param {object} props.waitlistClient - Optional logged in client data { id, name, email, phone }
  */
 export default function DateTimePicker({
   specialistId,
@@ -37,11 +40,27 @@ export default function DateTimePicker({
   onSelect,
   beauticianWorkingHours = [],
   customSchedule = {},
+  waitlistClient = null,
 }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [mobileCalendarOpen, setMobileCalendarOpen] = useState(false);
+  const [waitlistSubmitting, setWaitlistSubmitting] = useState(false);
+  const [showWaitlistForm, setShowWaitlistForm] = useState(false);
+  const [waitlistForm, setWaitlistForm] = useState({
+    name: waitlistClient?.name || "",
+    email: waitlistClient?.email || "",
+    phone: waitlistClient?.phone || "",
+  });
+
+  useEffect(() => {
+    setWaitlistForm({
+      name: waitlistClient?.name || "",
+      email: waitlistClient?.email || "",
+      phone: waitlistClient?.phone || "",
+    });
+  }, [waitlistClient?.name, waitlistClient?.email, waitlistClient?.phone]);
 
   // Format date for API query
   const dateStr = useMemo(() => {
@@ -174,6 +193,51 @@ export default function DateTimePicker({
     if (selectedSlot?.startISO === slot.startISO) return; // Already selected
     setSelectedSlot(slot);
     onSelect(slot);
+  };
+
+  const handleWaitlistInput = (event) => {
+    const { name, value } = event.target;
+    setWaitlistForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleJoinWaitlist = async (event) => {
+    event.preventDefault();
+
+    if (!selectedDate || !serviceId || !variantName) {
+      toast.error("Please select a date first.");
+      return;
+    }
+
+    if (!waitlistForm.name.trim() || !waitlistForm.email.trim()) {
+      toast.error("Name and email are required to join the waitlist.");
+      return;
+    }
+
+    setWaitlistSubmitting(true);
+    try {
+      await api.post("/waitlist", {
+        serviceId,
+        variantName,
+        specialistId: specialistId || null,
+        desiredDate: dayjs(selectedDate).format("YYYY-MM-DD"),
+        timePreference: "any",
+        client: {
+          userId: waitlistClient?.id || null,
+          name: waitlistForm.name.trim(),
+          email: waitlistForm.email.trim(),
+          phone: waitlistForm.phone.trim(),
+        },
+      });
+
+      toast.success(
+        "Added to waitlist. We’ll notify you as soon as a slot opens."
+      );
+      setShowWaitlistForm(false);
+    } catch (error) {
+      toast.error(error.message || "Could not join waitlist. Please try again.");
+    } finally {
+      setWaitlistSubmitting(false);
+    }
   };
 
   const handleRetryAvailableDates = () => {
@@ -553,7 +617,7 @@ export default function DateTimePicker({
             </div>
           )}
 
-          {selectedDate && !loadingSlots && !slotsError && (
+          {selectedDate && !loadingSlots && !slotsError && slots.length > 0 && (
             <div className="lg:max-h-[500px] lg:overflow-y-auto pr-0">
               <TimeSlotsGrouped
                 slots={slots}
@@ -561,6 +625,88 @@ export default function DateTimePicker({
                 onSelect={handleSlotSelect}
                 salonTz={salonTz}
               />
+            </div>
+          )}
+
+          {selectedDate && !loadingSlots && !slotsError && slots.length === 0 && (
+            <div className="text-center py-10 px-2">
+              <svg
+                className="w-14 h-14 mx-auto mb-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              <p className="font-bold text-gray-900 text-lg mb-2">
+                No available times
+              </p>
+              <p className="text-sm text-gray-500 mb-6">
+                Join the waitlist and we’ll auto-book you if this slot opens.
+              </p>
+
+              {!showWaitlistForm ? (
+                <button
+                  type="button"
+                  onClick={() => setShowWaitlistForm(true)}
+                  className="px-5 py-2.5 bg-black text-white rounded-lg font-semibold hover:bg-gray-900 transition-colors"
+                >
+                  Join waitlist
+                </button>
+              ) : (
+                <form
+                  onSubmit={handleJoinWaitlist}
+                  className="max-w-sm mx-auto text-left space-y-3"
+                >
+                  <input
+                    type="text"
+                    name="name"
+                    value={waitlistForm.name}
+                    onChange={handleWaitlistInput}
+                    placeholder="Full name"
+                    className="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black/20"
+                    required
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    value={waitlistForm.email}
+                    onChange={handleWaitlistInput}
+                    placeholder="Email"
+                    className="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black/20"
+                    required
+                  />
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={waitlistForm.phone}
+                    onChange={handleWaitlistInput}
+                    placeholder="Phone (optional)"
+                    className="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black/20"
+                  />
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      type="submit"
+                      disabled={waitlistSubmitting}
+                      className="flex-1 px-4 py-2.5 bg-black text-white rounded-lg font-semibold hover:bg-gray-900 transition-colors disabled:opacity-60"
+                    >
+                      {waitlistSubmitting ? "Joining..." : "Confirm"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowWaitlistForm(false)}
+                      className="px-4 py-2.5 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           )}
         </div>

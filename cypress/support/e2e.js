@@ -39,7 +39,7 @@ beforeEach(() => {
   cy.intercept("GET", "**/api/specialists*").as("getStaff");
   cy.intercept("GET", "**/api/availability/slots*").as("getSlots");
   cy.intercept("POST", "**/api/checkout").as("checkout");
-  cy.intercept("POST", "**/api/bookings").as("createBooking");
+  cy.intercept("POST", "**/api/appointments").as("createBooking");
 });
 
 // After each test

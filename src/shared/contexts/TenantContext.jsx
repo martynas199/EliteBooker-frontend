@@ -65,6 +65,13 @@ export function TenantProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [resolution, setResolution] = useState(null);
+  const tenantResolution = useMemo(
+    () => resolveTenantFromURL(),
+    [location.pathname]
+  );
+  const tenantResolutionKey = `${tenantResolution.type || "platform"}:${
+    tenantResolution.slug || tenantResolution.domain || ""
+  }`;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -126,7 +133,7 @@ export function TenantProvider({ children }) {
     return () => {
       controller.abort(); // Cancel request on unmount or route change
     };
-  }, [location.pathname]); // Re-run when pathname changes
+  }, [tenantResolutionKey]); // Re-run when tenant identity changes
 
   /**
    * Apply tenant branding to the page

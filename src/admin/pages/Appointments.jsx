@@ -499,20 +499,19 @@ export default function Appointments() {
   // Check if an appointment has a signed consent
   async function checkConsentForAppointments(appointmentIds) {
     try {
-      // Check each appointment for consent (in production, you might batch this)
-      const consentChecks = await Promise.allSettled(
-        appointmentIds.map((id) =>
-          api.get(`/consents/appointment/${id}`).catch(() => null)
-        )
+      const uncheckedAppointmentIds = appointmentIds.filter(
+        (appointmentId) => !consentsMap[appointmentId]
       );
 
-      const newConsentsMap = {};
-      consentChecks.forEach((result, index) => {
-        const appointmentId = appointmentIds[index];
-        if (result.status === "fulfilled" && result.value?.data?.data) {
-          newConsentsMap[appointmentId] = result.value.data.data;
-        }
+      if (uncheckedAppointmentIds.length === 0) {
+        return;
+      }
+
+      const response = await api.post("/consents/appointment-status/batch", {
+        appointmentIds: uncheckedAppointmentIds,
       });
+
+      const newConsentsMap = response.data?.data || {};
 
       setConsentsMap((prev) => ({ ...prev, ...newConsentsMap }));
     } catch (error) {

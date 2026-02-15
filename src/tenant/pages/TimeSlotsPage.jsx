@@ -17,6 +17,7 @@ import { api } from "../../shared/lib/apiClient";
 import PageTransition from "../../shared/components/ui/PageTransition";
 import toast from "react-hot-toast";
 import { useTenant } from "../../shared/contexts/TenantContext";
+import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { useBookingGuard } from "../hooks/useBookingGuard";
 
 export default function TimeSlots() {
@@ -30,6 +31,7 @@ export default function TimeSlots() {
   const specialistId = bookingSpecialist?.specialistId; // Backend field name preserved
   const any = bookingSpecialist?.any;
   const { tenant } = useTenant();
+  const { client } = useClientAuth();
 
   // Calculate total duration from all selected services
   const totalDuration = useMemo(() => {
@@ -409,6 +411,7 @@ export default function TimeSlots() {
                 (wh) => wh && wh.dayOfWeek != null
               )}
               customSchedule={specialist.customSchedule || {}}
+              waitlistClient={client}
               onSelect={handleSlotSelect}
             />
           ) : (

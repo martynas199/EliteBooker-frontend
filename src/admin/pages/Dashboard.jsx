@@ -60,6 +60,9 @@ export default function Dashboard() {
   const [showCreateStaffModal, setShowCreateStaffModal] = useState(false);
   const [metrics, setMetrics] = useState(null);
   const [metricsLoading, setMetricsLoading] = useState(false);
+  const [waitlistAnalytics, setWaitlistAnalytics] = useState(null);
+  const [waitlistAnalyticsLoading, setWaitlistAnalyticsLoading] =
+    useState(false);
   const [salonData, setSalonData] = useState(null);
   const [settingsData, setSettingsData] = useState(null);
   const [manualTaskCompletions, setManualTaskCompletions] = useState({});
@@ -81,8 +84,10 @@ export default function Dashboard() {
   } = useQuery({
     queryKey: queryKeys.appointments.all,
     queryFn: async ({ signal }) => {
-      const response = await api.get("/appointments", { signal });
-      return response.data || [];
+      const response = await api.get("/appointments?page=1&limit=200", {
+        signal,
+      });
+      return response.data?.data || response.data || [];
     },
     enabled: !!admin, // Only fetch when admin is loaded
     staleTime: 1 * 60 * 1000, // 1 minute - appointments change frequently
@@ -411,7 +416,25 @@ export default function Dashboard() {
     []
   );
 
+  const emptyWaitlistAnalytics = useMemo(
+    () => ({
+      totals: {
+        total: 0,
+        active: 0,
+        converted: 0,
+        expired: 0,
+        removed: 0,
+      },
+      conversionRate: 0,
+      autoFilledConversions: 0,
+      averageConversionHours: null,
+      timeline: [],
+    }),
+    []
+  );
+
   const stats = metrics ?? emptyStats;
+  const waitlistStats = waitlistAnalytics ?? emptyWaitlistAnalytics;
 
   const stripeSpecialist = useMemo(() => {
     if (!specialists?.length) return null;
@@ -576,11 +599,38 @@ export default function Dashboard() {
     const loadMetrics = async () => {
       try {
         setMetricsLoading(true);
-        const response = await api.get("/appointments/metrics", {
-          params,
-          signal: controller.signal,
-        });
-        setMetrics(response.data || emptyStats);
+        setWaitlistAnalyticsLoading(true);
+        const [metricsResult, waitlistResult] = await Promise.allSettled([
+          api.get("/appointments/metrics", {
+            params,
+            signal: controller.signal,
+          }),
+          api.get("/waitlist/analytics", {
+            signal: controller.signal,
+          }),
+        ]);
+
+        if (metricsResult.status === "fulfilled") {
+          setMetrics(metricsResult.value.data || emptyStats);
+        } else if (!isCancellationError(metricsResult.reason)) {
+          console.error(
+            "Failed to fetch dashboard metrics:",
+            metricsResult.reason
+          );
+          toast.error("Failed to load dashboard metrics");
+        }
+
+        if (waitlistResult.status === "fulfilled") {
+          setWaitlistAnalytics(
+            waitlistResult.value.data || emptyWaitlistAnalytics
+          );
+        } else if (!isCancellationError(waitlistResult.reason)) {
+          console.error(
+            "Failed to fetch waitlist analytics:",
+            waitlistResult.reason
+          );
+          setWaitlistAnalytics(emptyWaitlistAnalytics);
+        }
       } catch (error) {
         if (isCancellationError(error)) {
           return;
@@ -589,6 +639,7 @@ export default function Dashboard() {
         toast.error("Failed to load dashboard metrics");
       } finally {
         setMetricsLoading(false);
+        setWaitlistAnalyticsLoading(false);
       }
     };
 
@@ -600,6 +651,7 @@ export default function Dashboard() {
     admin?.specialistId,
     admin?.role,
     emptyStats,
+    emptyWaitlistAnalytics,
     isSuperAdmin,
     selectedSpecialist,
   ]);
@@ -616,6 +668,36 @@ export default function Dashboard() {
       .split("_")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
+  };
+
+  const formatWaitlistAction = (action = "") => {
+    switch (action) {
+      case "waitlist_joined":
+        return "Joined waitlist";
+      case "waitlist_auto_fill_converted":
+        return "Auto-filled and converted";
+      case "waitlist_converted":
+        return "Converted to booking";
+      case "waitlist_bulk_status_updated":
+      case "waitlist_status_updated":
+        return "Status updated";
+      default:
+        return "Waitlist activity";
+    }
+  };
+
+  const formatWaitlistActor = (event) => {
+    const actor = event?.meta?.actor;
+    if (actor?.name) return actor.name;
+    if (actor?.email) return actor.email;
+
+    if (typeof event?.by === "string" && event.by.startsWith("admin:")) {
+      return "Admin";
+    }
+    if (typeof event?.by === "string" && event.by.startsWith("client:")) {
+      return "Client";
+    }
+    return "System";
   };
 
   const handleCloseModal = () => {
@@ -1199,6 +1281,139 @@ export default function Dashboard() {
                   Total Clients
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Waitlist Conversion Snapshot */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
+            <div className="xl:col-span-1 bg-white rounded-xl border border-emerald-100 shadow-lg p-4">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                    Waitlist Recovery
+                  </p>
+                  <p className="text-3xl font-black text-gray-900 mt-1">
+                    {waitlistStats.conversionRate.toFixed(1)}%
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    conversion rate across all waitlist entries
+                  </p>
+                </div>
+                <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="rounded-lg bg-emerald-50 px-3 py-2">
+                  <div className="text-[11px] uppercase tracking-wide text-emerald-700">
+                    Active
+                  </div>
+                  <div className="text-lg font-bold text-emerald-900">
+                    {waitlistStats.totals.active}
+                  </div>
+                </div>
+                <div className="rounded-lg bg-indigo-50 px-3 py-2">
+                  <div className="text-[11px] uppercase tracking-wide text-indigo-700">
+                    Converted
+                  </div>
+                  <div className="text-lg font-bold text-indigo-900">
+                    {waitlistStats.totals.converted}
+                  </div>
+                </div>
+                <div className="rounded-lg bg-blue-50 px-3 py-2">
+                  <div className="text-[11px] uppercase tracking-wide text-blue-700">
+                    Auto-filled
+                  </div>
+                  <div className="text-lg font-bold text-blue-900">
+                    {waitlistStats.autoFilledConversions}
+                  </div>
+                </div>
+                <div className="rounded-lg bg-gray-50 px-3 py-2">
+                  <div className="text-[11px] uppercase tracking-wide text-gray-700">
+                    Avg Convert
+                  </div>
+                  <div className="text-lg font-bold text-gray-900">
+                    {waitlistStats.averageConversionHours == null
+                      ? "—"
+                      : `${waitlistStats.averageConversionHours}h`}
+                  </div>
+                </div>
+              </div>
+              <Link
+                to="/admin/waitlist"
+                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-800"
+              >
+                Open waitlist manager
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </Link>
+            </div>
+
+            <div className="xl:col-span-2 bg-white rounded-xl border border-gray-100 shadow-lg p-4">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-sm font-bold text-gray-900">
+                  Recent Waitlist Activity
+                </h3>
+                {waitlistAnalyticsLoading && (
+                  <span className="text-xs text-gray-500">Refreshing…</span>
+                )}
+              </div>
+
+              {waitlistStats.timeline.length ? (
+                <div className="mt-3 divide-y divide-gray-100">
+                  {waitlistStats.timeline.slice(0, 6).map((event) => (
+                    <div
+                      key={event.id}
+                      className="py-2.5 flex items-start justify-between gap-3"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-gray-900 truncate">
+                          {formatWaitlistAction(event.action)}
+                        </p>
+                        <p className="text-xs text-gray-600 truncate">
+                          {event.clientName} · {event.serviceName}
+                          {event.variantName ? ` (${event.variantName})` : ""}
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-xs font-medium text-gray-700">
+                          {formatWaitlistActor(event)}
+                        </p>
+                        <p className="text-[11px] text-gray-500">
+                          {dayjs(event.at).format("DD MMM, HH:mm")}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-3 text-sm text-gray-500">
+                  No waitlist activity yet.
+                </p>
+              )}
             </div>
           </div>
 
