@@ -9,6 +9,24 @@ export const createGiftCard = async (data) => {
 };
 
 /**
+ * Create Stripe checkout session for gift card purchase
+ */
+export const createGiftCardCheckoutSession = async (data) => {
+  const response = await api.post("/gift-cards/create-session", data);
+  return response.data;
+};
+
+/**
+ * Confirm gift card checkout after Stripe redirect
+ */
+export const confirmGiftCardCheckout = async (sessionId) => {
+  const response = await api.get(
+    `/gift-cards/confirm?session_id=${encodeURIComponent(sessionId)}`
+  );
+  return response.data;
+};
+
+/**
  * Get gift card by code
  */
 export const getGiftCard = async (code) => {

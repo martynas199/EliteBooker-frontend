@@ -88,7 +88,7 @@ export const MARKETING_ROUTE_MANIFEST = [
     path: "/features/sms-reminders",
     title: "SMS Appointment Reminders - Reduce No-Shows by 70% | Elite Booker",
     description:
-      "Automated SMS reminders for UK salons. 98% open rate, one-click confirmations, reduce no-shows by 70%. GBP 2.99/month unlimited. Try free today.",
+      "Automated outbound SMS reminders for UK salons. 98% open rate, reduce no-shows by 70%. GBP 2.99/month unlimited. Try free today.",
     indexable: true,
     changefreq: "monthly",
     priority: 0.8,
@@ -188,7 +188,7 @@ export const MARKETING_ROUTE_MANIFEST = [
     path: "/industries/barbers",
     title: "Barber Shop Booking System UK - Reduce No-Shows",
     description:
-      "Modern booking software for UK barber shops. Walk-in queue management, online bookings, SMS reminders & staff scheduling. No commission fees.",
+      "Modern booking software for UK barber shops. Online bookings, SMS reminders & staff scheduling. No commission fees.",
     indexable: true,
     changefreq: "weekly",
     priority: 0.9,

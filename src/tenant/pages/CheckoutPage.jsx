@@ -31,6 +31,7 @@ import PageTransition from "../../shared/components/ui/PageTransition";
 import toast from "react-hot-toast";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import { useTenant } from "../../shared/contexts/TenantContext";
+import { getGiftCard } from "../../shared/api/giftCards.api";
 
 export default function CheckoutPage() {
   const booking = useSelector((s) => s.booking);
@@ -49,6 +50,10 @@ export default function CheckoutPage() {
   const { currency, formatPrice } = useCurrency();
   const { tenant } = useTenant();
   const [loading, setLoading] = useState(false);
+  const [giftCardInput, setGiftCardInput] = useState("");
+  const [giftCardApplying, setGiftCardApplying] = useState(false);
+  const [giftCardError, setGiftCardError] = useState("");
+  const [giftCardApplied, setGiftCardApplied] = useState(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -211,6 +216,7 @@ export default function CheckoutPage() {
         client: form,
         mode: mode === "pay_in_salon" ? "pay_in_salon" : mode,
         currency, // Add selected currency
+        ...(giftCardApplied?.code ? { giftCardCode: giftCardApplied.code } : {}),
         ...(user ? { userId: user._id } : {}), // Add userId if logged in
       };
 
@@ -250,6 +256,56 @@ export default function CheckoutPage() {
     }
   }
 
+  const applyGiftCard = async () => {
+    const normalizedCode = String(giftCardInput || "")
+      .trim()
+      .toUpperCase();
+
+    if (!normalizedCode) {
+      setGiftCardError("Enter a gift card code");
+      return;
+    }
+
+    setGiftCardApplying(true);
+    setGiftCardError("");
+    try {
+      const response = await getGiftCard(normalizedCode);
+      const card = response?.giftCard;
+
+      if (!card) {
+        throw new Error("Gift card not found");
+      }
+
+      if (!card.isValid || Number(card.remainingBalance || 0) <= 0) {
+        throw new Error("Gift card is invalid or has no remaining balance");
+      }
+
+      if (tenant?.slug && card?.tenant?.slug && card.tenant.slug !== tenant.slug) {
+        throw new Error("This gift card belongs to a different business");
+      }
+
+      setGiftCardApplied({
+        code: card.code,
+        remainingBalance: Number(card.remainingBalance || 0),
+      });
+      setGiftCardInput(card.code);
+      toast.success("Gift card applied");
+    } catch (error) {
+      const message =
+        error?.response?.data?.error || error?.message || "Unable to apply gift card";
+      setGiftCardApplied(null);
+      setGiftCardError(message);
+    } finally {
+      setGiftCardApplying(false);
+    }
+  };
+
+  const removeGiftCard = () => {
+    setGiftCardApplied(null);
+    setGiftCardInput("");
+    setGiftCardError("");
+  };
+
   // Pricing helpers
   // Check if specialist has active no-fee subscription
   const hasNoFeeSubscription =
@@ -263,9 +319,16 @@ export default function CheckoutPage() {
     bookingServices && bookingServices.length > 0
       ? bookingServices.reduce((sum, svc) => sum + Number(svc.price || 0), 0)
       : Number(bookingService?.price || 0);
+  const giftCardDiscount = bookingBeautician?.inSalonPayment
+    ? 0
+    : Math.min(
+        Number(giftCardApplied?.remainingBalance || 0),
+        Number(servicePrice || 0)
+      );
+  const serviceAfterGiftCard = Math.max(0, servicePrice - giftCardDiscount);
   const totalAmount = bookingBeautician?.inSalonPayment
     ? bookingFee
-    : servicePrice + bookingFee;
+    : serviceAfterGiftCard + bookingFee;
 
   // Calculate total duration
   const totalDuration =
@@ -377,6 +440,43 @@ export default function CheckoutPage() {
                       onChange={update("notes")}
                     />
                   </FormField>
+
+                  {!bookingBeautician?.inSalonPayment && (
+                    <div className="p-4 border border-gray-200 rounded-xl bg-gray-50 space-y-3">
+                      <div className="font-semibold text-gray-900">Gift Card</div>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Enter gift card code"
+                          value={giftCardInput}
+                          onChange={(e) => {
+                            setGiftCardInput(e.target.value.toUpperCase());
+                            setGiftCardError("");
+                          }}
+                        />
+                        {giftCardApplied ? (
+                          <Button
+                            variant="outline"
+                            onClick={removeGiftCard}
+                            disabled={giftCardApplying}
+                          >
+                            Remove
+                          </Button>
+                        ) : (
+                          <Button onClick={applyGiftCard} disabled={giftCardApplying}>
+                            {giftCardApplying ? "Applying..." : "Apply"}
+                          </Button>
+                        )}
+                      </div>
+                      {giftCardError && (
+                        <p className="text-sm text-red-600">{giftCardError}</p>
+                      )}
+                      {giftCardApplied && (
+                        <p className="text-sm text-green-700">
+                          Applied {giftCardApplied.code} • Balance: {formatPrice(giftCardApplied.remainingBalance)}
+                        </p>
+                      )}
+                    </div>
+                  )}
 
                   {/* Cancellation Policy Agreement */}
                   <div
@@ -532,6 +632,15 @@ export default function CheckoutPage() {
                         <div className="text-sm text-gray-600">Booking Fee</div>
                         <div className="text-sm font-semibold text-gray-900">
                           {formatPrice(bookingFee)}
+                        </div>
+                      </div>
+                    )}
+
+                    {giftCardDiscount > 0 && (
+                      <div className="flex items-center justify-between mb-4 pt-3 border-t border-gray-200">
+                        <div className="text-sm text-gray-600">Gift Card ({giftCardApplied?.code})</div>
+                        <div className="text-sm font-semibold text-green-700">
+                          -{formatPrice(giftCardDiscount)}
                         </div>
                       </div>
                     )}

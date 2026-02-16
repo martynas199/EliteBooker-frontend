@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useClientAuth } from "../../contexts/ClientAuthContext";
 import { useTenant } from "../../contexts/TenantContext";
-import { createGiftCard } from "../../api/giftCards.api";
+import { createGiftCardCheckoutSession } from "../../api/giftCards.api";
 import Button from "../ui/Button";
 import toast from "react-hot-toast";
 
@@ -11,8 +11,9 @@ const PRESET_AMOUNTS = [25, 50, 100, 150, 200];
 export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
   const { client, isAuthenticated } = useClientAuth();
   const { tenant } = useTenant();
+  const isGiftCardsEnabled = tenant?.features?.enableGiftCards !== false;
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1); // 1: Details, 2: Payment, 3: Success
+  const [step, setStep] = useState(1); // 1: Details, 2: Review, 3: Success
   const [formData, setFormData] = useState({
     amount: 50,
     customAmount: "",
@@ -21,6 +22,7 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
     message: "",
   });
   const [giftCardCode, setGiftCardCode] = useState("");
+  const [createdGiftCard, setCreatedGiftCard] = useState(null);
   const [errors, setErrors] = useState({});
 
   const handleClose = () => {
@@ -34,6 +36,7 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
     });
     setErrors({});
     setGiftCardCode("");
+    setCreatedGiftCard(null);
     onClose();
   };
 
@@ -67,6 +70,11 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
   };
 
   const handleNextStep = () => {
+    if (!isGiftCardsEnabled) {
+      toast.error("Gift cards are currently unavailable for this business");
+      return;
+    }
+
     if (!isAuthenticated) {
       toast.error("Please sign in to purchase a gift card");
       return;
@@ -84,7 +92,7 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
     try {
       const amount = parseFloat(formData.customAmount || formData.amount);
 
-      const response = await createGiftCard({
+      const response = await createGiftCardCheckoutSession({
         tenantId: tenant._id,
         amount,
         recipientName: formData.recipientName,
@@ -92,16 +100,22 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
         message: formData.message || undefined,
       });
 
-      setGiftCardCode(response.giftCard.code);
-      setStep(3);
-      toast.success("Gift card created successfully!");
+      if (!response?.url) {
+        throw new Error("Checkout URL not returned");
+      }
+
+      toast.success("Redirecting to secure checkout...");
 
       if (onSuccess) {
-        onSuccess(response.giftCard);
+        onSuccess(response);
       }
+
+      window.location.href = response.url;
     } catch (error) {
       console.error("Gift card purchase error:", error);
-      toast.error(error.response?.data?.error || "Failed to create gift card");
+      toast.error(
+        error.response?.data?.error || "Failed to start gift card checkout"
+      );
     } finally {
       setLoading(false);
     }
@@ -124,7 +138,7 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
             {/* Header */}
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-gray-900">
-                {step === 3 ? "Gift Card Created!" : "Purchase Gift Card"}
+                {step === 3 ? "Gift Card Sent" : "Send Gift Card"}
               </h2>
               <button
                 onClick={handleClose}
@@ -147,6 +161,37 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
             </div>
 
             <div className="p-6">
+              {!isGiftCardsEnabled ? (
+                <div className="text-center space-y-5">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-100">
+                    <svg
+                      className="w-8 h-8 text-amber-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      Gift cards are unavailable
+                    </h3>
+                    <p className="text-gray-600">
+                      This business has not enabled gift card sales yet.
+                    </p>
+                  </div>
+                  <Button onClick={handleClose} className="w-full">
+                    Close
+                  </Button>
+                </div>
+              ) : (
+                <>
               {/* Step 1: Gift Card Details */}
               {step === 1 && (
                 <div className="space-y-6">
@@ -282,39 +327,48 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
                   </div>
 
                   <Button onClick={handleNextStep} className="w-full" size="lg">
-                    Continue to Payment
+                    Review Gift Card
                   </Button>
                 </div>
               )}
 
-              {/* Step 2: Payment Confirmation */}
+              {/* Step 2: Review */}
               {step === 2 && (
                 <div className="space-y-6">
                   <div className="bg-gray-50 rounded-xl p-6 space-y-4">
                     <h3 className="font-semibold text-lg text-gray-900">
-                      Order Summary
+                      Review & Confirm
                     </h3>
+                    <p className="text-sm text-gray-600">
+                      You&apos;ll be redirected to secure Stripe checkout to
+                      complete payment.
+                    </p>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Gift Card Amount:</span>
+                        <span className="text-gray-600">Gift Card Amount</span>
                         <span className="font-semibold">
                           £{getAmount().toFixed(2)}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Recipient:</span>
+                        <span className="text-gray-600">Recipient</span>
                         <span className="font-semibold">
                           {formData.recipientName}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Email:</span>
+                        <span className="text-gray-600">Recipient Email</span>
                         <span className="font-semibold text-sm">
                           {formData.recipientEmail}
                         </span>
                       </div>
+                      {formData.message && (
+                        <div className="rounded-lg bg-white border border-gray-200 p-3 text-sm text-gray-700">
+                          <span className="font-medium">Message:</span> {formData.message}
+                        </div>
+                      )}
                       <div className="border-t border-gray-300 pt-2 mt-2 flex justify-between text-lg">
-                        <span className="font-bold">Total:</span>
+                        <span className="font-bold">Total</span>
                         <span className="font-bold text-brand-600">
                           £{getAmount().toFixed(2)}
                         </span>
@@ -335,7 +389,7 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
                       disabled={loading}
                       className="flex-1"
                     >
-                      {loading ? "Processing..." : "Complete Purchase"}
+                      {loading ? "Sending..." : "Send Gift Card"}
                     </Button>
                   </div>
                 </div>
@@ -362,10 +416,10 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
 
                   <div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                      Gift Card Created!
+                      Gift Card Sent
                     </h3>
                     <p className="text-gray-600 mb-6">
-                      Your gift card has been created and will be sent to{" "}
+                      Your gift card has been created and sent to{" "}
                       {formData.recipientEmail}
                     </p>
 
@@ -380,6 +434,12 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
 
                     <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-600 text-left space-y-2">
                       <p>✅ Gift card sent to recipient's email</p>
+                      {createdGiftCard?.expiryDate && (
+                        <p>
+                          ✅ Expires on{" "}
+                          {new Date(createdGiftCard.expiryDate).toLocaleDateString("en-GB")}
+                        </p>
+                      )}
                       <p>✅ Valid for 1 year from purchase date</p>
                       <p>✅ Can be used for any service</p>
                     </div>
@@ -389,6 +449,8 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
                     Done
                   </Button>
                 </div>
+              )}
+                </>
               )}
             </div>
           </motion.div>

@@ -84,6 +84,12 @@ const CheckoutPage = lazy(() => import("../tenant/pages/CheckoutPage"));
 const ConfirmationPage = lazy(() => import("../tenant/pages/ConfirmationPage"));
 const SuccessPage = lazy(() => import("../tenant/pages/BookingSuccessPage"));
 const CancelPage = lazy(() => import("../tenant/pages/BookingCancelPage"));
+const GiftCardSuccessPage = lazy(() =>
+  import("../tenant/pages/GiftCardSuccessPage"),
+);
+const GiftCardCancelPage = lazy(() =>
+  import("../tenant/pages/GiftCardCancelPage"),
+);
 const FAQPage = lazy(() => import("../tenant/pages/FAQPage"));
 const ProductsPage = lazy(() => import("../tenant/pages/ProductsPage"));
 const ProductDetailPage = lazy(() =>
@@ -257,6 +263,8 @@ function CustomerLayout() {
             <Route path="products/:id" element={<ProductDetailPage />} />
             <Route path="success" element={<SuccessPage />} />
             <Route path="cancel" element={<CancelPage />} />
+            <Route path="gift-cards/success" element={<GiftCardSuccessPage />} />
+            <Route path="gift-cards/cancel" element={<GiftCardCancelPage />} />
             <Route path="faq" element={<FAQPage />} />
             <Route path="product-checkout" element={<ProductCheckoutPage />} />
             <Route path="shop/success" element={<ShopSuccessPage />} />

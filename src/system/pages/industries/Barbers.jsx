@@ -30,7 +30,7 @@ export default function Barbers() {
     {
       question: "Does it work for walk-in customers?",
       answer:
-        "Absolutely. Elite Booker has a walk-in queue management feature. Customers can join the queue from their phone, and you can see real-time wait times.",
+        "Yes. You can quickly add walk-in customers to your schedule from the dashboard and manage appointments in one place.",
     },
     {
       question: "Can each barber have their own schedule?",
@@ -40,7 +40,7 @@ export default function Barbers() {
     {
       question: "How do SMS reminders reduce no-shows?",
       answer:
-        "Automated SMS reminders are sent 48 and 24 hours before appointments. This reduces no-shows by 70% as customers have multiple chances to confirm or cancel with notice.",
+        "Automated SMS reminders are sent 48 and 24 hours before appointments. This helps reduce forgotten appointments and lowers no-shows.",
     },
   ];
 
@@ -55,7 +55,7 @@ export default function Barbers() {
     "@type": "WebPage",
     name: "Barber Shop Booking System UK",
     description:
-      "Booking and queue management software for UK barber shops with reminders and staff scheduling.",
+      "Booking software for UK barber shops with reminders and staff scheduling.",
     url: "https://www.elitebooker.co.uk/industries/barbers",
     isPartOf: {
       "@type": "WebSite",
@@ -84,7 +84,7 @@ export default function Barbers() {
     <>
       <SEOHead
         title="Barber Shop Booking System UK - Reduce No-Shows"
-        description="Modern booking software for UK barber shops. Walk-in queue management, online bookings, SMS reminders & staff scheduling. No commission fees."
+        description="Modern booking software for UK barber shops. Online bookings, SMS reminders & staff scheduling. No commission fees."
         canonical="https://www.elitebooker.co.uk/industries/barbers"
         schema={[barbersPageSchema, barbersServiceSchema]}
       />
@@ -160,9 +160,9 @@ export default function Barbers() {
                 },
                 {
                   icon: <Users className="w-8 h-8 text-slate-700" />,
-                  title: "Walk-In Queue Management",
+                  title: "Walk-In Booking Support",
                   description:
-                    "Digital queue system lets customers join from their phone and see real-time wait times. No more crowded waiting areas.",
+                    "Quickly add walk-in customers to your schedule and keep your day organised from one dashboard.",
                 },
                 {
                   icon: <MessageSquare className="w-8 h-8 text-slate-700" />,

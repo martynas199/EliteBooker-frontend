@@ -35,12 +35,12 @@ export default function SmsReminders() {
     {
       question: "Can clients reply to SMS reminders?",
       answer:
-        "Yes! Clients can reply YES to confirm or NO to cancel. Replies are tracked in your dashboard and automatically update appointment status.",
+        "Clients can reply to the SMS on their phone, but replies are not processed in Elite Booker. Our reminder flow is outbound-only.",
     },
     {
       question: "When are SMS reminders sent?",
       answer:
-        "You control the timing. Most salons send 48-hour and 24-hour reminders. You can also send immediate booking confirmations and 2-hour reminders for high-value treatments.",
+        "Reminders are sent automatically on your configured schedule, typically 48-hour and 24-hour reminders before appointments.",
     },
     {
       question: "Do I need SMS reminders if I use email?",
@@ -50,7 +50,7 @@ export default function SmsReminders() {
     {
       question: "Can I customize SMS messages?",
       answer:
-        "Absolutely. Customize message content, timing, and which appointment types trigger reminders. Add your salon name, address, phone number, and custom instructions.",
+        "Reminder templates are currently system-managed. If you need a wording change, contact support and we can help with available options.",
     },
   ];
 
@@ -69,9 +69,9 @@ export default function SmsReminders() {
     },
     {
       icon: CheckCircle,
-      title: "One-Click Confirmations",
+      title: "Automated Reminder Sending",
       description:
-        "Clients reply YES to confirm or NO to cancel. You get instant confirmation status in your dashboard.",
+        "Reminders are sent automatically before appointments so clients get timely prompts without manual follow-up.",
     },
     {
       icon: Smartphone,
@@ -87,9 +87,9 @@ export default function SmsReminders() {
     },
     {
       icon: MessageSquare,
-      title: "Two-Way Communication",
+      title: "Outbound SMS Delivery",
       description:
-        "Clients can reply with questions, reschedule requests, or cancellations. You respond from one dashboard.",
+        "SMS reminders are sent as outbound notifications.",
     },
   ];
 
@@ -110,7 +110,7 @@ export default function SmsReminders() {
       step: "3",
       title: "48-Hour Reminder",
       description:
-        "2 days before: 'Hi Sarah, reminder you have lashes tomorrow at 2pm. Reply YES to confirm or NO to cancel.'",
+        "2 days before: 'Hi Sarah, reminder you have lashes tomorrow at 2pm at The Beauty Lounge. If you need to change your booking, please call us.'",
     },
     {
       step: "4",
@@ -120,9 +120,9 @@ export default function SmsReminders() {
     },
     {
       step: "5",
-      title: "Client Confirms or Cancels",
+      title: "Client Receives Reminder",
       description:
-        "Client replies YES (confirmed) or NO (cancelled). Your dashboard updates automatically. If they cancel, your waitlist is notified.",
+        "Client receives the reminder message on their phone so your appointment stays top of mind.",
     },
   ];
 
@@ -131,7 +131,7 @@ export default function SmsReminders() {
     "@type": "WebPage",
     name: "SMS Appointment Reminders",
     description:
-      "Automated SMS reminders for UK salons with one-click confirmations and lower no-show rates.",
+      "Automated outbound SMS reminders for UK salons to reduce no-shows and improve attendance.",
     url: "https://www.elitebooker.co.uk/features/sms-reminders",
     isPartOf: {
       "@type": "WebSite",
@@ -160,8 +160,8 @@ export default function SmsReminders() {
     <>
       <SEOHead
         title="SMS Appointment Reminders - Reduce No-Shows by 70% | Elite Booker"
-        description="Automated SMS reminders for UK salons. 98% open rate, one-click confirmations, reduce no-shows by 70%. £2.99/month unlimited. Try free today."
-        keywords="SMS appointment reminders UK, automated SMS reminders salon, appointment confirmation SMS, reduce no-shows SMS, beauty salon text reminders"
+        description="Automated outbound SMS reminders for UK salons. 98% open rate, reduce no-shows by 70%. £2.99/month unlimited. Try free today."
+        keywords="SMS appointment reminders UK, automated SMS reminders salon, reduce no-shows SMS, beauty salon text reminders, outbound SMS reminders"
         canonical="https://www.elitebooker.co.uk/features/sms-reminders"
         schema={[smsRemindersPageSchema, smsRemindersServiceSchema]}
       />
@@ -319,9 +319,9 @@ export default function SmsReminders() {
               </div>
               <ul className="mx-auto mb-8 max-w-md space-y-3 text-left text-slate-50">
                 <li>✓ Unlimited appointment reminders</li>
-                <li>✓ Unlimited confirmations</li>
-                <li>✓ Two-way SMS replies</li>
-                <li>✓ Customize message content & timing</li>
+                <li>✓ Scheduled 48hr + 24hr reminders</li>
+                <li>✓ Outbound SMS delivery</li>
+                <li>✓ Simple setup</li>
                 <li>✓ Cancel anytime (optional add-on)</li>
               </ul>
               <p className="mb-6 text-slate-50">

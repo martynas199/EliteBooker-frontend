@@ -386,7 +386,7 @@ export default function LocalSolutionPage() {
                   </li>
                   <li className="flex items-start gap-2 text-sm text-gray-700">
                     <CheckCircle className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />
-                    <span>Clients reply YES to confirm</span>
+                    <span>Automatic outbound reminder delivery</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm text-gray-700">
                     <CheckCircle className="w-5 h-5 text-slate-700 flex-shrink-0 mt-0.5" />

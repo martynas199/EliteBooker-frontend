@@ -67,7 +67,7 @@ export default function ReduceSalonNoShows() {
       number: "1",
       title: "Automated SMS Reminder System",
       description:
-        "98% open rate. Send 48hr + 24hr reminders with one-click confirmation. Reduces no-shows by 50-70%.",
+        "98% open rate. Send 48hr + 24hr outbound reminders. Reduces no-shows by 50-70%.",
     },
     {
       icon: Shield,
@@ -379,8 +379,8 @@ export default function ReduceSalonNoShows() {
                   ✓ <strong>98% open rate</strong> (vs 20% for email)
                 </li>
                 <li>✓ Instant delivery to phone (always with them)</li>
-                <li>✓ Simple one-click confirmation workflow</li>
-                <li>✓ Immediate response capability</li>
+                <li>✓ Consistent outbound reminder schedule</li>
+                <li>✓ Less manual reminder chasing</li>
               </ul>
             </div>
 
@@ -392,7 +392,8 @@ export default function ReduceSalonNoShows() {
                 <strong>48-hour reminder:</strong>
                 <br />
                 "Hi Sarah, reminder you have lashes booked tomorrow at 2pm with
-                Emma. Reply YES to confirm or NO to cancel. The Beauty Lounge"
+                Emma at The Beauty Lounge. If you need to change your booking,
+                please call us."
               </div>
               <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-slate-700">
                 <strong>24-hour reminder:</strong>
@@ -822,8 +823,8 @@ export default function ReduceSalonNoShows() {
               </p>
               <div className="bg-white p-4 rounded-lg border-l-4 border-slate-700">
                 "Hi Jenny, great news! A slot just opened up tomorrow at 2pm for
-                the gel nails you wanted. Interested? Reply YES to book or
-                IGNORE to stay on waitlist."
+                the gel nails you wanted. Interested? Call us to secure the
+                slot."
               </div>
               <p className="text-gray-600 mt-4">
                 <strong>Result:</strong> Fill 80-90% of cancelled appointments

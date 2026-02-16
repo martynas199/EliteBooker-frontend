@@ -1089,16 +1089,37 @@ const ProfilePage = () => {
                               </div>
                             )}
                             {giftCard.status === "sent" && (
-                              <div className="pt-3">
+                              <div className="pt-3 grid grid-cols-2 gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="w-full"
+                                  onClick={async () => {
+                                    try {
+                                      await navigator.clipboard.writeText(
+                                        giftCard.code
+                                      );
+                                      toast.success("Gift card code copied");
+                                    } catch {
+                                      toast.error("Failed to copy code");
+                                    }
+                                  }}
+                                >
+                                  Copy Code
+                                </Button>
                                 <Button
                                   size="sm"
                                   className="w-full"
                                   onClick={() => {
-                                    // Will implement redemption later
-                                    toast("Redemption feature coming soon!");
+                                    const targetSlug = giftCard?.tenantId?.slug;
+                                    if (targetSlug) {
+                                      navigate(`/salon/${targetSlug}`);
+                                      return;
+                                    }
+                                    toast.error("Business link unavailable");
                                   }}
                                 >
-                                  Redeem Gift Card
+                                  Book Now
                                 </Button>
                               </div>
                             )}
