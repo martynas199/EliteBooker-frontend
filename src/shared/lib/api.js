@@ -9,12 +9,11 @@
  */
 
 import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+import { env } from "./env";
 
 // Create axios instance
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: env.API_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -57,7 +56,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
@@ -104,7 +103,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 /**

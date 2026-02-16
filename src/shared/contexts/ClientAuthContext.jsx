@@ -3,6 +3,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { api } from "../lib/apiClient";
 
 const ClientAuthContext = createContext(null);
+const CLIENT_AUTH_DEBUG =
+  import.meta.env.DEV && import.meta.env.VITE_CLIENT_AUTH_DEBUG === "true";
+
+const authDebug = (...args) => {
+  if (CLIENT_AUTH_DEBUG) {
+    console.log(...args);
+  }
+};
 
 export function ClientAuthProvider({ children }) {
   const location = useLocation();
@@ -76,7 +84,7 @@ export function ClientAuthProvider({ children }) {
         localStorage.removeItem("clientToken");
       } else if (!error.response) {
         // Network error or timeout
-        console.log("[ClientAuth] Network error - clearing client state");
+        authDebug("[ClientAuth] Network error - clearing client state");
         setClient(null);
       }
       return false;
@@ -91,9 +99,9 @@ export function ClientAuthProvider({ children }) {
 
     // Store token in BOTH localStorage and sessionStorage for cross-domain reliability
     if (token) {
-      console.log(
+      authDebug(
         "[ClientAuth] Storing token from login:",
-        token.substring(0, 20) + "..."
+        token.substring(0, 20) + "...",
       );
 
       // Try multiple storage methods for mobile Safari compatibility
@@ -107,9 +115,9 @@ export function ClientAuthProvider({ children }) {
           console.error("[ClientAuth] localStorage failed to store token!");
           localStorage.setItem("clientToken", token);
         }
-        console.log(
+        authDebug(
           "[ClientAuth] Token stored:",
-          verify ? "✓ localStorage" : "✓ sessionStorage"
+          verify ? "✓ localStorage" : "✓ sessionStorage",
         );
       } catch (e) {
         console.error("[ClientAuth] Storage error:", e);
@@ -142,7 +150,7 @@ export function ClientAuthProvider({ children }) {
   };
 
   const logout = async () => {
-    console.log("[ClientAuth] Starting logout process...");
+    authDebug("[ClientAuth] Starting logout process...");
 
     // Clear client state and localStorage immediately
     setClient(null);
@@ -151,7 +159,7 @@ export function ClientAuthProvider({ children }) {
     try {
       // Call backend to clear httpOnly cookie
       await api.post("/client/logout");
-      console.log("[ClientAuth] Backend logout successful - cookie cleared");
+      authDebug("[ClientAuth] Backend logout successful - cookie cleared");
       return true;
     } catch (error) {
       console.error("[ClientAuth] Backend logout error:", error);

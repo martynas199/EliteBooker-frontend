@@ -1,13 +1,12 @@
 ﻿import axios from "axios";
 import { store } from "../../app/store";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+import { env } from "./env";
 
 // Use environment variable for API URL
 // In development: uses localhost with Vite proxy
 // In production: uses VITE_API_URL (e.g., https://elitebooker-backend.onrender.com)
 export const api = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: env.API_BASE_URL,
   timeout: 15000,
   withCredentials: true, // Send cookies with requests
 });

@@ -1,4 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+import { env } from "../../shared/lib/env";
+
+const API_URL = env.API_URL;
 
 // Get user's bookings
 export const getUserBookings = async (token) => {
@@ -43,7 +45,7 @@ export const cancelBooking = async (token, bookingId, reason) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ reason }),
-    }
+    },
   );
 
   if (!response.ok) {
