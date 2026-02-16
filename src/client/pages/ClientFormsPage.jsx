@@ -1,27 +1,36 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../../shared/contexts/AuthContext";
+import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import { api } from "../../shared/lib/apiClient";
+import Button from "../../shared/components/ui/Button";
+import ClientAccountPageShell from "./ClientAccountPageShell";
+import SEOHead from "../../shared/components/seo/SEOHead";
 import {
   DocumentTextIcon,
   CheckCircleIcon,
   ClockIcon,
-  ArrowDownTrayIcon,
   EyeIcon,
 } from "@heroicons/react/24/outline";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 
 export default function ClientFormsPage() {
-  const { user } = useAuth();
+  const { client, loading: authLoading } = useClientAuth();
   const [forms, setForms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (user) {
-      fetchForms();
+    if (authLoading) return;
+
+    if (!client) {
+      setForms([]);
+      setError(null);
+      setLoading(false);
+      return;
     }
-  }, [user]);
+
+    fetchForms();
+  }, [client, authLoading]);
 
   const fetchForms = async () => {
     try {
@@ -41,63 +50,64 @@ export default function ClientFormsPage() {
 
   const handleViewPDF = async (consentId) => {
     try {
-      const response = await api.get(`/consents/${consentId}/pdf`);
+      const response = await api.get(`/consents/${consentId}/pdf`, {
+        responseType: "blob",
+      });
 
-      if (response.data.signedUrl) {
-        window.open(response.data.signedUrl, "_blank");
+      const contentType =
+        response.headers?.["content-type"] || "application/pdf";
+      const pdfBlob = new Blob([response.data], { type: contentType });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+      const openedWindow = window.open(pdfUrl, "_blank", "noopener,noreferrer");
+
+      if (!openedWindow) {
+        const link = document.createElement("a");
+        link.href = pdfUrl;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.click();
       }
+
+      setTimeout(() => URL.revokeObjectURL(pdfUrl), 60000);
     } catch (error) {
       console.error("Error viewing PDF:", error);
       toast.error(error.response?.data?.message || "Failed to view PDF");
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4">
-        <div className="max-w-4xl mx-auto">
+  return (
+    <>
+      <SEOHead title="Forms - EliteBooker" noindex={true} />
+      <ClientAccountPageShell
+        title="Forms"
+        description="View and download your signed consent forms"
+      >
+        {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading your forms...</p>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4">
-        <div className="max-w-4xl mx-auto">
+        ) : !client ? (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+            <DocumentTextIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Sign in to view your forms
+            </h3>
+            <p className="text-gray-600">Your consent forms are available once you are logged in.</p>
+          </div>
+        ) : error ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
             <p className="text-red-800">{error}</p>
-            <button
+            <Button
               onClick={fetchForms}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              variant="danger"
+              className="mt-4"
             >
               Try Again
-            </button>
+            </Button>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            My Consent Forms
-          </h1>
-          <p className="text-gray-600">
-            View and download your signed consent forms
-          </p>
-        </div>
-
-        {/* Forms List */}
-        {forms.length === 0 ? (
+        ) : forms.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <DocumentTextIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -173,38 +183,21 @@ export default function ClientFormsPage() {
 
                   {/* Actions */}
                   <div className="flex flex-col gap-2 ml-4">
-                    <button
+                    <Button
                       onClick={() => handleViewPDF(form._id)}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                      variant="primary"
+                      size="sm"
                     >
                       <EyeIcon className="w-4 h-4" />
                       View PDF
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
         )}
-
-        {/* Info Box */}
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h4 className="font-semibold text-blue-900 mb-2">
-            About Consent Forms
-          </h4>
-          <ul className="text-sm text-blue-800 space-y-1">
-            <li>
-              • All signed consent forms are securely stored and encrypted
-            </li>
-            <li>• You can download PDFs of your signed forms at any time</li>
-            <li>• Forms are kept for 7 years for legal compliance</li>
-            <li>
-              • You may be required to sign additional forms for specific
-              treatments
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+      </ClientAccountPageShell>
+    </>
   );
 }
