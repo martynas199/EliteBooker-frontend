@@ -18,7 +18,22 @@ export default function ClientRegisterPage() {
   });
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const from = location.state?.from || "/client/profile";
+  const searchParams = new URLSearchParams(location.search);
+  const redirectParam = searchParams.get("redirect");
+  const isSafeRedirect = (path) => {
+    if (!path || typeof path !== "string") return false;
+    if (!path.startsWith("/")) return false;
+    if (path.startsWith("//")) return false;
+    if (path.startsWith("/client/login") || path.startsWith("/client/register")) {
+      return false;
+    }
+    return true;
+  };
+  const from = isSafeRedirect(location.state?.from)
+    ? location.state.from
+    : isSafeRedirect(redirectParam)
+      ? redirectParam
+      : "/client/profile";
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -128,7 +143,8 @@ export default function ClientRegisterPage() {
                 <p className="mt-2 text-sm sm:text-base text-gray-600">
                   Already have an account?{" "}
                   <Link
-                    to="/client/login"
+                    to={`/client/login?redirect=${encodeURIComponent(from)}`}
+                    state={{ from }}
                     className="font-semibold text-black hover:text-gray-700"
                   >
                     Log in

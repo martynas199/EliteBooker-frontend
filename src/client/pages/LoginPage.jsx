@@ -15,8 +15,22 @@ export default function ClientLoginPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Get redirect path from location state, default to /client/profile if coming from system routes
-  const from = location.state?.from || "/client/profile";
+  const searchParams = new URLSearchParams(location.search);
+  const redirectParam = searchParams.get("redirect");
+  const isSafeRedirect = (path) => {
+    if (!path || typeof path !== "string") return false;
+    if (!path.startsWith("/")) return false;
+    if (path.startsWith("//")) return false;
+    if (path.startsWith("/client/login") || path.startsWith("/client/register")) {
+      return false;
+    }
+    return true;
+  };
+  const from = isSafeRedirect(location.state?.from)
+    ? location.state.from
+    : isSafeRedirect(redirectParam)
+      ? redirectParam
+      : "/client/profile";
 
   // Load remembered email on mount
   useEffect(() => {
@@ -121,7 +135,8 @@ export default function ClientLoginPage() {
                 <p className="mt-2 text-sm sm:text-base text-gray-600">
                   New here?{" "}
                   <Link
-                    to="/client/register"
+                    to={`/client/register?redirect=${encodeURIComponent(from)}`}
+                    state={{ from }}
                     className="font-semibold text-black hover:text-gray-700"
                   >
                     Create a client account
