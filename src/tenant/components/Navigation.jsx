@@ -27,6 +27,7 @@ export default function Navigation() {
   const salonName = tenant?.name || "Beauty Salon";
   const ecommerceEnabled = tenant?.features?.enableProducts || false;
   const tenantBasePath = `/salon/${tenant?.slug}`;
+  const currentTenantPath = `${location.pathname}${location.search}`;
 
   // Check if user is authenticated as either tenant customer OR global client
   const isAuthenticated = user || isClientAuthenticated;
@@ -267,8 +268,11 @@ export default function Navigation() {
               <>
                 <Link
                   to={`/client/login?redirect=${encodeURIComponent(
-                    `${location.pathname}${location.search}`,
+                    currentTenantPath,
                   )}`}
+                  onClick={() => {
+                    sessionStorage.setItem("clientAuthRedirectPath", currentTenantPath);
+                  }}
                   className="px-5 py-2 text-sm font-bold text-white bg-black hover:bg-gray-800 rounded-lg transition-all"
                 >
                   Sign In
@@ -405,9 +409,12 @@ export default function Navigation() {
                   <div className="border-t border-gray-200 my-2"></div>
                   <Link
                     to={`/client/login?redirect=${encodeURIComponent(
-                      `${location.pathname}${location.search}`,
+                      currentTenantPath,
                     )}`}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => {
+                      sessionStorage.setItem("clientAuthRedirectPath", currentTenantPath);
+                      setMobileMenuOpen(false);
+                    }}
                     className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
                   >
                     Sign In

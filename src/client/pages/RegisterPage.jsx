@@ -20,6 +20,7 @@ export default function ClientRegisterPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const searchParams = new URLSearchParams(location.search);
   const redirectParam = searchParams.get("redirect");
+  const storedRedirect = sessionStorage.getItem("clientAuthRedirectPath");
   const isSafeRedirect = (path) => {
     if (!path || typeof path !== "string") return false;
     if (!path.startsWith("/")) return false;
@@ -33,6 +34,8 @@ export default function ClientRegisterPage() {
     ? location.state.from
     : isSafeRedirect(redirectParam)
       ? redirectParam
+      : isSafeRedirect(storedRedirect)
+        ? storedRedirect
       : "/client/profile";
 
   // Redirect if already authenticated
@@ -73,6 +76,7 @@ export default function ClientRegisterPage() {
         formData.name,
         formData.phone
       );
+      sessionStorage.removeItem("clientAuthRedirectPath");
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.message || "Failed to register. Please try again.");

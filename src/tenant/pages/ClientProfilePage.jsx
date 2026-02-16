@@ -41,6 +41,7 @@ export default function ClientProfilePage() {
   const fromBusiness = location.state?.fromBusiness;
   const fromSystem = location.state?.from === "/client/profile"; // Came from system login
   const [businessName, setBusinessName] = useState(null);
+  const [lastBusinessPath, setLastBusinessPath] = useState(null);
 
   // Edit form
   const [name, setName] = useState("");
@@ -52,6 +53,11 @@ export default function ClientProfilePage() {
 
   // Handle back button - go to system landing if came from system routes
   const handleBack = () => {
+    if (lastBusinessPath) {
+      navigate(lastBusinessPath);
+      return;
+    }
+
     if (fromSystem || window.history.length <= 2) {
       navigate("/");
     } else {
@@ -64,17 +70,31 @@ export default function ClientProfilePage() {
     fetchSeminars();
   }, []);
 
+  useEffect(() => {
+    const storedPath = sessionStorage.getItem("clientAuthRedirectPath");
+    const statePath = location.state?.from;
+    const candidatePath = statePath || storedPath;
+
+    if (candidatePath && candidatePath.startsWith("/salon/")) {
+      setLastBusinessPath(candidatePath);
+    }
+  }, [location.state]);
+
   // Fetch business name if we have a slug
   useEffect(() => {
-    if (fromBusiness) {
+    const slugFromPath =
+      lastBusinessPath?.match(/^\/salon\/([^/?#]+)/)?.[1] || null;
+    const slugToLoad = fromBusiness || slugFromPath;
+
+    if (slugToLoad) {
       api
-        .get(`/tenants/slug/${fromBusiness}`)
+        .get(`/tenants/slug/${slugToLoad}`)
         .then((res) => {
           setBusinessName(res.data.tenant?.name || res.data.name);
         })
         .catch((err) => console.error("Failed to fetch business name:", err));
     }
-  }, [fromBusiness]);
+  }, [fromBusiness, lastBusinessPath]);
 
   const fetchProfile = async () => {
     try {
@@ -325,10 +345,21 @@ export default function ClientProfilePage() {
             </div>
 
             {!editing && (
-              <Button variant="secondary" onClick={() => setEditing(true)}>
-                <Pencil className="h-5 w-5" />
-                Edit Profile
-              </Button>
+              <div className="flex items-center gap-2">
+                {lastBusinessPath && (
+                  <Button
+                    variant="secondary"
+                    onClick={() => navigate(lastBusinessPath)}
+                  >
+                    <Store className="h-5 w-5" />
+                    Back to {businessName || "Business"}
+                  </Button>
+                )}
+                <Button variant="secondary" onClick={() => setEditing(true)}>
+                  <Pencil className="h-5 w-5" />
+                  Edit Profile
+                </Button>
+              </div>
             )}
           </div>
 
@@ -348,14 +379,26 @@ export default function ClientProfilePage() {
             </div>
 
             {!editing && (
-              <Button
-                variant="secondary"
-                onClick={() => setEditing(true)}
-                className="w-full mt-4"
-              >
-                <Pencil className="h-5 w-5" />
-                Edit Profile
-              </Button>
+              <div className="mt-4 flex flex-col gap-2">
+                {lastBusinessPath && (
+                  <Button
+                    variant="secondary"
+                    onClick={() => navigate(lastBusinessPath)}
+                    className="w-full"
+                  >
+                    <Store className="h-5 w-5" />
+                    Back to {businessName || "Business"}
+                  </Button>
+                )}
+                <Button
+                  variant="secondary"
+                  onClick={() => setEditing(true)}
+                  className="w-full"
+                >
+                  <Pencil className="h-5 w-5" />
+                  Edit Profile
+                </Button>
+              </div>
             )}
           </div>
 

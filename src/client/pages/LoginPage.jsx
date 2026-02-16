@@ -17,6 +17,7 @@ export default function ClientLoginPage() {
 
   const searchParams = new URLSearchParams(location.search);
   const redirectParam = searchParams.get("redirect");
+  const storedRedirect = sessionStorage.getItem("clientAuthRedirectPath");
   const isSafeRedirect = (path) => {
     if (!path || typeof path !== "string") return false;
     if (!path.startsWith("/")) return false;
@@ -30,6 +31,8 @@ export default function ClientLoginPage() {
     ? location.state.from
     : isSafeRedirect(redirectParam)
       ? redirectParam
+      : isSafeRedirect(storedRedirect)
+        ? storedRedirect
       : "/client/profile";
 
   // Load remembered email on mount
@@ -62,6 +65,8 @@ export default function ClientLoginPage() {
       } else {
         localStorage.removeItem("rememberedEmail");
       }
+
+      sessionStorage.removeItem("clientAuthRedirectPath");
 
       navigate(from, { replace: true });
     } catch (err) {
