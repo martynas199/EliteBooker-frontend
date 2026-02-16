@@ -4,7 +4,6 @@ import { useAuth } from "../../shared/contexts/AuthContext";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import Button from "../../shared/components/ui/Button";
 import Input from "../../shared/components/ui/Input";
-import Card from "../../shared/components/ui/Card";
 import OAuthButtons from "./OAuthButtons";
 import SEOHead from "../../shared/components/seo/SEOHead";
 
@@ -67,34 +66,61 @@ const LoginPage = () => {
         description="Sign in to your account to manage bookings, track orders, and access your profile."
         noindex={true}
       />
-      <div className="min-h-screen relative overflow-hidden bg-white">
-        {/* Animated background */}
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-stretch">
+            <div className="hidden lg:flex rounded-2xl border border-gray-200 bg-white p-8 flex-col justify-between">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold uppercase tracking-wide">
+                  Account Access
+                </div>
+                <h1 className="mt-4 text-3xl font-bold text-gray-900 leading-tight">
+                  Welcome back to {tenant?.name || "Elite Booker"}
+                </h1>
+                <p className="mt-3 text-gray-600 leading-relaxed">
+                  Sign in to manage upcoming appointments, view booking history,
+                  and complete checkout faster.
+                </p>
+              </div>
 
-        {/* Gradient orbs */}
+              <div className="mt-8 space-y-3">
+                <div className="flex items-start gap-3 text-sm text-gray-700">
+                  <span className="mt-0.5 text-green-600">✓</span>
+                  <span>Track all your appointments in one place</span>
+                </div>
+                <div className="flex items-start gap-3 text-sm text-gray-700">
+                  <span className="mt-0.5 text-green-600">✓</span>
+                  <span>Rebook your favorite services in seconds</span>
+                </div>
+                <div className="flex items-start gap-3 text-sm text-gray-700">
+                  <span className="mt-0.5 text-green-600">✓</span>
+                  <span>Save details for faster checkout</span>
+                </div>
+              </div>
+            </div>
 
-        <div className="relative min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-          <div className="sm:mx-auto sm:w-full sm:max-w-md">
-            <h2 className="mt-6 text-center text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
-              Welcome back
-            </h2>
-            <p className="mt-3 text-center text-sm sm:text-base text-gray-600">
-              Don't have an account?{" "}
-              <Link
-                to="../register"
-                state={{ from }}
-                className="font-semibold text-black hover:text-gray-700 transition-colors"
-              >
-                Create one now
-              </Link>
-            </p>
-          </div>
+            <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-6 sm:p-8">
+              <div className="mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+                  Sign in
+                </h2>
+                <p className="mt-2 text-sm sm:text-base text-gray-600">
+                  Don't have an account?{" "}
+                  <Link
+                    to="../register"
+                    state={{ from }}
+                    className="font-semibold text-black hover:text-gray-700 transition-colors"
+                  >
+                    Create one now
+                  </Link>
+                </p>
+              </div>
 
-          <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 sm:p-10">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl">
-                    {error}
+                  <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm flex items-start gap-2">
+                    <span className="mt-0.5">⚠️</span>
+                    <span>{error}</span>
                   </div>
                 )}
 
@@ -113,7 +139,6 @@ const LoginPage = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="mt-1"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -125,7 +150,7 @@ const LoginPage = () => {
                   >
                     Password
                   </label>
-                  <div className="relative mt-1">
+                  <div className="relative">
                     <Input
                       id="password"
                       name="password"
@@ -182,15 +207,13 @@ const LoginPage = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="text-sm">
-                    <Link
-                      to={from}
-                      className="font-medium text-black hover:text-gray-700 transition-colors"
-                    >
-                      Continue as guest
-                    </Link>
-                  </div>
+                <div className="flex items-center justify-between text-sm">
+                  <Link
+                    to={from}
+                    className="font-medium text-black hover:text-gray-700 transition-colors"
+                  >
+                    Continue as guest
+                  </Link>
                 </div>
 
                 <Button type="submit" disabled={loading} className="w-full">

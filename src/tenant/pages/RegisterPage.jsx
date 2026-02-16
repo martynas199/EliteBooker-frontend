@@ -4,7 +4,6 @@ import { useAuth } from "../../shared/contexts/AuthContext";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import Button from "../../shared/components/ui/Button";
 import Input from "../../shared/components/ui/Input";
-import Card from "../../shared/components/ui/Card";
 import OAuthButtons from "./OAuthButtons";
 import SEOHead from "../../shared/components/seo/SEOHead";
 
@@ -88,34 +87,61 @@ const RegisterPage = () => {
         description="Create your account to book appointments, purchase products, and enjoy exclusive member benefits."
         noindex={true}
       />
-      <div className="min-h-screen relative overflow-hidden bg-white">
-        {/* Animated background */}
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-stretch">
+            <div className="hidden lg:flex rounded-2xl border border-gray-200 bg-white p-8 flex-col justify-between">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold uppercase tracking-wide">
+                  New Account
+                </div>
+                <h1 className="mt-4 text-3xl font-bold text-gray-900 leading-tight">
+                  Create your {tenant?.name || "Elite Booker"} account
+                </h1>
+                <p className="mt-3 text-gray-600 leading-relaxed">
+                  Save your details, track bookings, and make every future
+                  appointment faster to confirm.
+                </p>
+              </div>
 
-        {/* Gradient orbs */}
+              <div className="mt-8 space-y-3">
+                <div className="flex items-start gap-3 text-sm text-gray-700">
+                  <span className="mt-0.5 text-green-600">✓</span>
+                  <span>Instant access to upcoming bookings</span>
+                </div>
+                <div className="flex items-start gap-3 text-sm text-gray-700">
+                  <span className="mt-0.5 text-green-600">✓</span>
+                  <span>Faster checkout for future visits</span>
+                </div>
+                <div className="flex items-start gap-3 text-sm text-gray-700">
+                  <span className="mt-0.5 text-green-600">✓</span>
+                  <span>Easy rebooking with saved preferences</span>
+                </div>
+              </div>
+            </div>
 
-        <div className="relative min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-          <div className="sm:mx-auto sm:w-full sm:max-w-md">
-            <h2 className="mt-6 text-center text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
-              Create your account
-            </h2>
-            <p className="mt-3 text-center text-sm sm:text-base text-gray-600">
-              Already have an account?{" "}
-              <Link
-                to="../login"
-                state={{ from }}
-                className="font-semibold text-black hover:text-gray-700 transition-colors"
-              >
-                Sign in
-              </Link>
-            </p>
-          </div>
+            <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-6 sm:p-8">
+              <div className="mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+                  Create account
+                </h2>
+                <p className="mt-2 text-sm sm:text-base text-gray-600">
+                  Already have an account?{" "}
+                  <Link
+                    to="../login"
+                    state={{ from }}
+                    className="font-semibold text-black hover:text-gray-700 transition-colors"
+                  >
+                    Sign in
+                  </Link>
+                </p>
+              </div>
 
-          <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 sm:p-10">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl">
-                    {error}
+                  <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm flex items-start gap-2">
+                    <span className="mt-0.5">⚠️</span>
+                    <span>{error}</span>
                   </div>
                 )}
 
@@ -134,7 +160,6 @@ const RegisterPage = () => {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="mt-1"
                     placeholder="John Doe"
                   />
                 </div>
@@ -154,7 +179,6 @@ const RegisterPage = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="mt-1"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -173,7 +197,6 @@ const RegisterPage = () => {
                     autoComplete="tel"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="mt-1"
                     placeholder="07123456789"
                   />
                 </div>
@@ -185,7 +208,7 @@ const RegisterPage = () => {
                   >
                     Password *
                   </label>
-                  <div className="relative mt-1">
+                  <div className="relative">
                     <Input
                       id="password"
                       name="password"
@@ -252,7 +275,7 @@ const RegisterPage = () => {
                   >
                     Confirm password *
                   </label>
-                  <div className="relative mt-1">
+                  <div className="relative">
                     <Input
                       id="confirmPassword"
                       name="confirmPassword"
@@ -314,7 +337,7 @@ const RegisterPage = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 sm:py-2.5 text-base sm:text-sm"
+                  className="w-full"
                 >
                   {loading ? "Creating account..." : "Create account"}
                 </Button>
