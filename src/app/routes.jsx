@@ -223,6 +223,13 @@ const ConsentInitiatePage = lazy(() =>
   import("../client/pages/ConsentInitiatePage"),
 );
 const ClientFormsPage = lazy(() => import("../client/pages/ClientFormsPage"));
+const WalletPage = lazy(() => import("../client/pages/WalletPage"));
+const FavouritesPage = lazy(() => import("../client/pages/FavouritesPage"));
+const OrdersPage = lazy(() => import("../client/pages/OrdersPage"));
+const SettingsPage = lazy(() => import("../client/pages/SettingsPage"));
+const SendGiftCardPage = lazy(() => import("../client/pages/SendGiftCardPage"));
+const DownloadAppPage = lazy(() => import("../client/pages/DownloadAppPage"));
+const LanguagePage = lazy(() => import("../client/pages/LanguagePage"));
 
 function CustomerLayout() {
   const dispatch = useDispatch();
@@ -336,6 +343,62 @@ export default function AppRoutes() {
           element={
             <Suspense fallback={<LoadingSpinner />}>
               <ClientFormsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/client/wallet"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <WalletPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/client/favourites"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <FavouritesPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/client/orders"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <OrdersPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/client/settings"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <SettingsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/gift-cards"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <SendGiftCardPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/download"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <DownloadAppPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/language"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <LanguagePage />
             </Suspense>
           }
         />
