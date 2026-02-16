@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../shared/contexts/AuthContext";
+import { useTenant } from "../../shared/contexts/TenantContext";
 import Button from "../../shared/components/ui/Button";
 import Input from "../../shared/components/ui/Input";
 import Card from "../../shared/components/ui/Card";
@@ -11,6 +12,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
+  const { tenant } = useTenant();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -23,7 +25,8 @@ const LoginPage = () => {
   // Get redirect path from location state or query param or default to home
   const searchParams = new URLSearchParams(location.search);
   const redirectParam = searchParams.get("redirect");
-  const from = location.state?.from || redirectParam || "/";
+  const tenantHomePath = tenant?.slug ? `/salon/${tenant.slug}` : "/";
+  const from = location.state?.from || redirectParam || tenantHomePath;
 
   const handleChange = (e) => {
     setFormData({
@@ -77,7 +80,7 @@ const LoginPage = () => {
             <p className="mt-3 text-center text-sm sm:text-base text-gray-600">
               Don't have an account?{" "}
               <Link
-                to="../signup"
+                to="../register"
                 state={{ from }}
                 className="font-semibold text-black hover:text-gray-700 transition-colors"
               >
@@ -182,7 +185,7 @@ const LoginPage = () => {
                 <div className="flex items-center justify-between">
                   <div className="text-sm">
                     <Link
-                      to="/"
+                      to={from}
                       className="font-medium text-black hover:text-gray-700 transition-colors"
                     >
                       Continue as guest
@@ -213,7 +216,7 @@ const LoginPage = () => {
 
                 <div className="mt-6 text-center">
                   <Link
-                    to="/"
+                    to={tenantHomePath}
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors inline-flex items-center gap-1"
                   >
                     <svg

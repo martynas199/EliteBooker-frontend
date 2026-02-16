@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../shared/contexts/AuthContext";
+import { useTenant } from "../../shared/contexts/TenantContext";
 import Button from "../../shared/components/ui/Button";
 import Input from "../../shared/components/ui/Input";
 import Card from "../../shared/components/ui/Card";
@@ -11,6 +12,7 @@ const RegisterPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { register } = useAuth();
+  const { tenant } = useTenant();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -24,8 +26,11 @@ const RegisterPage = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Get redirect path from location state or default to home
-  const from = location.state?.from || "/";
+  // Get redirect path from location state or query param or default to tenant home
+  const searchParams = new URLSearchParams(location.search);
+  const redirectParam = searchParams.get("redirect");
+  const tenantHomePath = tenant?.slug ? `/salon/${tenant.slug}` : "/";
+  const from = location.state?.from || redirectParam || tenantHomePath;
 
   const handleChange = (e) => {
     setFormData({
@@ -338,7 +343,7 @@ const RegisterPage = () => {
 
                 <div className="mt-6 text-center">
                   <Link
-                    to="/"
+                    to={tenantHomePath}
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors inline-flex items-center gap-1"
                   >
                     <svg
