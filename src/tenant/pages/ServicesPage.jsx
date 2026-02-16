@@ -35,26 +35,6 @@ export default function ServicesPage() {
           SalonAPI.get(),
         ]);
 
-        console.log("[ServicesPage] All services loaded:", servicesData.length);
-
-        // Log each service with its specialist info
-        servicesData.forEach((service, index) => {
-          const specialistId =
-            service.primaryBeauticianId?._id ||
-            service.primaryBeauticianId ||
-            service.specialistId?._id ||
-            service.specialistId;
-          const specialistName =
-            service.primaryBeauticianId?.name ||
-            service.specialistId?.name ||
-            "N/A";
-          console.log(
-            `[Service ${index + 1}] "${
-              service.name
-            }" - Specialist: ${specialistName} (${specialistId})`,
-          );
-        });
-
         setServices(servicesData.filter((s) => s.active));
         setSalon(salonData);
       } catch (error) {

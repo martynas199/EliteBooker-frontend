@@ -525,14 +525,14 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* Sign-in prompt for guests */}
-                  {!user && (
+                  {!user && !client && (
                     <div className="p-4 border border-gray-200 rounded-xl text-sm">
                       <div className="flex items-start gap-2">
                         <span className="mt-0.5">ℹ️</span>
                         <div>
                           <span className="text-gray-700">
                             <Link
-                              to="/login"
+                              to="../login"
                               state={{ from: location.pathname }}
                               className="text-gray-900 hover:text-black font-semibold underline"
                             >
@@ -540,7 +540,7 @@ export default function CheckoutPage() {
                             </Link>{" "}
                             or{" "}
                             <Link
-                              to="/register"
+                              to="../register"
                               state={{ from: location.pathname }}
                               className="text-gray-900 hover:text-black font-semibold underline"
                             >
