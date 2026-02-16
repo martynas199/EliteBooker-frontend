@@ -21,6 +21,8 @@ import PageTransition, {
 } from "../../shared/components/ui/PageTransition";
 import { ListSkeleton } from "../../shared/components/ui/Skeleton";
 import toast from "react-hot-toast";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
+import { promptDialog } from "../../shared/lib/promptDialog";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -94,12 +96,24 @@ const ProfilePage = () => {
   };
 
   const handleCancelBooking = async (bookingId) => {
-    if (!confirm("Are you sure you want to cancel this booking?")) return;
+    const confirmed = await confirmDialog({
+      title: "Cancel booking?",
+      message: "Are you sure you want to cancel this booking?",
+      confirmLabel: "Cancel booking",
+      cancelLabel: "Keep booking",
+      variant: "danger",
+    });
+
+    if (!confirmed) return;
 
     try {
-      const reason = prompt(
-        "Please provide a reason for cancellation (optional):"
-      );
+      const reason = await promptDialog({
+        title: "Cancellation reason",
+        message: "Please provide a reason for cancellation (optional):",
+        placeholder: "Optional reason",
+        confirmLabel: "Continue",
+        cancelLabel: "Skip",
+      });
       const loadingToast = toast.loading("Cancelling booking...");
       await cancelBooking(token, bookingId, reason);
       // Update booking status locally instead of fetching all data again
@@ -107,8 +121,8 @@ const ProfilePage = () => {
         prevBookings.map((booking) =>
           booking._id === bookingId
             ? { ...booking, status: "cancelled_full_refund" }
-            : booking
-        )
+            : booking,
+        ),
       );
       toast.dismiss(loadingToast);
       toast.success("Booking cancelled successfully");
@@ -120,7 +134,7 @@ const ProfilePage = () => {
   const handleRebook = (booking) => {
     // Navigate to booking page with pre-filled service and specialist
     navigate(
-      `/booking?serviceId=${booking.serviceId._id}&specialistId=${booking.specialistId._id}`
+      `/booking?serviceId=${booking.serviceId._id}&specialistId=${booking.specialistId._id}`,
     );
   };
 
@@ -468,7 +482,7 @@ const ProfilePage = () => {
                                   day: "numeric",
                                   month: "long",
                                   year: "numeric",
-                                }
+                                },
                               )}
                             </p>
                           </div>
@@ -537,7 +551,7 @@ const ProfilePage = () => {
                                     <p className="text-xs text-green-700 mt-2">
                                       Ready since:{" "}
                                       {new Date(
-                                        order.collectionReadyAt
+                                        order.collectionReadyAt,
                                       ).toLocaleDateString("en-GB", {
                                         day: "numeric",
                                         month: "long",
@@ -640,7 +654,7 @@ const ProfilePage = () => {
                                 `/order-success/${
                                   order.orderNumber || order._id.slice(-8)
                                 }`,
-                                { state: { fromProfile: true } }
+                                { state: { fromProfile: true } },
                               )
                             }
                             className="w-full"
@@ -854,7 +868,7 @@ const ProfilePage = () => {
                               try {
                                 await removeFromFavorites(salon._id);
                                 setFavorites((prev) =>
-                                  prev.filter((f) => f._id !== salon._id)
+                                  prev.filter((f) => f._id !== salon._id),
                                 );
                                 toast.success("Removed from favorites");
                               } catch (error) {
@@ -985,7 +999,7 @@ const ProfilePage = () => {
                               <span className="text-gray-600">Purchased:</span>
                               <span>
                                 {new Date(
-                                  giftCard.purchaseDate
+                                  giftCard.purchaseDate,
                                 ).toLocaleDateString()}
                               </span>
                             </div>
@@ -1077,7 +1091,7 @@ const ProfilePage = () => {
                               <span className="text-gray-600">Expires:</span>
                               <span>
                                 {new Date(
-                                  giftCard.expiryDate
+                                  giftCard.expiryDate,
                                 ).toLocaleDateString()}
                               </span>
                             </div>
@@ -1097,7 +1111,7 @@ const ProfilePage = () => {
                                   onClick={async () => {
                                     try {
                                       await navigator.clipboard.writeText(
-                                        giftCard.code
+                                        giftCard.code,
                                       );
                                       toast.success("Gift card code copied");
                                     } catch {

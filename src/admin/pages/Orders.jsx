@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { OrdersAPI } from "../../tenant/pages/orders.api";
 import Card from "../../shared/components/ui/Card";
 import Button from "../../shared/components/ui/Button";
+import ListLoadingState from "../../shared/components/ui/ListLoadingState";
 import { useLanguage } from "../../shared/contexts/LanguageContext";
 import { t } from "../../locales/adminTranslations";
 import { formatCurrency } from "../../shared/utils/currency";
@@ -206,9 +207,12 @@ export default function Orders() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
-      </div>
+      <ListLoadingState
+        className="my-6"
+        message="Loading orders..."
+        count={6}
+        itemHeight="h-24"
+      />
     );
   }
 
@@ -216,10 +220,10 @@ export default function Orders() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
           {t("orders", language)}
         </h1>
-        <p className="text-gray-600 mt-1">
+        <p className="text-sm sm:text-base text-gray-600 mt-1">
           {t("manageCustomerOrders", language)}
         </p>
       </div>
@@ -269,8 +273,8 @@ export default function Orders() {
           </h3>
           <p className="text-gray-600">
             {filter === "all"
-              ? "No orders have been placed yet"
-              : `No ${filter} orders found`}
+              ? "Get started by placing your first order."
+              : `No ${filter} orders found.`}
           </p>
         </Card>
       ) : (
@@ -730,7 +734,7 @@ export default function Orders() {
                           handleMarkReadyForCollection(selectedOrder._id)
                         }
                         disabled={updating}
-                        className="w-full mb-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm font-medium"
+                        className="w-full mb-3 px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm font-medium"
                       >
                         <svg
                           className="w-4 h-4"

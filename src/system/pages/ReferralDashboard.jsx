@@ -20,6 +20,7 @@ import {
   Info,
   Building2,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 const getStatusMeta = (status) => {
   if (status === "active") {
@@ -164,7 +165,7 @@ export default function ReferralDashboard() {
       setReferralCode(response.data.data.code);
     } catch (err) {
       console.error("Error generating referral code:", err);
-      alert("Failed to generate referral code. Please try again.");
+      toast.error("Failed to generate referral code. Please try again.");
     } finally {
       setGeneratingCode(false);
     }

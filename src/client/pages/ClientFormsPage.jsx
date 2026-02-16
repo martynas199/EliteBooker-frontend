@@ -9,6 +9,7 @@ import {
   EyeIcon
 } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
+import toast from 'react-hot-toast';
 
 export default function ClientFormsPage() {
   const { user } = useAuth();
@@ -47,7 +48,7 @@ export default function ClientFormsPage() {
       }
     } catch (error) {
       console.error('Error viewing PDF:', error);
-      alert(error.response?.data?.message || 'Failed to view PDF');
+      toast.error(error.response?.data?.message || 'Failed to view PDF');
     }
   };
 

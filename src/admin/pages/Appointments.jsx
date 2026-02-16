@@ -8,6 +8,7 @@ import { useSharedData } from "../../shared/hooks/useSharedData";
 import Modal from "../../shared/components/ui/Modal";
 import FormField from "../../shared/components/forms/FormField";
 import Button from "../../shared/components/ui/Button";
+import EmptyStateCard from "../../shared/components/ui/EmptyStateCard";
 import {
   SkeletonBox,
   TableRowSkeleton,
@@ -849,7 +850,7 @@ export default function Appointments() {
 
       {/* Filters - only show if admin has access */}
       {hasAppointmentAccess && (
-        <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 space-y-4 sticky top-20 z-10">
           {/* Search Bar */}
           <div className="relative">
             <svg
@@ -1150,7 +1151,7 @@ export default function Appointments() {
             {Array.from({ length: 5 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-lg border border-gray-200 p-3 space-y-3"
+                className="bg-white rounded-xl border border-gray-200 p-3 space-y-3"
               >
                 {/* Header skeleton */}
                 <div className="flex justify-between items-start pb-2 border-b border-gray-100">
@@ -1704,36 +1705,33 @@ export default function Appointments() {
 
       {/* Empty State for Desktop */}
       {!loading && sortedRows.length === 0 && (
-        <div className="hidden lg:block bg-white rounded-lg border border-gray-200 p-12">
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-5">
-              <svg
-                className="w-8 h-8 text-gray-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No appointments found
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              {searchQuery ||
-              selectedSpecialistId ||
-              statusFilter !== "all" ||
-              dateFilter !== "all"
-                ? "Try adjusting your filters or search criteria to find appointments."
-                : "Get started by creating your first appointment."}
-            </p>
-          </div>
-        </div>
+        <EmptyStateCard
+          className="hidden lg:block"
+          title="No appointments found"
+          description={
+            searchQuery ||
+            selectedSpecialistId ||
+            statusFilter !== "all" ||
+            dateFilter !== "all"
+              ? "Try adjusting your search or filters."
+              : "Get started by creating your first appointment."
+          }
+          icon={
+            <svg
+              className="w-8 h-8 text-gray-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+          }
+        />
       )}
 
       {/* Mobile Card View */}
@@ -1742,7 +1740,7 @@ export default function Appointments() {
           {sortedRows.map((r) => (
             <div
               key={r._id}
-              className="bg-white rounded-lg border border-gray-200 overflow-hidden"
+              className="bg-white rounded-xl border border-gray-200 overflow-hidden"
             >
               {/* Compact Header */}
               <div className="px-3 py-3 border-b border-gray-100 flex items-center justify-between gap-2">
@@ -2017,7 +2015,7 @@ export default function Appointments() {
               <div className="px-3 pb-3 space-y-2">
                 {consentsMap[r._id] && (
                   <button
-                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 rounded-lg transition-colors border border-green-200"
+                    className="w-full min-h-11 inline-flex items-center justify-center gap-2 px-3 py-3 sm:py-2.5 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 rounded-lg transition-colors border border-green-200"
                     onClick={() => viewConsentPDF(consentsMap[r._id]._id)}
                   >
                     <svg
@@ -2037,7 +2035,7 @@ export default function Appointments() {
                   </button>
                 )}
                 <button
-                  className="w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-colors"
+                  className="w-full min-h-11 inline-flex items-center justify-center gap-2 px-3 py-3 sm:py-2.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-colors"
                   onClick={() => openEditModal(r)}
                 >
                   <svg
@@ -2058,7 +2056,7 @@ export default function Appointments() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <button
-                    className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="min-h-11 inline-flex items-center justify-center gap-1.5 px-3 py-3 sm:py-2.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={
                       String(r.status || "").startsWith("cancelled") ||
                       r.status === "no_show"
@@ -2081,7 +2079,7 @@ export default function Appointments() {
                     Cancel
                   </button>
                   <button
-                    className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="min-h-11 inline-flex items-center justify-center gap-1.5 px-3 py-3 sm:py-2.5 text-xs font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={
                       String(r.status || "").startsWith("cancelled") ||
                       r.status === "no_show"
@@ -2107,7 +2105,7 @@ export default function Appointments() {
 
                 {String(r.status || "").startsWith("cancelled") && (
                   <button
-                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-medium text-red-700 bg-white border border-red-200 hover:bg-red-50 hover:border-red-300 rounded-lg transition-colors"
+                    className="w-full min-h-11 inline-flex items-center justify-center gap-2 px-3 py-3 sm:py-2.5 text-xs font-medium text-red-700 bg-white border border-red-200 hover:bg-red-50 hover:border-red-300 rounded-lg transition-colors"
                     onClick={() => deleteAppointment(r._id)}
                   >
                     <svg
@@ -2134,57 +2132,57 @@ export default function Appointments() {
 
       {/* Empty State for Mobile */}
       {!loading && sortedRows.length === 0 && (
-        <div className="lg:hidden bg-white rounded-lg border border-gray-200 p-8">
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gray-100 mb-4">
-              <svg
-                className="w-7 h-7 text-gray-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-base font-semibold text-gray-900 mb-1">
-              No appointments found
-            </h3>
-            <p className="text-sm text-gray-600 mb-5">
-              {searchQuery ||
-              selectedSpecialistId ||
-              statusFilter !== "all" ||
-              dateFilter !== "all"
-                ? "Try adjusting your filters or search criteria."
-                : "Get started by creating your first appointment."}
-            </p>
-            {(isSuperAdmin || admin?.specialistId) && (
-              <button
-                onClick={openCreateModal}
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-colors"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                Create First Appointment
-              </button>
-            )}
-          </div>
-        </div>
+        <EmptyStateCard
+          className="lg:hidden"
+          compact
+          title="No appointments found"
+          description={
+            searchQuery ||
+            selectedSpecialistId ||
+            statusFilter !== "all" ||
+            dateFilter !== "all"
+              ? "Try adjusting your search or filters."
+              : "Get started by creating your first appointment."
+          }
+          icon={
+            <svg
+              className="w-7 h-7 text-gray-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+          }
+          primaryAction={
+            isSuperAdmin || admin?.specialistId
+              ? {
+                  label: "Create First Appointment",
+                  onClick: openCreateModal,
+                  icon: (
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                  ),
+                }
+              : null
+          }
+        />
       )}
 
       {/* Pagination Controls */}

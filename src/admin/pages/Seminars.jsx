@@ -5,6 +5,7 @@ import { Plus, GraduationCap } from "lucide-react";
 import { SeminarsAPI } from "../../tenant/pages/seminars.api";
 import Button from "../../shared/components/ui/Button";
 import Card from "../../shared/components/ui/Card";
+import ListLoadingState from "../../shared/components/ui/ListLoadingState";
 import ConfirmDeleteModal from "../../shared/components/forms/ConfirmDeleteModal";
 
 export default function Seminars() {
@@ -106,14 +107,17 @@ export default function Seminars() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-      </div>
+      <ListLoadingState
+        className="my-6"
+        message="Loading seminars..."
+        count={5}
+        itemHeight="h-24"
+      />
     );
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 overflow-x-hidden">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
         <div className="flex items-center gap-2 sm:gap-3">
@@ -124,10 +128,10 @@ export default function Seminars() {
             <GraduationCap className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
               Seminars & Masterclasses
             </h2>
-            <p className="text-xs sm:text-sm text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600">
               Manage your educational events
             </p>
           </div>
@@ -135,7 +139,7 @@ export default function Seminars() {
         <Button
           onClick={() => navigate("/admin/seminars/create")}
           variant="primary"
-          className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-blue-600 hover:bg-blue-700 text-sm sm:text-base py-2 sm:py-2.5"
+          className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-sm sm:text-base py-2 sm:py-2.5"
         >
           <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 inline-block" />
           Create Seminar
@@ -157,7 +161,7 @@ export default function Seminars() {
               }
               onKeyDown={(e) => e.key === "Enter" && loadSeminars()}
               placeholder="Search seminars..."
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
             />
           </div>
 
@@ -170,7 +174,7 @@ export default function Seminars() {
               onChange={(e) =>
                 setFilters({ ...filters, status: e.target.value })
               }
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
             >
               <option value="all">All Status</option>
               <option value="draft">Draft</option>
@@ -188,7 +192,7 @@ export default function Seminars() {
               onChange={(e) =>
                 setFilters({ ...filters, category: e.target.value })
               }
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
             >
               <option value="all">All Categories</option>
               <option value="Skincare">Skincare</option>
@@ -219,7 +223,7 @@ export default function Seminars() {
             No seminars found
           </p>
           <p className="text-gray-400 mt-2 text-sm">
-            Create your first seminar to get started
+            Get started by creating your first seminar.
           </p>
         </Card>
       ) : (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import {
   User,
@@ -40,7 +40,54 @@ const generateRandomColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
-export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
+const createDefaultStaffFormData = () => ({
+  name: "",
+  email: "",
+  phone: "",
+  bio: "",
+  specialties: [],
+  active: true,
+  inSalonPayment: false,
+  color: generateRandomColor(),
+  image: null,
+  workingHours: [],
+  locationIds: [],
+  primaryLocationId: "",
+});
+
+const cloneFormData = (value) => JSON.parse(JSON.stringify(value));
+
+const buildDraftSnapshot = (value) =>
+  JSON.stringify({
+    name: value.name || "",
+    email: value.email || "",
+    phone: value.phone || "",
+    bio: value.bio || "",
+    specialties: value.specialties || [],
+    active: Boolean(value.active),
+    inSalonPayment: Boolean(value.inSalonPayment),
+    color: value.color || "",
+    image:
+      value.image?.secure_url ||
+      value.image?.url ||
+      value.image?.public_id ||
+      (typeof value.image === "string" ? value.image : null),
+    workingHours: (value.workingHours || []).map((item) => ({
+      dayOfWeek: item?.dayOfWeek ?? 1,
+      start: item?.start || "09:00",
+      end: item?.end || "17:00",
+    })),
+    locationIds: value.locationIds || [],
+    primaryLocationId: value.primaryLocationId || "",
+  });
+
+export default function StaffForm({
+  staff,
+  onSave,
+  onCancel,
+  onDelete,
+  onDirtyChange,
+}) {
   const isEditMode = Boolean(staff);
   const { featureFlags } = useTenantSettings();
   const {
@@ -55,20 +102,10 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
   const isMultiLocationEnabled = featureFlags?.multiLocation === true;
 
   // Form state
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    bio: "",
-    specialties: [],
-    active: true,
-    inSalonPayment: false,
-    color: generateRandomColor(),
-    image: null,
-    workingHours: [],
-    locationIds: [], // Locations where specialist works
-    primaryLocationId: "", // Primary location
-  });
+  const [formData, setFormData] = useState(createDefaultStaffFormData);
+  const [savedFormData, setSavedFormData] = useState(() =>
+    cloneFormData(createDefaultStaffFormData())
+  );
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -126,7 +163,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
           : staff.primaryLocationId._id
         : "";
 
-      setFormData({
+      const initialFormData = {
         name: staff.name || "",
         email: staff.email || "",
         phone: staff.phone || "",
@@ -139,9 +176,43 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
         workingHours: staff.workingHours || [],
         locationIds: extractedLocationIds,
         primaryLocationId: extractedPrimaryLocationId,
-      });
+      };
+
+      setFormData(initialFormData);
+      setSavedFormData(cloneFormData(initialFormData));
+      return;
     }
+
+    const initialFormData = createDefaultStaffFormData();
+    setFormData(initialFormData);
+    setSavedFormData(cloneFormData(initialFormData));
   }, [staff]);
+
+  const hasUnsavedChanges = useMemo(
+    () => buildDraftSnapshot(formData) !== buildDraftSnapshot(savedFormData),
+    [formData, savedFormData]
+  );
+
+  useEffect(() => {
+    onDirtyChange?.(hasUnsavedChanges);
+  }, [hasUnsavedChanges, onDirtyChange]);
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  const handleResetChanges = () => {
+    setFormData(cloneFormData(savedFormData));
+    setErrors({});
+  };
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -305,6 +376,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
         JSON.stringify(cleanedData, null, 2)
       );
       await onSave(cleanedData);
+      setSavedFormData(cloneFormData(cleanedData));
     } catch (err) {
       setErrors((prev) => ({ ...prev, submit: err.message }));
     } finally {
@@ -375,6 +447,12 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
         onSubmit={handleSubmit}
         className="space-y-4 overflow-x-hidden pb-24 sm:space-y-6 sm:pb-0"
       >
+        {hasUnsavedChanges && (
+          <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            You have unsaved changes.
+          </div>
+        )}
+
         {/* Basic Info Section */}
         <div className={sectionClass}>
           <div className="mb-4 flex items-start gap-3 border-b border-gray-100 pb-3">
@@ -956,6 +1034,17 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
 
             <Button
               type="button"
+              onClick={handleResetChanges}
+              disabled={!hasUnsavedChanges || isSubmitting}
+              variant="outline"
+              size="md"
+              className="w-full sm:w-auto"
+            >
+              Reset
+            </Button>
+
+            <Button
+              type="button"
               onClick={onCancel}
               disabled={isSubmitting}
               variant="outline"
@@ -966,7 +1055,7 @@ export default function StaffForm({ staff, onSave, onCancel, onDelete }) {
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || isUploadingImage}
+              disabled={isSubmitting || isUploadingImage || !hasUnsavedChanges}
               loading={isSubmitting}
               variant="brand"
               size="md"

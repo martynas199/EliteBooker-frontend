@@ -10,6 +10,9 @@ import {
   ClockIcon,
 } from "@heroicons/react/24/outline";
 import { api } from "../../shared/lib/apiClient";
+import EmptyStateCard from "../../shared/components/ui/EmptyStateCard";
+import toast from "react-hot-toast";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
 
 export default function ConsentTemplates() {
   const navigate = useNavigate();
@@ -36,11 +39,16 @@ export default function ConsentTemplates() {
   };
 
   const handlePublish = async (templateId) => {
-    if (
-      !confirm(
-        "Are you sure you want to publish this template? Published templates cannot be edited."
-      )
-    ) {
+    const confirmed = await confirmDialog({
+      title: "Publish template?",
+      message:
+        "Are you sure you want to publish this template? Published templates cannot be edited.",
+      confirmLabel: "Publish",
+      cancelLabel: "Cancel",
+      variant: "primary",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -49,12 +57,20 @@ export default function ConsentTemplates() {
       fetchTemplates();
     } catch (error) {
       console.error("Error publishing template:", error);
-      alert(error.response?.data?.message || "Failed to publish template");
+      toast.error(error.response?.data?.message || "Failed to publish template");
     }
   };
 
   const handleArchive = async (templateId) => {
-    if (!confirm("Are you sure you want to archive this template?")) {
+    const confirmed = await confirmDialog({
+      title: "Archive template?",
+      message: "Are you sure you want to archive this template?",
+      confirmLabel: "Archive",
+      cancelLabel: "Cancel",
+      variant: "primary",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -63,16 +79,21 @@ export default function ConsentTemplates() {
       fetchTemplates();
     } catch (error) {
       console.error("Error archiving template:", error);
-      alert(error.response?.data?.message || "Failed to archive template");
+      toast.error(error.response?.data?.message || "Failed to archive template");
     }
   };
 
   const handleDelete = async (templateId) => {
-    if (
-      !confirm(
-        "Are you sure you want to delete this template? This action cannot be undone."
-      )
-    ) {
+    const confirmed = await confirmDialog({
+      title: "Delete template?",
+      message:
+        "Are you sure you want to delete this template? This action cannot be undone.",
+      confirmLabel: "Delete",
+      cancelLabel: "Cancel",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -81,7 +102,7 @@ export default function ConsentTemplates() {
       fetchTemplates();
     } catch (error) {
       console.error("Error deleting template:", error);
-      alert(error.response?.data?.message || "Failed to delete template");
+      toast.error(error.response?.data?.message || "Failed to delete template");
     }
   };
 
@@ -93,7 +114,7 @@ export default function ConsentTemplates() {
       navigate(`/admin/consent-templates/${response.data.data._id}/edit`);
     } catch (error) {
       console.error("Error creating new version:", error);
-      alert(error.response?.data?.message || "Failed to create new version");
+      toast.error(error.response?.data?.message || "Failed to create new version");
     }
   };
 
@@ -192,30 +213,22 @@ export default function ConsentTemplates() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
         </div>
       ) : filteredTemplates.length === 0 ? (
-        <div className="text-center py-12">
-          <DocumentTextIcon className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">
-            No templates found
-          </h3>
-          <p className="mt-1 text-sm text-gray-500">
-            Get started by creating a new consent form template.
-          </p>
-          <div className="mt-6">
-            <button
-              onClick={() => navigate("/admin/consent-templates/new")}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-            >
-              <PlusIcon className="w-5 h-5" />
-              Create Template
-            </button>
-          </div>
-        </div>
+        <EmptyStateCard
+          title="No templates found"
+          description="Get started by creating your first consent form template."
+          icon={<DocumentTextIcon className="h-8 w-8 text-gray-500" />}
+          primaryAction={{
+            label: "Create Template",
+            onClick: () => navigate("/admin/consent-templates/new"),
+            icon: <PlusIcon className="w-4 h-4" />,
+          }}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredTemplates.map((template) => (
             <div
               key={template._id}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
             >
               <div className="p-6">
                 {/* Header */}

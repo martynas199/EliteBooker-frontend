@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { SeminarsAPI } from "../../tenant/pages/seminars.api";
 import { api } from "../../shared/lib/apiClient";
 import Button from "../../shared/components/ui/Button";
 import FormField from "../../shared/components/forms/FormField";
+import UnsavedChangesModal from "../../shared/components/forms/UnsavedChangesModal";
 import AdminPageShell, {
   AdminSectionCard,
 } from "../components/AdminPageShell";
@@ -12,6 +13,59 @@ import AdminPageShell, {
 const inputClassName =
   "w-full min-h-11 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200";
 const textareaClassName = `${inputClassName} min-h-[120px]`;
+
+const createDefaultSeminarForm = () => ({
+  title: "",
+  shortDescription: "",
+  description: "",
+  category: "Skincare",
+  level: "Beginner",
+  pricing: {
+    price: "",
+    currency: "GBP",
+    earlyBirdPrice: "",
+    earlyBirdDeadline: "",
+  },
+  location: {
+    type: "physical",
+    address: "",
+    city: "",
+    country: "",
+    meetingLink: "",
+  },
+  requirements: "",
+  whatYouWillLearn: "",
+  sessions: [],
+});
+
+const cloneValue = (value) => JSON.parse(JSON.stringify(value));
+
+const buildDraftSnapshot = ({
+  formData,
+  imageFile,
+  imagePreview,
+  galleryFiles,
+  existingGalleryImages,
+}) =>
+  JSON.stringify({
+    formData,
+    imagePreview,
+    imageFile: imageFile
+      ? {
+          name: imageFile.name,
+          size: imageFile.size,
+          type: imageFile.type,
+          lastModified: imageFile.lastModified,
+        }
+      : null,
+    galleryFiles: galleryFiles.map((file) => ({
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      lastModified: file.lastModified,
+    })),
+    existingGalleryImages,
+  });
 
 export default function SeminarForm() {
   const navigate = useNavigate();
@@ -23,27 +77,7 @@ export default function SeminarForm() {
   const [submitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: "",
-    shortDescription: "",
-    description: "",
-    category: "Skincare",
-    level: "Beginner",
-    pricing: {
-      price: "",
-      currency: "GBP",
-      earlyBirdPrice: "",
-      earlyBirdDeadline: "",
-    },
-    location: {
-      type: "physical",
-      address: "",
-      city: "",
-      country: "",
-      meetingLink: "",
-    },
-    requirements: "",
-    whatYouWillLearn: "",
-    sessions: [],
+    ...createDefaultSeminarForm(),
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -51,13 +85,84 @@ export default function SeminarForm() {
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [galleryPreviews, setGalleryPreviews] = useState([]);
   const [existingGalleryImages, setExistingGalleryImages] = useState([]);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
+  const [savedSnapshot, setSavedSnapshot] = useState(() =>
+    buildDraftSnapshot({
+      formData: createDefaultSeminarForm(),
+      imageFile: null,
+      imagePreview: null,
+      galleryFiles: [],
+      existingGalleryImages: [],
+    })
+  );
+  const [savedDraft, setSavedDraft] = useState(() => ({
+    formData: createDefaultSeminarForm(),
+    imagePreview: null,
+    existingGalleryImages: [],
+  }));
 
   useEffect(() => {
     loadSpecialists();
     if (isEditing) {
       loadSeminar();
+      return;
     }
+
+    const initialFormData = createDefaultSeminarForm();
+    setFormData(initialFormData);
+    setImageFile(null);
+    setImagePreview(null);
+    setGalleryFiles([]);
+    setGalleryPreviews([]);
+    setExistingGalleryImages([]);
+
+    setSavedDraft({
+      formData: cloneValue(initialFormData),
+      imagePreview: null,
+      existingGalleryImages: [],
+    });
+
+    setSavedSnapshot(
+      buildDraftSnapshot({
+        formData: initialFormData,
+        imageFile: null,
+        imagePreview: null,
+        galleryFiles: [],
+        existingGalleryImages: [],
+      })
+    );
   }, [id]);
+
+  const hasUnsavedChanges = useMemo(
+    () =>
+      buildDraftSnapshot({
+        formData,
+        imageFile,
+        imagePreview,
+        galleryFiles,
+        existingGalleryImages,
+      }) !== savedSnapshot,
+    [
+      formData,
+      imageFile,
+      imagePreview,
+      galleryFiles,
+      existingGalleryImages,
+      savedSnapshot,
+    ]
+  );
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   const loadSpecialists = async () => {
     try {
@@ -126,6 +231,68 @@ export default function SeminarForm() {
           typeof img === "string" ? img : img?.url || img
         )
       );
+
+      const initialFormData = {
+        title: seminar.title || "",
+        shortDescription: seminar.shortDescription || "",
+        description: seminar.description || "",
+        category: seminar.category || "Skincare",
+        level: seminar.level || "Beginner",
+        pricing: {
+          price: seminar.pricing?.price?.toString() || "",
+          currency: seminar.pricing?.currency || "GBP",
+          earlyBirdPrice: seminar.pricing?.earlyBirdPrice?.toString() || "",
+          earlyBirdDeadline: seminar.pricing?.earlyBirdDeadline
+            ? new Date(seminar.pricing.earlyBirdDeadline)
+                .toISOString()
+                .split("T")[0]
+            : "",
+        },
+        location: {
+          type: seminar.location?.type || "physical",
+          address: seminar.location?.address || "",
+          city: seminar.location?.city || "",
+          country: seminar.location?.country || "",
+          meetingLink: seminar.location?.meetingLink || "",
+        },
+        requirements: Array.isArray(seminar.requirements)
+          ? seminar.requirements.join("\n")
+          : "",
+        whatYouWillLearn: Array.isArray(seminar.whatYouWillLearn)
+          ? seminar.whatYouWillLearn.join("\n")
+          : "",
+        sessions: (seminar.sessions || []).map((session) => ({
+          sessionId: session._id,
+          date: new Date(session.date).toISOString().split("T")[0],
+          startTime: session.startTime?.length === 5 ? session.startTime : "",
+          endTime: session.endTime?.length === 5 ? session.endTime : "",
+          maxAttendees: session.maxAttendees?.toString() || "",
+          currentAttendees: session.currentAttendees || 0,
+          status: session.status || "scheduled",
+        })),
+      };
+
+      const mainImagePreview =
+        typeof mainImage === "string" ? mainImage : mainImage?.url || null;
+
+      const normalizedExistingGalleryImages = galleryImages.map((img) =>
+        typeof img === "string" ? img : img?.url || img
+      );
+
+      setSavedDraft({
+        formData: cloneValue(initialFormData),
+        imagePreview: mainImagePreview,
+        existingGalleryImages: cloneValue(normalizedExistingGalleryImages),
+      });
+      setSavedSnapshot(
+        buildDraftSnapshot({
+          formData: initialFormData,
+          imageFile: null,
+          imagePreview: mainImagePreview,
+          galleryFiles: [],
+          existingGalleryImages: normalizedExistingGalleryImages,
+        })
+      );
     } catch (error) {
       console.error("Failed to load seminar:", error);
       const errorMessage =
@@ -138,6 +305,29 @@ export default function SeminarForm() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleResetChanges = () => {
+    setFormData(cloneValue(savedDraft.formData));
+    setImageFile(null);
+    setImagePreview(savedDraft.imagePreview);
+    setGalleryFiles([]);
+    setGalleryPreviews([]);
+    setExistingGalleryImages(cloneValue(savedDraft.existingGalleryImages));
+  };
+
+  const handleCancel = () => {
+    if (hasUnsavedChanges) {
+      setShowDiscardModal(true);
+      return;
+    }
+
+    navigate("/admin/seminars");
+  };
+
+  const handleDiscardChanges = () => {
+    setShowDiscardModal(false);
+    navigate("/admin/seminars");
   };
 
   const handleImageChange = (event) => {
@@ -308,6 +498,21 @@ export default function SeminarForm() {
         toast.success("Gallery images uploaded successfully");
       }
 
+      setSavedDraft({
+        formData: cloneValue(formData),
+        imagePreview,
+        existingGalleryImages: cloneValue(existingGalleryImages),
+      });
+      setSavedSnapshot(
+        buildDraftSnapshot({
+          formData,
+          imageFile: null,
+          imagePreview,
+          galleryFiles: [],
+          existingGalleryImages,
+        })
+      );
+
       navigate("/admin/seminars");
     } catch (error) {
       console.error("Error saving seminar:", error);
@@ -343,7 +548,7 @@ export default function SeminarForm() {
         <Button
           type="button"
           variant="outline"
-          onClick={() => navigate("/admin/seminars")}
+          onClick={handleCancel}
         >
           Back to seminars
         </Button>
@@ -352,6 +557,12 @@ export default function SeminarForm() {
       contentClassName="space-y-4 sm:space-y-6"
     >
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+        {hasUnsavedChanges && (
+          <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            You have unsaved changes.
+          </div>
+        )}
+
         <AdminSectionCard className="space-y-4 sm:space-y-5" padding="p-4 sm:p-6">
           <div className="space-y-1">
             <h2 className="text-lg font-semibold text-slate-900">
@@ -763,11 +974,23 @@ export default function SeminarForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate("/admin/seminars")}
+              onClick={handleResetChanges}
+              disabled={!hasUnsavedChanges || submitting}
+            >
+              Reset
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
             >
               Cancel
             </Button>
-            <Button type="submit" variant="brand" disabled={submitting}>
+            <Button
+              type="submit"
+              variant="brand"
+              disabled={submitting || !hasUnsavedChanges}
+            >
               {submitting
                 ? "Saving..."
                 : isEditing
@@ -777,6 +1000,12 @@ export default function SeminarForm() {
           </div>
         </div>
       </form>
+
+      <UnsavedChangesModal
+        isOpen={showDiscardModal}
+        onStay={() => setShowDiscardModal(false)}
+        onDiscard={handleDiscardChanges}
+      />
     </AdminPageShell>
   );
 }

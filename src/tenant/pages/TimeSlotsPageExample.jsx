@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import { useLockManager } from "../../shared/hooks/useLockManager";
 import { selectBooking } from "../state/bookingSlice";
@@ -102,7 +103,7 @@ export default function TimeSlotsPageWithLocks() {
       }, 500);
     } else {
       // Lock acquisition failed - slot is taken
-      alert(
+      toast.error(
         "This time slot is currently being booked by another customer. Please choose a different time."
       );
     }

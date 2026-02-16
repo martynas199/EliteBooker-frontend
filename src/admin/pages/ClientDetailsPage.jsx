@@ -14,6 +14,9 @@ import {
 import { api } from "../../shared/lib/apiClient";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Button from "../../shared/components/ui/Button";
+import toast from "react-hot-toast";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
+import { promptDialog } from "../../shared/lib/promptDialog";
 
 export default function ClientDetailsPage() {
   const { clientId } = useParams();
@@ -78,14 +81,21 @@ export default function ClientDetailsPage() {
       setEditing(false);
     } catch (error) {
       console.error("Failed to update client:", error);
-      alert("Failed to update client. Please try again.");
+      toast.error("Failed to update client. Please try again.");
     } finally {
       setSaving(false);
     }
   };
 
   const handleBlockClient = async () => {
-    const reason = prompt("Please provide a reason for blocking this client:");
+    const reason = await promptDialog({
+      title: "Block client",
+      message: "Please provide a reason for blocking this client:",
+      placeholder: "Reason for blocking",
+      confirmLabel: "Block client",
+      cancelLabel: "Cancel",
+      required: true,
+    });
     if (!reason) return;
 
     try {
@@ -93,19 +103,27 @@ export default function ClientDetailsPage() {
       await fetchClientDetails();
     } catch (error) {
       console.error("Failed to block client:", error);
-      alert("Failed to block client. Please try again.");
+      toast.error("Failed to block client. Please try again.");
     }
   };
 
   const handleUnblockClient = async () => {
-    if (!confirm("Are you sure you want to unblock this client?")) return;
+    const confirmed = await confirmDialog({
+      title: "Unblock client?",
+      message: "Are you sure you want to unblock this client?",
+      confirmLabel: "Unblock",
+      cancelLabel: "Cancel",
+      variant: "primary",
+    });
+
+    if (!confirmed) return;
 
     try {
       await api.post(`/admin/clients/${clientId}/unblock`);
       await fetchClientDetails();
     } catch (error) {
       console.error("Failed to unblock client:", error);
-      alert("Failed to unblock client. Please try again.");
+      toast.error("Failed to unblock client. Please try again.");
     }
   };
 
@@ -194,7 +212,7 @@ export default function ClientDetailsPage() {
         </button>
 
         {/* Client Profile Card */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center gap-4">
               <div className="h-16 w-16 rounded-full bg-gray-900 text-white flex items-center justify-center text-2xl font-bold">
@@ -482,7 +500,7 @@ export default function ClientDetailsPage() {
         </div>
 
         {/* Booking History */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             Booking History ({bookings.length})
           </h2>

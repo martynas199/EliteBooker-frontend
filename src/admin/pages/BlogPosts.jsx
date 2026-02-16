@@ -5,6 +5,8 @@ import { api } from "../../shared/lib/apiClient";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Modal from "../../shared/components/ui/Modal";
+import EmptyStateCard from "../../shared/components/ui/EmptyStateCard";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
 
 export default function BlogPosts() {
   const [posts, setPosts] = useState([]);
@@ -121,7 +123,15 @@ export default function BlogPosts() {
       return;
     }
 
-    if (!window.confirm("Are you sure you want to delete this blog post?")) {
+    const confirmed = await confirmDialog({
+      title: "Delete blog post?",
+      message: "Are you sure you want to delete this blog post? This action cannot be undone.",
+      confirmLabel: "Delete",
+      cancelLabel: "Keep post",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -187,8 +197,10 @@ export default function BlogPosts() {
 
       {/* Posts List */}
       {posts.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+        <EmptyStateCard
+          title="No blog posts found"
+          description="Get started by creating your first blog post."
+          icon={
             <svg
               className="w-8 h-8 text-gray-600"
               fill="none"
@@ -202,20 +214,12 @@ export default function BlogPosts() {
                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
               />
             </svg>
-          </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            No blog posts yet
-          </h3>
-          <p className="text-gray-600 mb-6">
-            Start creating beauty-related content for your customers
-          </p>
-          <button
-            onClick={() => openModal()}
-            className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            Create First Post
-          </button>
-        </div>
+          }
+          primaryAction={{
+            label: "Create First Post",
+            onClick: () => openModal(),
+          }}
+        />
       ) : (
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">

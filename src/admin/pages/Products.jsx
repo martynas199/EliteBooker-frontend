@@ -5,8 +5,44 @@ import { ProductsAPI } from "../../tenant/pages/products.api";
 import { api } from "../../shared/lib/apiClient";
 import Button from "../../shared/components/ui/Button";
 import Card from "../../shared/components/ui/Card";
+import EmptyStateCard from "../../shared/components/ui/EmptyStateCard";
+import ListLoadingState from "../../shared/components/ui/ListLoadingState";
 import FormField from "../../shared/components/forms/FormField";
 import ConfirmDeleteModal from "../../shared/components/forms/ConfirmDeleteModal";
+
+const defaultProductForm = {
+  title: "",
+  brand: "",
+  description: "",
+  keyBenefits: "",
+  ingredients: "",
+  howToApply: "",
+  category: "Skincare",
+  specialistId: "",
+  featured: false,
+  active: true,
+  order: 0,
+  variants: [
+    {
+      size: "",
+      price: "",
+      priceEUR: "",
+      originalPrice: "",
+      originalPriceEUR: "",
+      purchasePrice: "",
+      stock: 0,
+      sku: "",
+      weight: 0,
+    },
+  ],
+};
+
+const buildDraftSnapshot = ({ formData, imageFile, galleryFiles }) =>
+  JSON.stringify({
+    formData,
+    hasNewMainImage: Boolean(imageFile),
+    galleryFileCount: galleryFiles.length,
+  });
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -15,32 +51,7 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    brand: "",
-    description: "",
-    keyBenefits: "",
-    ingredients: "",
-    howToApply: "",
-    category: "Skincare",
-    specialistId: "",
-    featured: false,
-    active: true,
-    order: 0,
-    variants: [
-      {
-        size: "",
-        price: "",
-        priceEUR: "",
-        originalPrice: "",
-        originalPriceEUR: "",
-        purchasePrice: "",
-        stock: 0,
-        sku: "",
-        weight: 0,
-      },
-    ],
-  });
+  const [formData, setFormData] = useState(defaultProductForm);
   const [editingId, setEditingId] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -52,10 +63,38 @@ export default function Products() {
     product: null,
   });
   const [submitting, setSubmitting] = useState(false);
+  const [savedSnapshot, setSavedSnapshot] = useState(
+    buildDraftSnapshot({
+      formData: defaultProductForm,
+      imageFile: null,
+      galleryFiles: [],
+    })
+  );
+  const [savedImagePreview, setSavedImagePreview] = useState(null);
 
   useEffect(() => {
     loadData();
   }, []);
+
+  const hasUnsavedChanges =
+    showForm &&
+    buildDraftSnapshot({
+      formData,
+      imageFile,
+      galleryFiles,
+    }) !== savedSnapshot;
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   const loadData = async () => {
     try {
@@ -283,9 +322,7 @@ export default function Products() {
   };
 
   const handleEdit = (product) => {
-    setEditingId(product._id);
-    setShowForm(true);
-    setFormData({
+    const nextFormData = {
       title: product.title || "",
       brand: product.brand || "",
       description: product.description || "",
@@ -325,12 +362,24 @@ export default function Products() {
                 weight: 0,
               },
             ],
-    });
+    };
+
+    setEditingId(product._id);
+    setShowForm(true);
+    setFormData(nextFormData);
     setImagePreview(product.image?.url || null);
+    setSavedImagePreview(product.image?.url || null);
     setImageFile(null);
     setExistingGalleryImages(product.images || []);
     setGalleryFiles([]);
     setGalleryPreviews([]);
+    setSavedSnapshot(
+      buildDraftSnapshot({
+        formData: nextFormData,
+        imageFile: null,
+        galleryFiles: [],
+      })
+    );
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -351,35 +400,30 @@ export default function Products() {
   const resetForm = () => {
     setEditingId(null);
     setShowForm(false);
-    setFormData({
-      title: "",
-      brand: "",
-      description: "",
-      keyBenefits: "",
-      ingredients: "",
-      howToApply: "",
-      category: "Skincare",
-      specialistId: "",
-      featured: false,
-      active: true,
-      order: 0,
-      variants: [
-        {
-          size: "",
-          price: "",
-          originalPrice: "",
-          purchasePrice: "",
-          stock: 0,
-          sku: "",
-          weight: 0,
-        },
-      ],
-    });
+    setFormData(defaultProductForm);
     setImageFile(null);
     setImagePreview(null);
     setGalleryFiles([]);
     setGalleryPreviews([]);
     setExistingGalleryImages([]);
+    setSavedImagePreview(null);
+    setSavedSnapshot(
+      buildDraftSnapshot({
+        formData: defaultProductForm,
+        imageFile: null,
+        galleryFiles: [],
+      })
+    );
+  };
+
+  const handleResetChanges = () => {
+    const parsedSnapshot = JSON.parse(savedSnapshot);
+    setFormData(parsedSnapshot.formData);
+    setImageFile(null);
+    setImagePreview(savedImagePreview);
+    setGalleryFiles([]);
+    setGalleryPreviews([]);
+    toast.success("Changes reset");
   };
 
   const addVariant = () => {
@@ -419,12 +463,12 @@ export default function Products() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600 mb-2"></div>
-          <p className="text-gray-600">Loading products...</p>
-        </div>
-      </div>
+      <ListLoadingState
+        className="my-6"
+        message="Loading products..."
+        count={5}
+        itemHeight="h-24"
+      />
     );
   }
 
@@ -442,19 +486,36 @@ export default function Products() {
             <Package className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
               Products
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600">
               Manage your product catalog and collections
             </p>
           </div>
         </div>
         {!showForm && (
           <Button
-            onClick={() => setShowForm(true)}
+            onClick={() => {
+              setShowForm(true);
+              setEditingId(null);
+              setFormData(defaultProductForm);
+              setImageFile(null);
+              setImagePreview(null);
+              setGalleryFiles([]);
+              setGalleryPreviews([]);
+              setExistingGalleryImages([]);
+              setSavedImagePreview(null);
+              setSavedSnapshot(
+                buildDraftSnapshot({
+                  formData: defaultProductForm,
+                  imageFile: null,
+                  galleryFiles: [],
+                })
+              );
+            }}
             variant="primary"
-            className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-blue-600 hover:bg-blue-700"
+            className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700"
           >
             <Plus className="w-5 h-5 mr-2 inline-block" />
             Add New Product
@@ -504,7 +565,7 @@ export default function Products() {
       {/* Form */}
       {showForm && (
         <Card className="p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-5">
             {editingId ? "Edit Product" : "Add New Product"}
           </h2>
 
@@ -512,6 +573,12 @@ export default function Products() {
             onSubmit={handleSubmit}
             className="space-y-4 sm:space-y-6 overflow-x-hidden"
           >
+            {hasUnsavedChanges && (
+              <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                You have unsaved changes.
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Title */}
               <FormField label="Product Title" htmlFor="title" required>
@@ -722,7 +789,7 @@ export default function Products() {
                           onChange={(e) =>
                             updateVariant(index, "priceEUR", e.target.value)
                           }
-                          className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-blue-50"
+                          className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-blue-50"
                           placeholder="119.99"
                         />
                         <p className="text-xs text-blue-600 mt-1">
@@ -772,7 +839,7 @@ export default function Products() {
                               e.target.value
                             )
                           }
-                          className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-blue-50"
+                          className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-blue-50"
                           placeholder="179.99"
                         />
                         <p className="text-xs text-blue-600 mt-1">
@@ -1089,10 +1156,20 @@ export default function Products() {
                 variant="brand"
                 size="lg"
                 loading={submitting}
-                disabled={submitting}
+                disabled={submitting || !hasUnsavedChanges}
                 className="w-full sm:w-auto"
               >
                 {editingId ? "Update Product" : "Create Product"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                onClick={handleResetChanges}
+                disabled={!hasUnsavedChanges || submitting}
+                className="w-full sm:w-auto"
+              >
+                Reset
               </Button>
               <Button
                 type="button"
@@ -1104,6 +1181,29 @@ export default function Products() {
                 Cancel
               </Button>
             </div>
+
+            {hasUnsavedChanges && (
+              <div className="sm:hidden fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white/95 backdrop-blur px-4 py-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleResetChanges}
+                    disabled={submitting}
+                  >
+                    Reset
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="brand"
+                    loading={submitting}
+                    disabled={!hasUnsavedChanges || submitting}
+                  >
+                    Save
+                  </Button>
+                </div>
+              </div>
+            )}
           </form>
         </Card>
       )}
@@ -1121,11 +1221,17 @@ export default function Products() {
         </h2>
 
         {filteredProducts.length === 0 ? (
-          <p className="text-sm sm:text-base text-gray-500 text-center py-8">
-            {selectedBrand
-              ? `No products found for ${selectedBrand}.`
-              : "No products yet. Create your first product above."}
-          </p>
+          <EmptyStateCard
+            className="py-8"
+            title="No products found"
+            description={
+              selectedBrand
+                ? `No products found for ${selectedBrand}.`
+                : "Get started by creating your first product."
+            }
+            icon={<Package className="h-7 w-7 text-gray-500" />}
+            compact
+          />
         ) : (
           <div className="grid gap-3 sm:gap-4">
             {filteredProducts.map((product) => (

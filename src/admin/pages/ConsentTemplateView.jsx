@@ -10,6 +10,8 @@ import {
 import { api } from "../../shared/lib/apiClient";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Button from "../../shared/components/ui/Button";
+import toast from "react-hot-toast";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
 
 export default function ConsentTemplateView() {
   const navigate = useNavigate();
@@ -41,22 +43,30 @@ export default function ConsentTemplateView() {
       navigate(`/admin/consent-templates/${response.data.data._id}/edit`);
     } catch (error) {
       console.error("Error creating new version:", error);
-      alert("Failed to create new version");
+      toast.error("Failed to create new version");
     }
   };
 
   const handleArchive = async () => {
-    if (!confirm("Are you sure you want to archive this template?")) {
+    const confirmed = await confirmDialog({
+      title: "Archive template?",
+      message: "Are you sure you want to archive this template?",
+      confirmLabel: "Archive",
+      cancelLabel: "Cancel",
+      variant: "primary",
+    });
+
+    if (!confirmed) {
       return;
     }
 
     try {
       await api.post(`/consent-templates/${id}/archive`);
-      alert("Template archived successfully");
+      toast.success("Template archived successfully");
       navigate("/admin/consent-templates");
     } catch (error) {
       console.error("Error archiving template:", error);
-      alert("Failed to archive template");
+      toast.error("Failed to archive template");
     }
   };
 
@@ -183,7 +193,7 @@ export default function ConsentTemplateView() {
       {/* Template Details */}
       <div className="space-y-6">
         {/* Settings Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Settings</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -231,7 +241,7 @@ export default function ConsentTemplateView() {
 
         {/* Disclaimers */}
         {template.disclaimers && template.disclaimers.length > 0 && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Disclaimers
             </h2>
@@ -270,7 +280,7 @@ export default function ConsentTemplateView() {
         )}
 
         {/* Sections */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             Form Sections
           </h2>

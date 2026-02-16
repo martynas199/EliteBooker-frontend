@@ -21,8 +21,19 @@ export const createGiftCardCheckoutSession = async (data) => {
  */
 export const confirmGiftCardCheckout = async (sessionId) => {
   const response = await api.get(
-    `/gift-cards/confirm?session_id=${encodeURIComponent(sessionId)}`
+    `/gift-cards/confirm?session_id=${encodeURIComponent(sessionId)}`,
   );
+  return response.data;
+};
+
+/**
+ * Cancel pending gift card checkout
+ */
+export const cancelGiftCardCheckout = async ({ giftCardId, sessionId }) => {
+  const response = await api.post("/gift-cards/cancel", {
+    ...(giftCardId ? { giftCardId } : {}),
+    ...(sessionId ? { session_id: sessionId } : {}),
+  });
   return response.data;
 };
 

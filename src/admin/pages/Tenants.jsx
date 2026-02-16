@@ -4,6 +4,8 @@ import { selectAdmin } from "../../shared/state/authSlice";
 import { useNavigate } from "react-router-dom";
 import api from "../../shared/lib/api";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
+import { promptDialog } from "../../shared/lib/promptDialog";
 
 export default function Tenants() {
   const admin = useSelector(selectAdmin);
@@ -41,11 +43,16 @@ export default function Tenants() {
   };
 
   const handleSuspend = async (tenantId) => {
-    if (
-      !confirm(
-        "Are you sure you want to suspend this tenant? They will not be able to access their account."
-      )
-    ) {
+    const confirmed = await confirmDialog({
+      title: "Suspend tenant?",
+      message:
+        "Are you sure you want to suspend this tenant? They will not be able to access their account.",
+      confirmLabel: "Suspend",
+      cancelLabel: "Keep active",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -77,7 +84,14 @@ export default function Tenants() {
   const handleDelete = async (tenantId, tenantName) => {
     const confirmMessage = `⚠️ WARNING: This action cannot be undone!\n\nThis will permanently delete:\n- The tenant account\n- All staff members\n- All services\n- All appointments\n- All orders\n- All products\n- All settings\n- All admin accounts\n\nType the tenant name "${tenantName}" to confirm deletion:`;
 
-    const userInput = prompt(confirmMessage);
+    const userInput = await promptDialog({
+      title: "Confirm tenant deletion",
+      message: confirmMessage,
+      placeholder: "Enter tenant name",
+      confirmLabel: "Continue",
+      cancelLabel: "Cancel",
+      required: true,
+    });
 
     if (userInput !== tenantName) {
       if (userInput !== null) {
@@ -215,8 +229,10 @@ export default function Tenants() {
       )}
 
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Tenant Management</h1>
-        <p className="text-gray-600 mt-2">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
+          Tenant Management
+        </h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">
           Manage all salon tenants on the platform
         </p>
       </div>
@@ -234,7 +250,7 @@ export default function Tenants() {
       )}
 
       {/* Filters */}
-      <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+      <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -268,23 +284,23 @@ export default function Tenants() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
           <p className="text-sm text-gray-600">Total Tenants</p>
           <p className="text-2xl font-bold text-gray-900">{tenants.length}</p>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
           <p className="text-sm text-gray-600">Active</p>
           <p className="text-2xl font-bold text-green-600">
             {tenants.filter((t) => t.status === "active").length}
           </p>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
           <p className="text-sm text-gray-600">Suspended</p>
           <p className="text-2xl font-bold text-red-600">
             {tenants.filter((t) => t.status === "suspended").length}
           </p>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
           <p className="text-sm text-gray-600">Trial</p>
           <p className="text-2xl font-bold text-yellow-600">
             {tenants.filter((t) => t.status === "trial").length}
@@ -293,7 +309,7 @@ export default function Tenants() {
       </div>
 
       {/* Tenants Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">

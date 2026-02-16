@@ -4,6 +4,7 @@ import { selectAdmin } from "../../shared/state/authSlice";
 import { api } from "../../shared/lib/apiClient";
 import toast from "react-hot-toast";
 import Button from "../../shared/components/ui/Button";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
 
 export default function Subscription() {
   const admin = useSelector(selectAdmin);
@@ -62,11 +63,16 @@ export default function Subscription() {
   };
 
   const handleCancelSubscription = async () => {
-    if (
-      !window.confirm(
-        "Are you sure you want to cancel your subscription? You will lose access to the e-commerce store at the end of the billing period."
-      )
-    ) {
+    const confirmed = await confirmDialog({
+      title: "Cancel subscription?",
+      message:
+        "Are you sure you want to cancel your subscription? You will lose access to the e-commerce store at the end of the billing period.",
+      confirmLabel: "Cancel subscription",
+      cancelLabel: "Keep subscription",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 

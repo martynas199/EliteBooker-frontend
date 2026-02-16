@@ -41,11 +41,12 @@ const navigationConfig = [
     path: "/admin",
   },
   {
-    label: "Appointments",
+    label: "Bookings",
     icon: "Calendar",
     items: [
-      { label: "Appointment List", path: "/admin/appointments" },
-      { label: "Revenue Analytics", path: "/admin/revenue" },
+      { label: "Appointments", path: "/admin/appointments" },
+      { label: "Waitlist", path: "/admin/waitlist" },
+      { label: "Booking Policies", path: "/admin/cancellation" },
     ],
   },
   {
@@ -54,27 +55,37 @@ const navigationConfig = [
     path: "/admin/clients",
   },
   {
-    label: "Take Payment",
-    icon: "CreditCard",
-    path: "/admin/take-payment",
-    condition: "payOnTapEnabled",
-  },
-  {
-    label: "Booking Setup",
+    label: "Operations",
     icon: "Settings",
     items: [
+      { label: "Services", path: "/admin/services" },
+      { label: "Staff", path: "/admin/staff", condition: "notSpecialist" },
+      { label: "Custom Working Hours", path: "/admin/schedule" },
+      { label: "Time Off", path: "/admin/timeoff" },
+      { label: "Consent Forms", path: "/admin/consent-templates" },
       {
         label: "Locations",
         path: "/admin/locations",
         condition: "multiLocation",
       },
-      { label: "Services", path: "/admin/services" },
-      { label: "Waitlist", path: "/admin/waitlist" },
-      { label: "Staff", path: "/admin/staff", condition: "notSpecialist" },
-      { label: "Custom Working Hours", path: "/admin/schedule" },
-      { label: "Time Off", path: "/admin/timeoff" },
-      { label: "Booking Policies", path: "/admin/cancellation" },
-      { label: "Consent Forms", path: "/admin/consent-templates" },
+    ],
+  },
+  {
+    label: "Financials",
+    icon: "DollarSign",
+    items: [
+      {
+        label: "Take Payment",
+        path: "/admin/take-payment",
+        condition: "payOnTapEnabled",
+      },
+      { label: "Revenue Analytics", path: "/admin/revenue" },
+      { label: "Stripe Connect", path: "/admin/stripe-connect" },
+      {
+        label: "Profit Analytics",
+        path: "/admin/profit-analytics",
+        condition: "ecommerceEnabled",
+      },
     ],
   },
   {
@@ -84,7 +95,6 @@ const navigationConfig = [
     items: [
       { label: "Products", path: "/admin/products" },
       { label: "Orders", path: "/admin/orders" },
-      { label: "Profit Analytics", path: "/admin/profit-analytics" },
       { label: "Product Hero Image", path: "/admin/products-hero" },
       { label: "Shipping Rates", path: "/admin/shipping-rates" },
       { label: "Subscriptions", path: "/admin/subscription" },
@@ -111,7 +121,6 @@ const navigationConfig = [
     label: "Configuration",
     icon: "Sliders",
     items: [
-      { label: "Stripe Connect", path: "/admin/stripe-connect" },
       { label: "Features & Subscriptions", path: "/admin/platform-features" },
       {
         label: "Admin Links",
@@ -138,39 +147,22 @@ const SidebarItem = ({
   const location = useLocation();
   const { ecommerceEnabled, multiLocation, seminarsEnabled, payOnTapEnabled } =
     useTenantSettings();
-  const [isExpanded, setIsExpanded] = useState(false);
 
-  // Check if section should be hidden based on conditions
-  if (item.condition === "ecommerceEnabled" && !ecommerceEnabled) {
-    return null;
-  }
+  const isVisibleByCondition = (node) => {
+    if (!node?.condition) return true;
+    if (node.condition === "ecommerceEnabled") return !!ecommerceEnabled;
+    if (node.condition === "multiLocation") return !!multiLocation;
+    if (node.condition === "seminarsEnabled") return !!seminarsEnabled;
+    if (node.condition === "payOnTapEnabled") return !!payOnTapEnabled;
+    if (node.condition === "supportRole") return userRole === "support";
+    if (node.condition === "notSpecialist") return userRole !== "specialist";
+    return true;
+  };
 
-  // Hide items based on multiLocation feature
-  if (item.condition === "multiLocation" && !multiLocation) {
-    return null;
-  }
+  const visibleChildren = (item.items || []).filter(isVisibleByCondition);
+  const isItemVisible = isVisibleByCondition(item);
 
-  // Hide items based on seminars feature
-  if (item.condition === "seminarsEnabled" && !seminarsEnabled) {
-    return null;
-  }
-
-  // Hide items based on payOnTap feature
-  if (item.condition === "payOnTapEnabled" && !payOnTapEnabled) {
-    return null;
-  }
-
-  // Hide Support menu for non-support users
-  if (item.condition === "supportRole" && userRole !== "support") {
-    return null;
-  }
-
-  // Hide items for specialist role
-  if (item.condition === "notSpecialist" && userRole === "specialist") {
-    return null;
-  }
-
-  const hasItems = item.items && item.items.length > 0;
+  const hasItems = visibleChildren.length > 0;
   const Icon = iconMap[item.icon];
   const matchesPath = (targetPath) => {
     if (!targetPath) return false;
@@ -184,8 +176,18 @@ const SidebarItem = ({
   const isActive = matchesPath(item.path);
 
   // Check if any nested item is active
-  const hasActiveChild =
-    hasItems && item.items.some((child) => matchesPath(child.path));
+  const hasActiveChild = hasItems && visibleChildren.some((child) => matchesPath(child.path));
+  const [isExpanded, setIsExpanded] = useState(hasActiveChild);
+
+  useEffect(() => {
+    if (hasActiveChild) {
+      setIsExpanded(true);
+    }
+  }, [hasActiveChild]);
+
+  if (!isItemVisible) {
+    return null;
+  }
 
   if (hasItems) {
     // Mobile: Clean minimal design
@@ -217,23 +219,7 @@ const SidebarItem = ({
                 className="overflow-hidden"
               >
                 <div className="mt-1 space-y-1 pl-4">
-                  {item.items
-                    .filter((child) => {
-                      if (
-                        child.condition === "multiLocation" &&
-                        !multiLocation
-                      ) {
-                        return false;
-                      }
-                      if (
-                        child.condition === "ecommerceEnabled" &&
-                        !ecommerceEnabled
-                      ) {
-                        return false;
-                      }
-                      return true;
-                    })
-                    .map((child, idx) => (
+                  {visibleChildren.map((child, idx) => (
                       <SidebarItem
                         key={idx}
                         item={child}
@@ -295,20 +281,7 @@ const SidebarItem = ({
               className="overflow-hidden"
             >
               <div className="ml-7 mt-1.5 space-y-0.5 border-l-2 border-gray-200 pl-4">
-                {item.items
-                  .filter((child) => {
-                    if (child.condition === "multiLocation" && !multiLocation) {
-                      return false;
-                    }
-                    if (
-                      child.condition === "ecommerceEnabled" &&
-                      !ecommerceEnabled
-                    ) {
-                      return false;
-                    }
-                    return true;
-                  })
-                  .map((child, idx) => (
+                {visibleChildren.map((child, idx) => (
                     <SidebarItem
                       key={idx}
                       item={child}

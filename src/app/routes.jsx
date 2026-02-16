@@ -177,9 +177,6 @@ const Settings = lazy(() => import("../admin/pages/Settings"));
 const Revenue = lazy(() => import("../admin/pages/Revenue"));
 const ProfitAnalytics = lazy(() => import("../admin/pages/ProfitAnalytics"));
 const Profile = lazy(() => import("../admin/pages/Profile"));
-const CancellationPolicy = lazy(() =>
-  import("../admin/pages/CancellationPolicy"),
-);
 const BookingPoliciesPage = lazy(() =>
   import("../admin/pages/BookingPoliciesPage"),
 );
@@ -263,7 +260,10 @@ function CustomerLayout() {
             <Route path="products/:id" element={<ProductDetailPage />} />
             <Route path="success" element={<SuccessPage />} />
             <Route path="cancel" element={<CancelPage />} />
-            <Route path="gift-cards/success" element={<GiftCardSuccessPage />} />
+            <Route
+              path="gift-cards/success"
+              element={<GiftCardSuccessPage />}
+            />
             <Route path="gift-cards/cancel" element={<GiftCardCancelPage />} />
             <Route path="faq" element={<FAQPage />} />
             <Route path="product-checkout" element={<ProductCheckoutPage />} />

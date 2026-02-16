@@ -98,7 +98,7 @@ export default function CheckoutPage() {
                   durationMin: variant.durationMin,
                   bufferBeforeMin: variant.bufferBeforeMin,
                   bufferAfterMin: variant.bufferAfterMin,
-                })
+                }),
               );
             }
           })
@@ -112,7 +112,7 @@ export default function CheckoutPage() {
                 specialistId: res.data._id,
                 any: false,
                 inSalonPayment: res.data.inSalonPayment || false,
-              })
+              }),
             );
           })
           .catch((err) => console.error("Failed to restore specialist:", err));
@@ -216,7 +216,9 @@ export default function CheckoutPage() {
         client: form,
         mode: mode === "pay_in_salon" ? "pay_in_salon" : mode,
         currency, // Add selected currency
-        ...(giftCardApplied?.code ? { giftCardCode: giftCardApplied.code } : {}),
+        ...(giftCardApplied?.code
+          ? { giftCardCode: giftCardApplied.code }
+          : {}),
         ...(user ? { userId: user._id } : {}), // Add userId if logged in
       };
 
@@ -238,7 +240,7 @@ export default function CheckoutPage() {
           error: e.response?.data,
         });
         toast.error(
-          "This time slot is no longer available. Please select another time."
+          "This time slot is no longer available. Please select another time.",
         );
         // Redirect to times page to select a different slot
         const tenantSlug = tenant?.slug || "";
@@ -280,7 +282,11 @@ export default function CheckoutPage() {
         throw new Error("Gift card is invalid or has no remaining balance");
       }
 
-      if (tenant?.slug && card?.tenant?.slug && card.tenant.slug !== tenant.slug) {
+      if (
+        tenant?.slug &&
+        card?.tenant?.slug &&
+        card.tenant.slug !== tenant.slug
+      ) {
         throw new Error("This gift card belongs to a different business");
       }
 
@@ -292,7 +298,9 @@ export default function CheckoutPage() {
       toast.success("Gift card applied");
     } catch (error) {
       const message =
-        error?.response?.data?.error || error?.message || "Unable to apply gift card";
+        error?.response?.data?.error ||
+        error?.message ||
+        "Unable to apply gift card";
       setGiftCardApplied(null);
       setGiftCardError(message);
     } finally {
@@ -323,7 +331,7 @@ export default function CheckoutPage() {
     ? 0
     : Math.min(
         Number(giftCardApplied?.remainingBalance || 0),
-        Number(servicePrice || 0)
+        Number(servicePrice || 0),
       );
   const serviceAfterGiftCard = Math.max(0, servicePrice - giftCardDiscount);
   const totalAmount = bookingBeautician?.inSalonPayment
@@ -335,7 +343,7 @@ export default function CheckoutPage() {
     bookingServices && bookingServices.length > 0
       ? bookingServices.reduce(
           (sum, svc) => sum + Number(svc.durationMin || 0),
-          0
+          0,
         )
       : Number(bookingService?.durationMin || 0);
 
@@ -443,7 +451,9 @@ export default function CheckoutPage() {
 
                   {!bookingBeautician?.inSalonPayment && (
                     <div className="p-4 border border-gray-200 rounded-xl bg-gray-50 space-y-3">
-                      <div className="font-semibold text-gray-900">Gift Card</div>
+                      <div className="font-semibold text-gray-900">
+                        Gift Card
+                      </div>
                       <div className="flex gap-2">
                         <Input
                           placeholder="Enter gift card code"
@@ -462,7 +472,10 @@ export default function CheckoutPage() {
                             Remove
                           </Button>
                         ) : (
-                          <Button onClick={applyGiftCard} disabled={giftCardApplying}>
+                          <Button
+                            onClick={applyGiftCard}
+                            disabled={giftCardApplying}
+                          >
                             {giftCardApplying ? "Applying..." : "Apply"}
                           </Button>
                         )}
@@ -472,7 +485,8 @@ export default function CheckoutPage() {
                       )}
                       {giftCardApplied && (
                         <p className="text-sm text-green-700">
-                          Applied {giftCardApplied.code} • Balance: {formatPrice(giftCardApplied.remainingBalance)}
+                          Applied {giftCardApplied.code} • Balance:{" "}
+                          {formatPrice(giftCardApplied.remainingBalance)}
                         </p>
                       )}
                     </div>
@@ -638,7 +652,9 @@ export default function CheckoutPage() {
 
                     {giftCardDiscount > 0 && (
                       <div className="flex items-center justify-between mb-4 pt-3 border-t border-gray-200">
-                        <div className="text-sm text-gray-600">Gift Card ({giftCardApplied?.code})</div>
+                        <div className="text-sm text-gray-600">
+                          Gift Card ({giftCardApplied?.code})
+                        </div>
                         <div className="text-sm font-semibold text-green-700">
                           -{formatPrice(giftCardDiscount)}
                         </div>

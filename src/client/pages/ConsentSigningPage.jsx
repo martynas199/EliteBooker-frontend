@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import SignatureCanvas from "react-signature-canvas";
 import { api } from "../../shared/lib/apiClient";
+import toast from "react-hot-toast";
 
 export default function ConsentSigningPage() {
   const { token } = useParams();
@@ -70,7 +71,7 @@ export default function ConsentSigningPage() {
 
   const handleSaveSignature = () => {
     if (signatureRef.current?.isEmpty()) {
-      alert("Please provide your signature");
+      toast.error("Please provide your signature");
       return;
     }
 
@@ -82,7 +83,7 @@ export default function ConsentSigningPage() {
   const handleSubmit = async () => {
     // Validation
     if (!formData.signedByName.trim()) {
-      alert("Please enter your full name");
+      toast.error("Please enter your full name");
       return;
     }
 
@@ -93,13 +94,13 @@ export default function ConsentSigningPage() {
 
     for (const { index } of requiredCheckboxes) {
       if (!formData.checkboxes[index]) {
-        alert("Please check all required checkboxes");
+        toast.error("Please check all required checkboxes");
         return;
       }
     }
 
     if (!formData.signatureData) {
-      alert("Please provide your signature");
+      toast.error("Please provide your signature");
       return;
     }
 
@@ -115,7 +116,7 @@ export default function ConsentSigningPage() {
       setCurrentStep(currentStep + 1);
     } catch (error) {
       console.error("Error signing consent:", error);
-      alert(error.response?.data?.message || "Failed to sign consent form");
+      toast.error(error.response?.data?.message || "Failed to sign consent form");
     } finally {
       setSubmitting(false);
     }

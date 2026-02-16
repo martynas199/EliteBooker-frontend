@@ -4,6 +4,7 @@ import { api } from "../../shared/lib/apiClient";
 import Card from "../../shared/components/ui/Card";
 import Button from "../../shared/components/ui/Button";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
+import EmptyStateCard from "../../shared/components/ui/EmptyStateCard";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import dayjs from "dayjs";
@@ -12,6 +13,8 @@ import {
   SelectButton,
 } from "../../shared/components/ui/SelectDrawer";
 import AdminPageShell from "../components/AdminPageShell";
+import toast from "react-hot-toast";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
 
 export default function TimeOff() {
   const [timeOffList, setTimeOffList] = useState([]);
@@ -61,7 +64,7 @@ export default function TimeOff() {
       setSpecialists(staffResponse.data?.filter((b) => b.active) || []);
     } catch (error) {
       console.error("Error loading data:", error);
-      alert("Failed to load time-off data");
+      toast.error("Failed to load time-off data");
       setTimeOffList([]);
       setSpecialists([]);
     } finally {
@@ -119,21 +122,25 @@ export default function TimeOff() {
       setErrors({});
     } catch (error) {
       console.error("Error adding time-off:", error);
-      alert(error.response?.data?.error || "Failed to add time-off period");
+      toast.error(error.response?.data?.error || "Failed to add time-off period");
     } finally {
       setSubmitting(false);
     }
   }
 
   async function handleDelete(timeOff) {
-    if (
-      !confirm(
-        `Remove time-off for ${timeOff.beauticianName} (${formatDateRange(
-          timeOff.start,
-          timeOff.end
-        )})?`
-      )
-    ) {
+    const confirmed = await confirmDialog({
+      title: "Remove time-off?",
+      message: `Remove time-off for ${timeOff.beauticianName} (${formatDateRange(
+        timeOff.start,
+        timeOff.end,
+      )})?`,
+      confirmLabel: "Remove",
+      cancelLabel: "Keep",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -142,7 +149,7 @@ export default function TimeOff() {
       setTimeOffList(timeOffList.filter((t) => t._id !== timeOff._id));
     } catch (error) {
       console.error("Error deleting time-off:", error);
-      alert("Failed to delete time-off period");
+      toast.error("Failed to delete time-off period");
     }
   }
 
@@ -763,10 +770,12 @@ export default function TimeOff() {
 
       {/* Empty State */}
       {timeOffList.length === 0 && !showAddForm && (
-        <Card className="p-16 text-center shadow-sm border border-gray-200">
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
+        <EmptyStateCard
+          title="No time off scheduled"
+          description="Get started by adding your first time-off period."
+          icon={
             <svg
-              className="w-12 h-12 text-gray-500"
+              className="w-10 h-10 text-gray-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -778,34 +787,28 @@ export default function TimeOff() {
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-          </div>
-          <h3 className="text-2xl font-semibold text-gray-900 mb-3">
-            No Time Off Scheduled
-          </h3>
-          <p className="text-gray-600 text-base mb-8 max-w-md mx-auto">
-            Add time-off periods to block dates when staff members are
-            unavailable
-          </p>
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-medium px-6 py-3 rounded-lg transition-colors"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            Add First Time Off
-          </button>
-        </Card>
+          }
+          primaryAction={{
+            label: "Add First Time Off",
+            onClick: () => setShowAddForm(true),
+            icon: (
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+            ),
+          }}
+          className="py-16"
+        />
       )}
 
       {/* Specialist Selection Drawer */}

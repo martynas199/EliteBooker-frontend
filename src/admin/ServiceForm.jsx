@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import {
   Info,
@@ -20,6 +20,70 @@ import {
   SelectButton,
 } from "../shared/components/ui/SelectDrawer";
 
+const createDefaultServiceFormData = () => ({
+  name: "",
+  category: "",
+  description: "",
+  primaryBeauticianId: "",
+  additionalBeauticianIds: [],
+  availableAt: [],
+  active: true,
+  priceVaries: false,
+  image: null,
+  useFixedSlots: false,
+  fixedTimeSlots: [],
+  variants: [
+    {
+      name: "Standard",
+      durationMin: "",
+      price: "",
+      promoPrice: null,
+      bufferBeforeMin: 0,
+      bufferAfterMin: 0,
+    },
+  ],
+});
+
+const cloneFormData = (value) => JSON.parse(JSON.stringify(value));
+
+const buildDraftSnapshot = (value) =>
+  JSON.stringify({
+    name: value.name || "",
+    category: value.category || "",
+    description: value.description || "",
+    primaryBeauticianId: value.primaryBeauticianId || "",
+    additionalBeauticianIds: value.additionalBeauticianIds || [],
+    availableAt: value.availableAt || [],
+    active: Boolean(value.active),
+    priceVaries: Boolean(value.priceVaries),
+    useFixedSlots: Boolean(value.useFixedSlots),
+    fixedTimeSlots: value.fixedTimeSlots || [],
+    image:
+      value.image?.secure_url ||
+      value.image?.url ||
+      value.image?.public_id ||
+      (typeof value.image === "string" ? value.image : null),
+    variants: (value.variants || []).map((variant) => ({
+      name: variant.name || "",
+      durationMin:
+        variant.durationMin === "" || variant.durationMin === null
+          ? ""
+          : Number(variant.durationMin),
+      price:
+        variant.price === "" || variant.price === null
+          ? ""
+          : Number(variant.price),
+      promoPrice:
+        variant.promoPrice === "" ||
+        variant.promoPrice === undefined ||
+        variant.promoPrice === null
+          ? null
+          : Number(variant.promoPrice),
+      bufferBeforeMin: Number(variant.bufferBeforeMin) || 0,
+      bufferAfterMin: Number(variant.bufferAfterMin) || 0,
+    })),
+  });
+
 /**
  * ServiceForm - Create or Edit a service
  *
@@ -38,6 +102,7 @@ export default function ServiceForm({
   onSave,
   onCancel,
   onDelete,
+  onDirtyChange,
   isSuperAdmin = false,
   admin,
 }) {
@@ -56,29 +121,8 @@ export default function ServiceForm({
   const isMultiLocationEnabled = featureFlags?.multiLocation === true;
 
   // Form state
-  const [formData, setFormData] = useState({
-    name: "",
-    category: "",
-    description: "",
-    primaryBeauticianId: "",
-    additionalBeauticianIds: [],
-    availableAt: [], // Location IDs where service is available
-    active: true,
-    priceVaries: false,
-    image: null,
-    useFixedSlots: false,
-    fixedTimeSlots: [],
-    variants: [
-      {
-        name: "Standard",
-        durationMin: "",
-        price: "",
-        promoPrice: null,
-        bufferBeforeMin: 0,
-        bufferAfterMin: 0,
-      },
-    ],
-  });
+  const [formData, setFormData] = useState(createDefaultServiceFormData);
+  const [savedFormData, setSavedFormData] = useState(createDefaultServiceFormData);
 
   const [newTimeSlot, setNewTimeSlot] = useState("");
 
@@ -116,17 +160,16 @@ export default function ServiceForm({
 
   // Load existing service data in edit mode
   useEffect(() => {
-    if (service) {
-      // Helper to extract ID from populated object or string
-      const extractId = (value) => {
-        if (!value) return "";
-        // If populated (object with _id), return _id, otherwise return the value itself
-        return typeof value === "object" && value._id
-          ? String(value._id)
-          : String(value);
-      };
+    // Helper to extract ID from populated object or string
+    const extractId = (value) => {
+      if (!value) return "";
+      return typeof value === "object" && value._id
+        ? String(value._id)
+        : String(value);
+    };
 
-      setFormData({
+    if (service) {
+      const initialFormData = {
         name: service.name || "",
         category: service.category || "",
         description: service.description || "",
@@ -157,19 +200,49 @@ export default function ServiceForm({
                   bufferAfterMin: 0,
                 },
               ],
-      });
-    } else if (!isSuperAdmin && admin?.specialistId) {
-      // For non-super admins creating a new service, pre-select their specialist ID
-      console.log(
-        "Auto-filling specialist for non-super admin:",
-        admin.specialistId,
-      );
-      setFormData((prev) => ({
-        ...prev,
-        primaryBeauticianId: String(admin.specialistId),
-      }));
+      };
+
+      setFormData(initialFormData);
+      setSavedFormData(cloneFormData(initialFormData));
+      return;
     }
+
+    const initialFormData = createDefaultServiceFormData();
+
+    if (!isSuperAdmin && admin?.specialistId) {
+      initialFormData.primaryBeauticianId = String(admin.specialistId);
+    }
+
+    setFormData(initialFormData);
+    setSavedFormData(cloneFormData(initialFormData));
   }, [service, isSuperAdmin, admin]);
+
+  const hasUnsavedChanges = useMemo(
+    () => buildDraftSnapshot(formData) !== buildDraftSnapshot(savedFormData),
+    [formData, savedFormData],
+  );
+
+  useEffect(() => {
+    onDirtyChange?.(hasUnsavedChanges);
+  }, [hasUnsavedChanges, onDirtyChange]);
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () =>
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  const handleResetChanges = () => {
+    setFormData(cloneFormData(savedFormData));
+    setErrors({});
+  };
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -314,6 +387,7 @@ export default function ServiceForm({
         })),
       };
       await onSave(submissionData);
+      setSavedFormData(cloneFormData(submissionData));
     } catch (err) {
       setErrors((prev) => ({ ...prev, submit: err.message }));
     } finally {
@@ -480,6 +554,12 @@ export default function ServiceForm({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 pb-24 sm:space-y-5 sm:pb-0">
+        {hasUnsavedChanges && (
+          <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            You have unsaved changes.
+          </div>
+        )}
+
         {/* Basic Info Section */}
         <div className={cardClass}>
           <div className="mb-4 flex items-start gap-3 border-b border-gray-100 pb-3">
@@ -1271,6 +1351,17 @@ export default function ServiceForm({
 
             <Button
               type="button"
+              onClick={handleResetChanges}
+              disabled={!hasUnsavedChanges || isSubmitting}
+              variant="outline"
+              size="md"
+              className="w-full sm:w-auto"
+            >
+              Reset
+            </Button>
+
+            <Button
+              type="button"
               onClick={onCancel}
               disabled={isSubmitting}
               variant="outline"
@@ -1281,7 +1372,7 @@ export default function ServiceForm({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || isUploadingImage}
+              disabled={isSubmitting || isUploadingImage || !hasUnsavedChanges}
               loading={isSubmitting}
               variant="brand"
               size="md"

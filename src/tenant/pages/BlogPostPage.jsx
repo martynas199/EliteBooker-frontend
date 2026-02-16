@@ -9,6 +9,7 @@ import {
   generateBlogPostSchema,
 } from "../../shared/utils/schemaGenerator";
 import BackBar from "../../shared/components/ui/BackBar";
+import toast from "react-hot-toast";
 
 export default function BlogPostPage() {
   const { slug } = useParams();
@@ -236,7 +237,7 @@ export default function BlogPostPage() {
                   navigator.share({ title: post.title, text, url });
                 } else {
                   navigator.clipboard.writeText(url);
-                  alert("Link copied to clipboard!");
+                  toast.success("Link copied to clipboard!");
                 }
               }}
               className="px-6 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"

@@ -1,7 +1,7 @@
 /**
  * Enhanced Button component with smooth animations and loading state
  * @param {object} props
- * @param {"default"|"brand"|"outline"|"ghost"|"danger"|"success"} [props.variant]
+ * @param {"default"|"brand"|"primary"|"outline"|"secondary"|"ghost"|"danger"|"success"} [props.variant]
  * @param {"sm"|"md"|"lg"} [props.size]
  * @param {boolean} [props.loading] - Show loading spinner
  * @param {boolean} [props.fullWidth] - Make button full width
@@ -27,7 +27,11 @@ export default function Button({
       "bg-black text-white hover:bg-gray-900 hover:shadow-lg focus:ring-black",
     brand:
       "bg-black text-white hover:bg-gray-900 hover:shadow-lg hover:scale-[1.02] focus:ring-black",
+    primary:
+      "bg-black text-white hover:bg-gray-900 hover:shadow-lg hover:scale-[1.02] focus:ring-black",
     outline:
+      "border border-gray-300 text-gray-900 hover:bg-gray-50 hover:border-gray-400 hover:shadow-md focus:ring-gray-500",
+    secondary:
       "border border-gray-300 text-gray-900 hover:bg-gray-50 hover:border-gray-400 hover:shadow-md focus:ring-gray-500",
     ghost:
       "text-gray-900 hover:bg-gray-100 hover:shadow-sm focus:ring-gray-500",
@@ -38,7 +42,7 @@ export default function Button({
   };
 
   const sizes = {
-    sm: "h-9 px-3 text-sm",
+    sm: "h-10 px-3 text-sm",
     md: "h-11 px-4",
     lg: "h-12 px-5 text-lg",
   };

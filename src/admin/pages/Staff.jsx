@@ -5,6 +5,8 @@ import { queryKeys } from "../../shared/lib/queryClient";
 import { useSharedData } from "../../shared/hooks/useSharedData";
 import StaffForm from "../StaffForm";
 import StaffList from "../StaffList";
+import UnsavedChangesModal from "../../shared/components/forms/UnsavedChangesModal";
+import toast from "react-hot-toast";
 
 export default function Staff() {
   const queryClient = useQueryClient();
@@ -14,14 +16,18 @@ export default function Staff() {
 
   const [editingStaff, setEditingStaff] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [isFormDirty, setIsFormDirty] = useState(false);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
 
   const handleCreate = () => {
     setEditingStaff(null);
+    setIsFormDirty(false);
     setShowForm(true);
   };
 
   const handleEdit = (staffMember) => {
     setEditingStaff(staffMember);
+    setIsFormDirty(false);
     setShowForm(true);
   };
 
@@ -78,7 +84,7 @@ export default function Staff() {
         } catch (uploadError) {
           console.error("Image upload error:", uploadError);
           // Don't throw - staff member was saved, just image upload failed
-          alert(
+          toast.error(
             "Staff member saved, but image upload failed: " +
               uploadError.message
           );
@@ -92,6 +98,7 @@ export default function Staff() {
 
       setShowForm(false);
       setEditingStaff(null);
+      setIsFormDirty(false);
     } catch (error) {
       console.error("Save error:", error);
       throw error; // Let form handle error display
@@ -109,27 +116,49 @@ export default function Staff() {
 
       setShowForm(false);
       setEditingStaff(null);
+      setIsFormDirty(false);
     } catch (error) {
       console.error("Delete error:", error);
-      alert("Failed to delete staff member: " + error.message);
+      toast.error("Failed to delete staff member: " + error.message);
     }
   };
 
   const handleCancel = () => {
+    if (isFormDirty) {
+      setShowDiscardModal(true);
+      return;
+    }
+
     setShowForm(false);
     setEditingStaff(null);
+    setIsFormDirty(false);
+  };
+
+  const handleDiscardChanges = () => {
+    setShowDiscardModal(false);
+    setShowForm(false);
+    setEditingStaff(null);
+    setIsFormDirty(false);
   };
 
   if (showForm) {
     return (
-      <StaffForm
-        staff={editingStaff}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        onDelete={
-          editingStaff ? () => handleDelete(editingStaff._id) : undefined
-        }
-      />
+      <>
+        <StaffForm
+          staff={editingStaff}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          onDirtyChange={setIsFormDirty}
+          onDelete={
+            editingStaff ? () => handleDelete(editingStaff._id) : undefined
+          }
+        />
+        <UnsavedChangesModal
+          isOpen={showDiscardModal}
+          onStay={() => setShowDiscardModal(false)}
+          onDiscard={handleDiscardChanges}
+        />
+      </>
     );
   }
 

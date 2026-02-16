@@ -20,6 +20,9 @@ import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Button from "../../shared/components/ui/Button";
 import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 import GiftCardModal from "../../shared/components/modals/GiftCardModal";
+import toast from "react-hot-toast";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
+import { promptDialog } from "../../shared/lib/promptDialog";
 
 export default function ClientProfilePage() {
   const navigate = useNavigate();
@@ -143,7 +146,7 @@ export default function ClientProfilePage() {
       setEditing(false);
     } catch (error) {
       console.error("Failed to update profile:", error);
-      alert("Failed to update profile. Please try again.");
+      toast.error("Failed to update profile. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -162,26 +165,36 @@ export default function ClientProfilePage() {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Failed to export data:", error);
-      alert("Failed to export data. Please try again.");
+      toast.error("Failed to export data. Please try again.");
     }
   };
 
   const handleDeleteAccount = async () => {
-    const confirmEmail = prompt(
-      "To delete your account, please enter your email address:"
-    );
+    const confirmEmail = await promptDialog({
+      title: "Confirm account deletion",
+      message: "To delete your account, please enter your email address:",
+      placeholder: "your-email@example.com",
+      confirmLabel: "Continue",
+      cancelLabel: "Cancel",
+      required: true,
+    });
     if (!confirmEmail) return;
 
     if (confirmEmail !== profile?.client?.email) {
-      alert("Email does not match. Account deletion cancelled.");
+      toast.error("Email does not match. Account deletion cancelled.");
       return;
     }
 
-    if (
-      !confirm(
-        "Are you absolutely sure? This will permanently delete all your data and cannot be undone."
-      )
-    ) {
+    const confirmed = await confirmDialog({
+      title: "Delete account?",
+      message:
+        "Are you absolutely sure? This will permanently delete all your data and cannot be undone.",
+      confirmLabel: "Delete account",
+      cancelLabel: "Keep account",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -189,13 +202,13 @@ export default function ClientProfilePage() {
       await api.delete("/client/account", {
         data: { confirmEmail },
       });
-      alert("Your account has been deleted. You will now be logged out.");
+      toast.success("Your account has been deleted. You will now be logged out.");
       // Clear token and redirect
       localStorage.removeItem("clientToken");
       navigate("/");
     } catch (error) {
       console.error("Failed to delete account:", error);
-      alert("Failed to delete account. Please try again.");
+      toast.error("Failed to delete account. Please try again.");
     }
   };
 

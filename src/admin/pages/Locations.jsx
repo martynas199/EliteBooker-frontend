@@ -15,6 +15,8 @@ import {
 import { api } from "../../shared/lib/apiClient";
 import Card from "../../shared/components/ui/Card";
 import Button from "../../shared/components/ui/Button";
+import EmptyStateCard from "../../shared/components/ui/EmptyStateCard";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
 import AdminPageShell from "../components/AdminPageShell";
 
 export default function Locations() {
@@ -164,11 +166,16 @@ export default function Locations() {
   };
 
   const handleDelete = async (id) => {
-    if (
-      !window.confirm(
-        "Are you sure you want to delete this location? This action cannot be undone."
-      )
-    ) {
+    const confirmed = await confirmDialog({
+      title: "Delete location?",
+      message:
+        "Are you sure you want to delete this location? This action cannot be undone.",
+      confirmLabel: "Delete",
+      cancelLabel: "Cancel",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -311,22 +318,15 @@ export default function Locations() {
 
       {/* Locations Grid */}
       {locations.length === 0 ? (
-        <Card className="border border-gray-200 py-12 text-center shadow-sm">
-          <MapPin className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            No locations yet
-          </h3>
-          <p className="text-gray-600 mb-4">
-            Get started by adding your first location
-          </p>
-          <Button
-            onClick={() => setShowModal(true)}
-            variant="brand"
-            size="md"
-          >
-            Add Location
-          </Button>
-        </Card>
+        <EmptyStateCard
+          title="No locations found"
+          description="Get started by adding your first location"
+          icon={<MapPin className="w-8 h-8 text-gray-500" />}
+          primaryAction={{
+            label: "Add Location",
+            onClick: () => setShowModal(true),
+          }}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {locations.map((location) => (

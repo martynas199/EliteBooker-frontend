@@ -16,11 +16,15 @@ import {
 } from "lucide-react";
 import { api } from "../../shared/lib/apiClient";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
+import EmptyStateCard from "../../shared/components/ui/EmptyStateCard";
+import ListLoadingState from "../../shared/components/ui/ListLoadingState";
 import Modal from "../../shared/components/ui/Modal";
+import AdminPageShell from "../components/AdminPageShell";
 import {
   SelectDrawer,
   SelectButton,
 } from "../../shared/components/ui/SelectDrawer";
+import toast from "react-hot-toast";
 
 export default function ClientsPage() {
   const navigate = useNavigate();
@@ -153,7 +157,7 @@ export default function ClientsPage() {
     } catch (error) {
       console.error("Failed to save notes:", error);
       console.error("Error details:", error.response?.data); // More detailed error logging
-      alert("Failed to save notes. Please try again.");
+      toast.error("Failed to save notes. Please try again.");
     } finally {
       setSavingNotes(false);
     }
@@ -225,19 +229,17 @@ export default function ClientsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="px-4 sm:px-6 lg:px-8 py-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">
-            Clients
-          </h2>
-        </div>
+    <AdminPageShell
+      title="Clients"
+      description="Review client history, segmentation, and notes in one place."
+      maxWidth="2xl"
+      contentClassName="space-y-3"
+    >
 
         {/* Segments Overview */}
         {segments && (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 mb-3">
-            <div className="bg-white rounded-lg border border-gray-200 p-3">
+            <div className="bg-white rounded-xl border border-gray-200 p-3">
               <div className="flex items-center justify-between mb-1.5">
                 <div>
                   <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
@@ -254,7 +256,7 @@ export default function ClientsPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-3">
+            <div className="bg-white rounded-xl border border-gray-200 p-3">
               <div className="flex items-center justify-between mb-1.5">
                 <div>
                   <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
@@ -271,7 +273,7 @@ export default function ClientsPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-3">
+            <div className="bg-white rounded-xl border border-gray-200 p-3">
               <div className="flex items-center justify-between mb-1.5">
                 <div>
                   <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
@@ -286,7 +288,7 @@ export default function ClientsPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-3">
+            <div className="bg-white rounded-xl border border-gray-200 p-3">
               <div className="flex items-center justify-between mb-1.5">
                 <div>
                   <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
@@ -306,7 +308,7 @@ export default function ClientsPage() {
         )}
 
         {/* Filters */}
-        <div className="bg-white rounded-lg border border-gray-200 p-2.5 mb-3">
+        <div className="bg-white rounded-xl border border-gray-200 p-2.5 mb-3">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             {/* Search */}
             <div className="relative">
@@ -396,7 +398,7 @@ export default function ClientsPage() {
               onClick={() =>
                 setSortOrder(sortOrder === "desc" ? "asc" : "desc")
               }
-              className="text-black hover:underline font-medium"
+              className="min-h-11 px-3 py-2 text-black hover:underline font-medium rounded-lg"
             >
               {sortOrder === "desc" ? "Highest first" : "Lowest first"}
             </button>
@@ -405,28 +407,28 @@ export default function ClientsPage() {
 
         {/* Client List */}
         {loading && page === 0 ? (
-          <div className="flex justify-center py-12">
-            <LoadingSpinner />
-          </div>
+          <ListLoadingState
+            message="Loading clients..."
+            count={6}
+            itemHeight="h-24"
+          />
         ) : clients.length === 0 ? (
-          <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
-            <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No clients found
-            </h3>
-            <p className="text-gray-600">
-              {searchTerm
-                ? "Try adjusting your search or filters"
-                : "Clients will appear here after their first booking"}
-            </p>
-          </div>
+          <EmptyStateCard
+            title="No clients found"
+            description={
+              searchTerm
+                ? "Try adjusting your search or filters."
+                : "Get started by welcoming your first booked client."
+            }
+            icon={<Users className="h-7 w-7 text-gray-500" />}
+          />
         ) : (
           <div className="space-y-2.5">
             {clients.map((client) => (
               <div
                 key={client.id}
                 onClick={() => handleClientClick(client)}
-                className="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer relative"
+                className="bg-white rounded-xl border border-gray-200 p-3 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer relative"
               >
                 {/* Status badge - positioned in top right corner */}
                 <div className="absolute top-2.5 right-2.5">
@@ -504,8 +506,6 @@ export default function ClientsPage() {
             )}
           </div>
         )}
-      </div>
-
       {/* Client Details Modal */}
       <Modal
         open={showModal}
@@ -554,7 +554,7 @@ export default function ClientsPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <p className="text-sm text-gray-600 mb-1">Total Spent</p>
                 <p className="text-2xl font-bold text-gray-900">
@@ -635,18 +635,18 @@ export default function ClientsPage() {
                     rows={4}
                     disabled={savingNotes}
                   />
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <button
                       onClick={handleSaveNotes}
                       disabled={savingNotes}
-                      className="px-4 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+                      className="w-full sm:w-auto px-4 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
                     >
                       {savingNotes ? "Saving..." : "Save Notes"}
                     </button>
                     <button
                       onClick={handleCancelEditNotes}
                       disabled={savingNotes}
-                      className="px-4 py-2 bg-gray-200 text-gray-900 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50"
+                      className="w-full sm:w-auto px-4 py-2 bg-gray-200 text-gray-900 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50"
                     >
                       Cancel
                     </button>
@@ -733,6 +733,6 @@ export default function ClientsPage() {
           </div>
         ) : null}
       </Modal>
-    </div>
+    </AdminPageShell>
   );
 }

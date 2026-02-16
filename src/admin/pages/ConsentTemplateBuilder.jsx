@@ -9,6 +9,22 @@ import {
   CheckIcon,
 } from "@heroicons/react/24/outline";
 import { api } from "../../shared/lib/apiClient";
+import UnsavedChangesModal from "../../shared/components/forms/UnsavedChangesModal";
+import toast from "react-hot-toast";
+
+const defaultConsentTemplateForm = {
+  name: "",
+  description: "",
+  sections: [],
+  requiredFor: {
+    services: [],
+    frequency: "until_changed",
+  },
+  disclaimers: [],
+  risks: [],
+};
+
+const toSnapshot = (data) => JSON.stringify(data);
 
 const SECTION_TYPES = [
   { value: "header", label: "Header", description: "Large heading text" },
@@ -44,18 +60,12 @@ export default function ConsentTemplateBuilder() {
   const [saving, setSaving] = useState(false);
   const [services, setServices] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    sections: [],
-    requiredFor: {
-      services: [],
-      frequency: "until_changed",
-    },
-    disclaimers: [],
-    risks: [],
-  });
+  const [formData, setFormData] = useState(defaultConsentTemplateForm);
+  const [savedSnapshot, setSavedSnapshot] = useState(
+    toSnapshot(defaultConsentTemplateForm)
+  );
 
   useEffect(() => {
     fetchServices();
@@ -67,7 +77,7 @@ export default function ConsentTemplateBuilder() {
         (section) => section.type
       );
 
-      setFormData({
+      const prebuiltData = {
         name: prebuiltTemplate.name || "",
         description: prebuiltTemplate.description || "",
         sections: validSections,
@@ -77,9 +87,25 @@ export default function ConsentTemplateBuilder() {
         },
         disclaimers: prebuiltTemplate.disclaimers || [],
         risks: prebuiltTemplate.risks || [],
-      });
+      };
+      setFormData(prebuiltData);
+      setSavedSnapshot(toSnapshot(prebuiltData));
     }
   }, [id]);
+
+  const hasUnsavedChanges = toSnapshot(formData) !== savedSnapshot;
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   const fetchServices = async () => {
     try {
@@ -101,7 +127,7 @@ export default function ConsentTemplateBuilder() {
         (section) => section.type
       );
 
-      setFormData({
+      const loadedData = {
         name: template.name,
         description: template.description || "",
         sections: validSections,
@@ -111,11 +137,13 @@ export default function ConsentTemplateBuilder() {
         },
         disclaimers: template.disclaimers || [],
         risks: template.risks || [],
-      });
+      };
+      setFormData(loadedData);
+      setSavedSnapshot(toSnapshot(loadedData));
 
       // Alert user if invalid sections were removed
       if (template.sections.length !== validSections.length) {
-        alert(
+        toast(
           `Removed ${
             template.sections.length - validSections.length
           } invalid section(s) that had no type.`
@@ -123,7 +151,7 @@ export default function ConsentTemplateBuilder() {
       }
     } catch (error) {
       console.error("Error fetching template:", error);
-      alert("Failed to load template");
+      toast.error("Failed to load template");
       navigate("/admin/consent-templates");
     } finally {
       setLoading(false);
@@ -136,12 +164,12 @@ export default function ConsentTemplateBuilder() {
 
     // Validation
     if (!formData.name.trim()) {
-      alert("Please enter a template name");
+      toast.error("Please enter a template name");
       return;
     }
 
     if (validSections.length === 0) {
-      alert("Please add at least one valid section");
+      toast.error("Please add at least one valid section");
       return;
     }
 
@@ -149,7 +177,7 @@ export default function ConsentTemplateBuilder() {
     for (let i = 0; i < validSections.length; i++) {
       const section = validSections[i];
       if (!section.content || !section.content.trim()) {
-        alert(
+        toast.error(
           `Section ${i + 1} (${
             section.type
           }) is missing content. Please fill it in or remove it.`
@@ -160,7 +188,7 @@ export default function ConsentTemplateBuilder() {
 
     const hasSignature = validSections.some((s) => s.type === "signature");
     if (!hasSignature) {
-      alert("Template must include at least one signature section");
+      toast.error("Template must include at least one signature section");
       return;
     }
 
@@ -179,10 +207,11 @@ export default function ConsentTemplateBuilder() {
         await api.post("/consent-templates", dataToSave);
       }
 
+      setSavedSnapshot(toSnapshot(dataToSave));
       navigate("/admin/consent-templates");
     } catch (error) {
       console.error("Error saving template:", error);
-      alert(error.response?.data?.message || "Failed to save template");
+      toast.error(error.response?.data?.message || "Failed to save template");
     } finally {
       setSaving(false);
     }
@@ -194,9 +223,9 @@ export default function ConsentTemplateBuilder() {
 
     if (removedCount > 0) {
       setFormData({ ...formData, sections: validSections });
-      alert(`Removed ${removedCount} invalid section(s)`);
+      toast.success(`Removed ${removedCount} invalid section(s)`);
     } else {
-      alert("No invalid sections found");
+      toast("No invalid sections found");
     }
   };
 
@@ -249,6 +278,24 @@ export default function ConsentTemplateBuilder() {
     setFormData({ ...formData, sections: newSections });
   };
 
+  const handleResetChanges = () => {
+    setFormData(JSON.parse(savedSnapshot));
+    toast.success("Changes reset");
+  };
+
+  const handleBackToTemplates = () => {
+    if (hasUnsavedChanges) {
+      setShowDiscardModal(true);
+      return;
+    }
+    navigate("/admin/consent-templates");
+  };
+
+  const handleDiscardChanges = () => {
+    setShowDiscardModal(false);
+    navigate("/admin/consent-templates");
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -258,11 +305,15 @@ export default function ConsentTemplateBuilder() {
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
+    <div
+      className={`p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto ${
+        hasUnsavedChanges ? "pb-24 sm:pb-8" : ""
+      }`}
+    >
       {/* Header */}
       <div className="mb-6">
         <button
-          onClick={() => navigate("/admin/consent-templates")}
+          onClick={handleBackToTemplates}
           className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-4"
         >
           <ArrowLeftIcon className="w-4 h-4" />
@@ -275,10 +326,16 @@ export default function ConsentTemplateBuilder() {
         <p className="mt-1 text-sm text-gray-500">
           Build a custom consent form for your clients
         </p>
+
+        {hasUnsavedChanges && (
+          <div className="mt-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            You have unsaved changes.
+          </div>
+        )}
       </div>
 
       {/* Basic Info */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">
           Basic Information
         </h2>
@@ -317,7 +374,7 @@ export default function ConsentTemplateBuilder() {
       </div>
 
       {/* Requirements */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">
           Requirements
         </h2>
@@ -382,7 +439,7 @@ export default function ConsentTemplateBuilder() {
       </div>
 
       {/* Sections */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <div className="flex items-center justify-between mb-2">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">
@@ -669,14 +726,21 @@ export default function ConsentTemplateBuilder() {
         </button>
         <div className="flex flex-col sm:flex-row gap-3">
           <button
-            onClick={() => navigate("/admin/consent-templates")}
+            onClick={handleResetChanges}
+            disabled={!hasUnsavedChanges || saving}
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Reset
+          </button>
+          <button
+            onClick={handleBackToTemplates}
             className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            disabled={saving}
+            disabled={saving || !hasUnsavedChanges}
             className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
           >
             {saving ? (
@@ -693,6 +757,27 @@ export default function ConsentTemplateBuilder() {
           </button>
         </div>
       </div>
+
+      {hasUnsavedChanges && (
+        <div className="sm:hidden fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white/95 backdrop-blur px-4 py-3">
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={handleResetChanges}
+              disabled={saving}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Reset
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving || !hasUnsavedChanges}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+            >
+              {saving ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Full Form Preview */}
       {showPreview && (
@@ -822,6 +907,13 @@ export default function ConsentTemplateBuilder() {
           </div>
         </div>
       )}
+
+      <UnsavedChangesModal
+        isOpen={showDiscardModal}
+        onStay={() => setShowDiscardModal(false)}
+        onDiscard={handleDiscardChanges}
+        message="You have unsaved changes. If you leave now, your template edits will be lost."
+      />
     </div>
   );
 }

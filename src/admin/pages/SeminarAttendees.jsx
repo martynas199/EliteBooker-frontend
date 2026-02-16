@@ -273,7 +273,7 @@ export default function SeminarAttendees() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by name, email..."
-              className="w-full px-2.5 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-2.5 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
             />
           </div>
           <div>
@@ -283,7 +283,7 @@ export default function SeminarAttendees() {
             <select
               value={selectedSession}
               onChange={(e) => setSelectedSession(e.target.value)}
-              className="w-full px-2.5 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-2.5 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
             >
               <option value="all">All Sessions</option>
               {seminar.sessions.map((session) => (
@@ -302,7 +302,7 @@ export default function SeminarAttendees() {
 
       {/* Bookings List */}
       {filteredBookings.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-12 text-center">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-12 text-center">
           <p className="text-gray-500 text-sm sm:text-lg">No bookings found</p>
         </div>
       ) : (
@@ -316,7 +316,7 @@ export default function SeminarAttendees() {
               return (
                 <div
                   key={booking._id}
-                  className="bg-white rounded-lg shadow-sm border border-gray-200 p-3"
+                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-3"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1 min-w-0 pr-2">
@@ -396,7 +396,7 @@ export default function SeminarAttendees() {
           </div>
 
           {/* Desktop Table View */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hidden md:block">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hidden md:block">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">

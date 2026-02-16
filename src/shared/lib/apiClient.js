@@ -47,6 +47,7 @@ api.interceptors.request.use(
         pathname.startsWith("/client") ||
         pathname.startsWith("/referral") ||
         config.url?.includes("/client/") ||
+        config.url?.includes("/gift-cards") ||
         config.url?.includes("/favorites") ||
         config.url?.includes("/referrals")
       ) {

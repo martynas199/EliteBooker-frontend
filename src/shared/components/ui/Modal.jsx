@@ -136,7 +136,7 @@ export default function Modal({
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="p-1.5 hover:bg-red-50 rounded-full transition-colors group flex-shrink-0 border border-red-500"
+                  className="min-h-11 min-w-11 p-2 hover:bg-red-50 rounded-full transition-colors group flex-shrink-0 border border-red-500"
                   aria-label="Close modal"
                 >
                   <svg
@@ -157,13 +157,19 @@ export default function Modal({
             </div>
 
             {/* Content */}
-            <div className="modal-content-scroll px-4 sm:px-6 py-4 sm:py-6 overflow-y-auto flex-1">
+            <div
+              className="modal-content-scroll px-4 sm:px-6 py-4 sm:py-6 overflow-y-auto flex-1"
+              style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+            >
               {children}
             </div>
 
             {/* Footer */}
             {footer && (
-              <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-3 flex-shrink-0">
+              <div
+                className="px-4 sm:px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-3 flex-shrink-0"
+                style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+              >
                 {footer}
               </div>
             )}

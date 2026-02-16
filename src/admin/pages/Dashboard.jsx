@@ -1168,7 +1168,7 @@ export default function Dashboard() {
           </div>
 
           {/* Three Compact Cards Row */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {/* Today's Appointments */}
             <div className="relative bg-white rounded-xl p-4 shadow-lg border border-gray-100 hover:shadow-xl hover:border-blue-200 transition-all duration-300 group overflow-hidden">
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500"></div>
@@ -1418,13 +1418,13 @@ export default function Dashboard() {
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             <button
               onClick={() => {
                 console.log("New Booking clicked");
                 setShowCreateAppointmentModal(true);
               }}
-              className="group bg-gradient-to-br from-brand-50 to-white hover:from-brand-100 hover:to-brand-50 border border-brand-200 rounded-xl p-3 transition-all duration-300 hover:shadow-lg hover:scale-105"
+              className="group min-h-11 bg-gradient-to-br from-brand-50 to-white hover:from-brand-100 hover:to-brand-50 border border-brand-200 rounded-xl p-3 transition-all duration-300 hover:shadow-lg hover:scale-105"
             >
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="p-2 bg-brand-500 rounded-lg group-hover:bg-brand-600 transition-colors">
@@ -1449,7 +1449,7 @@ export default function Dashboard() {
             </button>
             <Link
               to="/admin/clients"
-              className="group bg-gradient-to-br from-blue-50 to-white hover:from-blue-100 hover:to-blue-50 border border-blue-200 rounded-xl p-3 transition-all duration-300 hover:shadow-lg hover:scale-105"
+              className="group min-h-11 bg-gradient-to-br from-blue-50 to-white hover:from-blue-100 hover:to-blue-50 border border-blue-200 rounded-xl p-3 transition-all duration-300 hover:shadow-lg hover:scale-105"
             >
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="p-2 bg-blue-500 rounded-lg group-hover:bg-blue-600 transition-colors">
@@ -1474,7 +1474,7 @@ export default function Dashboard() {
             </Link>
             <Link
               to="/admin/services"
-              className="group bg-gradient-to-br from-purple-50 to-white hover:from-purple-100 hover:to-purple-50 border border-purple-200 rounded-xl p-3 transition-all duration-300 hover:shadow-lg hover:scale-105"
+              className="group min-h-11 bg-gradient-to-br from-purple-50 to-white hover:from-purple-100 hover:to-purple-50 border border-purple-200 rounded-xl p-3 transition-all duration-300 hover:shadow-lg hover:scale-105"
             >
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="p-2 bg-purple-500 rounded-lg group-hover:bg-purple-600 transition-colors">
@@ -1499,7 +1499,7 @@ export default function Dashboard() {
             </Link>
             <Link
               to="/admin/staff"
-              className="group bg-gradient-to-br from-green-50 to-white hover:from-green-100 hover:to-green-50 border border-green-200 rounded-xl p-3 transition-all duration-300 hover:shadow-lg hover:scale-105"
+              className="group min-h-11 bg-gradient-to-br from-green-50 to-white hover:from-green-100 hover:to-green-50 border border-green-200 rounded-xl p-3 transition-all duration-300 hover:shadow-lg hover:scale-105"
             >
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="p-2 bg-green-500 rounded-lg group-hover:bg-green-600 transition-colors">
@@ -3017,7 +3017,7 @@ export default function Dashboard() {
                 onChange={(e) =>
                   setSupportForm({ ...supportForm, name: e.target.value })
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                 placeholder="Enter your name"
                 required
               />
@@ -3030,7 +3030,7 @@ export default function Dashboard() {
                 onChange={(e) =>
                   setSupportForm({ ...supportForm, email: e.target.value })
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                 placeholder="Enter your email"
                 required
               />
@@ -3046,7 +3046,7 @@ export default function Dashboard() {
                   setSupportForm({ ...supportForm, message: e.target.value })
                 }
                 rows={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 resize-none"
                 placeholder="How can we help you?"
                 required
               />

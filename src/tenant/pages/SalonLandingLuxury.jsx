@@ -242,7 +242,7 @@ export default function SalonLandingLuxury() {
           // Check if current tenant is in favorites
           if (tenant?._id && data.favorites) {
             const isInFavorites = data.favorites.some(
-              (fav) => (fav._id || fav) === tenant._id
+              (fav) => (fav._id || fav) === tenant._id,
             );
             setIsFavorite(isInFavorites);
           }
@@ -333,7 +333,7 @@ export default function SalonLandingLuxury() {
       ) {
         toast.error(
           "You can only book services from the same specialist. Please clear your current selection to choose services from a different specialist.",
-          { duration: 4000 }
+          { duration: 4000 },
         );
         return;
       }
@@ -350,7 +350,7 @@ export default function SalonLandingLuxury() {
         bufferBeforeMin: service.bufferBeforeMin || 0,
         bufferAfterMin: service.bufferAfterMin || 0,
         specialistId: serviceSpecialistId, // Store specialist ID
-      })
+      }),
     );
 
     // Auto-select the specialist if this is the first service
@@ -364,7 +364,7 @@ export default function SalonLandingLuxury() {
             specialistId: specialist._id,
             any: false,
             inSalonPayment: specialist.inSalonPayment || false,
-          })
+          }),
         );
       }
     }
@@ -627,13 +627,13 @@ export default function SalonLandingLuxury() {
                             window.open(
                               heroSection.ctaLink,
                               "_blank",
-                              "noopener,noreferrer"
+                              "noopener,noreferrer",
                             );
                           }
                           // Handle internal tenant paths (e.g., "specialists", "products")
                           else if (!heroSection.ctaLink.startsWith("/")) {
                             navigate(
-                              `/salon/${tenant?.slug}/${heroSection.ctaLink}`
+                              `/salon/${tenant?.slug}/${heroSection.ctaLink}`,
                             );
                           }
                           // Handle absolute paths
@@ -643,7 +643,7 @@ export default function SalonLandingLuxury() {
                         } else {
                           // Default behavior - show services view
                           setViewMode(
-                            hasMultipleSpecialists ? viewMode : "services"
+                            hasMultipleSpecialists ? viewMode : "services",
                           );
                         }
                       }}
@@ -864,10 +864,7 @@ export default function SalonLandingLuxury() {
 
           {/* Location-Specific Services/Specialists View */}
           {selectedLocation && (
-            <section
-              id="location-services"
-              className="bg-gray-50 min-h-screen"
-            >
+            <section id="location-services" className="bg-gray-50 min-h-screen">
               <div className="max-w-7xl mx-auto px-4 py-16">
                 {/* Back Button */}
                 <motion.button
@@ -1000,7 +997,7 @@ export default function SalonLandingLuxury() {
                                   </p>
                                   <p className="text-sm font-semibold text-gray-900">
                                     {new Date(
-                                      seminar.upcomingSessions[0].date
+                                      seminar.upcomingSessions[0].date,
                                     ).toLocaleDateString("en-GB", {
                                       day: "numeric",
                                       month: "short",
@@ -1129,14 +1126,14 @@ export default function SalonLandingLuxury() {
                                           handleServiceClick(service, variant)
                                         }
                                         isSelected={bookingServices.some(
-                                          (s) => s.serviceId === service._id
+                                          (s) => s.serviceId === service._id,
                                         )}
                                       />
                                     </div>
                                   ))}
                                 </div>
                               </div>
-                            )
+                            ),
                           )}
                         </div>
                       ) : (
@@ -1150,7 +1147,7 @@ export default function SalonLandingLuxury() {
                                   handleServiceClick(service, variant)
                                 }
                                 isSelected={bookingServices.some(
-                                  (s) => s.serviceId === service._id
+                                  (s) => s.serviceId === service._id,
                                 )}
                               />
                             </div>

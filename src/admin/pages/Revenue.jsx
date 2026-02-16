@@ -195,7 +195,7 @@ export default function Revenue() {
     >
 
       {/* Date Range Card */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2.5">
         <div className="flex items-center gap-2 mb-2">
           <svg
             className="w-4 h-4 text-gray-600"
@@ -442,7 +442,7 @@ export default function Revenue() {
                 </div>
 
                 {/* Total Bookings */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2.5">
                   <div className="flex items-center gap-2 mb-1.5">
                     <svg
                       className="w-4 h-4 text-gray-500"
@@ -468,7 +468,7 @@ export default function Revenue() {
                 </div>
 
                 {/* Average Per Booking */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2.5">
                   <div className="flex items-center gap-2 mb-1.5">
                     <svg
                       className="w-4 h-4 text-gray-500"
@@ -501,7 +501,7 @@ export default function Revenue() {
                 </div>
 
                 {/* Specialist Count */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2.5">
                   <div className="flex items-center gap-2 mb-1.5">
                     <svg
                       className="w-4 h-4 text-gray-500"
@@ -529,7 +529,7 @@ export default function Revenue() {
 
               {/* Specialist Filter */}
               {data.specialists.length > 1 && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2.5">
                   <div className="flex items-center gap-2 mb-2">
                     <svg
                       className="w-4 h-4 text-gray-600"
@@ -566,7 +566,7 @@ export default function Revenue() {
 
               {/* Bar Chart */}
               {filteredSpecialists.length > 0 && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5 overflow-x-auto">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2.5 overflow-x-auto">
                   <div className="flex items-center gap-2 mb-2.5">
                     <svg
                       className="w-4 h-4 text-gray-600"
@@ -676,7 +676,7 @@ export default function Revenue() {
 
               {/* Table / Cards - Only show if there's specialist breakdown data */}
               {filteredSpecialists.length > 0 && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                   <div className="px-3 py-2.5 border-b border-gray-200 bg-gray-50">
                     <div className="flex items-center gap-2">
                       <svg
@@ -801,7 +801,7 @@ export default function Revenue() {
               )}
             </>
           ) : (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
               <svg
                 className="w-12 h-12 text-gray-500 mx-auto mb-3"
                 fill="none"

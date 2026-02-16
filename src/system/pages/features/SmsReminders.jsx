@@ -88,8 +88,7 @@ export default function SmsReminders() {
     {
       icon: MessageSquare,
       title: "Outbound SMS Delivery",
-      description:
-        "SMS reminders are sent as outbound notifications.",
+      description: "SMS reminders are sent as outbound notifications.",
     },
   ];
 

@@ -160,16 +160,16 @@ export default function TenantDetails() {
           <ArrowLeft className="w-4 h-4" />
           Back to Tenants
         </button>
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
           {tenant.businessName || tenant.name}
         </h1>
-        <p className="text-gray-600 mt-1">{tenant.slug}</p>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">{tenant.slug}</p>
       </div>
 
       {/* Tenant Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* Main Info Card */}
-        <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Business Information
           </h2>
@@ -250,7 +250,7 @@ export default function TenantDetails() {
         </div>
 
         {/* Status Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Status</h2>
 
           <div className="space-y-4">
@@ -301,7 +301,7 @@ export default function TenantDetails() {
       </div>
 
       {/* Specialists Section */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Specialists ({specialists.length})
         </h2>
@@ -313,7 +313,7 @@ export default function TenantDetails() {
             {specialists.map((specialist) => (
               <div
                 key={specialist._id}
-                className="border border-gray-200 rounded-lg"
+                className="border border-gray-200 rounded-xl"
               >
                 {/* Specialist Header */}
                 <button

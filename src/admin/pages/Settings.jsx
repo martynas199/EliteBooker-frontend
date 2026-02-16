@@ -6,9 +6,7 @@ import Modal from "../../shared/components/ui/Modal";
 import FormField from "../../shared/components/forms/FormField";
 import toast from "react-hot-toast";
 import { selectAdmin } from "../../shared/state/authSlice";
-import AdminPageShell, {
-  AdminSectionCard,
-} from "../components/AdminPageShell";
+import AdminPageShell, { AdminSectionCard } from "../components/AdminPageShell";
 
 const DAY_NAMES = [
   "Sunday",
@@ -85,11 +83,11 @@ export default function Settings() {
         ? heroSectionsRes.data
         : [];
       const activeHeroSection =
-        heroSections.find((section) => section?.active) || heroSections[0] || null;
+        heroSections.find((section) => section?.active) ||
+        heroSections[0] ||
+        null;
       const businessName = settings.salonName || "";
-      const defaultShareTitle = businessName
-        ? `Book with ${businessName}`
-        : "";
+      const defaultShareTitle = businessName ? `Book with ${businessName}` : "";
       const defaultShareDescription =
         settings.salonDescription ||
         (businessName ? `Book with ${businessName} today.` : "");
@@ -219,7 +217,7 @@ export default function Settings() {
     try {
       // Remove existing hours for this day
       const otherDaysHours = workingHours.filter(
-        (wh) => wh.dayOfWeek !== editingDayOfWeek
+        (wh) => wh.dayOfWeek !== editingDayOfWeek,
       );
 
       // Add new hours for this day
@@ -239,7 +237,7 @@ export default function Settings() {
 
       dayMap.forEach((key, index) => {
         const dayHours = updatedWorkingHours.filter(
-          (h) => h.dayOfWeek === index
+          (h) => h.dayOfWeek === index,
         );
         if (dayHours.length > 0) {
           // For now, just use the first time slot (backend format only supports one slot per day)
@@ -264,7 +262,7 @@ export default function Settings() {
     } catch (error) {
       console.error("Failed to update salon hours:", error);
       toast.error(
-        error.response?.data?.error || "Failed to update salon hours"
+        error.response?.data?.error || "Failed to update salon hours",
       );
     }
   };
@@ -276,7 +274,7 @@ export default function Settings() {
     try {
       // Remove all hours for this day
       const updatedWorkingHours = workingHours.filter(
-        (wh) => wh.dayOfWeek !== editingDayOfWeek
+        (wh) => wh.dayOfWeek !== editingDayOfWeek,
       );
 
       // Convert to backend format
@@ -285,7 +283,7 @@ export default function Settings() {
 
       dayMap.forEach((key, index) => {
         const dayHours = updatedWorkingHours.filter(
-          (h) => h.dayOfWeek === index
+          (h) => h.dayOfWeek === index,
         );
         if (dayHours.length > 0) {
           workingHoursObject[key] = {
@@ -372,7 +370,9 @@ export default function Settings() {
       }));
       toast.success("Share image uploaded");
     } catch (error) {
-      toast.error(error.response?.data?.error || "Failed to upload share image");
+      toast.error(
+        error.response?.data?.error || "Failed to upload share image",
+      );
     } finally {
       setShareImageUploading(false);
       event.target.value = "";
@@ -430,12 +430,12 @@ export default function Settings() {
 
   const workingHoursSummary = useMemo(() => {
     const daySlots = DAY_NAMES.map((_, dayOfWeek) =>
-      workingHours.filter((wh) => wh.dayOfWeek === dayOfWeek)
+      workingHours.filter((wh) => wh.dayOfWeek === dayOfWeek),
     );
     const openDays = daySlots.filter((slots) => slots.length > 0).length;
     const totalTimeSlots = daySlots.reduce(
       (sum, slots) => sum + slots.length,
-      0
+      0,
     );
 
     return {
@@ -637,7 +637,8 @@ export default function Settings() {
               <span>Share Settings</span>
             </h2>
             <p className="text-sm text-gray-600 mb-4">
-              Control the title, description, and image used in social link previews.
+              Control the title, description, and image used in social link
+              previews.
             </p>
 
             <div className="space-y-4">
@@ -648,7 +649,9 @@ export default function Settings() {
                 <input
                   type="text"
                   value={shareSettings.shareTitle}
-                  onChange={(e) => handleShareChange("shareTitle", e.target.value)}
+                  onChange={(e) =>
+                    handleShareChange("shareTitle", e.target.value)
+                  }
                   placeholder="e.g., Book with London Lash & Beauty"
                   className={inputClass}
                   maxLength={120}
@@ -680,7 +683,9 @@ export default function Settings() {
                 <input
                   type="url"
                   value={shareSettings.shareImageUrl}
-                  onChange={(e) => handleShareChange("shareImageUrl", e.target.value)}
+                  onChange={(e) =>
+                    handleShareChange("shareImageUrl", e.target.value)
+                  }
                   placeholder="https://..."
                   className={inputClass}
                   style={{ fontSize: "16px" }}
@@ -702,7 +707,9 @@ export default function Settings() {
                   className="w-full text-sm text-gray-700 file:mr-3 file:rounded-md file:border-0 file:bg-brand-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-brand-700 hover:file:bg-brand-100"
                 />
                 {shareImageUploading && (
-                  <p className="mt-2 text-xs text-gray-500">Uploading image...</p>
+                  <p className="mt-2 text-xs text-gray-500">
+                    Uploading image...
+                  </p>
                 )}
               </div>
 
@@ -763,7 +770,7 @@ export default function Settings() {
                     onChange={(event) =>
                       handleSocialLinkChange(
                         socialField.key,
-                        event.target.value
+                        event.target.value,
                       )
                     }
                     placeholder={`https://${socialField.key}.com/...`}

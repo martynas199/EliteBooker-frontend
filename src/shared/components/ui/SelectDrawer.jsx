@@ -82,7 +82,7 @@ export function SelectDrawer({
               </h3>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+                className="text-gray-400 hover:text-gray-600 transition-colors min-h-11 min-w-11 p-2 rounded-lg"
               >
                 <svg
                   className="w-5 h-5 sm:w-6 sm:h-6"
@@ -189,7 +189,7 @@ export function SelectButton({
       disabled={disabled}
       className={`
         relative appearance-none border-2 border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 
-        rounded-lg w-full pl-3 pr-10 py-2 sm:pl-4 sm:pr-12 sm:py-2.5 transition-all bg-white text-sm sm:text-base 
+        rounded-lg w-full min-h-11 pl-3 pr-10 py-2.5 sm:pl-4 sm:pr-12 sm:py-2.5 transition-all bg-white text-sm sm:text-base 
         cursor-pointer hover:border-gray-400 disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-gray-50
         text-left
         ${hasValue ? "text-gray-900" : "text-gray-500"}

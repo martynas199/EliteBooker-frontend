@@ -14,6 +14,7 @@ import ServiceForm from "../ServiceForm";
 import ServicesList from "../ServicesList";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Modal from "../../shared/components/ui/Modal";
+import UnsavedChangesModal from "../../shared/components/forms/UnsavedChangesModal";
 import { testApiConnection } from "../../shared/utils/apiTest";
 import AdminPageShell from "../components/AdminPageShell";
 
@@ -24,6 +25,8 @@ import AdminPageShell from "../components/AdminPageShell";
 export default function Services() {
   const [editingService, setEditingService] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [isFormDirty, setIsFormDirty] = useState(false);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
 
   // Get admin info from Redux store
   const admin = useSelector(selectAdmin);
@@ -60,11 +63,13 @@ export default function Services() {
 
   const handleCreate = () => {
     setEditingService(null);
+    setIsFormDirty(false);
     setShowForm(true);
   };
 
   const handleEdit = (service) => {
     setEditingService(service);
+    setIsFormDirty(false);
     setShowForm(true);
   };
 
@@ -151,6 +156,7 @@ export default function Services() {
 
           setShowForm(false);
           setEditingService(null);
+          setIsFormDirty(false);
           resolve(savedService);
         },
         onError: (error) => {
@@ -166,6 +172,7 @@ export default function Services() {
       onSuccess: () => {
         setShowForm(false);
         setEditingService(null);
+        setIsFormDirty(false);
         toast.success("Service deleted successfully");
       },
       onError: (error) => {
@@ -176,8 +183,21 @@ export default function Services() {
   };
 
   const handleCancel = () => {
+    if (isFormDirty) {
+      setShowDiscardModal(true);
+      return;
+    }
+
     setShowForm(false);
     setEditingService(null);
+    setIsFormDirty(false);
+  };
+
+  const handleDiscardChanges = () => {
+    setShowDiscardModal(false);
+    setShowForm(false);
+    setEditingService(null);
+    setIsFormDirty(false);
   };
 
   // Loading state
@@ -318,6 +338,7 @@ export default function Services() {
             specialists={specialists}
             onSave={handleSave}
             onCancel={handleCancel}
+            onDirtyChange={setIsFormDirty}
             onDelete={
               editingService
                 ? () => handleDelete(editingService._id)
@@ -331,6 +352,12 @@ export default function Services() {
             deleting={deleteServiceMutation.isPending}
           />
         </Modal>
+
+        <UnsavedChangesModal
+          isOpen={showDiscardModal}
+          onStay={() => setShowDiscardModal(false)}
+          onDiscard={handleDiscardChanges}
+        />
       </>
     );
   }

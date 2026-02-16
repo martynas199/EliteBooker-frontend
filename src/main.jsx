@@ -64,5 +64,5 @@ createRoot(document.getElementById("root")).render(
         </QueryClientProvider>
       </HelmetProvider>
     </ErrorBoundary>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

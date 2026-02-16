@@ -122,8 +122,7 @@ const COVERAGE_TARGETS = [
   },
 ];
 
-const escapeRegExp = (value) =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const hasSchemaType = (source, schemaType) => {
   const schemaTypeRegex = new RegExp(

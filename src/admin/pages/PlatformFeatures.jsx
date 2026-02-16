@@ -7,6 +7,7 @@ import { useTenantSettings } from "../../shared/hooks/useTenantSettings";
 import { Check, X, Crown } from "lucide-react";
 import toast from "react-hot-toast";
 import { api } from "../../shared/lib/apiClient";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
 
 // Toggle Switch Component
 const Toggle = ({ enabled, onChange, disabled = false }) => {
@@ -89,6 +90,7 @@ export default function FeaturesPage() {
   const [localFlags, setLocalFlags] = useState({
     smsConfirmations: featureFlags?.smsConfirmations === true,
     smsReminders: featureFlags?.smsReminders === true,
+    giftCards: featureFlags?.giftCards === true,
     onlinePayments: featureFlags?.onlinePayments === true,
     ecommerce: ecommerceEnabled === true,
     emailNotifications: featureFlags?.emailNotifications === true,
@@ -202,11 +204,16 @@ export default function FeaturesPage() {
 
   const handleCancelSubscription = async () => {
     if (!specialistId) return;
-    if (
-      !window.confirm(
-        "Are you sure you want to cancel your subscription? You'll continue to have access until the end of your billing period."
-      )
-    ) {
+    const confirmed = await confirmDialog({
+      title: "Cancel subscription?",
+      message:
+        "Are you sure you want to cancel your subscription? You'll continue to have access until the end of your billing period.",
+      confirmLabel: "Cancel subscription",
+      cancelLabel: "Keep subscription",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -266,11 +273,16 @@ export default function FeaturesPage() {
 
   const handleCancelSmsSubscription = async () => {
     if (!specialistId) return;
-    if (
-      !window.confirm(
-        "Are you sure you want to cancel your SMS subscription? You'll continue to have access until the end of your billing period."
-      )
-    ) {
+    const confirmed = await confirmDialog({
+      title: "Cancel SMS subscription?",
+      message:
+        "Are you sure you want to cancel your SMS subscription? You'll continue to have access until the end of your billing period.",
+      confirmLabel: "Cancel subscription",
+      cancelLabel: "Keep subscription",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -311,6 +323,7 @@ export default function FeaturesPage() {
     setLocalFlags({
       smsConfirmations: featureFlags?.smsConfirmations === true,
       smsReminders: featureFlags?.smsReminders === true,
+      giftCards: featureFlags?.giftCards === true,
       onlinePayments: featureFlags?.onlinePayments === true,
       ecommerce: ecommerceEnabled === true,
       emailNotifications: featureFlags?.emailNotifications === true,
@@ -327,6 +340,7 @@ export default function FeaturesPage() {
     const featureNames = {
       smsConfirmations: "SMS Confirmations",
       smsReminders: "SMS Reminders",
+      giftCards: "Gift Cards",
       onlinePayments: "Online Payments",
       ecommerce: "E-commerce",
       emailNotifications: "Email Notifications",
@@ -394,11 +408,11 @@ export default function FeaturesPage() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="border-b border-gray-200">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
-          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-1 sm:mb-2">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-5 sm:py-7">
+          <h1 className="text-2xl font-semibold text-gray-900 sm:text-3xl mb-1.5">
             Features & Subscriptions
           </h1>
-          <p className="text-xs sm:text-sm text-gray-500">
+          <p className="text-sm text-gray-600 sm:text-base">
             Manage premium subscriptions and configure platform features for
             your business.
           </p>
@@ -652,7 +666,7 @@ export default function FeaturesPage() {
           <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
             Platform Features
           </h2>
-          <div className="bg-white rounded-xl sm:rounded-lg border border-gray-200">
+          <div className="bg-white rounded-xl border border-gray-200">
             <div className="p-4 sm:p-6">
               {/* SMS Confirmations */}
               <FeatureRow
@@ -704,6 +718,14 @@ export default function FeaturesPage() {
                 description="Allow clients to pay deposits and booking fees online via Stripe."
                 enabled={localFlags.onlinePayments}
                 onChange={() => handleToggle("onlinePayments")}
+              />
+
+              {/* Gift Cards */}
+              <FeatureRow
+                title="Gift Cards"
+                description="Enable digital gift card sales for your business. Clients can purchase and send gift cards online."
+                enabled={localFlags.giftCards}
+                onChange={() => handleToggle("giftCards")}
               />
 
               {/* E-commerce Module */}

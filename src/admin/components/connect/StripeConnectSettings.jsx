@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { StripeConnectAPI } from "./connect.api";
 import Button from "../../../shared/components/ui/Button";
 import { Link2, RefreshCw } from "lucide-react";
+import { confirmDialog } from "../../../shared/lib/confirmDialog";
 
 export default function StripeConnectSettings({ specialistId, email }) {
   const [status, setStatus] = useState(null);
@@ -74,11 +75,16 @@ export default function StripeConnectSettings({ specialistId, email }) {
   };
 
   const handleDisconnect = async () => {
-    if (
-      !confirm(
-        "Are you sure you want to disconnect your Stripe account? This will remove your payment integration."
-      )
-    ) {
+    const confirmed = await confirmDialog({
+      title: "Disconnect Stripe account?",
+      message:
+        "Are you sure you want to disconnect your Stripe account? This will remove your payment integration.",
+      confirmLabel: "Disconnect",
+      cancelLabel: "Keep connected",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 

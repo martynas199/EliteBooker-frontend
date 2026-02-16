@@ -4,6 +4,8 @@ import { selectAdmin } from "../../shared/state/authSlice";
 import { HeroSectionsAPI } from "../components/heroSections/heroSections.api";
 import Button from "../../shared/components/ui/Button";
 import Input from "../../shared/components/ui/Input";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
+import toast from "react-hot-toast";
 import AdminPageShell, {
   AdminSectionCard,
 } from "../components/AdminPageShell";
@@ -31,7 +33,7 @@ export default function HeroSections() {
       setSections(data);
     } catch (error) {
       console.error("Failed to load hero sections:", error);
-      alert("Failed to load hero sections");
+      toast.error("Failed to load hero sections");
     } finally {
       setLoading(false);
     }
@@ -102,14 +104,23 @@ export default function HeroSections() {
       setCenterImagePreview(null);
     } catch (error) {
       console.error("Failed to save hero section:", error);
-      alert("Failed to save hero section: " + error.message);
+      toast.error("Failed to save hero section: " + error.message);
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this hero section?")) {
+    const confirmed = await confirmDialog({
+      title: "Delete hero section?",
+      message:
+        "Are you sure you want to delete this hero section? This action cannot be undone.",
+      confirmLabel: "Delete",
+      cancelLabel: "Cancel",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -122,7 +133,7 @@ export default function HeroSections() {
       }
     } catch (error) {
       console.error("Failed to delete hero section:", error);
-      alert("Failed to delete hero section: " + error.message);
+      toast.error("Failed to delete hero section: " + error.message);
     }
   };
 

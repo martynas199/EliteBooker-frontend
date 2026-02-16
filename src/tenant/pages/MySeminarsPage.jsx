@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { SeminarsAPI } from "./seminars.api";
 import Button from "../../shared/components/ui/Button";
 import { useAuth } from "../../shared/contexts/AuthContext";
+import { confirmDialog } from "../../shared/lib/confirmDialog";
 
 export default function MySeminarsPage() {
   const navigate = useNavigate();
@@ -35,7 +36,15 @@ export default function MySeminarsPage() {
   };
 
   const handleCancel = async (bookingId) => {
-    if (!confirm("Are you sure you want to cancel this booking?")) {
+    const confirmed = await confirmDialog({
+      title: "Cancel booking?",
+      message: "Are you sure you want to cancel this booking?",
+      confirmLabel: "Cancel booking",
+      cancelLabel: "Keep booking",
+      variant: "danger",
+    });
+
+    if (!confirmed) {
       return;
     }
 

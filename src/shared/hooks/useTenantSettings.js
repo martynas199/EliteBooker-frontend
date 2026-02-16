@@ -25,6 +25,7 @@ const useTenantSettingsStore = create((set, get) => ({
   featureFlags: {
     smsConfirmations: false,
     smsReminders: false,
+    giftCards: false,
     onlinePayments: true,
     ecommerce: false,
     emailNotifications: true,
@@ -69,6 +70,7 @@ const useTenantSettingsStore = create((set, get) => ({
       // Map frontend feature names to backend schema
       const featureMapping = {
         ecommerce: "enableProducts",
+        giftCards: "enableGiftCards",
         // Add more mappings as needed
       };
 
@@ -141,6 +143,7 @@ const useTenantSettingsStore = create((set, get) => ({
         featureFlags: {
           smsConfirmations: features.smsConfirmations === true,
           smsReminders: features.smsReminders === true,
+          giftCards: features.enableGiftCards === true,
           onlinePayments: features.onlinePayments === true,
           ecommerce: features.enableProducts === true,
           emailNotifications: features.emailNotifications === true,
@@ -156,6 +159,7 @@ const useTenantSettingsStore = create((set, get) => ({
       console.log("[TenantSettings] Set feature flags:", {
         smsConfirmations: features.smsConfirmations === true,
         smsReminders: features.smsReminders === true,
+        giftCards: features.enableGiftCards === true,
         onlinePayments: features.onlinePayments === true,
         ecommerce: features.enableProducts === true,
         emailNotifications: features.emailNotifications === true,
@@ -178,6 +182,7 @@ const useTenantSettingsStore = create((set, get) => ({
       featureFlags: {
         smsConfirmations: false,
         smsReminders: false,
+        giftCards: false,
         onlinePayments: true,
         ecommerce: false,
         emailNotifications: true,

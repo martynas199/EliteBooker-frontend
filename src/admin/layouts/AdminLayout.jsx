@@ -46,6 +46,38 @@ export default function AdminLayout() {
     [admin?.role]
   );
 
+  const mobilePageTitle = useMemo(() => {
+    const pageTitles = {
+      "/admin": "Dashboard",
+      "/admin/appointments": "Appointment List",
+      "/admin/clients": "Clients",
+      "/admin/services": "Services",
+      "/admin/staff": "Staff",
+      "/admin/locations": "Locations",
+      "/admin/revenue": "Revenue Analytics",
+      "/admin/platform-features": "Features",
+      "/admin/stripe-connect": "Stripe Connect",
+      "/admin/orders": "Orders",
+      "/admin/products": "Products",
+      "/admin/profile": "Profile",
+    };
+
+    if (pageTitles[pathname]) return pageTitles[pathname];
+    const segments = pathname.split("/").filter(Boolean);
+    const lastSegment = segments[segments.length - 1] || "admin";
+    if (lastSegment === "admin") return "Dashboard";
+
+    return lastSegment
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }, [pathname]);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setUserDropdownOpen(false);
+  }, [pathname]);
+
   const logoutMutation = useAdminLogout();
 
   const handleLogout = async () => {
@@ -86,7 +118,7 @@ export default function AdminLayout() {
           <div>
             <div className="font-bold text-lg">Elite Booker</div>
             <div className="text-xs text-blue-100">
-              {t("adminPortal", language)}
+              {mobilePageTitle}
             </div>
           </div>
         </div>
@@ -379,7 +411,7 @@ export default function AdminLayout() {
                 "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
             }}
           ></div>
-          <div className="relative z-10">
+          <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
             <Outlet />
           </div>
         </section>
