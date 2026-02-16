@@ -7,7 +7,6 @@ import {
   setService as setServiceInState,
 } from "../state/bookingSlice";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import BackBar from "../../shared/components/ui/BackBar";
 import DateTimePicker from "../../shared/components/DateTimePicker";
 import ServiceStackBar from "../components/ServiceStackBar";
 import BookingSummary from "../components/BookingSummary";
@@ -260,16 +259,16 @@ export default function TimeSlots() {
 
   if (!serviceId) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 sm:px-6">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md mx-auto text-center bg-white/5 backdrop-blur-md rounded-2xl p-8 sm:p-12 border border-white/10"
+          className="max-w-md mx-auto text-center bg-white rounded-2xl p-8 sm:p-12 border border-gray-200 shadow-sm"
         >
           <motion.svg
             animate={{ rotate: [0, 5, -5, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="w-20 h-20 mx-auto mb-6 text-gray-400"
+            className="w-20 h-20 mx-auto mb-6 text-gray-500"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -286,7 +285,7 @@ export default function TimeSlots() {
           </p>
           <button
             onClick={() => navigate(`/salon/${tenant?.slug}/specialists`)}
-            className="px-8 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+            className="px-8 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-xl transition-all duration-300"
           >
             Choose Service
           </button>
@@ -297,15 +296,15 @@ export default function TimeSlots() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md mx-auto text-center bg-white/5 backdrop-blur-md rounded-2xl p-8 sm:p-12 border border-white/10"
+          className="max-w-md mx-auto text-center bg-white rounded-2xl p-8 sm:p-12 border border-gray-200 shadow-sm"
         >
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-500/10 flex items-center justify-center">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-100 flex items-center justify-center">
             <svg
-              className="w-10 h-10 text-red-400"
+              className="w-10 h-10 text-red-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -318,10 +317,10 @@ export default function TimeSlots() {
               />
             </svg>
           </div>
-          <p className="text-red-400 text-lg mb-6">{error}</p>
+          <p className="text-red-700 text-lg mb-6">{error}</p>
           <button
             onClick={() => navigate(-1)}
-            className="px-8 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-full transition-all duration-300"
+            className="px-8 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-xl transition-all duration-300"
           >
             Go Back
           </button>

@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { api } from "../../shared/lib/apiClient";
 import { useDispatch } from "react-redux";
-import { addService, setSpecialist } from "../state/bookingSlice";
+import { addService, setService, setSpecialist } from "../state/bookingSlice";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import { useBookingGuard } from "../hooks/useBookingGuard";
 import BookingConfirmLeaveModal from "../components/BookingConfirmLeaveModal";
@@ -49,7 +49,7 @@ export default function SpecialistSelectionPage() {
         const selectedId = searchParams.get("selected");
         if (selectedId) {
           const specialist = activeSpecialists.find(
-            (b) => b._id === selectedId
+            (b) => b._id === selectedId,
           );
           if (specialist) {
             handleSpecialistSelect(specialist);
@@ -87,7 +87,7 @@ export default function SpecialistSelectionPage() {
                 durationMin: variant.durationMin,
                 bufferBeforeMin: variant.bufferBeforeMin,
                 bufferAfterMin: variant.bufferAfterMin,
-              })
+              }),
             );
           }
         })
@@ -101,7 +101,7 @@ export default function SpecialistSelectionPage() {
               specialistId: res.data._id,
               any: false,
               inSalonPayment: res.data.inSalonPayment || false,
-            })
+            }),
           );
         })
         .catch((err) => console.error("Failed to restore specialist:", err));
@@ -138,7 +138,7 @@ export default function SpecialistSelectionPage() {
       });
 
       console.log(
-        `[BeauticiansPage] Selected specialist: ${specialist.name} (${specialist._id})`
+        `[BeauticiansPage] Selected specialist: ${specialist.name} (${specialist._id})`,
       );
       console.log(`[BeauticiansPage] Total services fetched:`, res.data.length);
 
@@ -156,7 +156,7 @@ export default function SpecialistSelectionPage() {
         console.log(
           `[Service Filter] "${service.name}" - Primary: ${primaryId} (${
             primaryMatch ? "MATCH" : "no match"
-          })`
+          })`,
         );
 
         if (primaryMatch) return true;
@@ -166,7 +166,7 @@ export default function SpecialistSelectionPage() {
         const legacyMatch = legacyId === specialist._id;
         if (legacyMatch) {
           console.log(
-            `[Service Filter] "${service.name}" - Legacy specialist match: ${legacyId}`
+            `[Service Filter] "${service.name}" - Legacy specialist match: ${legacyId}`,
           );
           return true;
         }
@@ -176,7 +176,7 @@ export default function SpecialistSelectionPage() {
       });
 
       console.log(
-        `[BeauticiansPage] Filtered to ${specialistServices.length} services for ${specialist.name}`
+        `[BeauticiansPage] Filtered to ${specialistServices.length} services for ${specialist.name}`,
       );
       setServices(specialistServices);
     } catch (err) {
@@ -219,7 +219,7 @@ export default function SpecialistSelectionPage() {
         durationMin: selectedVariant.durationMin,
         bufferBeforeMin: selectedVariant.bufferBeforeMin || 0,
         bufferAfterMin: selectedVariant.bufferAfterMin || 0,
-      })
+      }),
     );
 
     // Set specialist if not already set
@@ -228,7 +228,7 @@ export default function SpecialistSelectionPage() {
         specialistId: selectedSpecialist._id,
         any: false,
         inSalonPayment: selectedSpecialist.inSalonPayment || false,
-      })
+      }),
     );
 
     // Close variant selector - don't navigate

@@ -225,7 +225,7 @@ export default function CheckoutPage() {
       if (mode === "pay_in_salon") {
         const res = await BookingAPI.reserveWithoutPayment(bookingData);
         if (res?.appointmentId) dispatch(setAppointmentId(res.appointmentId));
-        navigate("/confirmation");
+        navigate("../confirmation");
       } else {
         const res = await CheckoutAPI.createSession(bookingData);
         if (res?.url) window.location.href = res.url;
@@ -247,7 +247,7 @@ export default function CheckoutPage() {
         if (tenantSlug) {
           navigate(`/salon/${tenantSlug}/times`);
         } else {
-          navigate("/book");
+          navigate("/");
         }
       } else {
         console.error("[CHECKOUT] Booking error:", e);
