@@ -106,8 +106,8 @@ export default function Tenants() {
       const response = await api.delete(`/api/tenants/${tenantId}`);
       setSuccess(
         `Tenant deleted successfully. ${JSON.stringify(
-          response.data.deletedData
-        )}`
+          response.data.deletedData,
+        )}`,
       );
       fetchTenants();
       setTimeout(() => setSuccess(""), 5000);
@@ -411,7 +411,7 @@ export default function Tenants() {
                           onClick={() =>
                             handleDelete(
                               tenant._id,
-                              tenant.businessName || tenant.name || tenant.slug
+                              tenant.businessName || tenant.name || tenant.slug,
                             )
                           }
                           className="text-red-600 hover:text-red-900 font-semibold"

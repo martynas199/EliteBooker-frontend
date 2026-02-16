@@ -42,11 +42,7 @@ const formatBusinessLocation = (business) => {
   const rawAddress = business.address;
   if (typeof rawAddress === "string") return rawAddress;
   if (rawAddress && typeof rawAddress === "object") {
-    return [
-      rawAddress.city,
-      rawAddress.postalCode,
-      rawAddress.country,
-    ]
+    return [rawAddress.city, rawAddress.postalCode, rawAddress.country]
       .filter(Boolean)
       .join(" • ");
   }
@@ -148,17 +144,17 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
     return [...availableBusinesses].filter((business) => {
       if (!query) return true;
 
-        const label = String(
-          business?.name || business?.businessName || "",
-        ).toLowerCase();
-        const slug = String(business?.slug || "").toLowerCase();
-        const location = formatBusinessLocation(business).toLowerCase();
-        return (
-          label.includes(query) ||
-          slug.includes(query) ||
-          location.includes(query)
-        );
-      });
+      const label = String(
+        business?.name || business?.businessName || "",
+      ).toLowerCase();
+      const slug = String(business?.slug || "").toLowerCase();
+      const location = formatBusinessLocation(business).toLowerCase();
+      return (
+        label.includes(query) ||
+        slug.includes(query) ||
+        location.includes(query)
+      );
+    });
   }, [availableBusinesses, businessSearch]);
 
   const rankedBusinesses = useMemo(() => {
@@ -208,7 +204,8 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
     effectiveTenant?.features?.enableGiftCards !== false;
 
   const selectedAmount = useMemo(() => {
-    const rawAmount = formData.customAmount !== "" ? formData.customAmount : formData.amount;
+    const rawAmount =
+      formData.customAmount !== "" ? formData.customAmount : formData.amount;
     const parsedAmount = Number(rawAmount);
     if (!Number.isFinite(parsedAmount)) return 0;
     return Math.round(parsedAmount * 100) / 100;
@@ -456,16 +453,26 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <motion.div
-            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
-            animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
-            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
+            initial={
+              shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }
+            }
+            animate={
+              shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }
+            }
+            exit={
+              shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }
+            }
             className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
           >
             <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-4 flex items-center justify-between">
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Send Gift Card</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                  Send Gift Card
+                </h2>
                 <p className="text-sm text-gray-600 mt-1">
-                  {step === 1 ? "Create the gift details" : "Review before secure checkout"}
+                  {step === 1
+                    ? "Create the gift details"
+                    : "Review before secure checkout"}
                 </p>
               </div>
               <button
@@ -491,10 +498,14 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
             <div className="px-4 sm:px-6 pt-4">
               <div className="flex items-center gap-3">
                 <div
-                  className={`h-2 flex-1 rounded-full ${step >= 1 ? "bg-brand-600" : "bg-gray-200"}`}
+                  className={`h-2 flex-1 rounded-full ${
+                    step >= 1 ? "bg-brand-600" : "bg-gray-200"
+                  }`}
                 />
                 <div
-                  className={`h-2 flex-1 rounded-full ${step >= 2 ? "bg-brand-600" : "bg-gray-200"}`}
+                  className={`h-2 flex-1 rounded-full ${
+                    step >= 2 ? "bg-brand-600" : "bg-gray-200"
+                  }`}
                 />
               </div>
               <div className="mt-2 flex justify-between text-xs text-gray-500">
@@ -512,7 +523,8 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
                         Choose a Business
                       </label>
                       <p className="text-xs text-gray-600 mt-1">
-                        Search by name or city to quickly find the right business.
+                        Search by name or city to quickly find the right
+                        business.
                       </p>
                     </div>
                     <span className="text-xs rounded-full bg-white border border-gray-200 px-2 py-1 text-gray-600">
@@ -550,7 +562,8 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
                           Selected
                         </div>
                         <div className="font-semibold text-brand-900">
-                          {selectedBusiness.name || selectedBusiness.businessName}
+                          {selectedBusiness.name ||
+                            selectedBusiness.businessName}
                         </div>
                       </div>
                       <button
@@ -584,7 +597,9 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
                           business.name || business.businessName || "Business";
                         const location = formatBusinessLocation(business);
                         const isRecent = business._recentIndex !== -1;
-                        const distanceLabel = formatDistance(business._distanceKm);
+                        const distanceLabel = formatDistance(
+                          business._distanceKm,
+                        );
 
                         return (
                           <button
@@ -592,7 +607,10 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
                             type="button"
                             onClick={() => {
                               setSelectedBusinessId(String(business._id));
-                              setErrors((prev) => ({ ...prev, business: undefined }));
+                              setErrors((prev) => ({
+                                ...prev,
+                                business: undefined,
+                              }));
                             }}
                             className={`w-full text-left rounded-xl border px-3 py-3 transition-all ${
                               isSelected
@@ -659,10 +677,15 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
                       Select a business to continue
                     </h3>
                     <p className="text-gray-600">
-                      Select a business above to continue with gift card purchase.
+                      Select a business above to continue with gift card
+                      purchase.
                     </p>
                   </div>
-                  <Button onClick={handleClose} className="w-full" variant="outline">
+                  <Button
+                    onClick={handleClose}
+                    className="w-full"
+                    variant="outline"
+                  >
                     Close
                   </Button>
                 </div>
@@ -702,27 +725,44 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
                       Sign in to purchase gift cards
                     </h3>
                     <p className="text-gray-600 mb-4">
-                      You need a client account to buy and track gift card purchases.
+                      You need a client account to buy and track gift card
+                      purchases.
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <Link to={tenantSlug ? `/salon/${tenantSlug}/login` : "/login"}>
+                      <Link
+                        to={
+                          tenantSlug ? `/salon/${tenantSlug}/login` : "/login"
+                        }
+                      >
                         <Button className="w-full">Sign In</Button>
                       </Link>
-                      <Link to={tenantSlug ? `/salon/${tenantSlug}/register` : "/register"}>
+                      <Link
+                        to={
+                          tenantSlug
+                            ? `/salon/${tenantSlug}/register`
+                            : "/register"
+                        }
+                      >
                         <Button className="w-full" variant="outline">
                           Create Account
                         </Button>
                       </Link>
                     </div>
                   </div>
-                  <Button onClick={handleClose} className="w-full" variant="outline">
+                  <Button
+                    onClick={handleClose}
+                    className="w-full"
+                    variant="outline"
+                  >
                     Close
                   </Button>
                 </div>
               ) : (
                 <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
                   <motion.div
-                    whileHover={shouldReduceMotion ? undefined : { y: -2, scale: 1.01 }}
+                    whileHover={
+                      shouldReduceMotion ? undefined : { y: -2, scale: 1.01 }
+                    }
                     transition={
                       shouldReduceMotion
                         ? { duration: 0.01 }
@@ -753,10 +793,14 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
                           Gift Card
                         </div>
                       </div>
-                      <div className={`h-10 w-14 rounded-md ${selectedTheme.chipClass}`} />
+                      <div
+                        className={`h-10 w-14 rounded-md ${selectedTheme.chipClass}`}
+                      />
                     </div>
 
-                    <div className="mt-8 text-4xl font-bold">£{selectedAmount.toFixed(2)}</div>
+                    <div className="mt-8 text-4xl font-bold">
+                      £{selectedAmount.toFixed(2)}
+                    </div>
 
                     <div className="mt-5 text-sm tracking-[0.28em] text-white/80 uppercase">
                       Gift •••• •••• ••••
@@ -784,8 +828,11 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
                     <div className="mt-3 flex items-center justify-between text-xs text-white/70">
                       <span>Valid for 12 months</span>
                       <span>
-                        {formData.deliveryType === "scheduled" && formData.deliveryAt
-                          ? `Scheduled ${new Date(formData.deliveryAt).toLocaleString("en-GB", {
+                        {formData.deliveryType === "scheduled" &&
+                        formData.deliveryAt
+                          ? `Scheduled ${new Date(
+                              formData.deliveryAt,
+                            ).toLocaleString("en-GB", {
                               day: "2-digit",
                               month: "short",
                               hour: "2-digit",
@@ -804,362 +851,388 @@ export default function GiftCardModal({ isOpen, onClose, onSuccess }) {
 
                   <AnimatePresence mode="wait" initial={false}>
                     {step === 1 && (
-                    <motion.div key="gift-step-1" {...stepTransition} className="space-y-6">
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-3">
-                          Card Theme
-                        </label>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-                          {CARD_THEMES.map((theme) => (
+                      <motion.div
+                        key="gift-step-1"
+                        {...stepTransition}
+                        className="space-y-6"
+                      >
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-3">
+                            Card Theme
+                          </label>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                            {CARD_THEMES.map((theme) => (
+                              <button
+                                key={theme.key}
+                                type="button"
+                                onClick={() =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    cardTheme: theme.key,
+                                  }))
+                                }
+                                className={`rounded-xl border p-2 text-left transition-all ${
+                                  formData.cardTheme === theme.key
+                                    ? "border-brand-500 ring-2 ring-brand-200"
+                                    : "border-gray-200 bg-white hover:bg-gray-50"
+                                }`}
+                              >
+                                <div
+                                  className={`${theme.cardClass} rounded-lg px-3 py-3 text-white shadow-sm`}
+                                >
+                                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70">
+                                    Gift Card
+                                  </div>
+                                  <div className="mt-1 text-sm font-semibold">
+                                    {theme.label}
+                                  </div>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+
+                          <label className="block text-sm font-semibold text-gray-700 mb-3">
+                            Select Amount
+                          </label>
+                          <div className="grid grid-cols-3 gap-3 mb-3">
+                            {PRESET_AMOUNTS.map((amount) => (
+                              <motion.button
+                                key={amount}
+                                onClick={() => {
+                                  setFormData({
+                                    ...formData,
+                                    amount,
+                                    customAmount: "",
+                                  });
+                                  setErrors({ ...errors, amount: undefined });
+                                }}
+                                className={`py-3 px-4 rounded-xl font-semibold border transition-all ${
+                                  formData.amount === amount &&
+                                  !formData.customAmount
+                                    ? "bg-brand-600 text-white border-brand-600 shadow-lg"
+                                    : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"
+                                }`}
+                                whileTap={{ scale: 0.97 }}
+                              >
+                                £{amount}
+                              </motion.button>
+                            ))}
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-600 mb-2">
+                              Custom Amount (£10-£500)
+                            </label>
+                            <input
+                              type="number"
+                              min="10"
+                              max="500"
+                              step="0.01"
+                              placeholder="Enter custom amount"
+                              value={formData.customAmount}
+                              onChange={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  customAmount: e.target.value,
+                                });
+                                setErrors({ ...errors, amount: undefined });
+                              }}
+                              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                            />
+                          </div>
+                          {errors.amount && (
+                            <p className="text-red-600 text-sm mt-1">
+                              {errors.amount}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Recipient Details */}
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Recipient Name *
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.recipientName}
+                            onChange={(e) => {
+                              setFormData({
+                                ...formData,
+                                recipientName: e.target.value,
+                              });
+                              setErrors({
+                                ...errors,
+                                recipientName: undefined,
+                              });
+                            }}
+                            className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 ${
+                              errors.recipientName
+                                ? "border-red-500"
+                                : "border-gray-300"
+                            }`}
+                            placeholder="Who is this gift for?"
+                          />
+                          {errors.recipientName && (
+                            <p className="text-red-600 text-sm mt-1">
+                              {errors.recipientName}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Recipient Email *
+                          </label>
+                          <input
+                            type="email"
+                            value={formData.recipientEmail}
+                            onChange={(e) => {
+                              setFormData({
+                                ...formData,
+                                recipientEmail: e.target.value,
+                              });
+                              setErrors({
+                                ...errors,
+                                recipientEmail: undefined,
+                              });
+                            }}
+                            className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 ${
+                              errors.recipientEmail
+                                ? "border-red-500"
+                                : "border-gray-300"
+                            }`}
+                            placeholder="recipient@example.com"
+                          />
+                          {errors.recipientEmail && (
+                            <p className="text-red-600 text-sm mt-1">
+                              {errors.recipientEmail}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Personal Message (Optional)
+                          </label>
+                          <textarea
+                            value={formData.message}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                message: e.target.value,
+                              })
+                            }
+                            rows={4}
+                            maxLength={500}
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 resize-none"
+                            placeholder="Add a personal message to the recipient..."
+                          />
+                          <p className="text-xs text-gray-500 mt-1">
+                            {formData.message.length}/500 characters
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Delivery Time
+                          </label>
+                          <div className="grid grid-cols-2 gap-3">
                             <button
-                              key={theme.key}
                               type="button"
                               onClick={() =>
                                 setFormData((prev) => ({
                                   ...prev,
-                                  cardTheme: theme.key,
+                                  deliveryType: "immediate",
+                                  deliveryAt: "",
                                 }))
                               }
-                              className={`rounded-xl border p-2 text-left transition-all ${
-                                formData.cardTheme === theme.key
-                                  ? "border-brand-500 ring-2 ring-brand-200"
-                                  : "border-gray-200 bg-white hover:bg-gray-50"
+                              className={`rounded-xl border px-3 py-3 text-sm font-medium transition-all ${
+                                formData.deliveryType === "immediate"
+                                  ? "border-brand-500 bg-brand-50 text-brand-700"
+                                  : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
                               }`}
                             >
-                              <div className={`${theme.cardClass} rounded-lg px-3 py-3 text-white shadow-sm`}>
-                                <div className="text-[10px] uppercase tracking-[0.2em] text-white/70">
-                                  Gift Card
-                                </div>
-                                <div className="mt-1 text-sm font-semibold">{theme.label}</div>
-                              </div>
+                              Send Now
                             </button>
-                          ))}
-                        </div>
-
-                        <label className="block text-sm font-semibold text-gray-700 mb-3">
-                          Select Amount
-                        </label>
-                        <div className="grid grid-cols-3 gap-3 mb-3">
-                          {PRESET_AMOUNTS.map((amount) => (
-                            <motion.button
-                              key={amount}
-                              onClick={() => {
-                                setFormData({
-                                  ...formData,
-                                  amount,
-                                  customAmount: "",
-                                });
-                                setErrors({ ...errors, amount: undefined });
-                              }}
-                              className={`py-3 px-4 rounded-xl font-semibold border transition-all ${
-                                formData.amount === amount &&
-                                !formData.customAmount
-                                  ? "bg-brand-600 text-white border-brand-600 shadow-lg"
-                                  : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"
-                              }`}
-                              whileTap={{ scale: 0.97 }}
-                            >
-                              £{amount}
-                            </motion.button>
-                          ))}
-                        </div>
-                        <div>
-                          <label className="block text-xs text-gray-600 mb-2">
-                            Custom Amount (£10-£500)
-                          </label>
-                          <input
-                            type="number"
-                            min="10"
-                            max="500"
-                            step="0.01"
-                            placeholder="Enter custom amount"
-                            value={formData.customAmount}
-                            onChange={(e) => {
-                              setFormData({
-                                ...formData,
-                                customAmount: e.target.value,
-                              });
-                              setErrors({ ...errors, amount: undefined });
-                            }}
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                          />
-                        </div>
-                        {errors.amount && (
-                          <p className="text-red-600 text-sm mt-1">
-                            {errors.amount}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Recipient Details */}
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          Recipient Name *
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.recipientName}
-                          onChange={(e) => {
-                            setFormData({
-                              ...formData,
-                              recipientName: e.target.value,
-                            });
-                            setErrors({ ...errors, recipientName: undefined });
-                          }}
-                          className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 ${
-                            errors.recipientName
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          }`}
-                          placeholder="Who is this gift for?"
-                        />
-                        {errors.recipientName && (
-                          <p className="text-red-600 text-sm mt-1">
-                            {errors.recipientName}
-                          </p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          Recipient Email *
-                        </label>
-                        <input
-                          type="email"
-                          value={formData.recipientEmail}
-                          onChange={(e) => {
-                            setFormData({
-                              ...formData,
-                              recipientEmail: e.target.value,
-                            });
-                            setErrors({ ...errors, recipientEmail: undefined });
-                          }}
-                          className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 ${
-                            errors.recipientEmail
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          }`}
-                          placeholder="recipient@example.com"
-                        />
-                        {errors.recipientEmail && (
-                          <p className="text-red-600 text-sm mt-1">
-                            {errors.recipientEmail}
-                          </p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          Personal Message (Optional)
-                        </label>
-                        <textarea
-                          value={formData.message}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              message: e.target.value,
-                            })
-                          }
-                          rows={4}
-                          maxLength={500}
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 resize-none"
-                          placeholder="Add a personal message to the recipient..."
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                          {formData.message.length}/500 characters
-                        </p>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          Delivery Time
-                        </label>
-                        <div className="grid grid-cols-2 gap-3">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                deliveryType: "immediate",
-                                deliveryAt: "",
-                              }))
-                            }
-                            className={`rounded-xl border px-3 py-3 text-sm font-medium transition-all ${
-                              formData.deliveryType === "immediate"
-                                ? "border-brand-500 bg-brand-50 text-brand-700"
-                                : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
-                            }`}
-                          >
-                            Send Now
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                deliveryType: "scheduled",
-                                deliveryAt:
-                                  prev.deliveryAt ||
-                                  toDateTimeLocalValue(
-                                    new Date(Date.now() + 60 * 60 * 1000),
-                                  ),
-                              }))
-                            }
-                            className={`rounded-xl border px-3 py-3 text-sm font-medium transition-all ${
-                              formData.deliveryType === "scheduled"
-                                ? "border-brand-500 bg-brand-50 text-brand-700"
-                                : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
-                            }`}
-                          >
-                            Schedule
-                          </button>
-                        </div>
-
-                        {formData.deliveryType === "scheduled" && (
-                          <div className="mt-3">
-                            <input
-                              type="datetime-local"
-                              value={formData.deliveryAt}
-                              onChange={(e) => {
+                            <button
+                              type="button"
+                              onClick={() =>
                                 setFormData((prev) => ({
                                   ...prev,
-                                  deliveryAt: e.target.value,
-                                }));
-                                setErrors((prev) => ({
-                                  ...prev,
-                                  deliveryAt: undefined,
-                                }));
-                              }}
-                              min={toDateTimeLocalValue(
-                                new Date(Date.now() + 5 * 60 * 1000),
-                              )}
-                              className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 ${
-                                errors.deliveryAt
-                                  ? "border-red-500"
-                                  : "border-gray-300"
+                                  deliveryType: "scheduled",
+                                  deliveryAt:
+                                    prev.deliveryAt ||
+                                    toDateTimeLocalValue(
+                                      new Date(Date.now() + 60 * 60 * 1000),
+                                    ),
+                                }))
+                              }
+                              className={`rounded-xl border px-3 py-3 text-sm font-medium transition-all ${
+                                formData.deliveryType === "scheduled"
+                                  ? "border-brand-500 bg-brand-50 text-brand-700"
+                                  : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
                               }`}
-                            />
-                            {errors.deliveryAt && (
-                              <p className="text-red-600 text-sm mt-1">
-                                {errors.deliveryAt}
+                            >
+                              Schedule
+                            </button>
+                          </div>
+
+                          {formData.deliveryType === "scheduled" && (
+                            <div className="mt-3">
+                              <input
+                                type="datetime-local"
+                                value={formData.deliveryAt}
+                                onChange={(e) => {
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    deliveryAt: e.target.value,
+                                  }));
+                                  setErrors((prev) => ({
+                                    ...prev,
+                                    deliveryAt: undefined,
+                                  }));
+                                }}
+                                min={toDateTimeLocalValue(
+                                  new Date(Date.now() + 5 * 60 * 1000),
+                                )}
+                                className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 ${
+                                  errors.deliveryAt
+                                    ? "border-red-500"
+                                    : "border-gray-300"
+                                }`}
+                              />
+                              {errors.deliveryAt && (
+                                <p className="text-red-600 text-sm mt-1">
+                                  {errors.deliveryAt}
+                                </p>
+                              )}
+                              <p className="text-xs text-gray-500 mt-1">
+                                Recipient email will be delivered at the
+                                selected date and time.
                               </p>
-                            )}
-                            <p className="text-xs text-gray-500 mt-1">
-                              Recipient email will be delivered at the selected date and time.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-
-                      {apiError && (
-                        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                          {apiError}
-                        </div>
-                      )}
-
-                      <Button
-                        onClick={handleNextStep}
-                        className="w-full"
-                        size="lg"
-                      >
-                        Review Gift Card
-                      </Button>
-                    </motion.div>
-                  )}
-
-                    {step === 2 && (
-                    <motion.div key="gift-step-2" {...stepTransition} className="space-y-6">
-                      <div className="bg-gray-50 rounded-xl p-6 space-y-4 border border-gray-200">
-                        <h3 className="font-semibold text-lg text-gray-900">
-                          Review & Confirm
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          You&apos;ll be redirected to secure Stripe checkout to
-                          complete payment.
-                        </p>
-                        <div className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">
-                              Gift Card Amount
-                            </span>
-                            <span className="font-semibold">
-                              £{selectedAmount.toFixed(2)}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Recipient</span>
-                            <span className="font-semibold">
-                              {formData.recipientName}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">
-                              Recipient Email
-                            </span>
-                            <span className="font-semibold text-sm">
-                              {formData.recipientEmail}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Delivery</span>
-                            <span className="font-semibold text-sm text-right">
-                              {formData.deliveryType === "scheduled" &&
-                              formData.deliveryAt
-                                ? new Date(formData.deliveryAt).toLocaleString("en-GB", {
-                                    day: "2-digit",
-                                    month: "short",
-                                    year: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })
-                                : "Send immediately"}
-                            </span>
-                          </div>
-                          {formData.message && (
-                            <div className="rounded-lg bg-white border border-gray-200 p-3 text-sm text-gray-700">
-                              <span className="font-medium">Message:</span>{" "}
-                              {formData.message}
                             </div>
                           )}
-                          <div className="border-t border-gray-300 pt-2 mt-2 flex justify-between text-lg">
-                            <span className="font-bold">Total</span>
-                            <span className="font-bold text-brand-600">
-                              £{selectedAmount.toFixed(2)}
-                            </span>
+                        </div>
+
+                        {apiError && (
+                          <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                            {apiError}
+                          </div>
+                        )}
+
+                        <Button
+                          onClick={handleNextStep}
+                          className="w-full"
+                          size="lg"
+                        >
+                          Review Gift Card
+                        </Button>
+                      </motion.div>
+                    )}
+
+                    {step === 2 && (
+                      <motion.div
+                        key="gift-step-2"
+                        {...stepTransition}
+                        className="space-y-6"
+                      >
+                        <div className="bg-gray-50 rounded-xl p-6 space-y-4 border border-gray-200">
+                          <h3 className="font-semibold text-lg text-gray-900">
+                            Review & Confirm
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            You&apos;ll be redirected to secure Stripe checkout
+                            to complete payment.
+                          </p>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">
+                                Gift Card Amount
+                              </span>
+                              <span className="font-semibold">
+                                £{selectedAmount.toFixed(2)}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Recipient</span>
+                              <span className="font-semibold">
+                                {formData.recipientName}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">
+                                Recipient Email
+                              </span>
+                              <span className="font-semibold text-sm">
+                                {formData.recipientEmail}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Delivery</span>
+                              <span className="font-semibold text-sm text-right">
+                                {formData.deliveryType === "scheduled" &&
+                                formData.deliveryAt
+                                  ? new Date(
+                                      formData.deliveryAt,
+                                    ).toLocaleString("en-GB", {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })
+                                  : "Send immediately"}
+                              </span>
+                            </div>
+                            {formData.message && (
+                              <div className="rounded-lg bg-white border border-gray-200 p-3 text-sm text-gray-700">
+                                <span className="font-medium">Message:</span>{" "}
+                                {formData.message}
+                              </div>
+                            )}
+                            <div className="border-t border-gray-300 pt-2 mt-2 flex justify-between text-lg">
+                              <span className="font-bold">Total</span>
+                              <span className="font-bold text-brand-600">
+                                £{selectedAmount.toFixed(2)}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="rounded-lg bg-white border border-gray-200 p-3 text-xs text-gray-600">
+                            <div className="font-medium text-gray-800 mb-1">
+                              Secure Checkout
+                            </div>
+                            <div>
+                              Payment is processed securely by Stripe and sent
+                              to the selected business.
+                            </div>
                           </div>
                         </div>
-                        <div className="rounded-lg bg-white border border-gray-200 p-3 text-xs text-gray-600">
-                          <div className="font-medium text-gray-800 mb-1">Secure Checkout</div>
-                          <div>Payment is processed securely by Stripe and sent to the selected business.</div>
-                        </div>
-                      </div>
 
-                      {apiError && (
-                        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                          {apiError}
-                        </div>
-                      )}
+                        {apiError && (
+                          <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                            {apiError}
+                          </div>
+                        )}
 
-                      <div className="flex gap-3">
-                        <Button
-                          variant="outline"
-                          onClick={() => setStep(1)}
-                          className="flex-1"
-                        >
-                          Back
-                        </Button>
-                        <Button
-                          onClick={handlePurchase}
-                          disabled={loading}
-                          className="flex-1"
-                        >
-                          {loading
-                            ? "Redirecting..."
-                            : "Continue to Secure Checkout"}
-                        </Button>
-                      </div>
-                    </motion.div>
-                  )}
+                        <div className="flex gap-3">
+                          <Button
+                            variant="outline"
+                            onClick={() => setStep(1)}
+                            className="flex-1"
+                          >
+                            Back
+                          </Button>
+                          <Button
+                            onClick={handlePurchase}
+                            disabled={loading}
+                            className="flex-1"
+                          >
+                            {loading
+                              ? "Redirecting..."
+                              : "Continue to Secure Checkout"}
+                          </Button>
+                        </div>
+                      </motion.div>
+                    )}
                   </AnimatePresence>
                 </div>
               )}

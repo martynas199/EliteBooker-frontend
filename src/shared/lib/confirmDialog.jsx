@@ -33,17 +33,25 @@ export function confirmDialog({
         variant="dashboard"
         footer={
           <>
-            <Button type="button" variant="outline" onClick={() => cleanup(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => cleanup(false)}
+            >
               {cancelLabel}
             </Button>
-            <Button type="button" variant={variant} onClick={() => cleanup(true)}>
+            <Button
+              type="button"
+              variant={variant}
+              onClick={() => cleanup(true)}
+            >
               {confirmLabel}
             </Button>
           </>
         }
       >
         <p className="text-sm text-gray-700">{message}</p>
-      </Modal>
+      </Modal>,
     );
   });
 }

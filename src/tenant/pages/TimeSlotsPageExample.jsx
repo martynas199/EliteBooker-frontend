@@ -94,7 +94,7 @@ export default function TimeSlotsPageWithLocks() {
         setBookingTime({
           startTime: slot.time,
           endTime: slot.endTime,
-        })
+        }),
       );
 
       // Navigate to checkout after short delay (better UX)
@@ -104,7 +104,7 @@ export default function TimeSlotsPageWithLocks() {
     } else {
       // Lock acquisition failed - slot is taken
       toast.error(
-        "This time slot is currently being booked by another customer. Please choose a different time."
+        "This time slot is currently being booked by another customer. Please choose a different time.",
       );
     }
   };

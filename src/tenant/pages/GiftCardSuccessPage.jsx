@@ -80,8 +80,12 @@ export default function GiftCardSuccessPage() {
         {status === "success" && (
           <div className="text-center space-y-5">
             <motion.div
-              initial={shouldReduceMotion ? { opacity: 0 } : { scale: 0.8, opacity: 0 }}
-              animate={shouldReduceMotion ? { opacity: 1 } : { scale: 1, opacity: 1 }}
+              initial={
+                shouldReduceMotion ? { opacity: 0 } : { scale: 0.8, opacity: 0 }
+              }
+              animate={
+                shouldReduceMotion ? { opacity: 1 } : { scale: 1, opacity: 1 }
+              }
               transition={
                 shouldReduceMotion
                   ? { duration: 0.12 }
@@ -102,8 +106,12 @@ export default function GiftCardSuccessPage() {
 
             {giftCard && (
               <motion.div
-                initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
-                animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                initial={
+                  shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }
+                }
+                animate={
+                  shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }
+                }
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className="rounded-xl border border-brand-200 bg-brand-50 p-4 text-left space-y-2"
               >
@@ -122,14 +130,18 @@ export default function GiftCardSuccessPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Delivery</span>
                   <span className="font-semibold text-right">
-                    {giftCard.deliveryType === "scheduled" && giftCard.deliveryDate
-                      ? new Date(giftCard.deliveryDate).toLocaleString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })
+                    {giftCard.deliveryType === "scheduled" &&
+                    giftCard.deliveryDate
+                      ? new Date(giftCard.deliveryDate).toLocaleString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          },
+                        )
                       : "Sent immediately"}
                   </span>
                 </div>

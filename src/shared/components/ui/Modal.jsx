@@ -159,7 +159,9 @@ export default function Modal({
             {/* Content */}
             <div
               className="modal-content-scroll px-4 sm:px-6 py-4 sm:py-6 overflow-y-auto flex-1"
-              style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+              style={{
+                paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+              }}
             >
               {children}
             </div>
@@ -168,7 +170,9 @@ export default function Modal({
             {footer && (
               <div
                 className="px-4 sm:px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-3 flex-shrink-0"
-                style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+                style={{
+                  paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+                }}
               >
                 {footer}
               </div>

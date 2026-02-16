@@ -176,7 +176,8 @@ const SidebarItem = ({
   const isActive = matchesPath(item.path);
 
   // Check if any nested item is active
-  const hasActiveChild = hasItems && visibleChildren.some((child) => matchesPath(child.path));
+  const hasActiveChild =
+    hasItems && visibleChildren.some((child) => matchesPath(child.path));
   const [isExpanded, setIsExpanded] = useState(hasActiveChild);
 
   useEffect(() => {
@@ -220,15 +221,15 @@ const SidebarItem = ({
               >
                 <div className="mt-1 space-y-1 pl-4">
                   {visibleChildren.map((child, idx) => (
-                      <SidebarItem
-                        key={idx}
-                        item={child}
-                        isNested
-                        onClose={onClose}
-                        userRole={userRole}
-                        isMobile={isMobile}
-                      />
-                    ))}
+                    <SidebarItem
+                      key={idx}
+                      item={child}
+                      isNested
+                      onClose={onClose}
+                      userRole={userRole}
+                      isMobile={isMobile}
+                    />
+                  ))}
                 </div>
               </motion.div>
             )}
@@ -282,15 +283,15 @@ const SidebarItem = ({
             >
               <div className="ml-7 mt-1.5 space-y-0.5 border-l-2 border-gray-200 pl-4">
                 {visibleChildren.map((child, idx) => (
-                    <SidebarItem
-                      key={idx}
-                      item={child}
-                      isNested
-                      onClose={onClose}
-                      userRole={userRole}
-                      isMobile={isMobile}
-                    />
-                  ))}
+                  <SidebarItem
+                    key={idx}
+                    item={child}
+                    isNested
+                    onClose={onClose}
+                    userRole={userRole}
+                    isMobile={isMobile}
+                  />
+                ))}
               </div>
             </motion.div>
           )}

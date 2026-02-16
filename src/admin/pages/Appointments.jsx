@@ -202,16 +202,8 @@ export default function Appointments() {
       appointmentFilters.dateTo,
     ],
     queryFn: async ({ signal, queryKey }) => {
-      const [
-        ,
-        page,
-        limit,
-        specialistId,
-        status,
-        search,
-        dateFrom,
-        dateTo,
-      ] = queryKey;
+      const [, page, limit, specialistId, status, search, dateFrom, dateTo] =
+        queryKey;
 
       const params = new URLSearchParams({
         page: String(page),
@@ -424,25 +416,33 @@ export default function Appointments() {
     setConfirmSubmitting(true);
     try {
       if (confirmDialog.type === "delete-appointment") {
-        await api.delete(`/appointments/${confirmDialog.payload?.appointmentId}`);
+        await api.delete(
+          `/appointments/${confirmDialog.payload?.appointmentId}`,
+        );
         await refetchAppointments();
         toast.success("Appointment deleted successfully");
       }
 
       if (confirmDialog.type === "no-show") {
-        await api.patch(`/appointments/${confirmDialog.payload?.appointmentId}/status`, {
-          status: "no_show",
-        });
+        await api.patch(
+          `/appointments/${confirmDialog.payload?.appointmentId}/status`,
+          {
+            status: "no_show",
+          },
+        );
         await refetchAppointments();
         toast.success("Marked as No Show");
       }
 
       if (confirmDialog.type === "delete-all") {
         const specialistId = confirmDialog.payload?.specialistId;
-        const res = await api.delete(`/appointments/specialist/${specialistId}`);
+        const res = await api.delete(
+          `/appointments/specialist/${specialistId}`,
+        );
         await refetchAppointments();
         toast.success(
-          res.data?.message || `Deleted ${res.data?.deletedCount || 0} appointment(s)`,
+          res.data?.message ||
+            `Deleted ${res.data?.deletedCount || 0} appointment(s)`,
         );
       }
 
@@ -501,7 +501,7 @@ export default function Appointments() {
   async function checkConsentForAppointments(appointmentIds) {
     try {
       const uncheckedAppointmentIds = appointmentIds.filter(
-        (appointmentId) => !consentsMap[appointmentId]
+        (appointmentId) => !consentsMap[appointmentId],
       );
 
       if (uncheckedAppointmentIds.length === 0) {
@@ -644,7 +644,7 @@ export default function Appointments() {
       toast.success("Appointment updated successfully");
     } catch (e) {
       toast.error(
-        e.response?.data?.error || e.message || "Failed to update appointment"
+        e.response?.data?.error || e.message || "Failed to update appointment",
       );
     } finally {
       setSubmitting(false);
@@ -726,7 +726,7 @@ export default function Appointments() {
           e.response?.data?.error ||
             e.message ||
             "Failed to create appointment",
-          { duration: 5000 } // Show error for 5 seconds
+          { duration: 5000 }, // Show error for 5 seconds
         );
       }, 100);
     } finally {
@@ -1491,7 +1491,7 @@ export default function Appointments() {
                                 <div className="text-xs text-gray-600 mt-1.5">
                                   £
                                   {((r.payment.amountTotal - 50) / 100).toFixed(
-                                    2
+                                    2,
                                   )}{" "}
                                   paid
                                 </div>
@@ -2384,7 +2384,7 @@ function EditModal({
 
   // Get specialist's working hours for DateTimePicker
   const selectedSpecialist = specialists.find(
-    (b) => b._id === appointment.specialistId
+    (b) => b._id === appointment.specialistId,
   );
   const beauticianWorkingHours = selectedSpecialist?.workingHours || [];
   const customSchedule = selectedSpecialist?.customSchedule || {};
@@ -2543,7 +2543,7 @@ function EditModal({
                   Total:{" "}
                   {appointment.services.reduce(
                     (sum, s) => sum + (s.duration || 0),
-                    0
+                    0,
                   )}{" "}
                   min • £
                   {appointment.services
@@ -2857,7 +2857,7 @@ function CreateModal({
 
   // Filter services based on selected specialist
   const selectedSpecialist = specialists.find(
-    (b) => b._id === appointment.specialistId
+    (b) => b._id === appointment.specialistId,
   );
   const availableServices = services.filter((service) => {
     if (!appointment.specialistId) return true; // Show all if no specialist selected
@@ -2872,7 +2872,7 @@ function CreateModal({
 
     // Check if additionalIds contains populated objects
     const additionalIdsExtracted = additionalIds.map((id) =>
-      typeof id === "object" && id?._id ? id._id : id
+      typeof id === "object" && id?._id ? id._id : id,
     );
 
     const isMatch =
@@ -2884,7 +2884,7 @@ function CreateModal({
   });
 
   const selectedService = availableServices.find(
-    (s) => s._id === appointment.serviceId
+    (s) => s._id === appointment.serviceId,
   );
   const variants = selectedService?.variants || [];
 

@@ -56,7 +56,7 @@ export default function Subscription() {
     } catch (error) {
       console.error("Error creating subscription:", error);
       toast.error(
-        error.response?.data?.error || "Failed to create subscription checkout"
+        error.response?.data?.error || "Failed to create subscription checkout",
       );
       setLoading(false);
     }
@@ -84,7 +84,7 @@ export default function Subscription() {
     } catch (error) {
       console.error("Error cancelling subscription:", error);
       toast.error(
-        error.response?.data?.error || "Failed to cancel subscription"
+        error.response?.data?.error || "Failed to cancel subscription",
       );
     } finally {
       setCancelLoading(false);
@@ -100,7 +100,7 @@ export default function Subscription() {
     } catch (error) {
       console.error("Error reactivating subscription:", error);
       toast.error(
-        error.response?.data?.error || "Failed to reactivate subscription"
+        error.response?.data?.error || "Failed to reactivate subscription",
       );
     } finally {
       setLoading(false);
@@ -164,7 +164,7 @@ export default function Subscription() {
                 <div className="flex items-center gap-2">
                   <span
                     className={`inline-block px-3 py-1 text-sm font-medium border rounded-full ${getStatusColor(
-                      subscription.status
+                      subscription.status,
                     )}`}
                   >
                     {subscription.status === "canceled"

@@ -11,6 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { api } from "../../shared/lib/apiClient";
 import EmptyStateCard from "../../shared/components/ui/EmptyStateCard";
+import TabNav from "../../shared/components/ui/TabNav";
 import toast from "react-hot-toast";
 import { confirmDialog } from "../../shared/lib/confirmDialog";
 
@@ -57,7 +58,9 @@ export default function ConsentTemplates() {
       fetchTemplates();
     } catch (error) {
       console.error("Error publishing template:", error);
-      toast.error(error.response?.data?.message || "Failed to publish template");
+      toast.error(
+        error.response?.data?.message || "Failed to publish template",
+      );
     }
   };
 
@@ -79,7 +82,9 @@ export default function ConsentTemplates() {
       fetchTemplates();
     } catch (error) {
       console.error("Error archiving template:", error);
-      toast.error(error.response?.data?.message || "Failed to archive template");
+      toast.error(
+        error.response?.data?.message || "Failed to archive template",
+      );
     }
   };
 
@@ -109,12 +114,14 @@ export default function ConsentTemplates() {
   const handleNewVersion = async (templateId) => {
     try {
       const response = await api.post(
-        `/consent-templates/${templateId}/new-version`
+        `/consent-templates/${templateId}/new-version`,
       );
       navigate(`/admin/consent-templates/${response.data.data._id}/edit`);
     } catch (error) {
       console.error("Error creating new version:", error);
-      toast.error(error.response?.data?.message || "Failed to create new version");
+      toast.error(
+        error.response?.data?.message || "Failed to create new version",
+      );
     }
   };
 
@@ -150,6 +157,12 @@ export default function ConsentTemplates() {
   };
 
   const filteredTemplates = templates;
+  const statusTabs = [
+    { key: "all", label: "All Templates" },
+    { key: "draft", label: "Drafts" },
+    { key: "published", label: "Published" },
+    { key: "archived", label: "Archived" },
+  ];
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -185,26 +198,13 @@ export default function ConsentTemplates() {
 
       {/* Filter Tabs */}
       <div className="mb-6 border-b border-gray-200">
-        <nav className="flex gap-6 overflow-x-auto">
-          {[
-            { key: "all", label: "All Templates" },
-            { key: "draft", label: "Drafts" },
-            { key: "published", label: "Published" },
-            { key: "archived", label: "Archived" },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setStatusFilter(tab.key)}
-              className={`py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
-                statusFilter === tab.key
-                  ? "border-indigo-600 text-indigo-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
+        <TabNav
+          tabs={statusTabs}
+          activeKey={statusFilter}
+          onChange={setStatusFilter}
+          accent="indigo"
+          showCounts={false}
+        />
       </div>
 
       {/* Templates List */}
@@ -290,7 +290,7 @@ export default function ConsentTemplates() {
                       <button
                         onClick={() =>
                           navigate(
-                            `/admin/consent-templates/${template._id}/edit`
+                            `/admin/consent-templates/${template._id}/edit`,
                           )
                         }
                         className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"

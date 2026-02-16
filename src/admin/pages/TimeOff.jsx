@@ -122,7 +122,9 @@ export default function TimeOff() {
       setErrors({});
     } catch (error) {
       console.error("Error adding time-off:", error);
-      toast.error(error.response?.data?.error || "Failed to add time-off period");
+      toast.error(
+        error.response?.data?.error || "Failed to add time-off period",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -131,10 +133,9 @@ export default function TimeOff() {
   async function handleDelete(timeOff) {
     const confirmed = await confirmDialog({
       title: "Remove time-off?",
-      message: `Remove time-off for ${timeOff.beauticianName} (${formatDateRange(
-        timeOff.start,
-        timeOff.end,
-      )})?`,
+      message: `Remove time-off for ${
+        timeOff.beauticianName
+      } (${formatDateRange(timeOff.start, timeOff.end)})?`,
       confirmLabel: "Remove",
       cancelLabel: "Keep",
       variant: "danger",
@@ -200,7 +201,12 @@ export default function TimeOff() {
       specialists: specialists.length,
       total: timeOffList.length,
     }),
-    [currentTimeOff.length, upcomingTimeOff.length, specialists.length, timeOffList.length]
+    [
+      currentTimeOff.length,
+      upcomingTimeOff.length,
+      specialists.length,
+      timeOffList.length,
+    ],
   );
 
   const pageAction = (
@@ -281,10 +287,7 @@ export default function TimeOff() {
               Add Time Off Period
             </h2>
           </div>
-          <form
-            onSubmit={handleSubmit}
-            className="p-6 space-y-6 bg-white"
-          >
+          <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-white">
             <div className="grid gap-4 sm:grid-cols-2">
               {/* Specialist Selection */}
               <div>
@@ -640,9 +643,7 @@ export default function TimeOff() {
                   <h2 className="text-lg font-semibold text-gray-900">
                     Upcoming
                   </h2>
-                  <p className="text-sm text-gray-600">
-                    Scheduled time-off
-                  </p>
+                  <p className="text-sm text-gray-600">Scheduled time-off</p>
                 </div>
               </div>
               <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center">

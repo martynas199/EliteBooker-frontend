@@ -51,11 +51,11 @@ export default function Services() {
   // Memoize role checks for performance
   const isSuperAdmin = useMemo(
     () => admin?.role === "super_admin" || admin?.role === "salon-admin",
-    [admin?.role]
+    [admin?.role],
   );
   const isBeautician = useMemo(
     () => admin?.role === "admin" && admin?.specialistId,
-    [admin?.role, admin?.specialistId]
+    [admin?.role, admin?.specialistId],
   );
 
   // Derived state
@@ -94,7 +94,7 @@ export default function Services() {
     // Ensure IDs are strings (convert ObjectId to string if needed)
     if (serviceDataToSend.primaryBeauticianId) {
       serviceDataToSend.primaryBeauticianId = String(
-        serviceDataToSend.primaryBeauticianId
+        serviceDataToSend.primaryBeauticianId,
       );
     }
     if (serviceDataToSend.additionalBeauticianIds?.length) {
@@ -131,26 +131,26 @@ export default function Services() {
                   headers: {
                     "Content-Type": "multipart/form-data",
                   },
-                }
+                },
               );
 
               toast.success(
                 editingService
                   ? "Service and image updated successfully"
-                  : "Service and image created successfully"
+                  : "Service and image created successfully",
               );
             } catch (uploadError) {
               console.error("Image upload failed:", uploadError);
               toast.error(
                 "Service saved, but image upload failed: " +
-                  (uploadError.response?.data?.error || uploadError.message)
+                  (uploadError.response?.data?.error || uploadError.message),
               );
             }
           } else {
             toast.success(
               editingService
                 ? "Service updated successfully"
-                : "Service created successfully"
+                : "Service created successfully",
             );
           }
 

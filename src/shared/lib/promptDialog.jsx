@@ -102,7 +102,7 @@ export function promptDialog({
         required={required}
         onConfirm={(value) => cleanup(value)}
         onCancel={() => cleanup(null)}
-      />
+      />,
     );
   });
 }

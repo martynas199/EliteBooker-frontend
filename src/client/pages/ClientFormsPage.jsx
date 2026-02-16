@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../shared/contexts/AuthContext';
-import { api } from '../../shared/lib/apiClient';
+import { useState, useEffect } from "react";
+import { useAuth } from "../../shared/contexts/AuthContext";
+import { api } from "../../shared/lib/apiClient";
 import {
   DocumentTextIcon,
   CheckCircleIcon,
   ClockIcon,
   ArrowDownTrayIcon,
-  EyeIcon
-} from '@heroicons/react/24/outline';
-import { format } from 'date-fns';
-import toast from 'react-hot-toast';
+  EyeIcon,
+} from "@heroicons/react/24/outline";
+import { format } from "date-fns";
+import toast from "react-hot-toast";
 
 export default function ClientFormsPage() {
   const { user } = useAuth();
@@ -27,13 +27,13 @@ export default function ClientFormsPage() {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Fetch consent records for logged-in client
-      const response = await api.get('/consents/my-forms');
+      const response = await api.get("/consents/my-forms");
       setForms(response.data.data || []);
     } catch (error) {
-      console.error('Error fetching forms:', error);
-      setError(error.response?.data?.message || 'Failed to load forms');
+      console.error("Error fetching forms:", error);
+      setError(error.response?.data?.message || "Failed to load forms");
     } finally {
       setLoading(false);
     }
@@ -42,13 +42,13 @@ export default function ClientFormsPage() {
   const handleViewPDF = async (consentId) => {
     try {
       const response = await api.get(`/consents/${consentId}/pdf`);
-      
+
       if (response.data.signedUrl) {
-        window.open(response.data.signedUrl, '_blank');
+        window.open(response.data.signedUrl, "_blank");
       }
     } catch (error) {
-      console.error('Error viewing PDF:', error);
-      toast.error(error.response?.data?.message || 'Failed to view PDF');
+      console.error("Error viewing PDF:", error);
+      toast.error(error.response?.data?.message || "Failed to view PDF");
     }
   };
 
@@ -88,7 +88,9 @@ export default function ClientFormsPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Consent Forms</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            My Consent Forms
+          </h1>
           <p className="text-gray-600">
             View and download your signed consent forms
           </p>
@@ -102,7 +104,8 @@ export default function ClientFormsPage() {
               No Forms Yet
             </h3>
             <p className="text-gray-600">
-              You haven't signed any consent forms yet. Consent forms will appear here after you complete them.
+              You haven't signed any consent forms yet. Consent forms will
+              appear here after you complete them.
             </p>
           </div>
         ) : (
@@ -130,15 +133,14 @@ export default function ClientFormsPage() {
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <CheckCircleIcon className="w-4 h-4" />
                         <span>
-                          Signed: {format(new Date(form.signedAt), 'MMM d, yyyy')}
+                          Signed:{" "}
+                          {format(new Date(form.signedAt), "MMM d, yyyy")}
                         </span>
                       </div>
-                      
+
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <ClockIcon className="w-4 h-4" />
-                        <span>
-                          Version: {form.templateVersion}
-                        </span>
+                        <span>Version: {form.templateVersion}</span>
                       </div>
 
                       {form.appointmentId && (
@@ -148,18 +150,17 @@ export default function ClientFormsPage() {
                       )}
 
                       <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <span>
-                          Signed by: {form.signedByName}
-                        </span>
+                        <span>Signed by: {form.signedByName}</span>
                       </div>
                     </div>
 
                     {/* Status */}
-                    {form.status === 'revoked' && (
+                    {form.status === "revoked" && (
                       <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                         <p className="text-sm text-yellow-800">
-                          <strong>Revoked:</strong> This consent has been revoked on{' '}
-                          {format(new Date(form.revokedAt), 'MMM d, yyyy')}
+                          <strong>Revoked:</strong> This consent has been
+                          revoked on{" "}
+                          {format(new Date(form.revokedAt), "MMM d, yyyy")}
                         </p>
                         {form.revocationReason && (
                           <p className="text-sm text-yellow-700 mt-1">
@@ -188,12 +189,19 @@ export default function ClientFormsPage() {
 
         {/* Info Box */}
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h4 className="font-semibold text-blue-900 mb-2">About Consent Forms</h4>
+          <h4 className="font-semibold text-blue-900 mb-2">
+            About Consent Forms
+          </h4>
           <ul className="text-sm text-blue-800 space-y-1">
-            <li>• All signed consent forms are securely stored and encrypted</li>
+            <li>
+              • All signed consent forms are securely stored and encrypted
+            </li>
             <li>• You can download PDFs of your signed forms at any time</li>
             <li>• Forms are kept for 7 years for legal compliance</li>
-            <li>• You may be required to sign additional forms for specific treatments</li>
+            <li>
+              • You may be required to sign additional forms for specific
+              treatments
+            </li>
           </ul>
         </div>
       </div>

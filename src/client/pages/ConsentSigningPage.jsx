@@ -57,7 +57,7 @@ export default function ConsentSigningPage() {
       console.error("Error loading consent:", error);
       setError(
         error.response?.data?.message ||
-          "Failed to load consent form. The link may be expired or invalid."
+          "Failed to load consent form. The link may be expired or invalid.",
       );
     } finally {
       setLoading(false);
@@ -116,7 +116,9 @@ export default function ConsentSigningPage() {
       setCurrentStep(currentStep + 1);
     } catch (error) {
       console.error("Error signing consent:", error);
-      toast.error(error.response?.data?.message || "Failed to sign consent form");
+      toast.error(
+        error.response?.data?.message || "Failed to sign consent form",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -199,7 +201,7 @@ export default function ConsentSigningPage() {
   const nonSignatureSections =
     consentData?.template.sections.filter((s) => s.type !== "signature") || [];
   const hasSignatureSection = consentData?.template.sections.some(
-    (s) => s.type === "signature"
+    (s) => s.type === "signature",
   );
 
   if (loading) {
@@ -341,7 +343,7 @@ export default function ConsentSigningPage() {
             {/* Content */}
             <div className="p-6 max-h-[60vh] overflow-y-auto">
               {nonSignatureSections.map((section, index) =>
-                renderSection(section, index)
+                renderSection(section, index),
               )}
             </div>
 

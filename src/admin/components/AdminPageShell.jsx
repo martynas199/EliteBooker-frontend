@@ -32,7 +32,9 @@ export function AdminPageHeader({
           </h1>
         )}
         {description && (
-          <p className="mt-1 text-sm text-gray-600 sm:text-base">{description}</p>
+          <p className="mt-1 text-sm text-gray-600 sm:text-base">
+            {description}
+          </p>
         )}
       </div>
       {action && <div className="flex-shrink-0">{action}</div>}
@@ -48,7 +50,9 @@ export function AdminSectionCard({
 }) {
   return (
     <Card
-      className={["border-gray-200 shadow-sm", padding, className].join(" ").trim()}
+      className={["border-gray-200 shadow-sm", padding, className]
+        .join(" ")
+        .trim()}
       {...props}
     >
       {children}

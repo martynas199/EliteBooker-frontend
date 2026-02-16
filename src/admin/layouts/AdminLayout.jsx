@@ -43,7 +43,7 @@ export default function AdminLayout() {
 
   const isSuperAdmin = useMemo(
     () => admin?.role === "super_admin",
-    [admin?.role]
+    [admin?.role],
   );
 
   const mobilePageTitle = useMemo(() => {
@@ -117,9 +117,7 @@ export default function AdminLayout() {
           </div>
           <div>
             <div className="font-bold text-lg">Elite Booker</div>
-            <div className="text-xs text-blue-100">
-              {mobilePageTitle}
-            </div>
+            <div className="text-xs text-blue-100">{mobilePageTitle}</div>
           </div>
         </div>
 

@@ -135,11 +135,11 @@ export default function FeaturesPage() {
         // Show appropriate message based on subscription type
         if (type === "sms") {
           toast.success(
-            "SMS Confirmations activated! Your clients will now receive SMS notifications."
+            "SMS Confirmations activated! Your clients will now receive SMS notifications.",
           );
         } else {
           toast.success(
-            "Subscription activated! The booking fee has been removed for all your clients."
+            "Subscription activated! The booking fee has been removed for all your clients.",
           );
         }
       } else if (canceled === "true") {
@@ -178,7 +178,7 @@ export default function FeaturesPage() {
 
     if (!specialistId) {
       toast.error(
-        "No specialist linked to your account. Please link your account to a specialist in Admin Management first."
+        "No specialist linked to your account. Please link your account to a specialist in Admin Management first.",
       );
       return;
     }
@@ -186,7 +186,7 @@ export default function FeaturesPage() {
       setProcessingNoFee(true);
       console.log(
         "Making API call to:",
-        `/features/${specialistId}/subscribe-no-fee`
+        `/features/${specialistId}/subscribe-no-fee`,
       );
       const res = await api.post(`/features/${specialistId}/subscribe-no-fee`);
       if (res.data.checkoutUrl) {
@@ -196,7 +196,7 @@ export default function FeaturesPage() {
       console.error("Error creating subscription:", error);
       console.error("Error response:", error.response?.data);
       toast.error(
-        error.response?.data?.error || "Failed to start subscription"
+        error.response?.data?.error || "Failed to start subscription",
       );
       setProcessingNoFee(false);
     }
@@ -232,7 +232,7 @@ export default function FeaturesPage() {
       }));
 
       toast.success(
-        "Subscription cancelled. It will remain active until the end of your billing period."
+        "Subscription cancelled. It will remain active until the end of your billing period.",
       );
 
       // Small delay to let backend update, then fetch fresh data
@@ -243,7 +243,7 @@ export default function FeaturesPage() {
     } catch (error) {
       console.error("Error cancelling subscription:", error);
       toast.error(
-        error.response?.data?.error || "Failed to cancel subscription"
+        error.response?.data?.error || "Failed to cancel subscription",
       );
       setProcessingNoFee(false);
     }
@@ -252,7 +252,7 @@ export default function FeaturesPage() {
   const handleSmsSubscribe = async () => {
     if (!specialistId) {
       toast.error(
-        "No specialist linked to your account. Please link your account to a specialist in Admin Management first."
+        "No specialist linked to your account. Please link your account to a specialist in Admin Management first.",
       );
       return;
     }
@@ -265,7 +265,7 @@ export default function FeaturesPage() {
     } catch (error) {
       console.error("Error creating SMS subscription:", error);
       toast.error(
-        error.response?.data?.error || "Failed to start SMS subscription"
+        error.response?.data?.error || "Failed to start SMS subscription",
       );
       setProcessingSms(false);
     }
@@ -301,7 +301,7 @@ export default function FeaturesPage() {
       }));
 
       toast.success(
-        "SMS subscription cancelled. It will remain active until the end of your billing period."
+        "SMS subscription cancelled. It will remain active until the end of your billing period.",
       );
 
       // Small delay to let backend update, then fetch fresh data
@@ -312,7 +312,7 @@ export default function FeaturesPage() {
     } catch (error) {
       console.error("Error cancelling SMS subscription:", error);
       toast.error(
-        error.response?.data?.error || "Failed to cancel SMS subscription"
+        error.response?.data?.error || "Failed to cancel SMS subscription",
       );
       setProcessingSms(false);
     }
@@ -361,7 +361,7 @@ export default function FeaturesPage() {
       toast.success(
         `${featureNames[feature] || feature} ${
           newValue ? "enabled" : "disabled"
-        } successfully`
+        } successfully`,
       );
     } catch (error) {
       console.error(`❌ Failed to update ${feature}:`, error);
@@ -567,7 +567,7 @@ export default function FeaturesPage() {
                       <p className="text-xs text-green-700 mt-1">
                         Next billing:{" "}
                         {new Date(
-                          featureStatus.smsConfirmations.currentPeriodEnd
+                          featureStatus.smsConfirmations.currentPeriodEnd,
                         ).toLocaleDateString("en-GB")}
                       </p>
                     )}
@@ -587,7 +587,7 @@ export default function FeaturesPage() {
                     <p className="text-xs text-amber-800">
                       Your subscription is canceled but active until{" "}
                       {new Date(
-                        featureStatus.smsConfirmations.currentPeriodEnd
+                        featureStatus.smsConfirmations.currentPeriodEnd,
                       ).toLocaleDateString("en-GB")}
                     </p>
                   </div>

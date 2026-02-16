@@ -100,7 +100,7 @@ export default function Seminars() {
     const now = new Date();
     return (
       seminar.sessions?.filter(
-        (s) => new Date(s.date) > now && s.status === "scheduled"
+        (s) => new Date(s.date) > now && s.status === "scheduled",
       ).length || 0
     );
   };
@@ -256,7 +256,7 @@ export default function Seminars() {
                   <div className="absolute top-2 right-2">
                     <span
                       className={`text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm backdrop-blur-sm ${getStatusBadge(
-                        seminar.status
+                        seminar.status,
                       )}`}
                     >
                       {seminar.status}
@@ -424,7 +424,7 @@ export default function Seminars() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(
-                            seminar.status
+                            seminar.status,
                           )}`}
                         >
                           {seminar.status}

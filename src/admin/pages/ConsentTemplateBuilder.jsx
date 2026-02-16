@@ -64,7 +64,7 @@ export default function ConsentTemplateBuilder() {
 
   const [formData, setFormData] = useState(defaultConsentTemplateForm);
   const [savedSnapshot, setSavedSnapshot] = useState(
-    toSnapshot(defaultConsentTemplateForm)
+    toSnapshot(defaultConsentTemplateForm),
   );
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function ConsentTemplateBuilder() {
     } else if (prebuiltTemplate) {
       // Load pre-built template data and filter out invalid sections
       const validSections = (prebuiltTemplate.sections || []).filter(
-        (section) => section.type
+        (section) => section.type,
       );
 
       const prebuiltData = {
@@ -124,7 +124,7 @@ export default function ConsentTemplateBuilder() {
 
       // Filter out any sections without a valid type
       const validSections = (template.sections || []).filter(
-        (section) => section.type
+        (section) => section.type,
       );
 
       const loadedData = {
@@ -146,7 +146,7 @@ export default function ConsentTemplateBuilder() {
         toast(
           `Removed ${
             template.sections.length - validSections.length
-          } invalid section(s) that had no type.`
+          } invalid section(s) that had no type.`,
         );
       }
     } catch (error) {
@@ -180,7 +180,7 @@ export default function ConsentTemplateBuilder() {
         toast.error(
           `Section ${i + 1} (${
             section.type
-          }) is missing content. Please fill it in or remove it.`
+          }) is missing content. Please fill it in or remove it.`,
         );
         return;
       }
@@ -390,7 +390,7 @@ export default function ConsentTemplateBuilder() {
               onChange={(e) => {
                 const selected = Array.from(
                   e.target.selectedOptions,
-                  (option) => option.value
+                  (option) => option.value,
                 );
                 setFormData({
                   ...formData,

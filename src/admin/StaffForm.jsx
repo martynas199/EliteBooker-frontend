@@ -104,7 +104,7 @@ export default function StaffForm({
   // Form state
   const [formData, setFormData] = useState(createDefaultStaffFormData);
   const [savedFormData, setSavedFormData] = useState(() =>
-    cloneFormData(createDefaultStaffFormData())
+    cloneFormData(createDefaultStaffFormData()),
   );
 
   const [errors, setErrors] = useState({});
@@ -153,7 +153,7 @@ export default function StaffForm({
       // Extract location IDs - handle both populated and unpopulated
       const extractedLocationIds = staff.locationIds
         ? staff.locationIds.map((loc) =>
-            typeof loc === "string" ? loc : loc._id
+            typeof loc === "string" ? loc : loc._id,
           )
         : [];
 
@@ -190,7 +190,7 @@ export default function StaffForm({
 
   const hasUnsavedChanges = useMemo(
     () => buildDraftSnapshot(formData) !== buildDraftSnapshot(savedFormData),
-    [formData, savedFormData]
+    [formData, savedFormData],
   );
 
   useEffect(() => {
@@ -373,7 +373,7 @@ export default function StaffForm({
 
       console.log(
         "Submitting staff data:",
-        JSON.stringify(cleanedData, null, 2)
+        JSON.stringify(cleanedData, null, 2),
       );
       await onSave(cleanedData);
       setSavedFormData(cloneFormData(cleanedData));
@@ -399,7 +399,7 @@ export default function StaffForm({
   };
 
   const errorCount = Object.keys(errors).filter(
-    (key) => key !== "submit" && errors[key] != null
+    (key) => key !== "submit" && errors[key] != null,
   ).length;
 
   const inputClass = (hasError = false) =>
@@ -460,7 +460,9 @@ export default function StaffForm({
               <User className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-gray-900">Basic Information</h3>
+              <h3 className="text-sm font-semibold text-gray-900">
+                Basic Information
+              </h3>
               <p className="text-xs text-gray-600">
                 Add profile details and a clear introduction.
               </p>
@@ -468,79 +470,99 @@ export default function StaffForm({
           </div>
 
           <div className="space-y-4">
+            {/* Name and Email - 2 columns on desktop */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+              <FormField
+                label="Full Name"
+                error={errors.name}
+                required
+                htmlFor="name"
+              >
+                <input
+                  type="text"
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => handleChange("name", e.target.value)}
+                  className={inputClass(!!errors.name)}
+                  aria-invalid={!!errors.name}
+                />
+              </FormField>
 
-          {/* Name and Email - 2 columns on desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+              <FormField label="Email" error={errors.email} htmlFor="email">
+                <input
+                  type="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={(e) => handleChange("email", e.target.value)}
+                  className={inputClass(!!errors.email)}
+                  placeholder="staff@example.com"
+                  aria-invalid={!!errors.email}
+                />
+              </FormField>
+            </div>
+
+            {/* Phone - Full width on mobile, half on desktop */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+              <FormField label="Phone Number" htmlFor="phone">
+                <input
+                  type="tel"
+                  id="phone"
+                  value={formData.phone}
+                  onChange={(e) => handleChange("phone", e.target.value)}
+                  className={inputClass(false)}
+                  placeholder="+44 20 1234 5678"
+                />
+              </FormField>
+            </div>
+
+            {/* Bio */}
+            <FormField label="Bio / Description" htmlFor="bio">
+              <textarea
+                id="bio"
+                value={formData.bio}
+                onChange={(e) => handleChange("bio", e.target.value)}
+                rows={4}
+                className="w-full resize-none rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                placeholder="Tell us about this staff member..."
+              />
+            </FormField>
+
+            {/* Image Upload */}
             <FormField
-              label="Full Name"
-              error={errors.name}
-              required
-              htmlFor="name"
+              label="Profile Photo"
+              error={errors.image}
+              htmlFor="image"
             >
-              <input
-                type="text"
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleChange("name", e.target.value)}
-                className={inputClass(!!errors.name)}
-                aria-invalid={!!errors.name}
-              />
-            </FormField>
-
-            <FormField label="Email" error={errors.email} htmlFor="email">
-              <input
-                type="email"
-                id="email"
-                value={formData.email}
-                onChange={(e) => handleChange("email", e.target.value)}
-                className={inputClass(!!errors.email)}
-                placeholder="staff@example.com"
-                aria-invalid={!!errors.email}
-              />
-            </FormField>
-          </div>
-
-          {/* Phone - Full width on mobile, half on desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-            <FormField label="Phone Number" htmlFor="phone">
-              <input
-                type="tel"
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
-                className={inputClass(false)}
-                placeholder="+44 20 1234 5678"
-              />
-            </FormField>
-          </div>
-
-          {/* Bio */}
-          <FormField label="Bio / Description" htmlFor="bio">
-            <textarea
-              id="bio"
-              value={formData.bio}
-              onChange={(e) => handleChange("bio", e.target.value)}
-              rows={4}
-              className="w-full resize-none rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-              placeholder="Tell us about this staff member..."
-            />
-          </FormField>
-
-          {/* Image Upload */}
-          <FormField label="Profile Photo" error={errors.image} htmlFor="image">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              {/* Preview */}
-              <div className="relative group">
-                {formData.image ? (
-                  <div className="relative">
-                    <img
-                      src={formData.image.url}
-                      alt={formData.image.alt || "Profile photo"}
-                      className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full border-4 border-gray-200 shadow-lg"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 rounded-full transition-all duration-200 flex items-center justify-center">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                {/* Preview */}
+                <div className="relative group">
+                  {formData.image ? (
+                    <div className="relative">
+                      <img
+                        src={formData.image.url}
+                        alt={formData.image.alt || "Profile photo"}
+                        className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full border-4 border-gray-200 shadow-lg"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 rounded-full transition-all duration-200 flex items-center justify-center">
+                        <svg
+                          className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-dashed border-gray-300 flex items-center justify-center bg-gray-50">
                       <svg
-                        className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="w-10 h-10 text-gray-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -549,95 +571,78 @@ export default function StaffForm({
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                         />
                       </svg>
                     </div>
-                  </div>
-                ) : (
-                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-dashed border-gray-300 flex items-center justify-center bg-gray-50">
-                    <svg
-                      className="w-10 h-10 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                  </div>
-                )}
-              </div>
-
-              {/* Upload Button */}
-              <div className="flex-1 w-full">
-                <label
-                  htmlFor="image"
-                  className="relative cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isUploadingImage ? (
-                    <>
-                      <svg
-                        className="animate-spin h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      <span>Uploading...</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                        />
-                      </svg>
-                      <span>
-                        {formData.image ? "Change Photo" : "Upload Photo"}
-                      </span>
-                    </>
                   )}
-                </label>
-                <input
-                  type="file"
-                  id="image"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  disabled={isUploadingImage}
-                  className="hidden"
-                />
-                <p className="text-xs text-gray-600 mt-2">
-                  PNG, JPG or WEBP (max 5MB)
-                </p>
+                </div>
+
+                {/* Upload Button */}
+                <div className="flex-1 w-full">
+                  <label
+                    htmlFor="image"
+                    className="relative cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isUploadingImage ? (
+                      <>
+                        <svg
+                          className="animate-spin h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        <span>Uploading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                          />
+                        </svg>
+                        <span>
+                          {formData.image ? "Change Photo" : "Upload Photo"}
+                        </span>
+                      </>
+                    )}
+                  </label>
+                  <input
+                    type="file"
+                    id="image"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    disabled={isUploadingImage}
+                    className="hidden"
+                  />
+                  <p className="text-xs text-gray-600 mt-2">
+                    PNG, JPG or WEBP (max 5MB)
+                  </p>
+                </div>
               </div>
-            </div>
-          </FormField>
+            </FormField>
           </div>
         </div>
 
@@ -648,7 +653,9 @@ export default function StaffForm({
               <ImageIcon className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-gray-900">Specialties</h3>
+              <h3 className="text-sm font-semibold text-gray-900">
+                Specialties
+              </h3>
               <p className="text-xs text-gray-600">
                 Add tags clients use to discover this staff member.
               </p>
@@ -706,7 +713,9 @@ export default function StaffForm({
                 <MapPin className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-gray-900">Location Assignment</h3>
+                <h3 className="text-sm font-semibold text-gray-900">
+                  Location Assignment
+                </h3>
                 <p className="text-xs text-gray-600">
                   Control where this staff member appears for booking.
                 </p>
@@ -743,13 +752,13 @@ export default function StaffForm({
                           <input
                             type="checkbox"
                             checked={formData.locationIds.includes(
-                              location._id
+                              location._id,
                             )}
                             onChange={(e) => {
                               const newLocationIds = e.target.checked
                                 ? [...formData.locationIds, location._id]
                                 : formData.locationIds.filter(
-                                    (id) => id !== location._id
+                                    (id) => id !== location._id,
                                   );
 
                               handleChange("locationIds", newLocationIds);
@@ -801,7 +810,7 @@ export default function StaffForm({
                         <option value="">Select primary location...</option>
                         {locations
                           .filter((loc) =>
-                            formData.locationIds.includes(loc._id)
+                            formData.locationIds.includes(loc._id),
                           )
                           .map((location) => (
                             <option key={location._id} value={location._id}>
@@ -847,7 +856,10 @@ export default function StaffForm({
               onChange={(e) => handleChange("active", e.target.checked)}
               className="h-5 w-5 rounded text-brand-600 focus:ring-brand-500"
             />
-            <label htmlFor="active" className="text-sm font-medium text-gray-900">
+            <label
+              htmlFor="active"
+              className="text-sm font-medium text-gray-900"
+            >
               Active (can accept bookings)
             </label>
           </div>
@@ -892,7 +904,9 @@ export default function StaffForm({
                 <Clock className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-gray-900">Working Hours</h3>
+                <h3 className="text-sm font-semibold text-gray-900">
+                  Working Hours
+                </h3>
                 <p className="text-xs text-gray-600">
                   Define availability blocks shown during booking.
                 </p>
@@ -935,7 +949,7 @@ export default function StaffForm({
                         handleWorkingHoursChange(
                           index,
                           "dayOfWeek",
-                          parseInt(e.target.value)
+                          parseInt(e.target.value),
                         )
                       }
                       className={inputClass(false)}
@@ -1103,4 +1117,3 @@ export default function StaffForm({
     </div>
   );
 }
-

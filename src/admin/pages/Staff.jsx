@@ -79,14 +79,14 @@ export default function Staff() {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
-            }
+            },
           );
         } catch (uploadError) {
           console.error("Image upload error:", uploadError);
           // Don't throw - staff member was saved, just image upload failed
           toast.error(
             "Staff member saved, but image upload failed: " +
-              uploadError.message
+              uploadError.message,
           );
         }
       }

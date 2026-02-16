@@ -20,9 +20,11 @@ import PageTransition, {
   StaggerItem,
 } from "../../shared/components/ui/PageTransition";
 import { ListSkeleton } from "../../shared/components/ui/Skeleton";
+import TabNav from "../../shared/components/ui/TabNav";
 import toast from "react-hot-toast";
 import { confirmDialog } from "../../shared/lib/confirmDialog";
 import { promptDialog } from "../../shared/lib/promptDialog";
+import TenantAccountLayout from "../components/TenantAccountLayout";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -220,6 +222,15 @@ const ProfilePage = () => {
     return appointmentTime > now;
   };
 
+  const profileTabs = [
+    { key: "bookings", label: "Bookings", count: bookings.length },
+    { key: "orders", label: "Orders", count: orders.length },
+    { key: "wishlist", label: "Wishlist", count: wishlist.length },
+    { key: "favorites", label: "Favorites", count: favorites.length },
+    { key: "gift-cards", label: "Gift Cards" },
+    { key: "settings", label: "Settings" },
+  ];
+
   // Show loading while auth is loading OR while fetching profile data
   if (authLoading || loading) {
     return (
@@ -233,18 +244,13 @@ const ProfilePage = () => {
 
   return (
     <PageTransition className="min-h-screen py-6 sm:py-8">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 tracking-wide">
-            My Profile
-          </h1>
-          <p className="mt-2 text-sm sm:text-base text-gray-600 font-light">
-            Welcome back, {user?.name}! Manage your bookings and account
-            settings.
-          </p>
-        </div>
-
+      <TenantAccountLayout
+        title="My Profile"
+        description={`Welcome back, ${
+          user?.name || "there"
+        }! Manage your bookings and account settings.`}
+        maxWidth="max-w-7xl"
+      >
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
             {error}
@@ -253,82 +259,15 @@ const ProfilePage = () => {
 
         {/* Tabs */}
         <div className="mb-6">
-          <nav className="grid grid-cols-2 sm:flex sm:border-b sm:border-gray-200 gap-2 sm:gap-0 sm:space-x-8">
-            <button
-              onClick={() => setActiveTab("bookings")}
-              className={`${
-                activeTab === "bookings"
-                  ? "bg-rose-50 border-rose-500 text-rose-600 sm:bg-transparent sm:border-b-2 sm:border-t-0 sm:border-x-0"
-                  : "bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900 sm:bg-transparent sm:border-transparent sm:border-b-2"
-              } py-3 px-3 sm:px-1 border-2 sm:border-0 sm:border-b-2 rounded-lg sm:rounded-none font-medium text-xs sm:text-sm transition-all sm:-mb-px`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1">
-                <span>Bookings</span>
-                <span className="text-xs sm:text-sm">({bookings.length})</span>
-              </div>
-            </button>
-            <button
-              onClick={() => setActiveTab("orders")}
-              className={`${
-                activeTab === "orders"
-                  ? "bg-rose-50 border-rose-500 text-rose-600 sm:bg-transparent sm:border-b-2 sm:border-t-0 sm:border-x-0"
-                  : "bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900 sm:bg-transparent sm:border-transparent sm:border-b-2"
-              } py-3 px-3 sm:px-1 border-2 sm:border-0 sm:border-b-2 rounded-lg sm:rounded-none font-medium text-xs sm:text-sm transition-all sm:-mb-px`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1">
-                <span>Orders</span>
-                <span className="text-xs sm:text-sm">({orders.length})</span>
-              </div>
-            </button>
-            <button
-              onClick={() => setActiveTab("wishlist")}
-              className={`${
-                activeTab === "wishlist"
-                  ? "bg-rose-50 border-rose-500 text-rose-600 sm:bg-transparent sm:border-b-2 sm:border-t-0 sm:border-x-0"
-                  : "bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900 sm:bg-transparent sm:border-transparent sm:border-b-2"
-              } py-3 px-3 sm:px-1 border-2 sm:border-0 sm:border-b-2 rounded-lg sm:rounded-none font-medium text-xs sm:text-sm transition-all sm:-mb-px`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1">
-                <span>Wishlist</span>
-                <span className="text-xs sm:text-sm">({wishlist.length})</span>
-              </div>
-            </button>
-            <button
-              onClick={() => setActiveTab("favorites")}
-              className={`${
-                activeTab === "favorites"
-                  ? "bg-rose-50 border-rose-500 text-rose-600 sm:bg-transparent sm:border-b-2 sm:border-t-0 sm:border-x-0"
-                  : "bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900 sm:bg-transparent sm:border-transparent sm:border-b-2"
-              } py-3 px-3 sm:px-1 border-2 sm:border-0 sm:border-b-2 rounded-lg sm:rounded-none font-medium text-xs sm:text-sm transition-all sm:-mb-px`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1">
-                <span>Favorites</span>
-                <span className="text-xs sm:text-sm">({favorites.length})</span>
-              </div>
-            </button>
-            <button
-              onClick={() => setActiveTab("gift-cards")}
-              className={`${
-                activeTab === "gift-cards"
-                  ? "bg-rose-50 border-rose-500 text-rose-600 sm:bg-transparent sm:border-b-2 sm:border-t-0 sm:border-x-0"
-                  : "bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900 sm:bg-transparent sm:border-transparent sm:border-b-2"
-              } py-3 px-3 sm:px-1 border-2 sm:border-0 sm:border-b-2 rounded-lg sm:rounded-none font-medium text-xs sm:text-sm transition-all sm:-mb-px`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1">
-                <span>Gift Cards</span>
-              </div>
-            </button>
-            <button
-              onClick={() => setActiveTab("settings")}
-              className={`${
-                activeTab === "settings"
-                  ? "bg-rose-50 border-rose-500 text-rose-600 sm:bg-transparent sm:border-b-2 sm:border-t-0 sm:border-x-0"
-                  : "bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900 sm:bg-transparent sm:border-transparent sm:border-b-2"
-              } py-3 px-3 sm:px-1 border-2 sm:border-0 sm:border-b-2 rounded-lg sm:rounded-none font-medium text-xs sm:text-sm transition-all sm:-mb-px`}
-            >
-              <span>Settings</span>
-            </button>
-          </nav>
+          <TabNav
+            tabs={profileTabs}
+            activeKey={activeTab}
+            onChange={setActiveTab}
+            accent="violet"
+            mobileGrid
+            className="sm:border-b sm:border-gray-200"
+            buttonClassName="text-xs sm:text-sm"
+          />
         </div>
 
         {/* Tab Content */}
@@ -1210,7 +1149,7 @@ const ProfilePage = () => {
             </div>
           )}
         </div>
-      </div>
+      </TenantAccountLayout>
     </PageTransition>
   );
 };

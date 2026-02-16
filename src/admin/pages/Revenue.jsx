@@ -21,7 +21,7 @@ import AdminPageShell from "../components/AdminPageShell";
 
 export default function Revenue() {
   const [startDate, setStartDate] = useState(
-    dayjs().startOf("month").format("YYYY-MM-DD")
+    dayjs().startOf("month").format("YYYY-MM-DD"),
   );
   const [endDate, setEndDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [data, setData] = useState(null);
@@ -79,7 +79,7 @@ export default function Revenue() {
               totalBookings:
                 platformRevenue.specialists?.reduce(
                   (sum, b) => sum + b.bookings.count,
-                  0
+                  0,
                 ) || 0,
             }
           : {
@@ -129,17 +129,17 @@ export default function Revenue() {
     data?.specialists?.filter((b) =>
       selectedSpecialist === "all"
         ? true
-        : b.specialistId === selectedSpecialist
+        : b.specialistId === selectedSpecialist,
     ) || [];
 
   // Calculate filtered totals
   const filteredTotalRevenue = filteredSpecialists.reduce(
     (sum, b) => sum + b.revenue,
-    0
+    0,
   );
   const filteredTotalBookings = filteredSpecialists.reduce(
     (sum, b) => sum + b.bookings,
-    0
+    0,
   );
 
   // Quick date range shortcuts
@@ -168,10 +168,10 @@ export default function Revenue() {
         break;
       case "lastMonth":
         setStartDate(
-          today.subtract(1, "month").startOf("month").format("YYYY-MM-DD")
+          today.subtract(1, "month").startOf("month").format("YYYY-MM-DD"),
         );
         setEndDate(
-          today.subtract(1, "month").endOf("month").format("YYYY-MM-DD")
+          today.subtract(1, "month").endOf("month").format("YYYY-MM-DD"),
         );
         break;
       default:
@@ -193,7 +193,6 @@ export default function Revenue() {
       description="Track performance and booking revenue"
       maxWidth="2xl"
     >
-
       {/* Date Range Card */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2.5">
         <div className="flex items-center gap-2 mb-2">
@@ -432,7 +431,7 @@ export default function Revenue() {
                   </div>
                   <div className="text-2xl font-bold text-white mb-1">
                     {formatCurrency(
-                      data.platform?.bookingsRevenue || filteredTotalRevenue
+                      data.platform?.bookingsRevenue || filteredTotalRevenue,
                     )}
                   </div>
                   <div className="text-xs text-gray-300">
@@ -493,7 +492,7 @@ export default function Revenue() {
                           (data.platform?.bookingsRevenue ||
                             filteredTotalRevenue) /
                             (data.platform?.totalBookings ||
-                              filteredTotalBookings)
+                              filteredTotalBookings),
                         )
                       : formatCurrency(0)}
                   </div>
@@ -747,7 +746,7 @@ export default function Revenue() {
                               </span>
                               <span className="text-xs font-semibold text-gray-700">
                                 {formatCurrency(
-                                  specialist.revenue / specialist.bookings
+                                  specialist.revenue / specialist.bookings,
                                 )}
                               </span>
                             </div>
@@ -789,7 +788,7 @@ export default function Revenue() {
                           <span className="text-lg font-bold text-white">
                             {filteredTotalBookings > 0
                               ? formatCurrency(
-                                  filteredTotalRevenue / filteredTotalBookings
+                                  filteredTotalRevenue / filteredTotalBookings,
                                 )
                               : formatCurrency(0)}
                           </span>

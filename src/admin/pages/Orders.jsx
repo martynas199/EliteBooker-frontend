@@ -4,6 +4,7 @@ import { OrdersAPI } from "../../tenant/pages/orders.api";
 import Card from "../../shared/components/ui/Card";
 import Button from "../../shared/components/ui/Button";
 import ListLoadingState from "../../shared/components/ui/ListLoadingState";
+import TabNav from "../../shared/components/ui/TabNav";
 import { useLanguage } from "../../shared/contexts/LanguageContext";
 import { t } from "../../locales/adminTranslations";
 import { formatCurrency } from "../../shared/utils/currency";
@@ -38,6 +39,15 @@ export default function Orders() {
     filter === "all"
       ? allOrders
       : allOrders.filter((order) => order.orderStatus === filter);
+
+  const orderStatusTabs = [
+    { key: "all", label: t("all", language) },
+    { key: "pending", label: t("pending", language) },
+    { key: "processing", label: t("processing", language) },
+    { key: "shipped", label: t("shipped", language) },
+    { key: "delivered", label: t("delivered", language) },
+    { key: "cancelled", label: t("cancelled", language) },
+  ];
 
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
@@ -76,17 +86,17 @@ export default function Orders() {
       setUpdating(true);
       const updated = await OrdersAPI.markReadyForCollection(orderId);
       setAllOrders(
-        allOrders.map((o) => (o._id === orderId ? updated.data : o))
+        allOrders.map((o) => (o._id === orderId ? updated.data : o)),
       );
       setSelectedOrder(updated.data);
       toast.success(
-        "Order marked as ready for collection. Customer has been notified by email."
+        "Order marked as ready for collection. Customer has been notified by email.",
       );
     } catch (error) {
       console.error("Error marking order ready:", error);
       toast.error(
         error.response?.data?.error ||
-          "Failed to mark order as ready for collection"
+          "Failed to mark order as ready for collection",
       );
     } finally {
       setUpdating(false);
@@ -106,7 +116,7 @@ export default function Orders() {
                 setUpdating(true);
                 const updated = await OrdersAPI.cancel(orderId);
                 setAllOrders(
-                  allOrders.map((o) => (o._id === orderId ? updated : o))
+                  allOrders.map((o) => (o._id === orderId ? updated : o)),
                 );
                 setSelectedOrder(updated);
                 toast.success("Order cancelled successfully");
@@ -128,7 +138,7 @@ export default function Orders() {
           </button>
         </span>
       ),
-      { duration: 8000 }
+      { duration: 8000 },
     );
   };
 
@@ -167,7 +177,7 @@ export default function Orders() {
           </button>
         </span>
       ),
-      { duration: 8000 }
+      { duration: 8000 },
     );
   };
 
@@ -229,27 +239,14 @@ export default function Orders() {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-2 flex-wrap">
-        {[
-          { value: "all", label: t("all", language) },
-          { value: "pending", label: t("pending", language) },
-          { value: "processing", label: t("processing", language) },
-          { value: "shipped", label: t("shipped", language) },
-          { value: "delivered", label: t("delivered", language) },
-          { value: "cancelled", label: t("cancelled", language) },
-        ].map((status) => (
-          <button
-            key={status.value}
-            onClick={() => setFilter(status.value)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              filter === status.value
-                ? "bg-brand-600 text-white"
-                : "bg-white text-gray-700 border border-gray-300 hover:border-brand-600"
-            }`}
-          >
-            {status.label}
-          </button>
-        ))}
+      <div className="border-b border-gray-200">
+        <TabNav
+          tabs={orderStatusTabs}
+          activeKey={filter}
+          onChange={setFilter}
+          accent="brand"
+          showCounts={false}
+        />
       </div>
 
       {/* Orders List */}
@@ -293,14 +290,14 @@ export default function Orders() {
                         <div className="flex items-center gap-2 flex-wrap">
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                              order.orderStatus
+                              order.orderStatus,
                             )}`}
                           >
                             Order: {order.orderStatus}
                           </span>
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold ${getPaymentStatusColor(
-                              order.paymentStatus
+                              order.paymentStatus,
                             )}`}
                           >
                             Payment: {order.paymentStatus}
@@ -411,7 +408,7 @@ export default function Orders() {
                   )}
 
                   {!["cancelled", "delivered", "refunded"].includes(
-                    order.orderStatus
+                    order.orderStatus,
                   ) && (
                     <Button
                       variant="danger"
@@ -484,7 +481,7 @@ export default function Orders() {
                     <p className="text-xs text-gray-500 mb-1">Order Status</p>
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(
-                        selectedOrder.orderStatus
+                        selectedOrder.orderStatus,
                       )}`}
                     >
                       {selectedOrder.orderStatus}
@@ -494,7 +491,7 @@ export default function Orders() {
                     <p className="text-xs text-gray-500 mb-1">Payment Status</p>
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${getPaymentStatusColor(
-                        selectedOrder.paymentStatus
+                        selectedOrder.paymentStatus,
                       )}`}
                     >
                       {selectedOrder.paymentStatus}
@@ -600,7 +597,7 @@ export default function Orders() {
                         <p className="text-sm sm:text-base font-semibold text-gray-900">
                           {formatCurrency(
                             item.price * item.quantity,
-                            selectedOrder.currency
+                            selectedOrder.currency,
                           )}
                         </p>
                       </div>
@@ -617,7 +614,7 @@ export default function Orders() {
                     <span className="font-medium">
                       {formatCurrency(
                         selectedOrder.subtotal,
-                        selectedOrder.currency
+                        selectedOrder.currency,
                       )}
                     </span>
                   </div>
@@ -628,7 +625,7 @@ export default function Orders() {
                         ? "FREE"
                         : formatCurrency(
                             selectedOrder.shipping,
-                            selectedOrder.currency
+                            selectedOrder.currency,
                           )}
                     </span>
                   </div>
@@ -637,7 +634,7 @@ export default function Orders() {
                     <span className="font-medium">
                       {formatCurrency(
                         selectedOrder.tax,
-                        selectedOrder.currency
+                        selectedOrder.currency,
                       )}
                     </span>
                   </div>
@@ -646,7 +643,7 @@ export default function Orders() {
                     <span>
                       {formatCurrency(
                         selectedOrder.total,
-                        selectedOrder.currency
+                        selectedOrder.currency,
                       )}
                     </span>
                   </div>
@@ -707,7 +704,7 @@ export default function Orders() {
                                   <p className="text-xs text-green-600 mt-0.5">
                                     Since{" "}
                                     {new Date(
-                                      selectedOrder.collectionReadyAt
+                                      selectedOrder.collectionReadyAt,
                                     ).toLocaleDateString()}
                                   </p>
                                 )}

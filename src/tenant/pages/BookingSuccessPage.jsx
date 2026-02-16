@@ -3,6 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { BookingAPI } from "./booking.api";
 import Button from "../../shared/components/ui/Button";
+import StatusBadge from "../../shared/components/ui/StatusBadge";
 
 function useQuery() {
   const { search } = useLocation();
@@ -34,8 +35,8 @@ export default function SuccessPage() {
               import.meta.env.VITE_API_URL || "http://localhost:4000";
             await fetch(
               `${apiUrl}/api/checkout/confirm?session_id=${encodeURIComponent(
-                sessionId
-              )}`
+                sessionId,
+              )}`,
             );
           } catch {}
         }
@@ -141,6 +142,14 @@ export default function SuccessPage() {
                 >
                   Booking Confirmed!
                 </motion.h1>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.35 }}
+                  className="mb-3 sm:mb-4"
+                >
+                  <StatusBadge status="confirmed" />
+                </motion.div>
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -330,7 +339,7 @@ export default function SuccessPage() {
                                     <span className="text-xl sm:text-2xl font-bold text-green-600">
                                       £
                                       {(appt.payment.amountTotal / 100).toFixed(
-                                        2
+                                        2,
                                       )}
                                     </span>
                                   </div>
@@ -391,6 +400,9 @@ export default function SuccessPage() {
             </div>
           ) : status === "pending" ? (
             <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 overflow-hidden text-center px-4 sm:px-8 py-8 sm:py-12">
+              <div className="flex justify-center mb-3">
+                <StatusBadge status="pending" />
+              </div>
               <div className="bg-yellow-100 border-2 border-yellow-600 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-b-3 border-yellow-600"></div>
               </div>
@@ -404,6 +416,9 @@ export default function SuccessPage() {
             </div>
           ) : status === "loading" ? (
             <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 overflow-hidden text-center px-4 sm:px-8 py-8 sm:py-12">
+              <div className="flex justify-center mb-3">
+                <StatusBadge status="pending" />
+              </div>
               <div className="bg-white/10 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-b-3 border-white/50"></div>
               </div>
@@ -416,6 +431,9 @@ export default function SuccessPage() {
             </div>
           ) : (
             <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 overflow-hidden text-center px-4 sm:px-8 py-8 sm:py-12">
+              <div className="flex justify-center mb-3">
+                <StatusBadge status="error" />
+              </div>
               <div className="bg-red-100 border-2 border-red-600 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <svg
                   className="w-8 h-8 sm:w-10 sm:h-10 text-red-600"

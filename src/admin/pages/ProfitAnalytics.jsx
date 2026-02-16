@@ -3,6 +3,7 @@ import { api } from "../../shared/lib/apiClient";
 import Card from "../../shared/components/ui/Card";
 import Button from "../../shared/components/ui/Button";
 import FormField from "../../shared/components/forms/FormField";
+import TabNav from "../../shared/components/ui/TabNav";
 import { format, subDays, startOfMonth, endOfMonth } from "date-fns";
 import toast from "react-hot-toast";
 import { DayPicker } from "react-day-picker";
@@ -138,6 +139,14 @@ export default function ProfitAnalytics() {
     specialists: specialistData = [],
   } = analytics || {};
 
+  const analyticsTabs = [
+    { key: "overview", label: "Overview" },
+    { key: "products", label: "Products" },
+    { key: "categories", label: "Categories" },
+    { key: "specialists", label: "Specialists" },
+    { key: "trends", label: "Trends" },
+  ];
+
   return (
     <AdminPageShell
       title="Profit Analytics"
@@ -146,7 +155,6 @@ export default function ProfitAnalytics() {
       contentClassName="space-y-6 overflow-x-hidden"
       className="px-3 sm:px-6 lg:px-8"
     >
-
       {/* Filters */}
       <Card className="p-3 sm:p-4">
         <h2 className="text-base sm:text-lg font-semibold mb-4">Filters</h2>
@@ -471,27 +479,14 @@ export default function ProfitAnalytics() {
 
       {/* Tabs */}
       <div className="border-b border-gray-200 overflow-x-auto">
-        <nav className="-mb-px flex space-x-4 sm:space-x-8 min-w-max">
-          {[
-            { id: "overview", name: "Overview" },
-            { id: "products", name: "Products" },
-            { id: "categories", name: "Categories" },
-            { id: "specialists", name: "Specialists" },
-            { id: "trends", name: "Trends" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`py-2 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
-                activeTab === tab.id
-                  ? "border-brand-500 text-brand-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              }`}
-            >
-              {tab.name}
-            </button>
-          ))}
-        </nav>
+        <TabNav
+          tabs={analyticsTabs}
+          activeKey={activeTab}
+          onChange={setActiveTab}
+          accent="brand"
+          showCounts={false}
+          buttonClassName="text-xs sm:text-sm"
+        />
       </div>
 
       {/* Tab Content */}

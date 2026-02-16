@@ -125,7 +125,8 @@ export default function BlogPosts() {
 
     const confirmed = await confirmDialog({
       title: "Delete blog post?",
-      message: "Are you sure you want to delete this blog post? This action cannot be undone.",
+      message:
+        "Are you sure you want to delete this blog post? This action cannot be undone.",
       confirmLabel: "Delete",
       cancelLabel: "Keep post",
       variant: "danger",

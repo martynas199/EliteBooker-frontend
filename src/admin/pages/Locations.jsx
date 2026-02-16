@@ -69,9 +69,11 @@ export default function Locations() {
     }`;
 
   const locationSummary = useMemo(() => {
-    const primaryCount = locations.filter((location) => location?.isPrimary).length;
-    const withContactCount = locations.filter(
-      (location) => Boolean(location?.phone || location?.email)
+    const primaryCount = locations.filter(
+      (location) => location?.isPrimary,
+    ).length;
+    const withContactCount = locations.filter((location) =>
+      Boolean(location?.phone || location?.email),
     ).length;
 
     return {
@@ -266,7 +268,9 @@ export default function Locations() {
         <Card className="border border-gray-200 py-10 shadow-sm">
           <div className="flex flex-col items-center justify-center gap-3 text-center">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900" />
-            <p className="text-sm font-medium text-gray-600">Loading locations...</p>
+            <p className="text-sm font-medium text-gray-600">
+              Loading locations...
+            </p>
           </div>
         </Card>
       </AdminPageShell>

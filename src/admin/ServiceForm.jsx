@@ -122,7 +122,9 @@ export default function ServiceForm({
 
   // Form state
   const [formData, setFormData] = useState(createDefaultServiceFormData);
-  const [savedFormData, setSavedFormData] = useState(createDefaultServiceFormData);
+  const [savedFormData, setSavedFormData] = useState(
+    createDefaultServiceFormData,
+  );
 
   const [newTimeSlot, setNewTimeSlot] = useState("");
 
@@ -235,8 +237,7 @@ export default function ServiceForm({
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
-    return () =>
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [hasUnsavedChanges]);
 
   const handleResetChanges = () => {
@@ -536,7 +537,8 @@ export default function ServiceForm({
               Form Progress
             </p>
             <p className="text-sm font-semibold text-gray-900">
-              {completedRequiredCount}/{requiredTotalCount} required sections complete
+              {completedRequiredCount}/{requiredTotalCount} required sections
+              complete
             </p>
           </div>
           <span
@@ -553,7 +555,10 @@ export default function ServiceForm({
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 pb-24 sm:space-y-5 sm:pb-0">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 pb-24 sm:space-y-5 sm:pb-0"
+      >
         {hasUnsavedChanges && (
           <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             You have unsaved changes.
@@ -567,7 +572,9 @@ export default function ServiceForm({
               <Info className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-gray-900">Service Details</h3>
+              <h3 className="text-sm font-semibold text-gray-900">
+                Service Details
+              </h3>
               <p className="text-xs text-gray-600">
                 Add core information your clients will see first.
               </p>
@@ -575,535 +582,546 @@ export default function ServiceForm({
           </div>
 
           <div className="space-y-4">
-          {/* Name */}
-          <FormField
-            label={t("serviceName", language)}
-            error={errors.name}
-            required
-            htmlFor="name"
-            hint={t("serviceNameHint", language)}
-          >
-            <input
-              type="text"
-              id="name"
-              value={formData.name}
-              onChange={(e) => handleChange("name", e.target.value)}
-              className={inputClass(!!errors.name)}
-              style={{ fontSize: "16px" }}
-              aria-invalid={!!errors.name}
-            />
-          </FormField>
-
-          {/* Category */}
-          <FormField
-            label={t("category", language)}
-            error={errors.category}
-            required
-            htmlFor="category"
-            hint={t("categoryHint", language)}
-          >
-            <input
-              type="text"
-              id="category"
-              value={formData.category}
-              onChange={(e) => handleChange("category", e.target.value)}
-              className={inputClass(!!errors.category)}
-              style={{ fontSize: "16px" }}
-              placeholder="e.g., Hair, Nails, Spa"
-              aria-invalid={!!errors.category}
-            />
-          </FormField>
-
-          {/* Description */}
-          <FormField
-            label={t("description", language)}
-            htmlFor="description"
-            hint={t("descriptionHint", language)}
-          >
-            <div className="space-y-2">
-              <div className="relative">
-                <textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => {
-                    handleChange("description", e.target.value);
-                    setIsAIGenerated(false); // Clear AI flag when manually edited
-                  }}
-                  rows={4}
-                  className="w-full resize-none rounded-xl border border-gray-300 px-3.5 py-2.5 pr-12 text-sm text-gray-900 shadow-sm transition-all focus:border-black focus:outline-none focus:ring-2 focus:ring-black/20"
-                  style={{ fontSize: "16px" }}
-                />
-                <button
-                  type="button"
-                  onClick={handleGenerateAIDescription}
-                  disabled={
-                    isGeneratingAI ||
-                    !formData.name ||
-                    formData.name.trim().length <= 3
-                  }
-                  className="group absolute bottom-3 right-3 rounded-lg border border-gray-300 bg-white p-2 shadow-sm transition-all duration-200 hover:border-gray-500 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-                  title={
-                    isAIGenerated
-                      ? "Regenerate AI description"
-                      : "Generate AI description"
-                  }
-                >
-                  {isGeneratingAI ? (
-                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-900 border-t-transparent" />
-                  ) : (
-                    <Sparkles className="h-5 w-5 text-gray-900 transition-transform group-hover:scale-110" />
-                  )}
-                </button>
-              </div>
-              {isAIGenerated && (
-                <p className="flex items-center gap-1 text-xs text-green-700">
-                  <Sparkles className="h-3 w-3" />
-                  AI-generated, editable
-                </p>
-              )}
-              <p className="text-xs text-gray-600">
-                {descriptionLength} characters
-              </p>
-            </div>
-          </FormField>
-
-          {/* Primary Specialist */}
-          <FormField
-            label={t("primaryBeautician", language)}
-            error={errors.primaryBeauticianId}
-            required
-            htmlFor="primaryBeauticianId"
-            hint={t("primaryBeauticianHint", language)}
-          >
-            <SelectButton
-              id="primaryBeauticianId"
-              value={formData.primaryBeauticianId}
-              placeholder={t("selectBeautician", language)}
-              options={specialists.map((b) => ({
-                value: b._id,
-                label: b.name,
-              }))}
-              onClick={() => isSuperAdmin && setShowSpecialistDrawer(true)}
-              disabled={!isSuperAdmin}
-              className={`w-full rounded-xl px-3.5 py-2.5 text-sm ${
-                errors.primaryBeauticianId ? "border-red-500" : ""
-              } ${!isSuperAdmin ? "bg-gray-100 cursor-not-allowed" : ""}`}
-            />
-            {!isSuperAdmin && !admin?.specialistId && (
-              <p className="mt-1 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
-                Your admin account is not linked to a specialist. Contact your administrator before creating services.
-              </p>
-            )}
-            {!isSuperAdmin && admin?.specialistId && (
-              <p className="text-sm text-gray-600 mt-1">
-                {t("youCanOnlyCreateForYourself", language)}
-              </p>
-            )}
-          </FormField>
-
-          {/* Locations Multi-Select (only if multi-location is enabled) */}
-          {isMultiLocationEnabled && (
+            {/* Name */}
             <FormField
-              label="Available at Locations"
-              htmlFor="availableAt"
-              hint="Select which locations offer this service. Leave empty for all locations."
+              label={t("serviceName", language)}
+              error={errors.name}
+              required
+              htmlFor="name"
+              hint={t("serviceNameHint", language)}
             >
-              {loadingLocations ? (
-                <p className="text-sm text-gray-600">Loading locations...</p>
-              ) : locations.length === 0 ? (
-                <p className="text-sm text-gray-600">
-                  No locations available. Create locations first in the
-                  Locations page.
-                </p>
-              ) : (
-                <div className="max-h-56 space-y-2 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50 p-2.5">
-                  {locations.map((location) => (
-                    <label
-                      key={location._id}
-                      className="flex cursor-pointer items-center gap-2 rounded-lg border border-transparent bg-white p-2.5 shadow-sm transition-colors hover:border-gray-200 hover:bg-gray-100"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.availableAt.includes(location._id)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            handleChange("availableAt", [
-                              ...formData.availableAt,
-                              location._id,
-                            ]);
-                          } else {
-                            handleChange(
-                              "availableAt",
-                              formData.availableAt.filter(
-                                (id) => id !== location._id,
-                              ),
-                            );
-                          }
-                        }}
-                        className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
-                      />
-                      <span className="text-sm flex items-center gap-2">
-                        {location.name}
-                        {location.isPrimary && (
-                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                            Primary
-                          </span>
-                        )}
-                      </span>
-                    </label>
-                  ))}
+              <input
+                type="text"
+                id="name"
+                value={formData.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+                className={inputClass(!!errors.name)}
+                style={{ fontSize: "16px" }}
+                aria-invalid={!!errors.name}
+              />
+            </FormField>
+
+            {/* Category */}
+            <FormField
+              label={t("category", language)}
+              error={errors.category}
+              required
+              htmlFor="category"
+              hint={t("categoryHint", language)}
+            >
+              <input
+                type="text"
+                id="category"
+                value={formData.category}
+                onChange={(e) => handleChange("category", e.target.value)}
+                className={inputClass(!!errors.category)}
+                style={{ fontSize: "16px" }}
+                placeholder="e.g., Hair, Nails, Spa"
+                aria-invalid={!!errors.category}
+              />
+            </FormField>
+
+            {/* Description */}
+            <FormField
+              label={t("description", language)}
+              htmlFor="description"
+              hint={t("descriptionHint", language)}
+            >
+              <div className="space-y-2">
+                <div className="relative">
+                  <textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => {
+                      handleChange("description", e.target.value);
+                      setIsAIGenerated(false); // Clear AI flag when manually edited
+                    }}
+                    rows={4}
+                    className="w-full resize-none rounded-xl border border-gray-300 px-3.5 py-2.5 pr-12 text-sm text-gray-900 shadow-sm transition-all focus:border-black focus:outline-none focus:ring-2 focus:ring-black/20"
+                    style={{ fontSize: "16px" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleGenerateAIDescription}
+                    disabled={
+                      isGeneratingAI ||
+                      !formData.name ||
+                      formData.name.trim().length <= 3
+                    }
+                    className="group absolute bottom-3 right-3 rounded-lg border border-gray-300 bg-white p-2 shadow-sm transition-all duration-200 hover:border-gray-500 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                    title={
+                      isAIGenerated
+                        ? "Regenerate AI description"
+                        : "Generate AI description"
+                    }
+                  >
+                    {isGeneratingAI ? (
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-900 border-t-transparent" />
+                    ) : (
+                      <Sparkles className="h-5 w-5 text-gray-900 transition-transform group-hover:scale-110" />
+                    )}
+                  </button>
                 </div>
-              )}
-              {formData.availableAt.length === 0 && locations.length > 0 && (
-                <p className="text-xs text-amber-600 mt-1">
-                  No locations selected - service will be available at all
-                  locations
+                {isAIGenerated && (
+                  <p className="flex items-center gap-1 text-xs text-green-700">
+                    <Sparkles className="h-3 w-3" />
+                    AI-generated, editable
+                  </p>
+                )}
+                <p className="text-xs text-gray-600">
+                  {descriptionLength} characters
+                </p>
+              </div>
+            </FormField>
+
+            {/* Primary Specialist */}
+            <FormField
+              label={t("primaryBeautician", language)}
+              error={errors.primaryBeauticianId}
+              required
+              htmlFor="primaryBeauticianId"
+              hint={t("primaryBeauticianHint", language)}
+            >
+              <SelectButton
+                id="primaryBeauticianId"
+                value={formData.primaryBeauticianId}
+                placeholder={t("selectBeautician", language)}
+                options={specialists.map((b) => ({
+                  value: b._id,
+                  label: b.name,
+                }))}
+                onClick={() => isSuperAdmin && setShowSpecialistDrawer(true)}
+                disabled={!isSuperAdmin}
+                className={`w-full rounded-xl px-3.5 py-2.5 text-sm ${
+                  errors.primaryBeauticianId ? "border-red-500" : ""
+                } ${!isSuperAdmin ? "bg-gray-100 cursor-not-allowed" : ""}`}
+              />
+              {!isSuperAdmin && !admin?.specialistId && (
+                <p className="mt-1 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+                  Your admin account is not linked to a specialist. Contact your
+                  administrator before creating services.
                 </p>
               )}
-              {selectedLocationsCount > 0 && (
-                <p className="mt-1 text-xs text-gray-600">
-                  {selectedLocationsCount} of {locations.length} locations selected
+              {!isSuperAdmin && admin?.specialistId && (
+                <p className="text-sm text-gray-600 mt-1">
+                  {t("youCanOnlyCreateForYourself", language)}
                 </p>
               )}
             </FormField>
-          )}
 
-          <div className="mb-2 mt-1 flex items-start gap-3">
-            <div className="rounded-xl bg-slate-100 p-2 text-slate-700">
-              <ImageIcon className="h-4 w-4" />
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900">Media & Visibility</h4>
-              <p className="text-xs text-gray-600">
-                Upload a clean thumbnail and control listing behavior.
-              </p>
-            </div>
-          </div>
-
-          {/* Image Upload */}
-          <FormField
-            label={t("serviceImage", language)}
-            error={errors.image}
-            htmlFor="image"
-            hint={
-              isUploadingImage
-                ? t("uploading", language)
-                : "Recommended: 800x600px, max 2MB. JPG, PNG or WebP format."
-            }
-          >
-            <div className="space-y-3">
-              {/* Image Preview or Upload Area */}
-              {formData.image && !isUploadingImage ? (
-                <div className="relative">
-                  <img
-                    src={formData.image.url}
-                    alt={formData.image.alt || "Service image"}
-                    className="h-52 w-full rounded-xl border-2 border-gray-200 object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        image: null,
-                      }));
-                      toast.success("Image removed");
-                    }}
-                    className="absolute top-2 right-2 px-2.5 py-1 bg-white text-red-600 text-xs font-semibold rounded-lg shadow-md hover:bg-red-50 border border-red-200 transition-colors"
-                  >
-                    Delete
-                  </button>
-                </div>
-              ) : (
-                <label
-                  htmlFor="image"
-                  className={`flex h-56 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors sm:h-52 ${
-                    isUploadingImage
-                      ? "border-brand-400 bg-brand-50"
-                      : "border-gray-300 hover:border-brand-400 bg-gray-50 hover:bg-brand-50"
-                  }`}
-                >
-                  <div className="flex flex-col items-center justify-center py-6">
-                    <svg
-                      className={`w-10 h-10 mb-3 ${
-                        isUploadingImage ? "text-brand-500" : "text-gray-400"
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                      />
-                    </svg>
-                    {isUploadingImage ? (
-                      <>
-                        <p className="mb-2 text-sm font-semibold text-brand-600">
-                          Uploading... {progress}%
-                        </p>
-                        <div className="w-48 bg-gray-200 rounded-full h-2 overflow-hidden">
-                          <div
-                            className="bg-brand-600 h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${progress}%` }}
-                          />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <p className="mb-1 text-sm font-semibold text-gray-700">
-                          Click to upload service image
-                        </p>
-                        <p className="text-xs text-gray-600">
-                          PNG, JPG or WebP (MAX. 2MB)
-                        </p>
-                      </>
-                    )}
+            {/* Locations Multi-Select (only if multi-location is enabled) */}
+            {isMultiLocationEnabled && (
+              <FormField
+                label="Available at Locations"
+                htmlFor="availableAt"
+                hint="Select which locations offer this service. Leave empty for all locations."
+              >
+                {loadingLocations ? (
+                  <p className="text-sm text-gray-600">Loading locations...</p>
+                ) : locations.length === 0 ? (
+                  <p className="text-sm text-gray-600">
+                    No locations available. Create locations first in the
+                    Locations page.
+                  </p>
+                ) : (
+                  <div className="max-h-56 space-y-2 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50 p-2.5">
+                    {locations.map((location) => (
+                      <label
+                        key={location._id}
+                        className="flex cursor-pointer items-center gap-2 rounded-lg border border-transparent bg-white p-2.5 shadow-sm transition-colors hover:border-gray-200 hover:bg-gray-100"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.availableAt.includes(location._id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              handleChange("availableAt", [
+                                ...formData.availableAt,
+                                location._id,
+                              ]);
+                            } else {
+                              handleChange(
+                                "availableAt",
+                                formData.availableAt.filter(
+                                  (id) => id !== location._id,
+                                ),
+                              );
+                            }
+                          }}
+                          className="w-4 h-4 text-brand-600 rounded focus:ring-brand-500"
+                        />
+                        <span className="text-sm flex items-center gap-2">
+                          {location.name}
+                          {location.isPrimary && (
+                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                              Primary
+                            </span>
+                          )}
+                        </span>
+                      </label>
+                    ))}
                   </div>
-                </label>
-              )}
+                )}
+                {formData.availableAt.length === 0 && locations.length > 0 && (
+                  <p className="text-xs text-amber-600 mt-1">
+                    No locations selected - service will be available at all
+                    locations
+                  </p>
+                )}
+                {selectedLocationsCount > 0 && (
+                  <p className="mt-1 text-xs text-gray-600">
+                    {selectedLocationsCount} of {locations.length} locations
+                    selected
+                  </p>
+                )}
+              </FormField>
+            )}
 
-              <input
-                type="file"
-                id="image"
-                accept="image/*"
-                onChange={handleImageChange}
-                disabled={isUploadingImage}
-                className="hidden"
-              />
-            </div>
-          </FormField>
-
-          <div className="mb-2 mt-1 flex items-start gap-3">
-            <div className="rounded-xl bg-slate-100 p-2 text-slate-700">
-              <Settings className="h-4 w-4" />
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900">Service Settings</h4>
-              <p className="text-xs text-gray-600">
-                Configure status, pricing behavior, and slot mode.
-              </p>
-            </div>
-          </div>
-
-          {/* Active Status */}
-          <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-gray-50 p-3.5 sm:p-4">
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="active"
-                checked={formData.active}
-                onChange={(e) => handleChange("active", e.target.checked)}
-                className="w-6 h-6 text-brand-600 rounded focus:ring-brand-500 cursor-pointer"
-              />
-              <label
-                htmlFor="active"
-                className="text-sm font-semibold text-gray-900 cursor-pointer"
-              >
-                {t("activeVisible", language)}
-              </label>
-            </div>
-            <p className="text-xs text-gray-600 ml-8">
-              {t("activeHint", language)}
-            </p>
-          </div>
-
-          {/* Price Varies */}
-          <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-gray-50 p-3.5 sm:p-4">
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="priceVaries"
-                checked={formData.priceVaries}
-                onChange={(e) => handleChange("priceVaries", e.target.checked)}
-                className="w-6 h-6 text-brand-600 rounded focus:ring-brand-500 cursor-pointer"
-              />
-              <label
-                htmlFor="priceVaries"
-                className="text-sm font-semibold text-gray-900 cursor-pointer"
-              >
-                Price Varies
-              </label>
-            </div>
-            <p className="text-xs text-gray-600 ml-8">
-              Check this if the service price varies (will show "Up to" instead
-              of "From")
-            </p>
-          </div>
-
-          {/* Fixed Time Slots */}
-          <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-3.5 sm:p-4">
-            <div className="flex items-start gap-2 sm:gap-3">
-              <input
-                type="checkbox"
-                id="useFixedSlots"
-                checked={formData.useFixedSlots}
-                onChange={(e) => {
-                  handleChange("useFixedSlots", e.target.checked);
-                  if (!e.target.checked) {
-                    handleChange("fixedTimeSlots", []);
-                  }
-                }}
-                className="mt-0.5 h-6 w-6 flex-shrink-0 cursor-pointer rounded text-gray-900 focus:ring-gray-500"
-              />
-              <div className="flex-1 min-w-0">
-                <span className="block cursor-pointer text-sm font-semibold text-gray-900">
-                  Use Fixed Time Slots
-                </span>
-                <p className="text-xs text-gray-600 mt-1">
-                  Set specific times for appointments
-                  <span className="hidden sm:inline">
-                    {" "}
-                    instead of automatic slot generation
-                  </span>
+            <div className="mb-2 mt-1 flex items-start gap-3">
+              <div className="rounded-xl bg-slate-100 p-2 text-slate-700">
+                <ImageIcon className="h-4 w-4" />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900">
+                  Media & Visibility
+                </h4>
+                <p className="text-xs text-gray-600">
+                  Upload a clean thumbnail and control listing behavior.
                 </p>
               </div>
             </div>
 
-            {formData.useFixedSlots && (
-              <div className="space-y-3 mt-1">
-                {/* Add Time Input */}
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <input
-                    type="time"
-                    value={newTimeSlot}
-                    onChange={(e) => setNewTimeSlot(e.target.value)}
-                    className="w-full rounded-xl border border-gray-300 px-3 py-2.5 shadow-sm sm:flex-1 focus:border-black focus:outline-none focus:ring-2 focus:ring-black/20"
-                    style={{ fontSize: "16px" }}
-                    placeholder="09:15"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const time = newTimeSlot.trim();
-                      if (!time) {
-                        toast.error("Please enter a time");
-                        return;
-                      }
-                      if (formData.fixedTimeSlots.includes(time)) {
-                        toast.error("This time is already added");
-                        return;
-                      }
-                      const updated = [...formData.fixedTimeSlots, time].sort();
-                      handleChange("fixedTimeSlots", updated);
-                      setNewTimeSlot("");
-                      toast.success("Time added");
-                    }}
-                    className="w-full rounded-xl border border-gray-900 bg-gray-900 px-6 py-2.5 text-white transition-colors hover:bg-black sm:w-auto"
-                  >
-                    Add Time
-                  </button>
-                </div>
-
-                {/* Configured Times List */}
-                {formData.fixedTimeSlots.length > 0 ? (
-                  <div className="space-y-2">
-                    <p className="text-xs sm:text-sm font-medium text-gray-700">
-                      {formData.fixedTimeSlots.length} time
-                      {formData.fixedTimeSlots.length !== 1 ? "s" : ""}{" "}
-                      configured:
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {formData.fixedTimeSlots.map((time) => (
-                        <div
-                          key={time}
-                          className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-2.5 shadow-sm"
-                        >
-                          <span className="font-mono text-sm font-semibold text-gray-900 sm:text-base">
-                            {time}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              handleChange(
-                                "fixedTimeSlots",
-                                formData.fixedTimeSlots.filter(
-                                  (t) => t !== time,
-                                ),
-                              );
-                              toast.success("Removed");
-                            }}
-                            className="inline-flex items-center justify-center rounded px-2 py-1 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 sm:text-sm"
-                          >
-                            <svg
-                              className="h-4 w-4 text-red-600"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              aria-hidden="true"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                            <span className="sr-only">Remove</span>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+            {/* Image Upload */}
+            <FormField
+              label={t("serviceImage", language)}
+              error={errors.image}
+              htmlFor="image"
+              hint={
+                isUploadingImage
+                  ? t("uploading", language)
+                  : "Recommended: 800x600px, max 2MB. JPG, PNG or WebP format."
+              }
+            >
+              <div className="space-y-3">
+                {/* Image Preview or Upload Area */}
+                {formData.image && !isUploadingImage ? (
+                  <div className="relative">
+                    <img
+                      src={formData.image.url}
+                      alt={formData.image.alt || "Service image"}
+                      className="h-52 w-full rounded-xl border-2 border-gray-200 object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          image: null,
+                        }));
+                        toast.success("Image removed");
+                      }}
+                      className="absolute top-2 right-2 px-2.5 py-1 bg-white text-red-600 text-xs font-semibold rounded-lg shadow-md hover:bg-red-50 border border-red-200 transition-colors"
+                    >
+                      Delete
+                    </button>
                   </div>
                 ) : (
-                  <p className="text-xs sm:text-sm text-gray-600 italic py-2">
-                    Add your first time slot above
-                  </p>
+                  <label
+                    htmlFor="image"
+                    className={`flex h-56 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors sm:h-52 ${
+                      isUploadingImage
+                        ? "border-brand-400 bg-brand-50"
+                        : "border-gray-300 hover:border-brand-400 bg-gray-50 hover:bg-brand-50"
+                    }`}
+                  >
+                    <div className="flex flex-col items-center justify-center py-6">
+                      <svg
+                        className={`w-10 h-10 mb-3 ${
+                          isUploadingImage ? "text-brand-500" : "text-gray-400"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        />
+                      </svg>
+                      {isUploadingImage ? (
+                        <>
+                          <p className="mb-2 text-sm font-semibold text-brand-600">
+                            Uploading... {progress}%
+                          </p>
+                          <div className="w-48 bg-gray-200 rounded-full h-2 overflow-hidden">
+                            <div
+                              className="bg-brand-600 h-2 rounded-full transition-all duration-300"
+                              style={{ width: `${progress}%` }}
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <p className="mb-1 text-sm font-semibold text-gray-700">
+                            Click to upload service image
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            PNG, JPG or WebP (MAX. 2MB)
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  </label>
                 )}
 
-                {/* Quick Presets */}
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-2.5 sm:p-3">
-                  <p className="mb-2 text-xs font-medium text-gray-700">
-                    Quick presets:
+                <input
+                  type="file"
+                  id="image"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  disabled={isUploadingImage}
+                  className="hidden"
+                />
+              </div>
+            </FormField>
+
+            <div className="mb-2 mt-1 flex items-start gap-3">
+              <div className="rounded-xl bg-slate-100 p-2 text-slate-700">
+                <Settings className="h-4 w-4" />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900">
+                  Service Settings
+                </h4>
+                <p className="text-xs text-gray-600">
+                  Configure status, pricing behavior, and slot mode.
+                </p>
+              </div>
+            </div>
+
+            {/* Active Status */}
+            <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-gray-50 p-3.5 sm:p-4">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="active"
+                  checked={formData.active}
+                  onChange={(e) => handleChange("active", e.target.checked)}
+                  className="w-6 h-6 text-brand-600 rounded focus:ring-brand-500 cursor-pointer"
+                />
+                <label
+                  htmlFor="active"
+                  className="text-sm font-semibold text-gray-900 cursor-pointer"
+                >
+                  {t("activeVisible", language)}
+                </label>
+              </div>
+              <p className="text-xs text-gray-600 ml-8">
+                {t("activeHint", language)}
+              </p>
+            </div>
+
+            {/* Price Varies */}
+            <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-gray-50 p-3.5 sm:p-4">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="priceVaries"
+                  checked={formData.priceVaries}
+                  onChange={(e) =>
+                    handleChange("priceVaries", e.target.checked)
+                  }
+                  className="w-6 h-6 text-brand-600 rounded focus:ring-brand-500 cursor-pointer"
+                />
+                <label
+                  htmlFor="priceVaries"
+                  className="text-sm font-semibold text-gray-900 cursor-pointer"
+                >
+                  Price Varies
+                </label>
+              </div>
+              <p className="text-xs text-gray-600 ml-8">
+                Check this if the service price varies (will show "Up to"
+                instead of "From")
+              </p>
+            </div>
+
+            {/* Fixed Time Slots */}
+            <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-3.5 sm:p-4">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <input
+                  type="checkbox"
+                  id="useFixedSlots"
+                  checked={formData.useFixedSlots}
+                  onChange={(e) => {
+                    handleChange("useFixedSlots", e.target.checked);
+                    if (!e.target.checked) {
+                      handleChange("fixedTimeSlots", []);
+                    }
+                  }}
+                  className="mt-0.5 h-6 w-6 flex-shrink-0 cursor-pointer rounded text-gray-900 focus:ring-gray-500"
+                />
+                <div className="flex-1 min-w-0">
+                  <span className="block cursor-pointer text-sm font-semibold text-gray-900">
+                    Use Fixed Time Slots
+                  </span>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Set specific times for appointments
+                    <span className="hidden sm:inline">
+                      {" "}
+                      instead of automatic slot generation
+                    </span>
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleChange("fixedTimeSlots", [
-                          "09:00",
-                          "12:00",
-                          "15:00",
-                          "18:00",
-                        ]);
-                        toast.success("Preset applied");
-                      }}
-                      className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium transition-colors hover:bg-gray-100"
-                    >
-                      Every 3hrs (9-6)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleChange("fixedTimeSlots", [
-                          "10:00",
-                          "14:00",
-                          "16:00",
-                        ]);
-                        toast.success("Preset applied");
-                      }}
-                      className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium transition-colors hover:bg-gray-100"
-                    >
-                      Morning+Afternoon
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleChange("fixedTimeSlots", []);
-                        toast.success("Cleared");
-                      }}
-                      className="rounded-lg border border-red-300 bg-white px-3 py-2 text-xs font-medium text-red-700 transition-colors hover:bg-red-50"
-                    >
-                      Clear All
-                    </button>
-                  </div>
                 </div>
               </div>
-            )}
+
+              {formData.useFixedSlots && (
+                <div className="space-y-3 mt-1">
+                  {/* Add Time Input */}
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      type="time"
+                      value={newTimeSlot}
+                      onChange={(e) => setNewTimeSlot(e.target.value)}
+                      className="w-full rounded-xl border border-gray-300 px-3 py-2.5 shadow-sm sm:flex-1 focus:border-black focus:outline-none focus:ring-2 focus:ring-black/20"
+                      style={{ fontSize: "16px" }}
+                      placeholder="09:15"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const time = newTimeSlot.trim();
+                        if (!time) {
+                          toast.error("Please enter a time");
+                          return;
+                        }
+                        if (formData.fixedTimeSlots.includes(time)) {
+                          toast.error("This time is already added");
+                          return;
+                        }
+                        const updated = [
+                          ...formData.fixedTimeSlots,
+                          time,
+                        ].sort();
+                        handleChange("fixedTimeSlots", updated);
+                        setNewTimeSlot("");
+                        toast.success("Time added");
+                      }}
+                      className="w-full rounded-xl border border-gray-900 bg-gray-900 px-6 py-2.5 text-white transition-colors hover:bg-black sm:w-auto"
+                    >
+                      Add Time
+                    </button>
+                  </div>
+
+                  {/* Configured Times List */}
+                  {formData.fixedTimeSlots.length > 0 ? (
+                    <div className="space-y-2">
+                      <p className="text-xs sm:text-sm font-medium text-gray-700">
+                        {formData.fixedTimeSlots.length} time
+                        {formData.fixedTimeSlots.length !== 1 ? "s" : ""}{" "}
+                        configured:
+                      </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {formData.fixedTimeSlots.map((time) => (
+                          <div
+                            key={time}
+                            className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-2.5 shadow-sm"
+                          >
+                            <span className="font-mono text-sm font-semibold text-gray-900 sm:text-base">
+                              {time}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                handleChange(
+                                  "fixedTimeSlots",
+                                  formData.fixedTimeSlots.filter(
+                                    (t) => t !== time,
+                                  ),
+                                );
+                                toast.success("Removed");
+                              }}
+                              className="inline-flex items-center justify-center rounded px-2 py-1 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 sm:text-sm"
+                            >
+                              <svg
+                                className="h-4 w-4 text-red-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                              <span className="sr-only">Remove</span>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-xs sm:text-sm text-gray-600 italic py-2">
+                      Add your first time slot above
+                    </p>
+                  )}
+
+                  {/* Quick Presets */}
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-2.5 sm:p-3">
+                    <p className="mb-2 text-xs font-medium text-gray-700">
+                      Quick presets:
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleChange("fixedTimeSlots", [
+                            "09:00",
+                            "12:00",
+                            "15:00",
+                            "18:00",
+                          ]);
+                          toast.success("Preset applied");
+                        }}
+                        className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium transition-colors hover:bg-gray-100"
+                      >
+                        Every 3hrs (9-6)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleChange("fixedTimeSlots", [
+                            "10:00",
+                            "14:00",
+                            "16:00",
+                          ]);
+                          toast.success("Preset applied");
+                        }}
+                        className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium transition-colors hover:bg-gray-100"
+                      >
+                        Morning+Afternoon
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleChange("fixedTimeSlots", []);
+                          toast.success("Cleared");
+                        }}
+                        className="rounded-lg border border-red-300 bg-white px-3 py-2 text-xs font-medium text-red-700 transition-colors hover:bg-red-50"
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
         </div>
 
         {/* Variants Section */}
@@ -1142,7 +1160,9 @@ export default function ServiceForm({
               & Style (45 min, £45)".
             </p>
             <p className="text-xs text-gray-600">
-              Create different versions of this service with unique durations and prices. Example: "Quick Trim (15 min, £20)" and "Full Cut & Style (45 min, £45)".
+              Create different versions of this service with unique durations
+              and prices. Example: "Quick Trim (15 min, £20)" and "Full Cut &
+              Style (45 min, £45)".
             </p>
             {minVariantPrice !== null && maxVariantPrice !== null && (
               <p className="mt-2 text-xs font-medium text-gray-700">
@@ -1217,7 +1237,9 @@ export default function ServiceForm({
                         e.target.value === "" ? "" : parseInt(e.target.value),
                       )
                     }
-                    className={inputClass(!!errors[`variant_${index}_duration`])}
+                    className={inputClass(
+                      !!errors[`variant_${index}_duration`],
+                    )}
                     style={{ fontSize: "16px" }}
                     min="1"
                     placeholder="e.g., 30"
@@ -1273,7 +1295,9 @@ export default function ServiceForm({
                         value === "" ? null : parseFloat(value),
                       );
                     }}
-                    className={inputClass(!!errors[`variant_${index}_promoPrice`])}
+                    className={inputClass(
+                      !!errors[`variant_${index}_promoPrice`],
+                    )}
                     style={{ fontSize: "16px" }}
                     placeholder="0.00"
                   />

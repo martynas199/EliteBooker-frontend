@@ -115,7 +115,7 @@ export default function SeminarAttendees() {
 
   const getSessionStats = (sessionId) => {
     const sessionBookings = bookings.filter(
-      (b) => b.sessionId === sessionId && b.status === "confirmed"
+      (b) => b.sessionId === sessionId && b.status === "confirmed",
     );
     const session = seminar.sessions.find((s) => s._id === sessionId);
     return {
@@ -311,7 +311,7 @@ export default function SeminarAttendees() {
           <div className="block md:hidden space-y-2.5">
             {filteredBookings.map((booking) => {
               const session = seminar.sessions.find(
-                (s) => s._id === booking.sessionId
+                (s) => s._id === booking.sessionId,
               );
               return (
                 <div
@@ -335,14 +335,14 @@ export default function SeminarAttendees() {
                     <div className="flex flex-col gap-1 ml-2 shrink-0">
                       <span
                         className={`px-1.5 py-0.5 text-[10px] font-semibold rounded-full whitespace-nowrap ${getStatusBadge(
-                          booking.status
+                          booking.status,
                         )}`}
                       >
                         {booking.status}
                       </span>
                       <span
                         className={`px-1.5 py-0.5 text-[10px] font-semibold rounded-full whitespace-nowrap ${getPaymentBadge(
-                          booking.payment.status
+                          booking.payment.status,
                         )}`}
                       >
                         {booking.payment.status}
@@ -364,7 +364,7 @@ export default function SeminarAttendees() {
                           <>
                             {new Date(session.date).toLocaleDateString(
                               "en-US",
-                              { month: "short", day: "numeric" }
+                              { month: "short", day: "numeric" },
                             )}
                             <br />
                             {session.startTime} - {session.endTime}
@@ -424,7 +424,7 @@ export default function SeminarAttendees() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredBookings.map((booking) => {
                     const session = seminar.sessions.find(
-                      (s) => s._id === booking.sessionId
+                      (s) => s._id === booking.sessionId,
                     );
                     return (
                       <tr key={booking._id} className="hover:bg-gray-50">
@@ -462,7 +462,7 @@ export default function SeminarAttendees() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
                             className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(
-                              booking.status
+                              booking.status,
                             )}`}
                           >
                             {booking.status}
@@ -471,7 +471,7 @@ export default function SeminarAttendees() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
                             className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getPaymentBadge(
-                              booking.payment.status
+                              booking.payment.status,
                             )}`}
                           >
                             {booking.payment.status}

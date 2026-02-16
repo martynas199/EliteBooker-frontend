@@ -6,9 +6,7 @@ import Button from "../../shared/components/ui/Button";
 import Input from "../../shared/components/ui/Input";
 import { confirmDialog } from "../../shared/lib/confirmDialog";
 import toast from "react-hot-toast";
-import AdminPageShell, {
-  AdminSectionCard,
-} from "../components/AdminPageShell";
+import AdminPageShell, { AdminSectionCard } from "../components/AdminPageShell";
 
 export default function HeroSections() {
   const admin = useSelector(selectAdmin);
@@ -83,7 +81,7 @@ export default function HeroSections() {
       if (editingSection._id) {
         savedSection = await HeroSectionsAPI.update(
           editingSection._id,
-          editingSection
+          editingSection,
         );
       } else {
         savedSection = await HeroSectionsAPI.create(editingSection);
@@ -93,7 +91,7 @@ export default function HeroSections() {
       if (centerImageFile) {
         await HeroSectionsAPI.uploadCenterImage(
           savedSection._id,
-          centerImageFile
+          centerImageFile,
         );
       }
 
@@ -148,7 +146,9 @@ export default function HeroSections() {
     return (
       <AdminPageShell
         title={
-          editingSection._id ? "Edit Landing Page Hero" : "Create Landing Page Hero"
+          editingSection._id
+            ? "Edit Landing Page Hero"
+            : "Create Landing Page Hero"
         }
         description="Manage the hero section content shown on your public landing page."
         maxWidth="md"
@@ -167,7 +167,9 @@ export default function HeroSections() {
             className="space-y-6"
           >
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Hero Content</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Hero Content
+              </h3>
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700">
                   Title
@@ -175,7 +177,10 @@ export default function HeroSections() {
                 <Input
                   value={editingSection.title || ""}
                   onChange={(e) =>
-                    setEditingSection({ ...editingSection, title: e.target.value })
+                    setEditingSection({
+                      ...editingSection,
+                      title: e.target.value,
+                    })
                   }
                   placeholder="Refined Luxury Awaits"
                 />
@@ -291,11 +296,16 @@ export default function HeroSections() {
                     type="checkbox"
                     checked={editingSection.active !== false}
                     onChange={(e) =>
-                      setEditingSection({ ...editingSection, active: e.target.checked })
+                      setEditingSection({
+                        ...editingSection,
+                        active: e.target.checked,
+                      })
                     }
                     className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                   />
-                  <span className="text-sm font-medium text-gray-700">Active</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    Active
+                  </span>
                 </label>
                 <p className="ml-6 mt-1 text-xs text-gray-500">
                   Show this hero section on your landing page.
@@ -364,7 +374,9 @@ export default function HeroSections() {
                 loading={saving}
                 className="w-full sm:order-last sm:w-auto"
               >
-                {editingSection._id ? "Update Hero Section" : "Create Hero Section"}
+                {editingSection._id
+                  ? "Update Hero Section"
+                  : "Create Hero Section"}
               </Button>
               <Button
                 type="button"
@@ -400,7 +412,11 @@ export default function HeroSections() {
       maxWidth="lg"
       action={
         sections.length === 0 ? (
-          <Button variant="brand" onClick={handleCreate} className="w-full sm:w-auto">
+          <Button
+            variant="brand"
+            onClick={handleCreate}
+            className="w-full sm:w-auto"
+          >
             Add Hero Section
           </Button>
         ) : null

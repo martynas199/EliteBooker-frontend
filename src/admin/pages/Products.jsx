@@ -68,7 +68,7 @@ export default function Products() {
       formData: defaultProductForm,
       imageFile: null,
       galleryFiles: [],
-    })
+    }),
   );
   const [savedImagePreview, setSavedImagePreview] = useState(null);
 
@@ -110,14 +110,14 @@ export default function Products() {
         ...new Set(
           productsData
             .map((p) => p.brand)
-            .filter((brand) => brand && brand.trim() !== "")
+            .filter((brand) => brand && brand.trim() !== ""),
         ),
       ].sort();
 
       console.log("Products loaded:", productsData.length);
       console.log(
         "Products with brands:",
-        productsData.filter((p) => p.brand).length
+        productsData.filter((p) => p.brand).length,
       );
       console.log("Unique brands found:", uniqueBrands);
 
@@ -139,7 +139,7 @@ export default function Products() {
         ...new Set(
           data
             .map((p) => p.brand)
-            .filter((brand) => brand && brand.trim() !== "")
+            .filter((brand) => brand && brand.trim() !== ""),
         ),
       ].sort();
       setBrands(uniqueBrands);
@@ -252,7 +252,7 @@ export default function Products() {
           borderRadius: "8px",
           padding: "12px",
         },
-      }
+      },
     );
   };
 
@@ -263,7 +263,7 @@ export default function Products() {
     try {
       // Validate variants
       const validVariants = formData.variants.filter(
-        (v) => v.size.trim() && v.price
+        (v) => v.size.trim() && v.price,
       );
       if (validVariants.length === 0) {
         toast.error("Please add at least one variant with size and price");
@@ -311,7 +311,7 @@ export default function Products() {
       toast.success(
         editingId
           ? "Product updated successfully!"
-          : "Product created successfully!"
+          : "Product created successfully!",
       );
     } catch (error) {
       console.error("Error saving product:", error);
@@ -378,7 +378,7 @@ export default function Products() {
         formData: nextFormData,
         imageFile: null,
         galleryFiles: [],
-      })
+      }),
     );
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -412,7 +412,7 @@ export default function Products() {
         formData: defaultProductForm,
         imageFile: null,
         galleryFiles: [],
-      })
+      }),
     );
   };
 
@@ -511,7 +511,7 @@ export default function Products() {
                   formData: defaultProductForm,
                   imageFile: null,
                   galleryFiles: [],
-                })
+                }),
               );
             }}
             variant="primary"
@@ -811,7 +811,7 @@ export default function Products() {
                             updateVariant(
                               index,
                               "originalPrice",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm"
@@ -836,7 +836,7 @@ export default function Products() {
                             updateVariant(
                               index,
                               "originalPriceEUR",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-blue-50"
@@ -861,7 +861,7 @@ export default function Products() {
                             updateVariant(
                               index,
                               "purchasePrice",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="w-full px-3 py-2 border border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm bg-yellow-50"
@@ -1312,7 +1312,7 @@ export default function Products() {
                           <span className="text-sm font-semibold text-brand-600">
                             from £
                             {Math.min(
-                              ...product.variants.map((v) => v.price)
+                              ...product.variants.map((v) => v.price),
                             ).toFixed(2)}
                           </span>
                         )}

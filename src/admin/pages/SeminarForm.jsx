@@ -6,9 +6,7 @@ import { api } from "../../shared/lib/apiClient";
 import Button from "../../shared/components/ui/Button";
 import FormField from "../../shared/components/forms/FormField";
 import UnsavedChangesModal from "../../shared/components/forms/UnsavedChangesModal";
-import AdminPageShell, {
-  AdminSectionCard,
-} from "../components/AdminPageShell";
+import AdminPageShell, { AdminSectionCard } from "../components/AdminPageShell";
 
 const inputClassName =
   "w-full min-h-11 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200";
@@ -93,7 +91,7 @@ export default function SeminarForm() {
       imagePreview: null,
       galleryFiles: [],
       existingGalleryImages: [],
-    })
+    }),
   );
   const [savedDraft, setSavedDraft] = useState(() => ({
     formData: createDefaultSeminarForm(),
@@ -129,7 +127,7 @@ export default function SeminarForm() {
         imagePreview: null,
         galleryFiles: [],
         existingGalleryImages: [],
-      })
+      }),
     );
   }, [id]);
 
@@ -149,7 +147,7 @@ export default function SeminarForm() {
       galleryFiles,
       existingGalleryImages,
       savedSnapshot,
-    ]
+    ],
   );
 
   useEffect(() => {
@@ -222,14 +220,14 @@ export default function SeminarForm() {
 
       const mainImage = seminar.images?.main;
       setImagePreview(
-        typeof mainImage === "string" ? mainImage : mainImage?.url || null
+        typeof mainImage === "string" ? mainImage : mainImage?.url || null,
       );
 
       const galleryImages = seminar.images?.gallery || [];
       setExistingGalleryImages(
         galleryImages.map((img) =>
-          typeof img === "string" ? img : img?.url || img
-        )
+          typeof img === "string" ? img : img?.url || img,
+        ),
       );
 
       const initialFormData = {
@@ -276,7 +274,7 @@ export default function SeminarForm() {
         typeof mainImage === "string" ? mainImage : mainImage?.url || null;
 
       const normalizedExistingGalleryImages = galleryImages.map((img) =>
-        typeof img === "string" ? img : img?.url || img
+        typeof img === "string" ? img : img?.url || img,
       );
 
       setSavedDraft({
@@ -291,7 +289,7 @@ export default function SeminarForm() {
           imagePreview: mainImagePreview,
           galleryFiles: [],
           existingGalleryImages: normalizedExistingGalleryImages,
-        })
+        }),
       );
     } catch (error) {
       console.error("Failed to load seminar:", error);
@@ -350,7 +348,7 @@ export default function SeminarForm() {
           const reader = new FileReader();
           reader.onloadend = () => resolve(reader.result);
           reader.readAsDataURL(file);
-        })
+        }),
     );
     Promise.all(previews).then(setGalleryPreviews);
   };
@@ -400,7 +398,9 @@ export default function SeminarForm() {
   const removeSession = (index) => {
     setFormData((prev) => ({
       ...prev,
-      sessions: prev.sessions.filter((_, sessionIndex) => sessionIndex !== index),
+      sessions: prev.sessions.filter(
+        (_, sessionIndex) => sessionIndex !== index,
+      ),
     }));
   };
 
@@ -426,7 +426,7 @@ export default function SeminarForm() {
           session.date &&
           session.startTime &&
           session.endTime &&
-          Number(session.maxAttendees) > 0
+          Number(session.maxAttendees) > 0,
       );
 
       if (validSessions.length === 0) {
@@ -510,7 +510,7 @@ export default function SeminarForm() {
           imagePreview,
           galleryFiles: [],
           existingGalleryImages,
-        })
+        }),
       );
 
       navigate("/admin/seminars");
@@ -545,11 +545,7 @@ export default function SeminarForm() {
           : "Create a new educational event with sessions and ticket details."
       }
       action={
-        <Button
-          type="button"
-          variant="outline"
-          onClick={handleCancel}
-        >
+        <Button type="button" variant="outline" onClick={handleCancel}>
           Back to seminars
         </Button>
       }
@@ -563,7 +559,10 @@ export default function SeminarForm() {
           </div>
         )}
 
-        <AdminSectionCard className="space-y-4 sm:space-y-5" padding="p-4 sm:p-6">
+        <AdminSectionCard
+          className="space-y-4 sm:space-y-5"
+          padding="p-4 sm:p-6"
+        >
           <div className="space-y-1">
             <h2 className="text-lg font-semibold text-slate-900">
               Basic Information
@@ -633,7 +632,9 @@ export default function SeminarForm() {
             <FormField label="Level" required>
               <select
                 value={formData.level}
-                onChange={(event) => updateFormField("level", event.target.value)}
+                onChange={(event) =>
+                  updateFormField("level", event.target.value)
+                }
                 className={inputClassName}
                 required
               >
@@ -646,7 +647,10 @@ export default function SeminarForm() {
           </div>
         </AdminSectionCard>
 
-        <AdminSectionCard className="space-y-4 sm:space-y-5" padding="p-4 sm:p-6">
+        <AdminSectionCard
+          className="space-y-4 sm:space-y-5"
+          padding="p-4 sm:p-6"
+        >
           <h2 className="text-lg font-semibold text-slate-900">Pricing</h2>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -707,7 +711,10 @@ export default function SeminarForm() {
           </div>
         </AdminSectionCard>
 
-        <AdminSectionCard className="space-y-4 sm:space-y-5" padding="p-4 sm:p-6">
+        <AdminSectionCard
+          className="space-y-4 sm:space-y-5"
+          padding="p-4 sm:p-6"
+        >
           <h2 className="text-lg font-semibold text-slate-900">Location</h2>
 
           <FormField label="Location Type" required>
@@ -784,7 +791,10 @@ export default function SeminarForm() {
           )}
         </AdminSectionCard>
 
-        <AdminSectionCard className="space-y-4 sm:space-y-5" padding="p-4 sm:p-6">
+        <AdminSectionCard
+          className="space-y-4 sm:space-y-5"
+          padding="p-4 sm:p-6"
+        >
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-semibold text-slate-900">Sessions</h2>
             <Button type="button" onClick={addSession} variant="outline">
@@ -877,7 +887,10 @@ export default function SeminarForm() {
           )}
         </AdminSectionCard>
 
-        <AdminSectionCard className="space-y-4 sm:space-y-5" padding="p-4 sm:p-6">
+        <AdminSectionCard
+          className="space-y-4 sm:space-y-5"
+          padding="p-4 sm:p-6"
+        >
           <h2 className="text-lg font-semibold text-slate-900">
             Additional Details
           </h2>
@@ -907,7 +920,10 @@ export default function SeminarForm() {
           </FormField>
         </AdminSectionCard>
 
-        <AdminSectionCard className="space-y-4 sm:space-y-5" padding="p-4 sm:p-6">
+        <AdminSectionCard
+          className="space-y-4 sm:space-y-5"
+          padding="p-4 sm:p-6"
+        >
           <h2 className="text-lg font-semibold text-slate-900">Images</h2>
 
           <FormField label="Main Image">
@@ -979,11 +995,7 @@ export default function SeminarForm() {
             >
               Reset
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-            >
+            <Button type="button" variant="outline" onClick={handleCancel}>
               Cancel
             </Button>
             <Button
@@ -994,8 +1006,8 @@ export default function SeminarForm() {
               {submitting
                 ? "Saving..."
                 : isEditing
-                  ? "Update Seminar"
-                  : "Create Seminar"}
+                ? "Update Seminar"
+                : "Create Seminar"}
             </Button>
           </div>
         </div>

@@ -431,7 +431,7 @@ export default function TenantDetails() {
                                       </div>
                                     )}
                                   </div>
-                                )
+                                ),
                               )}
                             </div>
                           ) : (
@@ -490,7 +490,7 @@ export default function TenantDetails() {
                           {/* Custom Schedule (Date Overrides) */}
                           {specialistDetails[specialist._id]?.customSchedule &&
                             Object.keys(
-                              specialistDetails[specialist._id].customSchedule
+                              specialistDetails[specialist._id].customSchedule,
                             ).length > 0 && (
                               <div className="mt-4">
                                 <h5 className="text-xs font-semibold text-gray-700 mb-2">
@@ -499,11 +499,11 @@ export default function TenantDetails() {
                                 <div className="space-y-1 bg-blue-50 p-2 rounded border border-blue-200 max-h-48 overflow-y-auto">
                                   {Object.entries(
                                     specialistDetails[specialist._id]
-                                      .customSchedule
+                                      .customSchedule,
                                   )
                                     .sort(
                                       ([dateA], [dateB]) =>
-                                        new Date(dateA) - new Date(dateB)
+                                        new Date(dateA) - new Date(dateB),
                                     )
                                     .map(([date, hours]) => (
                                       <div
@@ -518,7 +518,7 @@ export default function TenantDetails() {
                                               month: "short",
                                               day: "numeric",
                                               year: "numeric",
-                                            }
+                                            },
                                           )}
                                         </span>
                                         <span className="text-gray-600">
@@ -527,7 +527,7 @@ export default function TenantDetails() {
                                             ? hours
                                                 .map(
                                                   (h, i) =>
-                                                    `${h.start}-${h.end}`
+                                                    `${h.start}-${h.end}`,
                                                 )
                                                 .join(", ")
                                             : "Closed"}
@@ -562,15 +562,15 @@ export default function TenantDetails() {
                                     </p>
                                     <p className="text-sm text-gray-500 mt-1">
                                       {new Date(
-                                        timeOff.start
+                                        timeOff.start,
                                       ).toLocaleDateString()}{" "}
                                       -{" "}
                                       {new Date(
-                                        timeOff.end
+                                        timeOff.end,
                                       ).toLocaleDateString()}
                                     </p>
                                   </div>
-                                )
+                                ),
                               )}
                             </div>
                           ) : (

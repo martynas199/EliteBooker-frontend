@@ -5,9 +5,7 @@ import Button from "../../shared/components/ui/Button";
 import { AlertCircle, Info, Save } from "lucide-react";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
-import AdminPageShell, {
-  AdminSectionCard,
-} from "../components/AdminPageShell";
+import AdminPageShell, { AdminSectionCard } from "../components/AdminPageShell";
 
 const defaultPolicyForm = {
   freeCancelHours: 24,
@@ -19,14 +17,16 @@ const defaultPolicyForm = {
 };
 
 const normalizePolicyForm = (data) => ({
-  freeCancelHours: Number(data?.freeCancelHours ?? defaultPolicyForm.freeCancelHours),
+  freeCancelHours: Number(
+    data?.freeCancelHours ?? defaultPolicyForm.freeCancelHours,
+  ),
   noRefundHours: Number(data?.noRefundHours ?? defaultPolicyForm.noRefundHours),
   rescheduleAllowedHours: Number(
-    data?.rescheduleAllowedHours ?? defaultPolicyForm.rescheduleAllowedHours
+    data?.rescheduleAllowedHours ?? defaultPolicyForm.rescheduleAllowedHours,
   ),
   graceMinutes: Number(data?.graceMinutes ?? defaultPolicyForm.graceMinutes),
   partialRefundPercent: Number(
-    data?.partialRefundPercent ?? defaultPolicyForm.partialRefundPercent
+    data?.partialRefundPercent ?? defaultPolicyForm.partialRefundPercent,
   ),
   appliesTo: data?.appliesTo || defaultPolicyForm.appliesTo,
 });
@@ -98,7 +98,7 @@ export default function BookingPoliciesPage() {
     },
     onError: (error) => {
       toast.error(
-        error.response?.data?.error || "Failed to save policy settings"
+        error.response?.data?.error || "Failed to save policy settings",
       );
     },
   });
@@ -157,7 +157,6 @@ export default function BookingPoliciesPage() {
       maxWidth="lg"
       contentClassName={`space-y-6 ${hasUnsavedChanges ? "pb-24 sm:pb-0" : ""}`}
     >
-
       {hasUnsavedChanges && (
         <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
           You have unsaved changes.
@@ -166,81 +165,81 @@ export default function BookingPoliciesPage() {
 
       {/* Visual Summary Card */}
       <AdminSectionCard padding="p-4 sm:p-6">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-6 h-6 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center text-white">
-              <Info className="w-3 h-3 sm:w-6 sm:h-6" />
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-6 h-6 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center text-white">
+            <Info className="w-3 h-3 sm:w-6 sm:h-6" />
+          </div>
+          <div>
+            <h2 className="text-base sm:text-xl font-bold text-gray-900">
+              Current Policy Overview
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-600">
+              How these settings affect your customers
+            </p>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-3 sm:gap-4">
+          <div className="p-3 sm:p-4 bg-green-50 border border-green-200 rounded-xl">
+            <div className="flex items-center gap-2 mb-1 sm:mb-2">
+              <span className="text-lg sm:text-2xl">✅</span>
+              <h3 className="font-semibold text-xs sm:text-base text-green-900">
+                Free Cancellation
+              </h3>
             </div>
-            <div>
-              <h2 className="text-base sm:text-xl font-bold text-gray-900">
-                Current Policy Overview
-              </h2>
-              <p className="text-xs sm:text-sm text-gray-600">
-                How these settings affect your customers
-              </p>
-            </div>
+            <p className="text-xs sm:text-sm text-green-800 mb-1 sm:mb-2">
+              {formData.freeCancelHours}+ hours before appointment
+            </p>
+            <p className="text-lg sm:text-2xl font-bold text-green-900">
+              100% Refund
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-3 sm:gap-4">
-            <div className="p-3 sm:p-4 bg-green-50 border border-green-200 rounded-xl">
-              <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                <span className="text-lg sm:text-2xl">✅</span>
-                <h3 className="font-semibold text-xs sm:text-base text-green-900">
-                  Free Cancellation
-                </h3>
-              </div>
-              <p className="text-xs sm:text-sm text-green-800 mb-1 sm:mb-2">
-                {formData.freeCancelHours}+ hours before appointment
-              </p>
-              <p className="text-lg sm:text-2xl font-bold text-green-900">
-                100% Refund
-              </p>
+          <div className="p-3 sm:p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+            <div className="flex items-center gap-2 mb-1 sm:mb-2">
+              <span className="text-lg sm:text-2xl">⚠️</span>
+              <h3 className="font-semibold text-xs sm:text-base text-yellow-900">
+                Partial Refund
+              </h3>
             </div>
-
-            <div className="p-3 sm:p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
-              <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                <span className="text-lg sm:text-2xl">⚠️</span>
-                <h3 className="font-semibold text-xs sm:text-base text-yellow-900">
-                  Partial Refund
-                </h3>
-              </div>
-              <p className="text-xs sm:text-sm text-yellow-800 mb-1 sm:mb-2">
-                {formData.noRefundHours}-{formData.freeCancelHours} hours before
-              </p>
-              <p className="text-lg sm:text-2xl font-bold text-yellow-900">
-                {formData.partialRefundPercent}% Refund
-              </p>
-            </div>
-
-            <div className="p-3 sm:p-4 bg-red-50 border border-red-200 rounded-xl">
-              <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                <span className="text-lg sm:text-2xl">❌</span>
-                <h3 className="font-semibold text-xs sm:text-base text-red-900">
-                  No Refund
-                </h3>
-              </div>
-              <p className="text-xs sm:text-sm text-red-800 mb-1 sm:mb-2">
-                Within {formData.noRefundHours} hours
-              </p>
-              <p className="text-lg sm:text-2xl font-bold text-red-900">
-                0% Refund
-              </p>
-            </div>
-
-            <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-xl">
-              <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                <span className="text-lg sm:text-2xl">⚡</span>
-                <h3 className="font-semibold text-xs sm:text-base text-blue-900">
-                  Grace Period
-                </h3>
-              </div>
-              <p className="text-xs sm:text-sm text-blue-800 mb-1 sm:mb-2">
-                Within {formData.graceMinutes} min of booking
-              </p>
-              <p className="text-lg sm:text-2xl font-bold text-blue-900">
-                100% Refund
-              </p>
-            </div>
+            <p className="text-xs sm:text-sm text-yellow-800 mb-1 sm:mb-2">
+              {formData.noRefundHours}-{formData.freeCancelHours} hours before
+            </p>
+            <p className="text-lg sm:text-2xl font-bold text-yellow-900">
+              {formData.partialRefundPercent}% Refund
+            </p>
           </div>
+
+          <div className="p-3 sm:p-4 bg-red-50 border border-red-200 rounded-xl">
+            <div className="flex items-center gap-2 mb-1 sm:mb-2">
+              <span className="text-lg sm:text-2xl">❌</span>
+              <h3 className="font-semibold text-xs sm:text-base text-red-900">
+                No Refund
+              </h3>
+            </div>
+            <p className="text-xs sm:text-sm text-red-800 mb-1 sm:mb-2">
+              Within {formData.noRefundHours} hours
+            </p>
+            <p className="text-lg sm:text-2xl font-bold text-red-900">
+              0% Refund
+            </p>
+          </div>
+
+          <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-xl">
+            <div className="flex items-center gap-2 mb-1 sm:mb-2">
+              <span className="text-lg sm:text-2xl">⚡</span>
+              <h3 className="font-semibold text-xs sm:text-base text-blue-900">
+                Grace Period
+              </h3>
+            </div>
+            <p className="text-xs sm:text-sm text-blue-800 mb-1 sm:mb-2">
+              Within {formData.graceMinutes} min of booking
+            </p>
+            <p className="text-lg sm:text-2xl font-bold text-blue-900">
+              100% Refund
+            </p>
+          </div>
+        </div>
       </AdminSectionCard>
 
       <AdminSectionCard padding="p-4 sm:p-6">
@@ -258,7 +257,9 @@ export default function BookingPoliciesPage() {
               key={hours}
               className="rounded-xl border border-gray-200 bg-gray-50 p-3"
             >
-              <p className="text-xs text-gray-600">Cancellation {hours}h before</p>
+              <p className="text-xs text-gray-600">
+                Cancellation {hours}h before
+              </p>
               <p className="mt-1 text-sm font-semibold text-gray-900">
                 Refund: {getRefundAmount(hours)}
               </p>
@@ -279,7 +280,8 @@ export default function BookingPoliciesPage() {
 
             {hasWindowConflict && (
               <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                The “No Refund Window” should be less than the “Free Cancellation Period” to avoid overlapping ranges.
+                The “No Refund Window” should be less than the “Free
+                Cancellation Period” to avoid overlapping ranges.
               </div>
             )}
 
@@ -397,7 +399,9 @@ export default function BookingPoliciesPage() {
               </h3>
 
               <div className="space-y-2 sm:space-y-3">
-                <label className={optionCardClass(formData.appliesTo === "auto")}>
+                <label
+                  className={optionCardClass(formData.appliesTo === "auto")}
+                >
                   <input
                     type="radio"
                     name="appliesTo"
@@ -417,7 +421,11 @@ export default function BookingPoliciesPage() {
                   </div>
                 </label>
 
-                <label className={optionCardClass(formData.appliesTo === "deposit_only")}>
+                <label
+                  className={optionCardClass(
+                    formData.appliesTo === "deposit_only",
+                  )}
+                >
                   <input
                     type="radio"
                     name="appliesTo"
@@ -437,7 +445,9 @@ export default function BookingPoliciesPage() {
                   </div>
                 </label>
 
-                <label className={optionCardClass(formData.appliesTo === "full")}>
+                <label
+                  className={optionCardClass(formData.appliesTo === "full")}
+                >
                   <input
                     type="radio"
                     name="appliesTo"

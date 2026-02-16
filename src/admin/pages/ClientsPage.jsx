@@ -235,277 +235,270 @@ export default function ClientsPage() {
       maxWidth="2xl"
       contentClassName="space-y-3"
     >
-
-        {/* Segments Overview */}
-        {segments && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 mb-3">
-            <div className="bg-white rounded-xl border border-gray-200 p-3">
-              <div className="flex items-center justify-between mb-1.5">
-                <div>
-                  <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
-                    VIP Clients
-                  </p>
-                  <p className="text-xs text-gray-600">
-                    £500+ spent, 10+ visits
-                  </p>
-                </div>
-                <Star className="h-5 w-5 text-purple-600" />
+      {/* Segments Overview */}
+      {segments && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 mb-3">
+          <div className="bg-white rounded-xl border border-gray-200 p-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <div>
+                <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
+                  VIP Clients
+                </p>
+                <p className="text-xs text-gray-600">£500+ spent, 10+ visits</p>
               </div>
-              <p className="text-xl font-bold text-purple-600">
-                {segments.vip?.count || 0}
-              </p>
+              <Star className="h-5 w-5 text-purple-600" />
             </div>
-
-            <div className="bg-white rounded-xl border border-gray-200 p-3">
-              <div className="flex items-center justify-between mb-1.5">
-                <div>
-                  <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
-                    At Risk
-                  </p>
-                  <p className="text-xs text-gray-600">
-                    90+ days inactive, 3+ visits
-                  </p>
-                </div>
-                <AlertTriangle className="h-5 w-5 text-amber-600" />
-              </div>
-              <p className="text-xl font-bold text-amber-600">
-                {segments.atRisk?.count || 0}
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl border border-gray-200 p-3">
-              <div className="flex items-center justify-between mb-1.5">
-                <div>
-                  <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
-                    New Clients
-                  </p>
-                  <p className="text-xs text-gray-600">1 visit or less</p>
-                </div>
-                <Sparkles className="h-5 w-5 text-green-600" />
-              </div>
-              <p className="text-xl font-bold text-green-600">
-                {segments.new?.count || 0}
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl border border-gray-200 p-3">
-              <div className="flex items-center justify-between mb-1.5">
-                <div>
-                  <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
-                    Active
-                  </p>
-                  <p className="text-xs text-gray-600">
-                    Visited in last 90 days
-                  </p>
-                </div>
-                <CheckCircle className="h-5 w-5 text-blue-600" />
-              </div>
-              <p className="text-xl font-bold text-blue-600">
-                {segments.active?.count || 0}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Filters */}
-        <div className="bg-white rounded-xl border border-gray-200 p-2.5 mb-3">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by name or email..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="w-full pl-11 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors shadow-sm"
-                style={{ fontSize: "16px" }}
-              />
-            </div>
-
-            {/* Status Filter */}
-            <div>
-              <SelectButton
-                value={statusFilter}
-                placeholder="Filter by status"
-                options={[
-                  { label: "All Statuses", value: "all" },
-                  { label: "Active", value: "active" },
-                  { label: "Inactive", value: "inactive" },
-                  { label: "VIP", value: "vip" },
-                  { label: "Blocked", value: "blocked" },
-                ]}
-                onClick={() => setShowStatusDrawer(true)}
-              />
-              <SelectDrawer
-                open={showStatusDrawer}
-                onClose={() => setShowStatusDrawer(false)}
-                title="Filter by Status"
-                options={[
-                  { label: "All Statuses", value: "all" },
-                  { label: "Active", value: "active" },
-                  { label: "Inactive", value: "inactive" },
-                  { label: "VIP", value: "vip" },
-                  { label: "Blocked", value: "blocked" },
-                ]}
-                value={statusFilter}
-                onChange={(value) => {
-                  setStatusFilter(value);
-                  setPage(0);
-                  setShowStatusDrawer(false);
-                }}
-              />
-            </div>
-
-            {/* Sort */}
-            <div>
-              <SelectButton
-                value={sortBy}
-                placeholder="Sort clients"
-                options={[
-                  { label: "Sort by: Spending", value: "totalSpend" },
-                  { label: "Sort by: Visits", value: "totalVisits" },
-                  { label: "Sort by: Last Visit", value: "lastVisit" },
-                  { label: "Sort by: First Visit", value: "firstVisit" },
-                ]}
-                onClick={() => setShowSortDrawer(true)}
-              />
-              <SelectDrawer
-                open={showSortDrawer}
-                onClose={() => setShowSortDrawer(false)}
-                title="Sort Clients"
-                options={[
-                  { label: "Sort by: Spending", value: "totalSpend" },
-                  { label: "Sort by: Visits", value: "totalVisits" },
-                  { label: "Sort by: Last Visit", value: "lastVisit" },
-                  { label: "Sort by: First Visit", value: "firstVisit" },
-                ]}
-                value={sortBy}
-                onChange={(value) => {
-                  setSortBy(value);
-                  setPage(0);
-                  setShowSortDrawer(false);
-                }}
-              />
-            </div>
+            <p className="text-xl font-bold text-purple-600">
+              {segments.vip?.count || 0}
+            </p>
           </div>
 
-          <div className="mt-2 flex items-center justify-between text-xs text-gray-600">
-            <span>
-              Showing {clients.length} of {total} clients
-            </span>
-            <button
-              onClick={() =>
-                setSortOrder(sortOrder === "desc" ? "asc" : "desc")
-              }
-              className="min-h-11 px-3 py-2 text-black hover:underline font-medium rounded-lg"
-            >
-              {sortOrder === "desc" ? "Highest first" : "Lowest first"}
-            </button>
+          <div className="bg-white rounded-xl border border-gray-200 p-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <div>
+                <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
+                  At Risk
+                </p>
+                <p className="text-xs text-gray-600">
+                  90+ days inactive, 3+ visits
+                </p>
+              </div>
+              <AlertTriangle className="h-5 w-5 text-amber-600" />
+            </div>
+            <p className="text-xl font-bold text-amber-600">
+              {segments.atRisk?.count || 0}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-gray-200 p-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <div>
+                <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
+                  New Clients
+                </p>
+                <p className="text-xs text-gray-600">1 visit or less</p>
+              </div>
+              <Sparkles className="h-5 w-5 text-green-600" />
+            </div>
+            <p className="text-xl font-bold text-green-600">
+              {segments.new?.count || 0}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-gray-200 p-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <div>
+                <p className="text-xs text-gray-700 mb-0.5 font-semibold uppercase tracking-wide">
+                  Active
+                </p>
+                <p className="text-xs text-gray-600">Visited in last 90 days</p>
+              </div>
+              <CheckCircle className="h-5 w-5 text-blue-600" />
+            </div>
+            <p className="text-xl font-bold text-blue-600">
+              {segments.active?.count || 0}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Filters */}
+      <div className="bg-white rounded-xl border border-gray-200 p-2.5 mb-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search by name or email..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="w-full pl-11 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors shadow-sm"
+              style={{ fontSize: "16px" }}
+            />
+          </div>
+
+          {/* Status Filter */}
+          <div>
+            <SelectButton
+              value={statusFilter}
+              placeholder="Filter by status"
+              options={[
+                { label: "All Statuses", value: "all" },
+                { label: "Active", value: "active" },
+                { label: "Inactive", value: "inactive" },
+                { label: "VIP", value: "vip" },
+                { label: "Blocked", value: "blocked" },
+              ]}
+              onClick={() => setShowStatusDrawer(true)}
+            />
+            <SelectDrawer
+              open={showStatusDrawer}
+              onClose={() => setShowStatusDrawer(false)}
+              title="Filter by Status"
+              options={[
+                { label: "All Statuses", value: "all" },
+                { label: "Active", value: "active" },
+                { label: "Inactive", value: "inactive" },
+                { label: "VIP", value: "vip" },
+                { label: "Blocked", value: "blocked" },
+              ]}
+              value={statusFilter}
+              onChange={(value) => {
+                setStatusFilter(value);
+                setPage(0);
+                setShowStatusDrawer(false);
+              }}
+            />
+          </div>
+
+          {/* Sort */}
+          <div>
+            <SelectButton
+              value={sortBy}
+              placeholder="Sort clients"
+              options={[
+                { label: "Sort by: Spending", value: "totalSpend" },
+                { label: "Sort by: Visits", value: "totalVisits" },
+                { label: "Sort by: Last Visit", value: "lastVisit" },
+                { label: "Sort by: First Visit", value: "firstVisit" },
+              ]}
+              onClick={() => setShowSortDrawer(true)}
+            />
+            <SelectDrawer
+              open={showSortDrawer}
+              onClose={() => setShowSortDrawer(false)}
+              title="Sort Clients"
+              options={[
+                { label: "Sort by: Spending", value: "totalSpend" },
+                { label: "Sort by: Visits", value: "totalVisits" },
+                { label: "Sort by: Last Visit", value: "lastVisit" },
+                { label: "Sort by: First Visit", value: "firstVisit" },
+              ]}
+              value={sortBy}
+              onChange={(value) => {
+                setSortBy(value);
+                setPage(0);
+                setShowSortDrawer(false);
+              }}
+            />
           </div>
         </div>
 
-        {/* Client List */}
-        {loading && page === 0 ? (
-          <ListLoadingState
-            message="Loading clients..."
-            count={6}
-            itemHeight="h-24"
-          />
-        ) : clients.length === 0 ? (
-          <EmptyStateCard
-            title="No clients found"
-            description={
-              searchTerm
-                ? "Try adjusting your search or filters."
-                : "Get started by welcoming your first booked client."
-            }
-            icon={<Users className="h-7 w-7 text-gray-500" />}
-          />
-        ) : (
-          <div className="space-y-2.5">
-            {clients.map((client) => (
-              <div
-                key={client.id}
-                onClick={() => handleClientClick(client)}
-                className="bg-white rounded-xl border border-gray-200 p-3 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer relative"
-              >
-                {/* Status badge - positioned in top right corner */}
-                <div className="absolute top-2.5 right-2.5">
-                  {getStatusBadge(client.status)}
-                </div>
+        <div className="mt-2 flex items-center justify-between text-xs text-gray-600">
+          <span>
+            Showing {clients.length} of {total} clients
+          </span>
+          <button
+            onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
+            className="min-h-11 px-3 py-2 text-black hover:underline font-medium rounded-lg"
+          >
+            {sortOrder === "desc" ? "Highest first" : "Lowest first"}
+          </button>
+        </div>
+      </div>
 
-                <div className="pr-16">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="h-8 w-8 rounded-full bg-gray-900 text-white flex items-center justify-center font-semibold flex-shrink-0 text-xs">
-                      {client.name?.charAt(0).toUpperCase() || "?"}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-semibold text-gray-900">
-                        {client.name || "Unknown"}
-                      </h3>
-                      <p className="text-xs text-gray-600 truncate">
-                        {client.email || "No email"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 mt-2 text-xs">
-                    <div className="flex items-center gap-1.5">
-                      <TrendingUp className="h-3.5 w-3.5 text-gray-400" />
-                      <span className="text-gray-900 font-semibold">
-                        {formatCurrency(client.totalSpend || 0)}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-gray-900 font-semibold">
-                        {client.totalVisits || 0}
-                      </span>
-                      <span className="text-gray-600">visits</span>
-                    </div>
-
-                    <div className="col-span-2 flex items-center gap-1.5 text-xs">
-                      <span className="text-gray-600">
-                        {client.lastVisit &&
-                        new Date(client.lastVisit) > new Date()
-                          ? "Next:"
-                          : "Last:"}
-                      </span>
-                      <span className="text-gray-900 font-medium">
-                        {formatDate(client.lastVisit)}
-                      </span>
-                    </div>
-                  </div>
-
-                  {client.tags && client.tags.length > 0 && (
-                    <div className="flex gap-1.5 mt-2">
-                      {client.tags.map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="px-1.5 py-0.5 text-xs bg-gray-100 text-gray-700 rounded font-medium"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
+      {/* Client List */}
+      {loading && page === 0 ? (
+        <ListLoadingState
+          message="Loading clients..."
+          count={6}
+          itemHeight="h-24"
+        />
+      ) : clients.length === 0 ? (
+        <EmptyStateCard
+          title="No clients found"
+          description={
+            searchTerm
+              ? "Try adjusting your search or filters."
+              : "Get started by welcoming your first booked client."
+          }
+          icon={<Users className="h-7 w-7 text-gray-500" />}
+        />
+      ) : (
+        <div className="space-y-2.5">
+          {clients.map((client) => (
+            <div
+              key={client.id}
+              onClick={() => handleClientClick(client)}
+              className="bg-white rounded-xl border border-gray-200 p-3 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer relative"
+            >
+              {/* Status badge - positioned in top right corner */}
+              <div className="absolute top-2.5 right-2.5">
+                {getStatusBadge(client.status)}
               </div>
-            ))}
 
-            {/* Load More */}
-            {hasMore && (
-              <button
-                onClick={() => setPage(page + 1)}
-                disabled={loading}
-                className="w-full py-3 bg-white border border-gray-300 rounded-lg text-gray-900 font-medium hover:bg-gray-50 disabled:opacity-50"
-              >
-                {loading ? "Loading..." : "Load More"}
-              </button>
-            )}
-          </div>
-        )}
+              <div className="pr-16">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-8 w-8 rounded-full bg-gray-900 text-white flex items-center justify-center font-semibold flex-shrink-0 text-xs">
+                    {client.name?.charAt(0).toUpperCase() || "?"}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-semibold text-gray-900">
+                      {client.name || "Unknown"}
+                    </h3>
+                    <p className="text-xs text-gray-600 truncate">
+                      {client.email || "No email"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 mt-2 text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <TrendingUp className="h-3.5 w-3.5 text-gray-400" />
+                    <span className="text-gray-900 font-semibold">
+                      {formatCurrency(client.totalSpend || 0)}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-gray-900 font-semibold">
+                      {client.totalVisits || 0}
+                    </span>
+                    <span className="text-gray-600">visits</span>
+                  </div>
+
+                  <div className="col-span-2 flex items-center gap-1.5 text-xs">
+                    <span className="text-gray-600">
+                      {client.lastVisit &&
+                      new Date(client.lastVisit) > new Date()
+                        ? "Next:"
+                        : "Last:"}
+                    </span>
+                    <span className="text-gray-900 font-medium">
+                      {formatDate(client.lastVisit)}
+                    </span>
+                  </div>
+                </div>
+
+                {client.tags && client.tags.length > 0 && (
+                  <div className="flex gap-1.5 mt-2">
+                    {client.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className="px-1.5 py-0.5 text-xs bg-gray-100 text-gray-700 rounded font-medium"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+
+          {/* Load More */}
+          {hasMore && (
+            <button
+              onClick={() => setPage(page + 1)}
+              disabled={loading}
+              className="w-full py-3 bg-white border border-gray-300 rounded-lg text-gray-900 font-medium hover:bg-gray-50 disabled:opacity-50"
+            >
+              {loading ? "Loading..." : "Load More"}
+            </button>
+          )}
+        </div>
+      )}
       {/* Client Details Modal */}
       <Modal
         open={showModal}

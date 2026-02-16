@@ -189,7 +189,7 @@ export default function Dashboard() {
 
     try {
       const selectedService = services.find(
-        (s) => s._id === createFormData.serviceId
+        (s) => s._id === createFormData.serviceId,
       );
       const variantName = selectedService?.variants?.[0]?.name || "Standard";
 
@@ -233,7 +233,7 @@ export default function Dashboard() {
           e.response?.data?.error ||
             e.message ||
             "Failed to create appointment",
-          { duration: 5000 }
+          { duration: 5000 },
         );
       }, 100);
     } finally {
@@ -278,7 +278,7 @@ export default function Dashboard() {
     if (!isSuperAdmin && admin?.specialistId) {
       // Regular admin with linked specialist - only show their specialist's appointments
       filtered = filtered.filter(
-        (apt) => apt.specialistId?._id === admin.specialistId
+        (apt) => apt.specialistId?._id === admin.specialistId,
       );
     } else if (!isSuperAdmin && !admin?.specialistId) {
       // Regular admin without linked specialist - show no appointments
@@ -288,7 +288,7 @@ export default function Dashboard() {
     // Apply specialist filter (for UI filter dropdown)
     if (selectedSpecialist && selectedSpecialist !== "all") {
       filtered = filtered.filter(
-        (apt) => apt.specialistId?._id === selectedSpecialist
+        (apt) => apt.specialistId?._id === selectedSpecialist,
       );
     }
 
@@ -318,7 +318,7 @@ export default function Dashboard() {
         const aboutData = aboutPayload?.data || aboutPayload;
         const aboutHasContent = Boolean(
           aboutData &&
-            (aboutData.description || aboutData.quote || aboutData.image)
+            (aboutData.description || aboutData.quote || aboutData.image),
         );
 
         if (!cancelled) {
@@ -361,7 +361,7 @@ export default function Dashboard() {
     // Filter by specialist if selected
     if (selectedSpecialist !== "all") {
       filtered = filtered.filter(
-        (apt) => apt.specialistId?._id === selectedSpecialist
+        (apt) => apt.specialistId?._id === selectedSpecialist,
       );
     }
 
@@ -413,7 +413,7 @@ export default function Dashboard() {
       todayAppointments: 0,
       uniqueCustomers: 0,
     }),
-    []
+    [],
   );
 
   const emptyWaitlistAnalytics = useMemo(
@@ -430,7 +430,7 @@ export default function Dashboard() {
       averageConversionHours: null,
       timeline: [],
     }),
-    []
+    [],
   );
 
   const stats = metrics ?? emptyStats;
@@ -454,20 +454,20 @@ export default function Dashboard() {
   const showStripeAlert = Boolean(
     stripeSpecialist &&
       (stripeSpecialist.stripeStatus !== "connected" ||
-        !stripeSpecialist.stripeAccountId)
+        !stripeSpecialist.stripeAccountId),
   );
 
   const onboardingTasks = useMemo(() => {
     const hasService = (services || []).length > 0;
     const hasStripe = Boolean(
       (specialists || []).some(
-        (s) => s.stripeStatus === "connected" && s.stripeAccountId
+        (s) => s.stripeStatus === "connected" && s.stripeAccountId,
       ) ||
         salonData?.stripeStatus === "connected" ||
         salonData?.stripeConnectStatus === "connected" ||
         (stripeSpecialist &&
           stripeSpecialist.stripeStatus === "connected" &&
-          stripeSpecialist.stripeAccountId)
+          stripeSpecialist.stripeAccountId),
     );
     const hasHero = Boolean(contentStatus.hero);
     const hasAbout = Boolean(contentStatus.about);
@@ -488,7 +488,7 @@ export default function Dashboard() {
         settingsData?.contactPhone ||
         settingsData?.contactPage?.email ||
         settingsData?.contactPage?.phone ||
-        settingsData?.contactPage?.address
+        settingsData?.contactPage?.address,
     );
 
     console.log("[Onboarding] status", {
@@ -615,19 +615,19 @@ export default function Dashboard() {
         } else if (!isCancellationError(metricsResult.reason)) {
           console.error(
             "Failed to fetch dashboard metrics:",
-            metricsResult.reason
+            metricsResult.reason,
           );
           toast.error("Failed to load dashboard metrics");
         }
 
         if (waitlistResult.status === "fulfilled") {
           setWaitlistAnalytics(
-            waitlistResult.value.data || emptyWaitlistAnalytics
+            waitlistResult.value.data || emptyWaitlistAnalytics,
           );
         } else if (!isCancellationError(waitlistResult.reason)) {
           console.error(
             "Failed to fetch waitlist analytics:",
-            waitlistResult.reason
+            waitlistResult.reason,
           );
           setWaitlistAnalytics(emptyWaitlistAnalytics);
         }
@@ -753,8 +753,8 @@ export default function Dashboard() {
         // Update the appointments list
         setAllAppointments((old) =>
           old.map((x) =>
-            x._id === editingAppointment._id ? res.appointment : x
-          )
+            x._id === editingAppointment._id ? res.appointment : x,
+          ),
         );
       }
 
@@ -766,7 +766,7 @@ export default function Dashboard() {
       await refetchAppointments();
     } catch (e) {
       toast.error(
-        e.response?.data?.error || e.message || "Failed to update appointment"
+        e.response?.data?.error || e.message || "Failed to update appointment",
       );
     } finally {
       setSubmitting(false);
@@ -1161,7 +1161,7 @@ export default function Dashboard() {
                       className="flex-1 bg-white/20 hover:bg-white/40 rounded-t transition-all duration-300 group-hover:bg-white/30"
                       style={{ height: `${height}%` }}
                     ></div>
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -2466,7 +2466,7 @@ export default function Dashboard() {
                         Total:{" "}
                         {selectedEvent.resource.services.reduce(
                           (sum, s) => sum + (s.duration || 0),
-                          0
+                          0,
                         )}{" "}
                         min • £
                         {selectedEvent.resource.services
@@ -2562,7 +2562,7 @@ export default function Dashboard() {
                   Duration:{" "}
                   {dayjs(selectedEvent.end).diff(
                     dayjs(selectedEvent.start),
-                    "minutes"
+                    "minutes",
                   )}{" "}
                   min
                 </p>
@@ -2637,7 +2637,7 @@ export default function Dashboard() {
                           <p>
                             Balance Due:{" "}
                             {formatCurrency(
-                              selectedEvent.resource.price - depositAmount
+                              selectedEvent.resource.price - depositAmount,
                             )}
                           </p>
                         </div>
@@ -3153,7 +3153,7 @@ export default function Dashboard() {
                     </svg>
                     <span className="font-semibold">
                       {dayjs(selectedAppointment.start).format(
-                        "MMM D, YYYY • h:mm A"
+                        "MMM D, YYYY • h:mm A",
                       )}
                     </span>
                   </div>
@@ -3161,7 +3161,7 @@ export default function Dashboard() {
                   <span className="font-medium">
                     {dayjs(selectedAppointment.end).diff(
                       dayjs(selectedAppointment.start),
-                      "minute"
+                      "minute",
                     )}{" "}
                     min
                   </span>
@@ -3362,7 +3362,7 @@ export default function Dashboard() {
                                   </span>
                                   <span className="font-bold text-amber-600">
                                     {formatCurrency(
-                                      selectedAppointment.price - depositAmount
+                                      selectedAppointment.price - depositAmount,
                                     )}
                                   </span>
                                 </div>
@@ -3682,7 +3682,7 @@ export default function Dashboard() {
                           </p>
                           <p className="text-base font-bold text-gray-900">
                             {new Date(
-                              createFormData.startDateTime
+                              createFormData.startDateTime,
                             ).toLocaleString("en-GB", {
                               weekday: "short",
                               year: "numeric",
@@ -3788,7 +3788,7 @@ export default function Dashboard() {
                 variant="brand"
                 onClick={() => {
                   toast.success(
-                    "Appointment creation feature coming soon! Please use the calendar to create appointments for now."
+                    "Appointment creation feature coming soon! Please use the calendar to create appointments for now.",
                   );
                   setShowCreateAppointmentModal(false);
                 }}
@@ -3905,12 +3905,12 @@ export default function Dashboard() {
                   stepMin={15}
                   beauticianWorkingHours={
                     specialists.find(
-                      (s) => s._id === createFormData.specialistId
+                      (s) => s._id === createFormData.specialistId,
                     )?.workingHours
                   }
                   customSchedule={
                     specialists.find(
-                      (s) => s._id === createFormData.specialistId
+                      (s) => s._id === createFormData.specialistId,
                     )?.customSchedule
                   }
                   onSelect={handleCreateSlotSelect}
@@ -3918,7 +3918,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>,
-          document.body
+          document.body,
         )}
     </AdminPageShell>
   );
@@ -4057,7 +4057,7 @@ function EditModal({
                   Total:{" "}
                   {appointment.services.reduce(
                     (sum, s) => sum + (s.duration || 0),
-                    0
+                    0,
                   )}{" "}
                   min • £
                   {appointment.services

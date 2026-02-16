@@ -41,7 +41,7 @@ export default function StripeConnectSettings({ specialistId, email }) {
     try {
       const { url } = await StripeConnectAPI.createOnboardingLink(
         specialistId,
-        email
+        email,
       );
       // Redirect to Stripe onboarding
       window.location.href = url;
@@ -387,7 +387,7 @@ export default function StripeConnectSettings({ specialistId, email }) {
                         <span className="text-gray-600">Last Payout:</span>
                         <span>
                           {new Date(
-                            earnings.stripe.lastPayoutDate
+                            earnings.stripe.lastPayoutDate,
                           ).toLocaleDateString()}
                         </span>
                       </div>

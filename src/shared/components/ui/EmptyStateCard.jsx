@@ -63,7 +63,9 @@ export default function EmptyStateCard({
               type="button"
               variant={primaryAction.variant || "brand"}
               onClick={primaryAction.onClick}
-              className={primaryAction.className || "w-full sm:w-auto px-5 text-sm"}
+              className={
+                primaryAction.className || "w-full sm:w-auto px-5 text-sm"
+              }
             >
               {primaryAction.icon}
               {primaryAction.label}
