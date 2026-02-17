@@ -37,7 +37,7 @@ export default function TimeSlots() {
     if (!bookingServices || bookingServices.length === 0) return null;
     return bookingServices.reduce(
       (sum, svc) => sum + (svc.durationMin || 0),
-      0
+      0,
     );
   }, [bookingServices]);
 
@@ -57,7 +57,7 @@ export default function TimeSlots() {
   const handleBack = () => {
     const canNavigate = checkNavigation(
       window.location.pathname.split("/").slice(0, -1).join("/"),
-      () => navigate(-1)
+      () => navigate(-1),
     );
     if (canNavigate) navigate(-1);
   };
@@ -90,7 +90,7 @@ export default function TimeSlots() {
                   durationMin: variant.durationMin,
                   bufferBeforeMin: variant.bufferBeforeMin,
                   bufferAfterMin: variant.bufferAfterMin,
-                })
+                }),
               );
             }
           })
@@ -104,7 +104,7 @@ export default function TimeSlots() {
                 specialistId: res.data._id,
                 any: false,
                 inSalonPayment: res.data.inSalonPayment || false,
-              })
+              }),
             );
           })
           .catch((err) => console.error("Failed to restore specialist:", err));
@@ -176,7 +176,7 @@ export default function TimeSlots() {
             specialistId: specialistData._id,
             any: false,
             inSalonPayment: specialistData.inSalonPayment || false,
-          })
+          }),
         );
 
         // Convert legacy working hours to new format if needed
@@ -197,7 +197,7 @@ export default function TimeSlots() {
 
           const convertedHours = [];
           for (const [dayKey, schedule] of Object.entries(
-            specialistData.legacyWorkingHours
+            specialistData.legacyWorkingHours,
           )) {
             if (schedule && schedule.start && schedule.end) {
               convertedHours.push({
@@ -250,7 +250,7 @@ export default function TimeSlots() {
       setDateTime({
         date: slotDate.toISOString().split("T")[0],
         time: slot.startISO,
-      })
+      }),
     );
     // Navigate to checkout with URL params preserved
     const currentParams = new URLSearchParams(searchParams);
@@ -407,7 +407,7 @@ export default function TimeSlots() {
               salonTz="Europe/London"
               stepMin={15}
               beauticianWorkingHours={(specialist.workingHours || []).filter(
-                (wh) => wh && wh.dayOfWeek != null
+                (wh) => wh && wh.dayOfWeek != null,
               )}
               customSchedule={specialist.customSchedule || {}}
               waitlistClient={client}

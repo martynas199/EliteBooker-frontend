@@ -16,7 +16,9 @@ export default function LanguagePage() {
               <Globe className="w-5 h-5 text-gray-700" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Current language: English</h2>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Current language: English
+              </h2>
               <p className="text-gray-600 mt-1">
                 Multi-language selection will be available here soon.
               </p>

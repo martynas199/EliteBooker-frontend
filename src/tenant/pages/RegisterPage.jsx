@@ -68,7 +68,7 @@ const RegisterPage = () => {
       formData.name,
       formData.email,
       formData.phone,
-      formData.password
+      formData.password,
     );
 
     if (result.success) {
@@ -334,11 +334,7 @@ const RegisterPage = () => {
                   </div>
                 </div>
 
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full"
-                >
+                <Button type="submit" disabled={loading} className="w-full">
                   {loading ? "Creating account..." : "Create account"}
                 </Button>
 

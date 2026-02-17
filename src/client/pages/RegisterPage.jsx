@@ -25,7 +25,10 @@ export default function ClientRegisterPage() {
     if (!path || typeof path !== "string") return false;
     if (!path.startsWith("/")) return false;
     if (path.startsWith("//")) return false;
-    if (path.startsWith("/client/login") || path.startsWith("/client/register")) {
+    if (
+      path.startsWith("/client/login") ||
+      path.startsWith("/client/register")
+    ) {
       return false;
     }
     return true;
@@ -33,10 +36,10 @@ export default function ClientRegisterPage() {
   const from = isSafeRedirect(location.state?.from)
     ? location.state.from
     : isSafeRedirect(redirectParam)
-      ? redirectParam
-      : isSafeRedirect(storedRedirect)
-        ? storedRedirect
-      : "/client/profile";
+    ? redirectParam
+    : isSafeRedirect(storedRedirect)
+    ? storedRedirect
+    : "/client/profile";
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -74,7 +77,7 @@ export default function ClientRegisterPage() {
         formData.email,
         formData.password,
         formData.name,
-        formData.phone
+        formData.phone,
       );
       sessionStorage.removeItem("clientAuthRedirectPath");
       navigate(from, { replace: true });
@@ -195,156 +198,156 @@ export default function ClientRegisterPage() {
               </div>
 
               <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
-              {error && (
-                <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
-                  {error}
-                </div>
-              )}
+                {error && (
+                  <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+                    {error}
+                  </div>
+                )}
 
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-semibold text-gray-900 mb-2"
-                >
-                  Full name
-                </label>
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="John Doe"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-semibold text-gray-900 mb-2"
-                >
-                  Email address
-                </label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="you@example.com"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="phone"
-                  className="block text-sm font-semibold text-gray-900 mb-2"
-                >
-                  Phone number (optional)
-                </label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  autoComplete="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="07123456789"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-semibold text-gray-900 mb-2"
-                >
-                  Password
-                </label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                />
-                <p className="mt-1 text-xs text-gray-600">
-                  Must be at least 8 characters
-                </p>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-semibold text-gray-900 mb-2"
-                >
-                  Confirm password
-                </label>
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                />
-              </div>
-
-              <div className="flex items-start">
-                <div className="flex items-center h-5">
-                  <input
-                    id="terms"
-                    name="terms"
-                    type="checkbox"
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-semibold text-gray-900 mb-2"
+                  >
+                    Full name
+                  </label>
+                  <Input
+                    id="name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
                     required
-                    className="h-4 w-4 border-gray-300 rounded"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="John Doe"
                   />
                 </div>
-                <div className="ml-3 text-sm">
-                  <label htmlFor="terms" className="text-gray-700">
-                    I agree to the{" "}
-                    <Link
-                      to="/terms"
-                      className="font-medium text-gray-900 hover:text-black"
-                    >
-                      Terms of Service
-                    </Link>{" "}
-                    and{" "}
-                    <Link
-                      to="/privacy"
-                      className="font-medium text-gray-900 hover:text-black"
-                    >
-                      Privacy Policy
-                    </Link>
+
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-semibold text-gray-900 mb-2"
+                  >
+                    Email address
                   </label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                  />
                 </div>
-              </div>
 
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full"
-              >
-                {isSubmitting ? "Creating account..." : "Create account"}
-              </Button>
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-semibold text-gray-900 mb-2"
+                  >
+                    Phone number (optional)
+                  </label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    autoComplete="tel"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="07123456789"
+                  />
+                </div>
 
-              <div className="text-center">
-                <Link
-                  to="/"
-                  className="text-sm text-gray-600 hover:text-gray-900"
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-semibold text-gray-900 mb-2"
+                  >
+                    Password
+                  </label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="••••••••"
+                  />
+                  <p className="mt-1 text-xs text-gray-600">
+                    Must be at least 8 characters
+                  </p>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block text-sm font-semibold text-gray-900 mb-2"
+                  >
+                    Confirm password
+                  </label>
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                <div className="flex items-start">
+                  <div className="flex items-center h-5">
+                    <input
+                      id="terms"
+                      name="terms"
+                      type="checkbox"
+                      required
+                      className="h-4 w-4 border-gray-300 rounded"
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label htmlFor="terms" className="text-gray-700">
+                      I agree to the{" "}
+                      <Link
+                        to="/terms"
+                        className="font-medium text-gray-900 hover:text-black"
+                      >
+                        Terms of Service
+                      </Link>{" "}
+                      and{" "}
+                      <Link
+                        to="/privacy"
+                        className="font-medium text-gray-900 hover:text-black"
+                      >
+                        Privacy Policy
+                      </Link>
+                    </label>
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full"
                 >
-                  Back to home
-                </Link>
-              </div>
-            </form>
+                  {isSubmitting ? "Creating account..." : "Create account"}
+                </Button>
+
+                <div className="text-center">
+                  <Link
+                    to="/"
+                    className="text-sm text-gray-600 hover:text-gray-900"
+                  >
+                    Back to home
+                  </Link>
+                </div>
+              </form>
             </div>
           </div>
         </div>

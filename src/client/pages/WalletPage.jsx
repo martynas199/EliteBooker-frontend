@@ -37,7 +37,9 @@ export default function WalletPage() {
   }, [token]);
 
   const totalSpent = orders.reduce((sum, order) => sum + (order.total || 0), 0);
-  const paidOrders = orders.filter((order) => order.paymentStatus === "paid").length;
+  const paidOrders = orders.filter(
+    (order) => order.paymentStatus === "paid",
+  ).length;
 
   return (
     <>
@@ -62,7 +64,9 @@ export default function WalletPage() {
                 <p className="text-sm text-gray-600">Wallet balance</p>
               </div>
               <p className="text-2xl font-semibold text-gray-900">GBP 0.00</p>
-              <p className="text-xs text-gray-500 mt-1">Top-up and credits will appear here when enabled.</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Top-up and credits will appear here when enabled.
+              </p>
             </div>
 
             <div className="bg-white rounded-lg border border-gray-200 p-5">
@@ -72,8 +76,12 @@ export default function WalletPage() {
                 </div>
                 <p className="text-sm text-gray-600">Paid orders</p>
               </div>
-              <p className="text-2xl font-semibold text-gray-900">{loading ? "..." : paidOrders}</p>
-              <p className="text-xs text-gray-500 mt-1">Total spent: £{loading ? "0.00" : totalSpent.toFixed(2)}</p>
+              <p className="text-2xl font-semibold text-gray-900">
+                {loading ? "..." : paidOrders}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Total spent: £{loading ? "0.00" : totalSpent.toFixed(2)}
+              </p>
             </div>
           </div>
 
@@ -81,9 +89,18 @@ export default function WalletPage() {
             <div className="w-16 h-16 rounded-full bg-gray-100 mx-auto flex items-center justify-center mb-4">
               <CreditCard className="w-8 h-8 text-gray-600" />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Wallet features are coming soon</h2>
-            <p className="text-gray-600 mb-6">You can still track your spending through product orders.</p>
-            <Button variant="secondary" onClick={() => navigate("/client/orders")}>View product orders</Button>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              Wallet features are coming soon
+            </h2>
+            <p className="text-gray-600 mb-6">
+              You can still track your spending through product orders.
+            </p>
+            <Button
+              variant="secondary"
+              onClick={() => navigate("/client/orders")}
+            >
+              View product orders
+            </Button>
           </div>
         </div>
       </ClientAccountPageShell>

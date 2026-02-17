@@ -16,7 +16,9 @@ export default function DownloadAppPage() {
               <Download className="w-5 h-5 text-gray-700" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Mobile app</h2>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Mobile app
+              </h2>
               <p className="text-gray-600 mt-1">
                 App download links will be available here soon.
               </p>

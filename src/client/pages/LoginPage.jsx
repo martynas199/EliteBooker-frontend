@@ -22,7 +22,10 @@ export default function ClientLoginPage() {
     if (!path || typeof path !== "string") return false;
     if (!path.startsWith("/")) return false;
     if (path.startsWith("//")) return false;
-    if (path.startsWith("/client/login") || path.startsWith("/client/register")) {
+    if (
+      path.startsWith("/client/login") ||
+      path.startsWith("/client/register")
+    ) {
       return false;
     }
     return true;
@@ -30,10 +33,10 @@ export default function ClientLoginPage() {
   const from = isSafeRedirect(location.state?.from)
     ? location.state.from
     : isSafeRedirect(redirectParam)
-      ? redirectParam
-      : isSafeRedirect(storedRedirect)
-        ? storedRedirect
-      : "/client/profile";
+    ? redirectParam
+    : isSafeRedirect(storedRedirect)
+    ? storedRedirect
+    : "/client/profile";
 
   // Load remembered email on mount
   useEffect(() => {
@@ -71,7 +74,7 @@ export default function ClientLoginPage() {
       navigate(from, { replace: true });
     } catch (err) {
       setError(
-        err.message || "Failed to login. Please check your credentials."
+        err.message || "Failed to login. Please check your credentials.",
       );
     } finally {
       setIsSubmitting(false);
@@ -188,84 +191,88 @@ export default function ClientLoginPage() {
               </div>
 
               <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
-              {error && (
-                <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
-                  {error}
-                </div>
-              )}
+                {error && (
+                  <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+                    {error}
+                  </div>
+                )}
 
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-semibold text-gray-900 mb-2"
-                >
-                  Email address
-                </label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-semibold text-gray-900 mb-2"
-                >
-                  Password
-                </label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-sm text-gray-700">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 border-gray-300 rounded"
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-semibold text-gray-900 mb-2"
+                  >
+                    Email address
+                  </label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
                   />
-                  Remember me
-                </label>
+                </div>
 
-                <Link
-                  to="/client/forgot-password"
-                  className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-semibold text-gray-900 mb-2"
+                  >
+                    Password
+                  </label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-2 text-sm text-gray-700">
+                    <input
+                      id="remember-me"
+                      name="remember-me"
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="h-4 w-4 border-gray-300 rounded"
+                    />
+                    Remember me
+                  </label>
+
+                  <Link
+                    to="/client/forgot-password"
+                    className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full"
                 >
-                  Forgot password?
-                </Link>
-              </div>
+                  {isSubmitting ? "Signing in..." : "Sign in"}
+                </Button>
 
-              <Button type="submit" disabled={isSubmitting} className="w-full">
-                {isSubmitting ? "Signing in..." : "Sign in"}
-              </Button>
-
-              <div className="text-center">
-                <Link
-                  to="/"
-                  className="text-sm text-gray-600 hover:text-gray-900"
-                >
-                  Back to home
-                </Link>
-              </div>
-            </form>
+                <div className="text-center">
+                  <Link
+                    to="/"
+                    className="text-sm text-gray-600 hover:text-gray-900"
+                  >
+                    Back to home
+                  </Link>
+                </div>
+              </form>
             </div>
           </div>
         </div>

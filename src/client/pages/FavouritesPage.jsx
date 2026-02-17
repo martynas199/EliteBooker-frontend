@@ -4,7 +4,10 @@ import ClientAccountPageShell from "./ClientAccountPageShell";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getFavorites, removeFromFavorites } from "../../shared/api/favorites.api";
+import {
+  getFavorites,
+  removeFromFavorites,
+} from "../../shared/api/favorites.api";
 
 export default function FavouritesPage() {
   const navigate = useNavigate();
@@ -47,8 +50,15 @@ export default function FavouritesPage() {
       >
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-3">
-            <p className="text-sm text-gray-600">{favorites.length} saved businesses</p>
-            <Button variant="secondary" size="sm" onClick={loadFavorites} loading={loading}>
+            <p className="text-sm text-gray-600">
+              {favorites.length} saved businesses
+            </p>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={loadFavorites}
+              loading={loading}
+            >
               <RefreshCw className="w-4 h-4" />
               Refresh
             </Button>
@@ -65,8 +75,12 @@ export default function FavouritesPage() {
               <div className="w-16 h-16 rounded-full bg-gray-100 mx-auto flex items-center justify-center mb-4">
                 <Heart className="w-8 h-8 text-gray-600" />
               </div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">No favourites yet</h2>
-              <p className="text-gray-600 mb-6">Save your favourite businesses to rebook faster.</p>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                No favourites yet
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Save your favourite businesses to rebook faster.
+              </p>
               <Button variant="brand" onClick={() => navigate("/search")}>
                 <Search className="w-4 h-4" />
                 Find a business
@@ -77,9 +91,14 @@ export default function FavouritesPage() {
           {favorites.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {favorites.map((salon) => (
-                <div key={salon._id} className="bg-white rounded-lg border border-gray-200 p-5">
+                <div
+                  key={salon._id}
+                  className="bg-white rounded-lg border border-gray-200 p-5"
+                >
                   <div className="flex items-start justify-between gap-3 mb-3">
-                    <h2 className="text-lg font-semibold text-gray-900">{salon.name}</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      {salon.name}
+                    </h2>
                     <button
                       type="button"
                       onClick={() => handleRemove(salon._id)}
@@ -91,7 +110,9 @@ export default function FavouritesPage() {
                   </div>
 
                   {salon.description ? (
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{salon.description}</p>
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                      {salon.description}
+                    </p>
                   ) : null}
 
                   {salon.address ? (

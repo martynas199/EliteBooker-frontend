@@ -94,16 +94,14 @@ export default function ClientFormsPage() {
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
               Sign in to view your forms
             </h3>
-            <p className="text-gray-600">Your consent forms are available once you are logged in.</p>
+            <p className="text-gray-600">
+              Your consent forms are available once you are logged in.
+            </p>
           </div>
         ) : error ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
             <p className="text-red-800">{error}</p>
-            <Button
-              onClick={fetchForms}
-              variant="danger"
-              className="mt-4"
-            >
+            <Button onClick={fetchForms} variant="danger" className="mt-4">
               Try Again
             </Button>
           </div>

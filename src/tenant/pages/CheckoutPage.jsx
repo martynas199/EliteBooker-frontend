@@ -533,7 +533,9 @@ export default function CheckoutPage() {
                           <span className="text-gray-700">
                             <Link
                               to="../login"
-                              state={{ from: `${location.pathname}${location.search}` }}
+                              state={{
+                                from: `${location.pathname}${location.search}`,
+                              }}
                               className="text-gray-900 hover:text-black font-semibold underline"
                             >
                               Sign in
@@ -541,7 +543,9 @@ export default function CheckoutPage() {
                             or{" "}
                             <Link
                               to="../register"
-                              state={{ from: `${location.pathname}${location.search}` }}
+                              state={{
+                                from: `${location.pathname}${location.search}`,
+                              }}
                               className="text-gray-900 hover:text-black font-semibold underline"
                             >
                               create an account

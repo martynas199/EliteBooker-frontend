@@ -47,7 +47,12 @@ export default function OrdersPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-3">
             <p className="text-sm text-gray-600">{orders.length} orders</p>
-            <Button variant="secondary" size="sm" onClick={loadOrders} loading={loading}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={loadOrders}
+              loading={loading}
+            >
               <RefreshCw className="w-4 h-4" />
               Refresh
             </Button>
@@ -64,8 +69,12 @@ export default function OrdersPage() {
               <div className="w-16 h-16 rounded-full bg-gray-100 mx-auto flex items-center justify-center mb-4">
                 <Package className="w-8 h-8 text-gray-600" />
               </div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">No product orders yet</h2>
-              <p className="text-gray-600 mb-6">Your product order history will appear here.</p>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                No product orders yet
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Your product order history will appear here.
+              </p>
               <Button variant="secondary" onClick={() => navigate("/search")}>
                 <Search className="w-4 h-4" />
                 Find a business
@@ -76,7 +85,10 @@ export default function OrdersPage() {
           {orders.length > 0 ? (
             <div className="space-y-3">
               {orders.map((order) => (
-                <div key={order._id} className="bg-white rounded-lg border border-gray-200 p-5">
+                <div
+                  key={order._id}
+                  className="bg-white rounded-lg border border-gray-200 p-5"
+                >
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h2 className="font-semibold text-gray-900">
@@ -97,12 +109,19 @@ export default function OrdersPage() {
 
                   <div className="mt-4 space-y-2 border-t border-gray-100 pt-4">
                     {order.items?.slice(0, 3).map((item, index) => (
-                      <div key={index} className="flex items-center justify-between text-sm">
+                      <div
+                        key={index}
+                        className="flex items-center justify-between text-sm"
+                      >
                         <span className="text-gray-700">
-                          {item.title || item.productId?.title || "Product"} × {item.quantity}
+                          {item.title || item.productId?.title || "Product"} ×{" "}
+                          {item.quantity}
                         </span>
                         <span className="font-medium text-gray-900">
-                          £{((item.price || 0) * (item.quantity || 0)).toFixed(2)}
+                          £
+                          {((item.price || 0) * (item.quantity || 0)).toFixed(
+                            2,
+                          )}
                         </span>
                       </div>
                     ))}
@@ -110,7 +129,9 @@ export default function OrdersPage() {
 
                   <div className="mt-4 border-t border-gray-100 pt-4 flex items-center justify-between">
                     <span className="font-semibold text-gray-900">Total</span>
-                    <span className="font-semibold text-gray-900">£{(order.total || 0).toFixed(2)}</span>
+                    <span className="font-semibold text-gray-900">
+                      £{(order.total || 0).toFixed(2)}
+                    </span>
                   </div>
                 </div>
               ))}

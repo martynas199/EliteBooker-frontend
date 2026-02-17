@@ -20,13 +20,16 @@ export default function SendGiftCardPage() {
               <Gift className="w-5 h-5 text-gray-700" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Gift cards</h2>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Gift cards
+              </h2>
               <p className="text-gray-600 mt-1">
-                Find a business that offers gift cards, then purchase and send one instantly.
+                Find a business that offers gift cards, then purchase and send
+                one instantly.
               </p>
             </div>
           </div>
-          <Button variant="brand" onClick={() => navigate("/search")}> 
+          <Button variant="brand" onClick={() => navigate("/search")}>
             <Search className="w-4 h-4" />
             Find a business
           </Button>

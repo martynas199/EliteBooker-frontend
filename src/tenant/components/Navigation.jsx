@@ -98,7 +98,9 @@ export default function Navigation() {
                 <>
                   <Link
                     to={servicesPath}
-                    aria-current={isPathActive(servicesPath) ? "page" : undefined}
+                    aria-current={
+                      isPathActive(servicesPath) ? "page" : undefined
+                    }
                     className={getDesktopLinkClass(servicesPath)}
                   >
                     Services
@@ -112,7 +114,9 @@ export default function Navigation() {
                   </Link>
                   <Link
                     to={contactPath}
-                    aria-current={isPathActive(contactPath) ? "page" : undefined}
+                    aria-current={
+                      isPathActive(contactPath) ? "page" : undefined
+                    }
                     className={getDesktopLinkClass(contactPath)}
                   >
                     Contact
@@ -120,7 +124,9 @@ export default function Navigation() {
                   {ecommerceEnabled && (
                     <Link
                       to={productsPath}
-                      aria-current={isPathActive(productsPath) ? "page" : undefined}
+                      aria-current={
+                        isPathActive(productsPath) ? "page" : undefined
+                      }
                       className={getDesktopLinkClass(productsPath)}
                     >
                       Shop
@@ -271,7 +277,10 @@ export default function Navigation() {
                     currentTenantPath,
                   )}`}
                   onClick={() => {
-                    sessionStorage.setItem("clientAuthRedirectPath", currentTenantPath);
+                    sessionStorage.setItem(
+                      "clientAuthRedirectPath",
+                      currentTenantPath,
+                    );
                   }}
                   className="px-5 py-2 text-sm font-bold text-white bg-black hover:bg-gray-800 rounded-lg transition-all"
                 >
@@ -373,7 +382,9 @@ export default function Navigation() {
                     <Link
                       to={aboutPath}
                       onClick={() => setMobileMenuOpen(false)}
-                      aria-current={isPathActive(aboutPath) ? "page" : undefined}
+                      aria-current={
+                        isPathActive(aboutPath) ? "page" : undefined
+                      }
                       className={getMobileLinkClass(aboutPath)}
                     >
                       About Us
@@ -412,7 +423,10 @@ export default function Navigation() {
                       currentTenantPath,
                     )}`}
                     onClick={() => {
-                      sessionStorage.setItem("clientAuthRedirectPath", currentTenantPath);
+                      sessionStorage.setItem(
+                        "clientAuthRedirectPath",
+                        currentTenantPath,
+                      );
                       setMobileMenuOpen(false);
                     }}
                     className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
