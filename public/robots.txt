@@ -24,12 +24,19 @@ Disallow: /client/
 Disallow: /checkout
 Disallow: /product-checkout
 Disallow: /confirmation
+Disallow: /salon/*/checkout
+Disallow: /salon/*/product-checkout
+Disallow: /salon/*/confirmation
 
 # Block auth pages
 Disallow: /login
 Disallow: /register
 Disallow: /profile
 Disallow: /profile/*
+Disallow: /salon/*/login
+Disallow: /salon/*/register
+Disallow: /salon/*/profile
+Disallow: /salon/*/profile/*
 
 # Block utility pages
 Disallow: /success
@@ -37,10 +44,16 @@ Disallow: /cancel
 Disallow: /shop/success
 Disallow: /shop/cancel
 Disallow: /token-debug
+Disallow: /salon/*/success
+Disallow: /salon/*/cancel
+Disallow: /salon/*/shop/success
+Disallow: /salon/*/shop/cancel
+Disallow: /salon/*/token-debug
 Disallow: /menu
 Disallow: /404
 Disallow: /business
 Disallow: /auth/success
+Disallow: /salon/*/auth/success
 Disallow: /referral-login
 Disallow: /referral-dashboard
 Disallow: /join-referral-program
