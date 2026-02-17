@@ -41,6 +41,7 @@ export default function Dashboard() {
   const admin = useSelector(selectAdmin);
   const queryClient = useQueryClient();
   const isSuperAdmin = admin?.role === "super_admin";
+  const adminTenantKey = admin?.tenantId || "global";
 
   // Use shared data hook for cached specialists and services
   const {
@@ -82,7 +83,11 @@ export default function Dashboard() {
     isLoading: appointmentsLoading,
     refetch: refetchAppointments,
   } = useQuery({
-    queryKey: queryKeys.appointments.all,
+    queryKey: queryKeys.admin.appointments({
+      tenantId: adminTenantKey,
+      page: 1,
+      limit: 200,
+    }),
     queryFn: async ({ signal }) => {
       const response = await api.get("/appointments?page=1&limit=200", {
         signal,
@@ -99,7 +104,7 @@ export default function Dashboard() {
 
   // Fetch salon info with React Query
   const { data: salonInfo } = useQuery({
-    queryKey: ["salon"],
+    queryKey: queryKeys.tenant.salon(adminTenantKey),
     queryFn: async ({ signal }) => {
       const response = await api.get("/salon", { signal });
       return response.data || {};
@@ -113,7 +118,7 @@ export default function Dashboard() {
 
   // Fetch settings with React Query
   const { data: settingsInfo } = useQuery({
-    queryKey: ["settings"],
+    queryKey: queryKeys.admin.settings(adminTenantKey),
     queryFn: async ({ signal }) => {
       const response = await api.get("/settings", { signal });
       return response.data || null;

@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 
 const CurrencyContext = createContext();
 
@@ -31,47 +38,59 @@ export function CurrencyProvider({ children }) {
   }, [currency]);
 
   // Get price for current currency from product object
-  const getPrice = (product) => {
-    if (!product) return 0;
-    
-    // If EUR is selected and product has EUR price, use it
-    if (currency === "EUR" && product.priceEUR != null) {
-      return product.priceEUR;
-    }
-    
-    // Otherwise use GBP price
-    return product.price || 0;
-  };
+  const getPrice = useCallback(
+    (product) => {
+      if (!product) return 0;
+
+      // If EUR is selected and product has EUR price, use it
+      if (currency === "EUR" && product.priceEUR != null) {
+        return product.priceEUR;
+      }
+
+      // Otherwise use GBP price
+      return product.price || 0;
+    },
+    [currency],
+  );
 
   // Get original price for current currency from product object
-  const getOriginalPrice = (product) => {
-    if (!product) return null;
-    
-    // If EUR is selected and product has EUR original price, use it
-    if (currency === "EUR" && product.originalPriceEUR != null) {
-      return product.originalPriceEUR;
-    }
-    
-    // Otherwise use GBP original price
-    return product.originalPrice;
-  };
+  const getOriginalPrice = useCallback(
+    (product) => {
+      if (!product) return null;
+
+      // If EUR is selected and product has EUR original price, use it
+      if (currency === "EUR" && product.originalPriceEUR != null) {
+        return product.originalPriceEUR;
+      }
+
+      // Otherwise use GBP original price
+      return product.originalPrice;
+    },
+    [currency],
+  );
 
   // Format price with currency symbol (for displaying raw amounts)
-  const formatPrice = (amount) => {
-    if (!amount || isNaN(amount)) return `${CURRENCIES[currency].symbol}0.00`;
-    const currencyInfo = CURRENCIES[currency];
-    return `${currencyInfo.symbol}${Number(amount).toFixed(2)}`;
-  };
+  const formatPrice = useCallback(
+    (amount) => {
+      if (!amount || isNaN(amount)) return `${CURRENCIES[currency].symbol}0.00`;
+      const currencyInfo = CURRENCIES[currency];
+      return `${currencyInfo.symbol}${Number(amount).toFixed(2)}`;
+    },
+    [currency],
+  );
 
-  const value = {
-    currency,
-    setCurrency,
-    currencyInfo: CURRENCIES[currency],
-    getPrice,
-    getOriginalPrice,
-    formatPrice,
-    allCurrencies: CURRENCIES,
-  };
+  const value = useMemo(
+    () => ({
+      currency,
+      setCurrency,
+      currencyInfo: CURRENCIES[currency],
+      getPrice,
+      getOriginalPrice,
+      formatPrice,
+      allCurrencies: CURRENCIES,
+    }),
+    [currency, getPrice, getOriginalPrice, formatPrice],
+  );
 
   return (
     <CurrencyContext.Provider value={value}>

@@ -4,13 +4,13 @@
  * Provides tenant information and branding to all components
  */
 
-import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import { createContext, useContext, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { api } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryClient";
 
 const TenantContext = createContext(null);
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 /**
  * Resolve tenant from current URL
@@ -60,11 +60,8 @@ function resolveTenantFromURL() {
 }
 
 export function TenantProvider({ children }) {
+  const queryClient = useQueryClient();
   const location = useLocation();
-  const [tenant, setTenant] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [resolution, setResolution] = useState(null);
   const tenantResolution = useMemo(
     () => resolveTenantFromURL(),
     [location.pathname]
@@ -73,67 +70,55 @@ export function TenantProvider({ children }) {
     tenantResolution.slug || tenantResolution.domain || ""
   }`;
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function loadTenant() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const resolved = resolveTenantFromURL();
-        setResolution(resolved);
-
-        // If no tenant detected, show platform site
-        if (!resolved.slug && !resolved.domain) {
-          setTenant(null);
-          setLoading(false);
-          return;
-        }
-
-        // Fetch tenant data with cancellation support
-        let response;
-        if (resolved.slug) {
-          response = await axios.get(
-            `${API_URL}/api/tenants/slug/${resolved.slug}`,
-            { signal: controller.signal }
-          );
-        } else if (resolved.domain) {
-          // Custom domain - backend will resolve
-          response = await axios.get(`${API_URL}/api/tenants/current`, {
-            headers: { Host: resolved.domain },
-            signal: controller.signal,
-          });
-        }
-
-        if (response?.data?.tenant) {
-          setTenant(response.data.tenant);
-
-          // Apply branding
-          applyTenantBranding(response.data.tenant);
-        } else {
-          setTenant(null);
-        }
-      } catch (err) {
-        // Ignore abort errors (component unmounted or route changed)
-        if (err.name === "AbortError" || err.code === "ERR_CANCELED") {
-          return;
-        }
-
-        console.error("Failed to load tenant:", err);
-        setError(err.message);
-        setTenant(null);
-      } finally {
-        setLoading(false);
+  const {
+    data: tenantData,
+    isLoading: loading,
+    error: tenantError,
+    refetch,
+  } = useQuery({
+    queryKey: queryKeys.tenant.byResolution(tenantResolutionKey),
+    queryFn: async ({ signal }) => {
+      // If no tenant detected, show platform site
+      if (!tenantResolution.slug && !tenantResolution.domain) {
+        return {
+          tenant: null,
+          resolution: tenantResolution,
+        };
       }
+
+      let response;
+      if (tenantResolution.slug) {
+        response = await api.get(`/tenants/slug/${tenantResolution.slug}`, {
+          signal,
+        });
+      } else {
+        // Custom domain - backend resolves tenant by host
+        response = await api.get("/tenants/current", {
+          signal,
+          headers: { Host: tenantResolution.domain },
+        });
+      }
+
+      return {
+        tenant: response?.data?.tenant || null,
+        resolution: tenantResolution,
+      };
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  const tenant = tenantData?.tenant || null;
+  const resolution = tenantData?.resolution || tenantResolution;
+  const error = tenantError?.message || null;
+
+  useEffect(() => {
+    if (tenant) {
+      applyTenantBranding(tenant);
     }
-
-    loadTenant();
-
-    return () => {
-      controller.abort(); // Cancel request on unmount or route change
-    };
-  }, [tenantResolutionKey]); // Re-run when tenant identity changes
+  }, [tenant]);
 
   /**
    * Apply tenant branding to the page
@@ -178,20 +163,13 @@ export function TenantProvider({ children }) {
       isPlatform: resolution?.type === "platform",
       isCustomDomain: resolution?.type === "custom-domain",
       refreshTenant: async () => {
-        // Re-fetch tenant data
-        setLoading(true);
-        const resolved = resolveTenantFromURL();
-        if (resolved.slug) {
-          const response = await axios.get(
-            `${API_URL}/api/tenants/slug/${resolved.slug}`
-          );
-          setTenant(response.data.tenant);
-          applyTenantBranding(response.data.tenant);
-        }
-        setLoading(false);
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.tenant.byResolution(tenantResolutionKey),
+        });
+        return refetch();
       },
     }),
-    [tenant, loading, error, resolution]
+    [tenant, loading, error, resolution, queryClient, tenantResolutionKey, refetch],
   );
 
   return (

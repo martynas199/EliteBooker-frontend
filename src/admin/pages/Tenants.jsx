@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectAdmin } from "../../shared/state/authSlice";
 import { useNavigate } from "react-router-dom";
-import api from "../../shared/lib/api";
+import { api } from "../../shared/lib/apiClient";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import { confirmDialog } from "../../shared/lib/confirmDialog";
 import { promptDialog } from "../../shared/lib/promptDialog";
@@ -32,7 +32,7 @@ export default function Tenants() {
     try {
       setLoading(true);
       setError("");
-      const response = await api.get("/api/tenants");
+      const response = await api.get("/tenants");
       setTenants(response.data?.tenants || []);
     } catch (err) {
       console.error("Failed to load tenants:", err);
@@ -57,7 +57,7 @@ export default function Tenants() {
     }
 
     try {
-      await api.post(`/api/tenants/${tenantId}/suspend`);
+      await api.post(`/tenants/${tenantId}/suspend`);
       setSuccess("Tenant suspended successfully");
       fetchTenants();
       setTimeout(() => setSuccess(""), 3000);
@@ -70,7 +70,7 @@ export default function Tenants() {
 
   const handleActivate = async (tenantId) => {
     try {
-      await api.post(`/api/tenants/${tenantId}/activate`);
+      await api.post(`/tenants/${tenantId}/activate`);
       setSuccess("Tenant activated successfully");
       fetchTenants();
       setTimeout(() => setSuccess(""), 3000);
@@ -103,7 +103,7 @@ export default function Tenants() {
 
     try {
       setLoading(true);
-      const response = await api.delete(`/api/tenants/${tenantId}`);
+      const response = await api.delete(`/tenants/${tenantId}`);
       setSuccess(
         `Tenant deleted successfully. ${JSON.stringify(
           response.data.deletedData,

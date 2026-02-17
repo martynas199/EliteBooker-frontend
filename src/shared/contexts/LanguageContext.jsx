@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 
 const LanguageContext = createContext();
 
@@ -21,12 +28,17 @@ export const LanguageProvider = ({ children }) => {
     localStorage.setItem("adminLanguage", language);
   }, [language]);
 
-  const toggleLanguage = () => {
+  const toggleLanguage = useCallback(() => {
     setLanguage((prev) => (prev === "EN" ? "LT" : "EN"));
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({ language, setLanguage, toggleLanguage }),
+    [language, toggleLanguage],
+  );
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );

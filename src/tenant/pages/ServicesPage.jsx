@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ServicesAPI } from "./services.api";
 import { SalonAPI } from "./salon.api";
 import { useTenant } from "../../shared/contexts/TenantContext";
+import { queryKeys } from "../../shared/lib/queryClient";
 import { addService, setService } from "../state/bookingSlice";
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
 import Card from "../../shared/components/ui/Card";
@@ -21,30 +23,31 @@ export default function ServicesPage() {
   const dispatch = useDispatch();
   const { tenant } = useTenant();
   const { formatPrice } = useCurrency();
-  const [services, setServices] = useState([]);
-  const [salon, setSalon] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const bookingServices = useSelector((state) => state.booking.services) || [];
+  const tenantKey = tenant?.slug || "platform";
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const [servicesData, salonData] = await Promise.all([
-          ServicesAPI.list(),
-          SalonAPI.get(),
-        ]);
+  const { data: pageData, isLoading: loading } = useQuery({
+    queryKey: queryKeys.tenant.servicesPage(tenantKey),
+    queryFn: async ({ signal }) => {
+      const [servicesData, salonData] = await Promise.all([
+        ServicesAPI.list({ signal }),
+        SalonAPI.get({ signal }),
+      ]);
 
-        setServices(servicesData.filter((s) => s.active));
-        setSalon(salonData);
-      } catch (error) {
-        console.error("Failed to load services:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, []);
+      return {
+        services: (servicesData || []).filter((service) => service.active),
+        salon: salonData || null,
+      };
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  const services = pageData?.services || [];
+  const salon = pageData?.salon || null;
 
   // Get unique categories
   const categories = [

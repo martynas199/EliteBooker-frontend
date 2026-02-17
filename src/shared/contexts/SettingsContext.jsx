@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { api } from "../lib/apiClient";
 import { SalonAPI } from "../../tenant/pages/salon.api";
 
@@ -56,12 +56,15 @@ export function SettingsProvider({ children }) {
     };
   }, []);
 
-  const value = {
-    settings,
-    salonData,
-    loading,
-    error,
-  };
+  const value = useMemo(
+    () => ({
+      settings,
+      salonData,
+      loading,
+      error,
+    }),
+    [settings, salonData, loading, error],
+  );
 
   return (
     <SettingsContext.Provider value={value}>

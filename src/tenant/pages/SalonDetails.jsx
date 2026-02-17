@@ -1,7 +1,9 @@
-import { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { SalonAPI } from "./salon.api";
 import { api } from "../../shared/lib/apiClient";
 import { useTenant } from "../../shared/contexts/TenantContext";
+import { queryKeys } from "../../shared/lib/queryClient";
 import Card from "../../shared/components/ui/Card";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import {
@@ -21,24 +23,29 @@ const DAY_LABELS = {
 
 export default function SalonDetails() {
   const { tenant } = useTenant();
-  const [data, setData] = useState(null);
-  const [settings, setSettings] = useState(null);
+  const tenantKey = tenant?.slug || "platform";
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const [salonResponse, settingsResponse] = await Promise.all([
-          SalonAPI.get().catch(() => null),
-          api.get("/settings").catch(() => ({ data: null })),
-        ]);
-        setData(salonResponse);
-        setSettings(settingsResponse.data);
-      } catch (error) {
-        console.error("Failed to load data:", error);
-      }
-    }
-    loadData();
-  }, []);
+  const { data: pageData } = useQuery({
+    queryKey: queryKeys.tenant.salonDetailsPage(tenantKey),
+    queryFn: async ({ signal }) => {
+      const [salonResponse, settingsResponse] = await Promise.all([
+        SalonAPI.get({ signal }).catch(() => null),
+        api.get("/settings", { signal }).catch(() => ({ data: null })),
+      ]);
+
+      return {
+        salon: salonResponse,
+        settings: settingsResponse.data,
+      };
+    },
+    staleTime: 10 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  const data = pageData?.salon || null;
+  const settings = pageData?.settings || null;
 
   const salonName = tenant?.name || settings?.salonName || "Beauty Salon";
   const salonDescription =

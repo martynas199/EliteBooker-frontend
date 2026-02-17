@@ -2,6 +2,15 @@ import { useQueries } from "@tanstack/react-query";
 import { api } from "../lib/apiClient";
 import { queryKeys } from "../lib/queryClient";
 
+const SHARED_DATA_DEBUG =
+  import.meta.env.DEV && import.meta.env.VITE_SHARED_DATA_DEBUG === "true";
+
+const sharedDataDebug = (...args) => {
+  if (SHARED_DATA_DEBUG) {
+    console.log(...args);
+  }
+};
+
 /**
  * Shared hook to prevent duplicate fetches of common admin data
  *
@@ -30,13 +39,13 @@ export function useSharedData() {
       {
         queryKey: queryKeys.specialists.list(),
         queryFn: async ({ signal }) => {
-          console.log("[useSharedData] Fetching specialists with limit: 1000");
+          sharedDataDebug(
+            "[useSharedData] Fetching specialists with limit: 1000",
+          );
           const response = await api.get("/specialists", {
             params: { limit: 1000 },
             signal, // Enable request cancellation
           });
-
-          console.log("[useSharedData] Specialists response:", response.data);
 
           // Handle different response formats:
           // 1. Raw array: [...]
@@ -54,10 +63,12 @@ export function useSharedData() {
           }
 
           // Fallback - shouldn't happen but handle gracefully
-          console.warn(
-            "Unexpected specialists response format:",
-            response.data
-          );
+          if (SHARED_DATA_DEBUG) {
+            console.warn(
+              "Unexpected specialists response format:",
+              response.data,
+            );
+          }
           return [];
         },
         staleTime: 10 * 60 * 1000, // 10 minutes - specialists rarely change
@@ -70,13 +81,11 @@ export function useSharedData() {
       {
         queryKey: queryKeys.services.list(),
         queryFn: async ({ signal }) => {
-          console.log("[useSharedData] Fetching services with limit: 1000");
+          sharedDataDebug("[useSharedData] Fetching services with limit: 1000");
           const response = await api.get("/services", {
             params: { limit: 1000 },
             signal, // Enable request cancellation
           });
-
-          console.log("[useSharedData] Services response:", response.data);
 
           // Handle different response formats (same as specialists)
           if (Array.isArray(response.data)) {
@@ -90,7 +99,9 @@ export function useSharedData() {
           }
 
           // Fallback
-          console.warn("Unexpected services response format:", response.data);
+          if (SHARED_DATA_DEBUG) {
+            console.warn("Unexpected services response format:", response.data);
+          }
           return [];
         },
         staleTime: 5 * 60 * 1000, // 5 minutes - services change occasionally

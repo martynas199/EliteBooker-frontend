@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Palette } from "lucide-react";
 import { selectAdmin } from "../../shared/state/authSlice";
-import api from "../../shared/lib/api";
+import { api } from "../../shared/lib/apiClient";
 import Card from "../../shared/components/ui/Card";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 

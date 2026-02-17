@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectAdmin } from "../../shared/state/authSlice";
-import api from "../../shared/lib/api";
+import { api } from "../../shared/lib/apiClient";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import {
   ArrowLeft,
@@ -47,7 +47,7 @@ export default function TenantDetails() {
   const fetchTenantDetails = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`/api/tenants/${id}`);
+      const response = await api.get(`/tenants/${id}`);
       setTenant(response.data);
     } catch (err) {
       console.error("Failed to load tenant:", err);
@@ -60,7 +60,7 @@ export default function TenantDetails() {
   const fetchSpecialists = async () => {
     try {
       // Fetch specialists for this tenant
-      const response = await api.get(`/api/specialists?tenantId=${id}`);
+      const response = await api.get(`/specialists?tenantId=${id}`);
       setSpecialists(response.data || []);
     } catch (err) {
       console.error("Failed to load specialists:", err);
@@ -78,10 +78,10 @@ export default function TenantDetails() {
 
       const [servicesRes, timeOffRes] = await Promise.all([
         api
-          .get(`/api/services?specialistId=${specialistId}&tenantId=${id}`)
+          .get(`/services?specialistId=${specialistId}&tenantId=${id}`)
           .catch(() => ({ data: [] })),
         api
-          .get(`/api/timeoff?specialistId=${specialistId}&tenantId=${id}`)
+          .get(`/timeoff?specialistId=${specialistId}&tenantId=${id}`)
           .catch(() => ({ data: [] })),
       ]);
 

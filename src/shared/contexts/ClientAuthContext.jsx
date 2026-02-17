@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { api } from "../lib/apiClient";
 
@@ -72,7 +79,7 @@ export function ClientAuthProvider({ children }) {
     }
   }, [location.search]);
 
-  const fetchClientProfile = async () => {
+  const fetchClientProfile = useCallback(async () => {
     try {
       const response = await api.get("/client/me");
       setClient(response.data.client);
@@ -91,9 +98,9 @@ export function ClientAuthProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     const response = await api.post("/client/login", { email, password });
     const { client: clientData, token } = response.data;
 
@@ -129,9 +136,9 @@ export function ClientAuthProvider({ children }) {
 
     setClient(clientData);
     return clientData;
-  };
+  }, []);
 
-  const register = async (email, password, name, phone) => {
+  const register = useCallback(async (email, password, name, phone) => {
     const response = await api.post("/client/register", {
       email,
       password,
@@ -147,9 +154,9 @@ export function ClientAuthProvider({ children }) {
 
     setClient(clientData);
     return clientData;
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     authDebug("[ClientAuth] Starting logout process...");
 
     // Clear client state and localStorage immediately
@@ -166,17 +173,20 @@ export function ClientAuthProvider({ children }) {
       // Client state and localStorage already cleared
       return false;
     }
-  };
+  }, []);
 
-  const value = {
-    client,
-    loading,
-    isAuthenticated: !!client,
-    login,
-    register,
-    logout,
-    refreshProfile: fetchClientProfile,
-  };
+  const value = useMemo(
+    () => ({
+      client,
+      loading,
+      isAuthenticated: !!client,
+      login,
+      register,
+      logout,
+      refreshProfile: fetchClientProfile,
+    }),
+    [client, loading, login, register, logout, fetchClientProfile],
+  );
 
   return (
     <ClientAuthContext.Provider value={value}>

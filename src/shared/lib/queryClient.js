@@ -1,5 +1,8 @@
 import { QueryClient } from "@tanstack/react-query";
 
+const QUERY_CLIENT_DEBUG =
+  import.meta.env.DEV && import.meta.env.VITE_QUERY_DEBUG === "true";
+
 // Create a client with performance-optimized defaults
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,7 +55,40 @@ export const queryKeys = {
       "appointments",
       filters,
     ],
-    settings: () => [...queryKeys.admin.all, "settings"],
+    settings: (tenantId = "global") => [
+      ...queryKeys.admin.all,
+      "settings",
+      tenantId,
+    ],
+  },
+
+  tenant: {
+    all: ["tenant"],
+    byResolution: (resolutionKey) => [
+      ...queryKeys.tenant.all,
+      "resolution",
+      resolutionKey,
+    ],
+    salon: (tenantKey = "platform") => [
+      ...queryKeys.tenant.all,
+      "salon",
+      tenantKey,
+    ],
+    settings: (tenantKey = "platform") => [
+      ...queryKeys.tenant.all,
+      "settings",
+      tenantKey,
+    ],
+    servicesPage: (tenantKey = "platform") => [
+      ...queryKeys.tenant.all,
+      "services-page",
+      tenantKey,
+    ],
+    salonDetailsPage: (tenantKey = "platform") => [
+      ...queryKeys.tenant.all,
+      "salon-details-page",
+      tenantKey,
+    ],
   },
 
   // Public queries
@@ -90,7 +126,9 @@ export const queryKeys = {
 
 // Error handler for queries
 export const queryErrorHandler = (error) => {
-  console.error("Query Error:", error);
+  if (QUERY_CLIENT_DEBUG) {
+    console.error("Query Error:", error);
+  }
 
   // You can add global error handling here
   // For example, redirect to login on 401, show toast on network errors, etc.
@@ -102,10 +140,14 @@ export const queryErrorHandler = (error) => {
 
 // Success handler for mutations
 export const mutationSuccessHandler = (data, variables, context) => {
-  console.log("Mutation Success:", { data, variables, context });
+  if (QUERY_CLIENT_DEBUG) {
+    console.log("Mutation Success:", { data, variables, context });
+  }
 };
 
 // Default error handler for mutations
 export const mutationErrorHandler = (error, variables, context) => {
-  console.error("Mutation Error:", { error, variables, context });
+  if (QUERY_CLIENT_DEBUG) {
+    console.error("Mutation Error:", { error, variables, context });
+  }
 };

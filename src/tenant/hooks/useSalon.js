@@ -22,7 +22,7 @@ export function useSalon(options = {}) {
 
   return useQuery({
     queryKey: salonKeys.details(),
-    queryFn: () => SalonAPI.get(),
+    queryFn: ({ signal }) => SalonAPI.get({ signal }),
     staleTime: 20 * 60 * 1000, // 20 minutes
     gcTime: 30 * 60 * 1000, // 30 minutes
     enabled,

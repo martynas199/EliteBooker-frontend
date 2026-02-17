@@ -2,6 +2,9 @@
 import { store } from "../../app/store";
 import { env } from "./env";
 
+const API_CLIENT_DEBUG =
+  import.meta.env.DEV && import.meta.env.VITE_API_CLIENT_DEBUG === "true";
+
 // Use environment variable for API URL
 // In development: uses localhost with Vite proxy
 // In production: uses VITE_API_URL (e.g., https://elitebooker-backend.onrender.com)
@@ -136,7 +139,11 @@ api.interceptors.response.use(
 
       // For client routes, clear localStorage token (like beauty salon app)
       if (pathname.startsWith("/client")) {
-        console.log("[API Client] 401 on client route - clearing clientToken");
+        if (API_CLIENT_DEBUG) {
+          console.log(
+            "[API Client] 401 on client route - clearing clientToken",
+          );
+        }
         localStorage.removeItem("clientToken");
         // Don't redirect - let ClientAuthContext handle the state
         return Promise.reject(error);

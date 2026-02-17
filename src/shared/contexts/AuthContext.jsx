@@ -1,8 +1,14 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useMemo,
+  useCallback,
+} from "react";
+import { api } from "../lib/apiClient";
 
 const AuthContext = createContext(null);
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -10,40 +16,41 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // Fetch current user helper (defined at component scope so it can be exposed in context)
-  const fetchCurrentUser = async () => {
-    try {
-      // Always read the latest token from localStorage
-      const currentToken = localStorage.getItem("userToken");
+  const logout = useCallback(() => {
+    localStorage.removeItem("userToken");
+    setToken(null);
+    setUser(null);
+  }, []);
 
-      if (!currentToken) {
-        setLoading(false);
-        return;
-      }
+  const fetchCurrentUser = useCallback(
+    async (options = {}) => {
+      try {
+        // Always read the latest token from localStorage
+        const currentToken = localStorage.getItem("userToken");
 
-      const response = await fetch(`${API_URL}/api/user-auth/me`, {
-        headers: {
-          Authorization: `Bearer ${currentToken}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user);
-        // Update token state if it changed
-        if (currentToken !== token) {
-          setToken(currentToken);
+        if (!currentToken) {
+          setLoading(false);
+          return;
         }
-      } else {
-        // Token invalid or expired
+
+        const response = await api.get("/user-auth/me", {
+          signal: options.signal,
+          headers: {
+            Authorization: `Bearer ${currentToken}`,
+          },
+        });
+
+        setUser(response.data?.user || null);
+        setToken(currentToken);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
         logout();
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Failed to fetch user:", error);
-      logout();
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [logout],
+  );
 
   // Load user on mount if token exists
   useEffect(() => {
@@ -54,29 +61,24 @@ export const AuthProvider = ({ children }) => {
 
     const controller = new AbortController();
 
-    fetchCurrentUser();
+    fetchCurrentUser({ signal: controller.signal });
 
     return () => {
       controller.abort(); // Cancel request on unmount
     };
-  }, [token]);
+  }, [token, fetchCurrentUser]);
 
   // Register new user
-  const register = async (name, email, phone, password) => {
+  const register = useCallback(async (name, email, phone, password) => {
     try {
-      const response = await fetch(`${API_URL}/api/user-auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, phone, password }),
+      const response = await api.post("/user-auth/register", {
+        name,
+        email,
+        phone,
+        password,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Registration failed");
-      }
+      const data = response.data;
 
       // Save token and user
       localStorage.setItem("userToken", data.token);
@@ -87,24 +89,17 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return { success: false, error: error.message };
     }
-  };
+  }, []);
 
   // Login user
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     try {
-      const response = await fetch(`${API_URL}/api/user-auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const response = await api.post("/user-auth/login", {
+        email,
+        password,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Login failed");
-      }
+      const data = response.data;
 
       // Save token and user
       localStorage.setItem("userToken", data.token);
@@ -115,49 +110,48 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return { success: false, error: error.message };
     }
-  };
-
-  // Logout user
-  const logout = () => {
-    localStorage.removeItem("userToken");
-    setToken(null);
-    setUser(null);
-  };
+  }, []);
 
   // Update user profile
-  const updateProfile = async (updates) => {
-    const response = await fetch(`${API_URL}/api/users/me`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(updates),
-    });
+  const updateProfile = useCallback(
+    async (updates) => {
+      const response = await api.patch("/users/me", updates, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const data = await response.json();
+      const data = response.data;
 
-    if (!response.ok) {
-      const error = new Error(data.error || "Update failed");
-      error.response = { data }; // Attach response data for error handling
-      throw error;
-    }
+      setUser(data.user);
+      return data.user;
+    },
+    [token],
+  );
 
-    setUser(data.user);
-    return data.user;
-  };
-
-  const value = {
-    user,
-    token,
-    loading,
-    isAuthenticated: !!user,
-    register,
-    login,
-    logout,
-    updateProfile,
-    refreshUser: fetchCurrentUser,
-  };
+  const value = useMemo(
+    () => ({
+      user,
+      token,
+      loading,
+      isAuthenticated: !!user,
+      register,
+      login,
+      logout,
+      updateProfile,
+      refreshUser: fetchCurrentUser,
+    }),
+    [
+      user,
+      token,
+      loading,
+      register,
+      login,
+      logout,
+      updateProfile,
+      fetchCurrentUser,
+    ],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
