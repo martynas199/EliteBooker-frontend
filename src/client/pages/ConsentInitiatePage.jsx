@@ -6,6 +6,7 @@ import { api } from "../../shared/lib/apiClient";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
 import Button from "../../shared/components/ui/Button";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 export default function ConsentInitiatePage() {
   const location = useLocation();
@@ -37,7 +38,7 @@ export default function ConsentInitiatePage() {
   useEffect(() => {
     if (!serviceId) {
       setLoadingError(
-        "Missing service information. Please try again from your appointments."
+        "Missing service information. Please try again from your appointments.",
       );
       setLoading(false);
       return;
@@ -55,7 +56,7 @@ export default function ConsentInitiatePage() {
       if (bookingId) {
         const bookingResponse = await api.get(`/client/bookings`);
         const booking = bookingResponse.data.bookings?.find(
-          (b) => b._id === bookingId
+          (b) => b._id === bookingId,
         );
         if (booking?.clientId) {
           setClientId(booking.clientId);
@@ -93,9 +94,8 @@ export default function ConsentInitiatePage() {
       });
 
       console.log("✅ Consent template response:", response.data);
-
       if (!response.data.data) {
-        setLoadingError("No consent template found for this service.");
+        setLoadingError("No consent form found for this service");
         return;
       }
 
@@ -120,10 +120,10 @@ export default function ConsentInitiatePage() {
       console.error("Error response:", error.response?.data);
       console.error(
         "Request URL was:",
-        `/consent-templates/service/${serviceId}`
+        `/consent-templates/service/${serviceId}`,
       );
       setLoadingError(
-        error.response?.data?.message || "Failed to load consent form"
+        error.response?.data?.message || "Failed to load consent form",
       );
     } finally {
       setLoading(false);
@@ -221,7 +221,7 @@ export default function ConsentInitiatePage() {
     } catch (error) {
       console.error("Error submitting consent:", error);
       setLoadingError(
-        error.response?.data?.message || "Failed to submit consent form"
+        error.response?.data?.message || "Failed to submit consent form",
       );
     } finally {
       setSubmitting(false);
@@ -234,16 +234,27 @@ export default function ConsentInitiatePage() {
     }
   };
 
+  const renderWithSeo = (content) => (
+    <>
+      <SEOHead
+        title="Consent Form"
+        description="Secure consent form workflow."
+        noindex
+      />
+      {content}
+    </>
+  );
+
   if (loading) {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <LoadingSpinner />
-      </div>
+      </div>,
     );
   }
 
   if (success) {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6">
         <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 sm:p-12 max-w-md w-full text-center">
           <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
@@ -262,12 +273,12 @@ export default function ConsentInitiatePage() {
             Back to Appointments
           </button>
         </div>
-      </div>
+      </div>,
     );
   }
 
   if (loadingError) {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-2xl mx-auto">
           <button
@@ -297,11 +308,11 @@ export default function ConsentInitiatePage() {
             </div>
           </div>
         </div>
-      </div>
+      </div>,
     );
   }
 
-  return (
+  return renderWithSeo(
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
@@ -559,6 +570,6 @@ export default function ConsentInitiatePage() {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
   );
 }

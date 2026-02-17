@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../shared/contexts/AuthContext";
 import LoadingSpinner from "../../shared/components/ui/LoadingSpinner";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 export default function AuthSuccessPage() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export default function AuthSuccessPage() {
       // OAuth flow with token in URL - this shouldn't happen with httpOnly cookies
       // Redirect to home since proper OAuth sets cookie on backend
       console.error(
-        "Unexpected token in URL - OAuth should use httpOnly cookies"
+        "Unexpected token in URL - OAuth should use httpOnly cookies",
       );
       navigate("/", { replace: true });
     } else {
@@ -35,8 +36,16 @@ export default function AuthSuccessPage() {
   }, [searchParams, login, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <LoadingSpinner size="lg" />
-    </div>
+    <>
+      <SEOHead
+        title="Authentication Redirect"
+        description="Completing secure sign-in."
+        canonical="https://www.elitebooker.co.uk/auth/success"
+        noindex
+      />
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    </>
   );
 }

@@ -234,7 +234,10 @@ export default function FeaturesPage() {
               })}
             </section>
 
-            <section id="platform-feature-catalog" className="mt-10 scroll-mt-28 sm:mt-12">
+            <section
+              id="platform-feature-catalog"
+              className="mt-10 scroll-mt-28 sm:mt-12"
+            >
               <div className="mb-4 flex items-center gap-2 sm:mb-5">
                 <Settings2 className="h-5 w-5 text-slate-700" />
                 <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
@@ -278,7 +281,10 @@ export default function FeaturesPage() {
               </div>
             </section>
 
-            <section id="recommended-next-features" className="mt-10 scroll-mt-28 sm:mt-12">
+            <section
+              id="recommended-next-features"
+              className="mt-10 scroll-mt-28 sm:mt-12"
+            >
               <div className="mb-4 flex items-center gap-2 sm:mb-5">
                 <Sparkles className="h-5 w-5 text-slate-700" />
                 <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
@@ -336,6 +342,44 @@ export default function FeaturesPage() {
                   Browse local solutions
                 </Link>
               </p>
+            </section>
+
+            <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-5 shadow-lg sm:p-6">
+              <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
+                UK niche guides
+              </h2>
+              <div className="mt-4 flex flex-wrap gap-2 text-sm">
+                <Link
+                  to="/salon-booking-software-uk"
+                  className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-slate-900 hover:bg-slate-50"
+                >
+                  Salon booking software UK
+                </Link>
+                <Link
+                  to="/barbershop-booking-software-uk"
+                  className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-slate-900 hover:bg-slate-50"
+                >
+                  Barbershop booking software UK
+                </Link>
+                <Link
+                  to="/nail-salon-booking-software-uk"
+                  className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-slate-900 hover:bg-slate-50"
+                >
+                  Nail salon booking software UK
+                </Link>
+                <Link
+                  to="/beauty-salon-booking-system-uk"
+                  className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-slate-900 hover:bg-slate-50"
+                >
+                  Beauty salon booking system UK
+                </Link>
+                <Link
+                  to="/hairdresser-booking-software-uk"
+                  className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-slate-900 hover:bg-slate-50"
+                >
+                  Hairdresser booking software UK
+                </Link>
+              </div>
             </section>
           </div>
         </main>

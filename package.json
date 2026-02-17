@@ -11,6 +11,7 @@
     "seo:tripwire": "node scripts/seoTripwireCheck.js",
     "seo:coverage": "node scripts/seoComponentCoverageCheck.js",
     "seo:robots": "node scripts/seoRobotsCheck.js",
+    "seo:snapshot": "node scripts/seoPrioritySnapshot.js",
     "seo:check": "npm run sitemap && npm run seo:tripwire && npm run seo:robots",
     "seo:verify": "node scripts/verifyLiveSeo.js",
     "preview": "vite preview",

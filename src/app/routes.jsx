@@ -76,6 +76,7 @@ const RoiCalculator = lazy(() => import("../system/pages/tools/RoiCalculator"));
 const DepositPolicyGenerator = lazy(() =>
   import("../system/pages/tools/DepositPolicyGenerator"),
 );
+const UkMoneyPage = lazy(() => import("../system/pages/uk/UkMoneyPage"));
 
 // Lazy load tenant pages
 const SalonDetails = lazy(() => import("../tenant/pages/SalonDetails"));
@@ -435,6 +436,48 @@ export default function AppRoutes() {
           element={
             <Suspense fallback={<LoadingSpinner />}>
               <PricingPage />
+            </Suspense>
+          }
+        />
+
+        {/* UK Money Pages */}
+        <Route
+          path="/salon-booking-software-uk"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <UkMoneyPage slug="salon-booking-software-uk" />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/barbershop-booking-software-uk"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <UkMoneyPage slug="barbershop-booking-software-uk" />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/nail-salon-booking-software-uk"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <UkMoneyPage slug="nail-salon-booking-software-uk" />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/beauty-salon-booking-system-uk"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <UkMoneyPage slug="beauty-salon-booking-system-uk" />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/hairdresser-booking-software-uk"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <UkMoneyPage slug="hairdresser-booking-software-uk" />
             </Suspense>
           }
         />

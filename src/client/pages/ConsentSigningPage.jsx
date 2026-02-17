@@ -9,6 +9,7 @@ import {
 import SignatureCanvas from "react-signature-canvas";
 import { api } from "../../shared/lib/apiClient";
 import toast from "react-hot-toast";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 export default function ConsentSigningPage() {
   const { token } = useParams();
@@ -204,19 +205,30 @@ export default function ConsentSigningPage() {
     (s) => s.type === "signature",
   );
 
+  const renderWithSeo = (content) => (
+    <>
+      <SEOHead
+        title="Consent Form"
+        description="Secure consent form workflow."
+        noindex
+      />
+      {content}
+    </>
+  );
+
   if (loading) {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading consent form...</p>
         </div>
-      </div>
+      </div>,
     );
   }
 
   if (error) {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
           <XCircleIcon className="w-16 h-16 text-red-500 mx-auto mb-4" />
@@ -231,12 +243,12 @@ export default function ConsentSigningPage() {
             Return Home
           </button>
         </div>
-      </div>
+      </div>,
     );
   }
 
   if (alreadySigned) {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
           <CheckCircleIcon className="w-16 h-16 text-green-500 mx-auto mb-4" />
@@ -254,13 +266,13 @@ export default function ConsentSigningPage() {
             Return Home
           </button>
         </div>
-      </div>
+      </div>,
     );
   }
 
   // Step 0: Personal Information
   if (currentStep === 0) {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -320,13 +332,13 @@ export default function ConsentSigningPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div>,
     );
   }
 
   // Step 1: Review Consent Form
   if (currentStep === 1) {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -366,13 +378,13 @@ export default function ConsentSigningPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div>,
     );
   }
 
   // Step 2: Signature
   if (currentStep === 2) {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -458,12 +470,12 @@ export default function ConsentSigningPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div>,
     );
   }
 
   // Step 3: Success
-  return (
+  return renderWithSeo(
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
         <CheckCircleIcon className="w-20 h-20 text-green-500 mx-auto mb-6" />
@@ -488,6 +500,6 @@ export default function ConsentSigningPage() {
           Return Home
         </button>
       </div>
-    </div>
+    </div>,
   );
 }

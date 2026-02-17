@@ -36,6 +36,57 @@ export const MARKETING_ROUTE_MANIFEST = [
     intent: "core",
   },
   {
+    path: "/salon-booking-software-uk",
+    title: "Salon Booking Software UK | Online Appointments for Growing Teams",
+    description:
+      "UK salon booking software for online appointments, reminders, deposits, and team scheduling.",
+    indexable: true,
+    changefreq: "monthly",
+    priority: 0.9,
+    intent: "money-page",
+  },
+  {
+    path: "/barbershop-booking-software-uk",
+    title: "Barbershop Booking Software UK | Fill Chairs and Reduce Gaps",
+    description:
+      "UK barbershop booking software with online appointments, slot controls, reminders, and staff scheduling.",
+    indexable: true,
+    changefreq: "monthly",
+    priority: 0.9,
+    intent: "money-page",
+  },
+  {
+    path: "/nail-salon-booking-software-uk",
+    title: "Nail Salon Booking Software UK | Appointments, Reminders, Deposits",
+    description:
+      "UK nail salon booking software to manage appointments, add-ons, reminders, and deposit rules.",
+    indexable: true,
+    changefreq: "monthly",
+    priority: 0.9,
+    intent: "money-page",
+  },
+  {
+    path: "/beauty-salon-booking-system-uk",
+    title:
+      "Beauty Salon Booking System UK | Scheduling, Reminders, Team Control",
+    description:
+      "Beauty salon booking system for UK businesses with online scheduling, reminders, and policy controls.",
+    indexable: true,
+    changefreq: "monthly",
+    priority: 0.9,
+    intent: "money-page",
+  },
+  {
+    path: "/hairdresser-booking-software-uk",
+    title: "Hairdresser Booking Software UK | Online Diary for Hair Teams",
+    description:
+      "Hairdresser booking software in the UK for consultation-led services, reminders, and scheduling controls.",
+    indexable: true,
+    changefreq: "monthly",
+    priority: 0.9,
+    intent: "money-page",
+  },
+  {
     path: "/signup",
     title: "Create Your Business Account | Elite Booker",
     description:
@@ -136,9 +187,9 @@ export const MARKETING_ROUTE_MANIFEST = [
   },
   {
     path: "/compare/vs-fresha",
-    title: "Elite Booker vs Fresha - Which Is Cheaper? (2026 Comparison)",
+    title: "Elite Booker vs Fresha | UK Pricing & Fee Comparison",
     description:
-      "Honest comparison: Elite Booker saves you GBP 180+/year vs Fresha. GBP 0/month with no commission. SMS optional. See real cost breakdown with verified pricing.",
+      "Source-linked UK comparison page covering subscription, commission, payment, and SMS pricing structure between Elite Booker and Fresha.",
     indexable: true,
     changefreq: "monthly",
     priority: 0.9,
@@ -146,9 +197,9 @@ export const MARKETING_ROUTE_MANIFEST = [
   },
   {
     path: "/compare/vs-treatwell",
-    title: "Elite Booker vs Treatwell - Stop Paying 30% Commission",
+    title: "Elite Booker vs Treatwell | UK Pricing & Commission Comparison",
     description:
-      "Treatwell charges 30% commission per booking. Elite Booker charges GBP 29/month flat. See how much you could save by switching.",
+      "Source-linked UK comparison page covering subscription tiers, commission model, and booking-cost structure between Elite Booker and Treatwell.",
     indexable: true,
     changefreq: "monthly",
     priority: 0.9,
@@ -346,7 +397,7 @@ export const getProgrammaticSeoRoutes = () =>
     path: page.url,
     title: page.title,
     description: page.metaDescription,
-    indexable: true,
+    indexable: page.indexable !== false,
     changefreq: "monthly",
     priority: 0.7,
     intent: "location",

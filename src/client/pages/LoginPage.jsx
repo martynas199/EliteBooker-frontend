@@ -100,6 +100,7 @@ export default function ClientLoginPage() {
       <SEOHead
         title="Log In - EliteBooker"
         description="Log in to your EliteBooker account to manage your bookings and appointments."
+        noindex
       />
 
       <div className="min-h-screen bg-gray-50">

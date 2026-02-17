@@ -107,6 +107,7 @@ export default function ClientRegisterPage() {
       <SEOHead
         title="Sign Up - EliteBooker"
         description="Create your EliteBooker account to start booking beauty appointments."
+        noindex
       />
 
       <div className="min-h-screen bg-gray-50">

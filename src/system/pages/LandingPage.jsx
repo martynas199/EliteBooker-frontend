@@ -4,7 +4,6 @@ import DemoRequestModal from "../../shared/components/modals/DemoRequestModal";
 import { motion } from "framer-motion";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import OrganizationSchema from "../../shared/components/Schema/OrganizationSchema";
-import { useInViewOnce } from "../../shared/hooks/useInViewOnce";
 import { stats } from "./landing/landingData";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -30,13 +29,6 @@ export default function LandingPage() {
   const isBusinessAlias = location.pathname === "/business";
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [showDemoModal, setShowDemoModal] = useState(false);
-
-  // IntersectionObserver hooks for lazy rendering sections
-  const featuresObserver = useInViewOnce({ rootMargin: "200px" });
-  const demoObserver = useInViewOnce({ rootMargin: "200px" });
-  const testimonialsObserver = useInViewOnce({ rootMargin: "200px" });
-  const pricingObserver = useInViewOnce({ rootMargin: "200px" });
-  const ctaObserver = useInViewOnce({ rootMargin: "200px" });
 
   return (
     <>
@@ -119,25 +111,27 @@ export default function LandingPage() {
                     />
                   </svg>
                   <span className="text-sm font-semibold text-slate-800">
-                    Trusted by 500+ UK Salons & Spas
+                    Built for UK salons and service businesses
                   </span>
                 </motion.div>
 
                 {/* Main Headline - Problem/Solution */}
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
-                  <span className="block text-gray-900">Stop Losing</span>
+                  <span className="block text-gray-900">Keep More of</span>
                   <span className="block bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-                    20% Commission
+                    Every Booking
                   </span>
-                  <span className="block text-gray-900">to Fresha</span>
+                  <span className="block text-gray-900">in Your Business</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-gray-700 mb-4 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  Keep 100% of your earnings. Elite Booker is the UK's only{" "}
+                  Keep more control over your schedule and margin. Elite Booker
+                  is a UK-focused{" "}
                   <span className="text-slate-700 font-bold">
-                    commission-free
+                    booking platform
                   </span>{" "}
-                  booking software.
+                  with clear pricing, direct client ownership, and no
+                  marketplace commission model.
                 </p>
 
                 {/* Stats Bar */}
@@ -157,10 +151,10 @@ export default function LandingPage() {
                     <div className="flex items-center gap-1">
                       <span className="text-yellow-400 text-lg">★★★★★</span>
                       <span className="text-sm font-semibold text-gray-900">
-                        4.9
+                        User-rated
                       </span>
                       <span className="text-sm text-gray-600">
-                        (247 reviews)
+                        (see public reviews)
                       </span>
                     </div>
                   </div>
@@ -169,9 +163,9 @@ export default function LandingPage() {
                 {/* Value Prop */}
                 <p className="text-base md:text-lg text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0">
                   <span className="font-semibold text-gray-900">
-                    Save £2,500-£12,000/year
+                    Reduce manual booking admin
                   </span>{" "}
-                  vs marketplace platforms. Start with our{" "}
+                  with structured workflows. Start with our{" "}
                   <span className="font-semibold text-gray-900">
                     free forever plan
                   </span>
@@ -188,7 +182,7 @@ export default function LandingPage() {
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-slate-800 to-slate-700 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="relative flex items-center justify-center gap-2">
-                      <span className="text-lg">Start Free Forever</span>
+                      <span className="text-lg">Start Free in Minutes</span>
                       <svg
                         className="w-5 h-5 group-hover:translate-x-1 transition-transform"
                         fill="none"
@@ -215,7 +209,7 @@ export default function LandingPage() {
                     }}
                     className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-xl hover:border-slate-500 hover:text-slate-700 transition-all shadow-md hover:shadow-lg"
                   >
-                    See Pricing →
+                    Compare Pricing →
                   </motion.button>
                 </div>
 
@@ -251,6 +245,27 @@ export default function LandingPage() {
                     <span className="font-medium">Cancel anytime</span>
                   </div>
                 </div>
+
+                <div className="mt-5 flex flex-wrap gap-2 justify-center lg:justify-start text-xs">
+                  <a
+                    href="/salon-booking-software-uk"
+                    className="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-800 hover:bg-slate-50"
+                  >
+                    Salon booking software UK
+                  </a>
+                  <a
+                    href="/barbershop-booking-software-uk"
+                    className="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-800 hover:bg-slate-50"
+                  >
+                    Barbershop booking software UK
+                  </a>
+                  <a
+                    href="/nail-salon-booking-software-uk"
+                    className="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-800 hover:bg-slate-50"
+                  >
+                    Nail salon booking software UK
+                  </a>
+                </div>
               </motion.div>
 
               {/* Right Content - Comparison Card */}
@@ -270,7 +285,6 @@ export default function LandingPage() {
                     </span>
                   </div>
 
-                  {/* Fresha */}
                   <div className="mb-6 p-4 bg-red-50 rounded-xl border border-red-200">
                     <div className="flex items-center justify-between mb-3">
                       <span className="font-bold text-gray-900">Fresha</span>
@@ -304,24 +318,25 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  {/* Elite Booker */}
-                  <div className="p-4 bg-slate-50 rounded-xl border-2 border-slate-300">
+                  <div className="p-4 bg-emerald-50 rounded-xl border-2 border-emerald-300">
                     <div className="flex items-center justify-between mb-3">
                       <span className="font-bold text-gray-900">
                         Elite Booker
                       </span>
-                      <span className="text-slate-700 font-bold">You Keep</span>
+                      <span className="text-emerald-700 font-bold">
+                        You Keep
+                      </span>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Free Plan</span>
-                        <span className="font-semibold text-slate-700">
+                        <span className="font-semibold text-emerald-700">
                           £0/year
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Commission</span>
-                        <span className="font-semibold text-slate-700">
+                        <span className="font-semibold text-emerald-700">
                           £0 Forever
                         </span>
                       </div>
@@ -333,16 +348,15 @@ export default function LandingPage() {
                           £120/year
                         </span>
                       </div>
-                      <div className="border-t-2 border-slate-300 pt-2 mt-2 flex justify-between">
+                      <div className="border-t-2 border-emerald-200 pt-2 mt-2 flex justify-between">
                         <span className="font-bold">Total Cost</span>
-                        <span className="font-bold text-slate-700 text-lg">
+                        <span className="font-bold text-emerald-700 text-lg">
                           £0-£120/year
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Savings */}
                   <div className="mt-6 p-4 bg-gradient-to-r from-slate-900 to-slate-700 rounded-xl text-white text-center">
                     <p className="text-sm font-semibold mb-1">YOU SAVE</p>
                     <p className="text-4xl font-extrabold">£2,759+</p>
@@ -351,8 +365,9 @@ export default function LandingPage() {
                     </p>
                   </div>
 
-                  <p className="text-xs text-gray-500 text-center mt-4">
-                    Based on £12,000 annual revenue.{" "}
+                  <p className="text-xs text-gray-500 text-center mt-4 leading-relaxed">
+                    Based on £12,000 annual revenue (illustrative scenario).
+                    Assumptions and source links on comparison page.{" "}
                     <button
                       onClick={() => navigate("/compare/vs-fresha")}
                       className="text-slate-700 hover:underline font-semibold"
@@ -373,19 +388,19 @@ export default function LandingPage() {
               {[
                 {
                   value: "£0",
-                  label: "Commission Forever",
-                },
-                {
-                  value: "70%",
-                  label: "Fewer No-Shows",
+                  label: "Base Plan Available",
                 },
                 {
                   value: "24/7",
                   label: "Online Booking",
                 },
                 {
-                  value: "500+",
-                  label: "UK Businesses",
+                  value: "SMS",
+                  label: "Reminder Workflows",
+                },
+                {
+                  value: "UK",
+                  label: "Market Focus",
                 },
               ].map((stat, i) => (
                 <motion.div
@@ -416,8 +431,8 @@ export default function LandingPage() {
                 Why beauty professionals choose Elite Booker
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Say goodbye to expensive commissions and hello to keeping 100%
-                of your earnings.
+                Replace ad-hoc booking admin with predictable scheduling and
+                clear client communication.
               </p>
             </div>
 
@@ -439,9 +454,9 @@ export default function LandingPage() {
                       />
                     </svg>
                   ),
-                  title: "Zero commission",
+                  title: "Flexible pricing",
                   description:
-                    "Keep 100% of your earnings. No hidden fees or percentage cuts on bookings.",
+                    "Choose a plan that fits your workflow and scale as your team grows.",
                 },
                 {
                   icon: (
@@ -479,9 +494,9 @@ export default function LandingPage() {
                       />
                     </svg>
                   ),
-                  title: "Reduce no-shows by 70%",
+                  title: "Reduce missed appointments",
                   description:
-                    "Automated SMS reminders and deposit protection keep your schedule full.",
+                    "Reminder and policy tools help improve booking reliability.",
                 },
                 {
                   icon: (
@@ -553,49 +568,31 @@ export default function LandingPage() {
         </section>
 
         {/* Features Section */}
-        <div ref={featuresObserver.ref}>
-          {featuresObserver.inView && (
-            <Suspense fallback={<SectionFallback />}>
-              <FeaturesSection />
-            </Suspense>
-          )}
-        </div>
+        <Suspense fallback={<SectionFallback />}>
+          <FeaturesSection />
+        </Suspense>
 
         {/* Demo Section */}
-        <div ref={demoObserver.ref}>
-          {demoObserver.inView && (
-            <Suspense fallback={<SectionFallback />}>
-              <DemoSection onDemoClick={() => setShowDemoModal(true)} />
-            </Suspense>
-          )}
-        </div>
+        <Suspense fallback={<SectionFallback />}>
+          <DemoSection onDemoClick={() => setShowDemoModal(true)} />
+        </Suspense>
 
         {/* Testimonials Section */}
-        <div ref={testimonialsObserver.ref}>
-          {testimonialsObserver.inView && (
-            <Suspense fallback={<SectionFallback />}>
-              <TestimonialsSection />
-            </Suspense>
-          )}
-        </div>
+        <Suspense fallback={<SectionFallback />}>
+          <TestimonialsSection />
+        </Suspense>
 
         {/* Pricing Section */}
-        <div ref={pricingObserver.ref} id="pricing-section">
-          {pricingObserver.inView && (
-            <Suspense fallback={<SectionFallback />}>
-              <PricingSection onShowFeeModal={() => setShowFeeModal(true)} />
-            </Suspense>
-          )}
+        <div id="pricing-section">
+          <Suspense fallback={<SectionFallback />}>
+            <PricingSection onShowFeeModal={() => setShowFeeModal(true)} />
+          </Suspense>
         </div>
 
         {/* Final CTA Section */}
-        <div ref={ctaObserver.ref}>
-          {ctaObserver.inView && (
-            <Suspense fallback={<SectionFallback />}>
-              <FinalCtaSection />
-            </Suspense>
-          )}
-        </div>
+        <Suspense fallback={<SectionFallback />}>
+          <FinalCtaSection />
+        </Suspense>
 
         <Footer />
 

@@ -418,6 +418,29 @@ export const NICHES = [
   },
 ];
 
+const INDEXABLE_CITY_SLUGS = new Set([
+  "london",
+  "birmingham",
+  "manchester",
+  "leeds",
+  "liverpool",
+  "glasgow",
+  "edinburgh",
+  "bristol",
+  "cardiff",
+  "newcastle",
+]);
+
+const INDEXABLE_NICHE_SLUGS = new Set([
+  "hair-salons",
+  "barbers",
+  "nail-techs",
+  "lash-techs",
+]);
+
+export const isIndexableLandingPage = (nicheSlug, citySlug) =>
+  INDEXABLE_CITY_SLUGS.has(citySlug) && INDEXABLE_NICHE_SLUGS.has(nicheSlug);
+
 /**
  * Generate all city + niche combinations (400+ landing pages)
  */
@@ -431,17 +454,18 @@ export const generateLandingPages = () => {
         city,
         niche,
         title: `Booking Software for ${city.name} ${niche.pluralName} | Elite Booker`,
-        metaDescription: `The #1 no-commission booking system for ${
+        metaDescription: `Booking software for ${
           city.name
-        } ${niche.pluralName.toLowerCase()}. £0 setup, £0.99 fee on Basic plan. Stop paying 20% to Fresha. Get started free today.`,
-        h1: `The #1 No-Commission Booking System for ${city.name} ${niche.pluralName}`,
+        } ${niche.pluralName.toLowerCase()} with online scheduling, reminders, deposits, and calendar management for UK businesses.`,
+        h1: `Booking Software for ${city.name} ${niche.pluralName}`,
         keywords: [
           `booking software ${city.name.toLowerCase()}`,
           `${niche.pluralName.toLowerCase()} ${city.name.toLowerCase()}`,
           `appointment software ${niche.pluralName.toLowerCase()}`,
           `${city.name.toLowerCase()} ${niche.singularName.toLowerCase()} booking system`,
-          `no commission booking ${city.name.toLowerCase()}`,
+          `uk booking software ${city.name.toLowerCase()}`,
         ],
+        indexable: isIndexableLandingPage(niche.slug, city.slug),
       });
     });
   });
@@ -462,14 +486,15 @@ export const getLandingPageData = (nicheSlug, citySlug) => {
     city,
     niche,
     title: `Booking Software for ${city.name} ${niche.pluralName} | Elite Booker`,
-    metaDescription: `The #1 no-commission booking system for ${
+    metaDescription: `Booking software for ${
       city.name
-    } ${niche.pluralName.toLowerCase()}. £0 setup, £0.99 fee on Basic plan. Stop paying 20% to Fresha. Get started free today.`,
-    h1: `The #1 No-Commission Booking System for ${city.name} ${niche.pluralName}`,
-    heroSubheading: `Join ${Math.floor(50 + Math.random() * 100)} ${
+    } ${niche.pluralName.toLowerCase()} with online scheduling, reminders, deposits, and calendar management for UK businesses.`,
+    h1: `Booking Software for ${city.name} ${niche.pluralName}`,
+    heroSubheading: `Explore booking workflows, reminders, deposits, and calendar tools for ${
       city.name
-    } ${niche.pluralName.toLowerCase()} who stopped paying 20% commission to marketplaces. Start free, pay £0/month on our Basic plan forever.`,
+    } ${niche.pluralName.toLowerCase()} in the UK market.`,
     url: `/solutions/${nicheSlug}-${citySlug}`,
+    indexable: isIndexableLandingPage(nicheSlug, citySlug),
     breadcrumbs: [
       { label: "Home", url: "/" },
       { label: "Solutions", url: "/solutions" },

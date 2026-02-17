@@ -22,12 +22,39 @@ const LAST_MOD = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const OUTPUT_PATH = path.resolve(__dirname, "../public/sitemap.xml");
+const DIST_OUTPUT_PATH = path.resolve(__dirname, "../dist/sitemap.xml");
+
+const EXCLUDED_PREFIXES = [
+  "/admin",
+  "/client",
+  "/consent",
+  "/appointments/consent",
+  "/menu",
+  "/404",
+  "/auth/success",
+  "/referral-login",
+  "/referral-dashboard",
+  "/join-referral-program",
+];
+
+const EXCLUDED_EXACT = new Set(["/login", "/register"]);
+
+const shouldExcludePath = (rawPath = "") => {
+  const normalized = `${rawPath}`.split("?")[0].split("#")[0] || "/";
+  if (EXCLUDED_EXACT.has(normalized)) return true;
+  if (EXCLUDED_PREFIXES.some((prefix) => normalized.startsWith(prefix))) {
+    return true;
+  }
+  return false;
+};
 
 const buildSitemapEntries = () => {
   const byCanonical = new Map();
 
   getAllSeoRoutes()
-    .filter((route) => route.indexable !== false)
+    .filter(
+      (route) => route.indexable !== false && !shouldExcludePath(route.path),
+    )
     .forEach((route) => {
       const canonicalLoc = canonicalForPath(route.path, route.canonical);
       if (!byCanonical.has(canonicalLoc)) {
@@ -85,7 +112,11 @@ if (shouldWriteToStdout) {
   console.log(sitemapXml);
 } else {
   fs.writeFileSync(OUTPUT_PATH, sitemapXml, "utf8");
+  if (fs.existsSync(path.dirname(DIST_OUTPUT_PATH))) {
+    fs.writeFileSync(DIST_OUTPUT_PATH, sitemapXml, "utf8");
+  }
   console.error(`Sitemap written to: ${OUTPUT_PATH}`);
+  console.error(`Sitemap written to: ${DIST_OUTPUT_PATH}`);
 }
 
 console.error(
