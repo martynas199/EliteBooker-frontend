@@ -114,7 +114,9 @@ export default function Settings() {
     const tenant = settingsPayload.tenant || {};
 
     const activeHeroSection =
-      heroSections.find((section) => section?.active) || heroSections[0] || null;
+      heroSections.find((section) => section?.active) ||
+      heroSections[0] ||
+      null;
     const businessName = settings.salonName || "";
     const defaultShareTitle = businessName ? `Book with ${businessName}` : "";
     const defaultShareDescription =

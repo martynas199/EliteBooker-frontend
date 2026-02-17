@@ -164,7 +164,12 @@ export default function SalonLandingLuxury() {
   const isSeminarsEnabled = tenant?.features?.seminars !== false;
 
   const { data: landingData, isLoading: loading } = useQuery({
-    queryKey: ["tenant", "landing", tenant?._id || tenant?.slug || "platform", isSeminarsEnabled],
+    queryKey: [
+      "tenant",
+      "landing",
+      tenant?._id || tenant?.slug || "platform",
+      isSeminarsEnabled,
+    ],
     queryFn: async ({ signal }) => {
       try {
         const [
@@ -194,7 +199,8 @@ export default function SalonLandingLuxury() {
         const heroSections = Array.isArray(heroSectionsRes.data)
           ? heroSectionsRes.data
           : [];
-        const activeHero = heroSections.find((h) => h.active) || heroSections[0] || null;
+        const activeHero =
+          heroSections.find((h) => h.active) || heroSections[0] || null;
         const activeSpecialists = Array.isArray(specialistsRes.data)
           ? specialistsRes.data.filter((b) => b.active)
           : [];
@@ -252,7 +258,9 @@ export default function SalonLandingLuxury() {
       return;
     }
 
-    const isInFavorites = favoritesData.some((fav) => (fav._id || fav) === tenant._id);
+    const isInFavorites = favoritesData.some(
+      (fav) => (fav._id || fav) === tenant._id,
+    );
     setIsFavorite(isInFavorites);
   }, [isAuthenticated, tenant?._id, favoritesData]);
 

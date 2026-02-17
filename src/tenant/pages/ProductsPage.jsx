@@ -32,7 +32,7 @@ import { generateBreadcrumbSchema } from "../../shared/utils/schemaGenerator";
 
 // Lazy load ProductDetailModal (only loads when user clicks a product)
 const ProductDetailModal = lazy(() =>
-  import("../components/ProductDetailModal")
+  import("../components/ProductDetailModal"),
 );
 
 export default function ProductsPage() {
@@ -86,7 +86,7 @@ export default function ProductsPage() {
       dragFree: false,
       inViewThreshold: 0.7,
     },
-    [Autoplay(autoplayOptions)]
+    [Autoplay(autoplayOptions)],
   );
 
   const { data: products = [], isLoading: productsLoading } = useQuery({
@@ -149,7 +149,9 @@ export default function ProductsPage() {
 
   const brands = useMemo(
     () =>
-      [...new Set(products.map((p) => p.brand).filter((b) => b && b.trim()))].sort(),
+      [
+        ...new Set(products.map((p) => p.brand).filter((b) => b && b.trim())),
+      ].sort(),
     [products],
   );
 
@@ -278,7 +280,7 @@ export default function ProductsPage() {
           p.title.toLowerCase().includes(query) ||
           p.description?.toLowerCase().includes(query) ||
           p.category?.toLowerCase().includes(query) ||
-          p.brand?.toLowerCase().includes(query)
+          p.brand?.toLowerCase().includes(query),
       );
     }
 
@@ -649,7 +651,7 @@ export default function ProductsPage() {
                           {brand}
                         </button>
                       </div>
-                    ))
+                    )),
                   )}
                 </div>
               </div>
@@ -772,8 +774,8 @@ export default function ProductsPage() {
                               0,
                               Math.min(
                                 Number(e.target.value),
-                                tempPriceRange.max - 1
-                              )
+                                tempPriceRange.max - 1,
+                              ),
                             );
                             setTempPriceRange((prev) => ({
                               ...prev,
@@ -806,7 +808,7 @@ export default function ProductsPage() {
                           onChange={(e) => {
                             const value = Math.max(
                               tempPriceRange.min + 1,
-                              Math.min(Number(e.target.value), maxPrice)
+                              Math.min(Number(e.target.value), maxPrice),
                             );
                             setTempPriceRange((prev) => ({
                               ...prev,

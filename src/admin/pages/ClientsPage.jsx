@@ -56,31 +56,34 @@ export default function ClientsPage() {
     { searchTerm, statusFilter, sortBy, sortOrder, page, limit },
   ];
 
-  const { data: clientsData, isLoading: loading, refetch: refetchClients } =
-    useQuery({
-      queryKey: clientsQueryKey,
-      queryFn: async ({ signal }) => {
-        try {
-          const params = new URLSearchParams();
-          if (searchTerm) params.append("search", searchTerm);
-          if (statusFilter !== "all") params.append("status", statusFilter);
-          params.append("sortBy", sortBy);
-          params.append("sortOrder", sortOrder);
-          params.append("limit", String(limit));
-          params.append("skip", String(page * limit));
+  const {
+    data: clientsData,
+    isLoading: loading,
+    refetch: refetchClients,
+  } = useQuery({
+    queryKey: clientsQueryKey,
+    queryFn: async ({ signal }) => {
+      try {
+        const params = new URLSearchParams();
+        if (searchTerm) params.append("search", searchTerm);
+        if (statusFilter !== "all") params.append("status", statusFilter);
+        params.append("sortBy", sortBy);
+        params.append("sortOrder", sortOrder);
+        params.append("limit", String(limit));
+        params.append("skip", String(page * limit));
 
-          const response = await api.get(`/admin/clients?${params.toString()}`, {
-            signal,
-          });
-          return response.data;
-        } catch (error) {
-          console.error("Failed to fetch clients:", error);
-          return { clients: [], total: 0, hasMore: false };
-        }
-      },
-      staleTime: 60 * 1000,
-      gcTime: 5 * 60 * 1000,
-    });
+        const response = await api.get(`/admin/clients?${params.toString()}`, {
+          signal,
+        });
+        return response.data;
+      } catch (error) {
+        console.error("Failed to fetch clients:", error);
+        return { clients: [], total: 0, hasMore: false };
+      }
+    },
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+  });
 
   const { data: segments } = useQuery({
     queryKey: ["admin", "clients", "segments"],

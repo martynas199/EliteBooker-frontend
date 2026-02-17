@@ -106,7 +106,7 @@ export default function BrandingSettings() {
       });
 
       setSuccess(
-        "Branding settings saved successfully! Refresh the page to see changes."
+        "Branding settings saved successfully! Refresh the page to see changes.",
       );
       fetchBrandingSettings(); // Refresh data
     } catch (err) {

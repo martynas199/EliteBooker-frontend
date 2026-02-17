@@ -4,6 +4,98 @@ import { env } from "./env";
 
 const API_CLIENT_DEBUG =
   import.meta.env.DEV && import.meta.env.VITE_API_CLIENT_DEBUG === "true";
+const API_PROFILE_ENABLED =
+  import.meta.env.DEV && import.meta.env.VITE_API_PROFILE === "true";
+
+const createApiProfiler = () => {
+  if (!API_PROFILE_ENABLED || typeof window === "undefined") {
+    return {
+      start: () => {},
+      end: () => {},
+    };
+  }
+
+  if (!window.__apiRequestProfile) {
+    const profileState = {
+      startedAt: Date.now(),
+      total: 0,
+      success: 0,
+      failed: 0,
+      byRoute: {},
+    };
+
+    window.__apiRequestProfile = {
+      state: profileState,
+      reset: () => {
+        profileState.startedAt = Date.now();
+        profileState.total = 0;
+        profileState.success = 0;
+        profileState.failed = 0;
+        profileState.byRoute = {};
+      },
+      snapshot: () => JSON.parse(JSON.stringify(profileState)),
+      print: () => {
+        const rows = Object.entries(profileState.byRoute).map(([key, val]) => ({
+          route: key,
+          total: val.total,
+          success: val.success,
+          failed: val.failed,
+        }));
+
+        console.group("[API Profile] Summary");
+        console.log({
+          startedAt: new Date(profileState.startedAt).toISOString(),
+          total: profileState.total,
+          success: profileState.success,
+          failed: profileState.failed,
+        });
+        if (rows.length > 0) {
+          console.table(rows);
+        }
+        console.groupEnd();
+      },
+    };
+  }
+
+  const ensureRouteKey = (routeKey) => {
+    const state = window.__apiRequestProfile.state;
+    if (!state.byRoute[routeKey]) {
+      state.byRoute[routeKey] = { total: 0, success: 0, failed: 0 };
+    }
+    return state.byRoute[routeKey];
+  };
+
+  return {
+    start: (config) => {
+      const method = (config.method || "GET").toUpperCase();
+      const routeKey = `${method} ${config.url || "unknown"}`;
+      config.__profileRouteKey = routeKey;
+
+      const state = window.__apiRequestProfile.state;
+      const routeBucket = ensureRouteKey(routeKey);
+
+      state.total += 1;
+      routeBucket.total += 1;
+    },
+    end: (config, isSuccess) => {
+      const routeKey = config?.__profileRouteKey;
+      if (!routeKey) return;
+
+      const state = window.__apiRequestProfile.state;
+      const routeBucket = ensureRouteKey(routeKey);
+
+      if (isSuccess) {
+        state.success += 1;
+        routeBucket.success += 1;
+      } else {
+        state.failed += 1;
+        routeBucket.failed += 1;
+      }
+    },
+  };
+};
+
+const apiProfiler = createApiProfiler();
 
 // Use environment variable for API URL
 // In development: uses localhost with Vite proxy
@@ -17,6 +109,8 @@ export const api = axios.create({
 // Request interceptor: Add tenant slug and admin auth token to requests
 api.interceptors.request.use(
   (config) => {
+    apiProfiler.start(config);
+
     const pathname = window.location.pathname;
     const adminState = store.getState()?.auth?.admin;
 
@@ -101,9 +195,13 @@ const processQueue = (error, token = null) => {
 
 // Response interceptor: Enhanced error handling with automatic token refresh
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    apiProfiler.end(response?.config, true);
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
+    apiProfiler.end(originalRequest, false);
 
     // Handle network errors
     if (!error.response) {

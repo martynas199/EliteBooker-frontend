@@ -64,7 +64,7 @@ export function TenantProvider({ children }) {
   const location = useLocation();
   const tenantResolution = useMemo(
     () => resolveTenantFromURL(),
-    [location.pathname]
+    [location.pathname],
   );
   const tenantResolutionKey = `${tenantResolution.type || "platform"}:${
     tenantResolution.slug || tenantResolution.domain || ""
@@ -169,7 +169,15 @@ export function TenantProvider({ children }) {
         return refetch();
       },
     }),
-    [tenant, loading, error, resolution, queryClient, tenantResolutionKey, refetch],
+    [
+      tenant,
+      loading,
+      error,
+      resolution,
+      queryClient,
+      tenantResolutionKey,
+      refetch,
+    ],
   );
 
   return (
