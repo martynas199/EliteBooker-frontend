@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Search,
   Users,
@@ -28,22 +29,16 @@ import toast from "react-hot-toast";
 
 export default function ClientsPage() {
   const navigate = useNavigate();
-  const [clients, setClients] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("totalSpend");
   const [sortOrder, setSortOrder] = useState("desc");
   const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
-  const [total, setTotal] = useState(0);
-  const [segments, setSegments] = useState(null);
 
   // Modal state
   const [showModal, setShowModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
-  const [clientDetails, setClientDetails] = useState(null);
-  const [loadingDetails, setLoadingDetails] = useState(false);
 
   // Notes editing state
   const [editingNotes, setEditingNotes] = useState(false);
@@ -55,71 +50,83 @@ export default function ClientsPage() {
   const [showSortDrawer, setShowSortDrawer] = useState(false);
 
   const limit = 20;
+  const clientsQueryKey = [
+    "admin",
+    "clients",
+    { searchTerm, statusFilter, sortBy, sortOrder, page, limit },
+  ];
 
-  useEffect(() => {
-    fetchClients();
-  }, [searchTerm, statusFilter, sortBy, sortOrder, page]);
+  const { data: clientsData, isLoading: loading, refetch: refetchClients } =
+    useQuery({
+      queryKey: clientsQueryKey,
+      queryFn: async ({ signal }) => {
+        try {
+          const params = new URLSearchParams();
+          if (searchTerm) params.append("search", searchTerm);
+          if (statusFilter !== "all") params.append("status", statusFilter);
+          params.append("sortBy", sortBy);
+          params.append("sortOrder", sortOrder);
+          params.append("limit", String(limit));
+          params.append("skip", String(page * limit));
 
-  useEffect(() => {
-    fetchSegments();
-  }, []);
+          const response = await api.get(`/admin/clients?${params.toString()}`, {
+            signal,
+          });
+          return response.data;
+        } catch (error) {
+          console.error("Failed to fetch clients:", error);
+          return { clients: [], total: 0, hasMore: false };
+        }
+      },
+      staleTime: 60 * 1000,
+      gcTime: 5 * 60 * 1000,
+    });
 
-  const fetchClients = async () => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams();
-      if (searchTerm) params.append("search", searchTerm);
-      if (statusFilter !== "all") params.append("status", statusFilter);
-      params.append("sortBy", sortBy);
-      params.append("sortOrder", sortOrder);
-      params.append("limit", limit);
-      params.append("skip", page * limit);
+  const { data: segments } = useQuery({
+    queryKey: ["admin", "clients", "segments"],
+    queryFn: async ({ signal }) => {
+      try {
+        const response = await api.get("/admin/clients/segments/all", {
+          signal,
+        });
+        return response.data.segments;
+      } catch (error) {
+        console.error("Failed to fetch segments:", error);
+        return null;
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
-      const response = await api.get(`/admin/clients?${params.toString()}`);
-      setClients(response.data.clients);
-      setTotal(response.data.total);
-      setHasMore(response.data.hasMore);
-    } catch (error) {
-      console.error("Failed to fetch clients:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    data: clientDetails,
+    isLoading: loadingDetails,
+    refetch: refetchClientDetails,
+  } = useQuery({
+    queryKey: ["admin", "clients", "details", selectedClient?.id],
+    queryFn: async ({ signal }) => {
+      const response = await api.get(`/admin/clients/${selectedClient.id}`, {
+        signal,
+      });
+      return response.data;
+    },
+    enabled: showModal && Boolean(selectedClient?.id),
+    staleTime: 30 * 1000,
+  });
 
-  const fetchSegments = async () => {
-    try {
-      const response = await api.get("/admin/clients/segments/all");
-      setSegments(response.data.segments);
-    } catch (error) {
-      console.error("Failed to fetch segments:", error);
-      console.error("Error response:", error.response?.data);
-    }
-  };
-
-  const fetchClientDetails = async (clientId) => {
-    try {
-      setLoadingDetails(true);
-      const response = await api.get(`/admin/clients/${clientId}`);
-      console.log("Client details response:", response.data); // Debug log
-      setClientDetails(response.data);
-    } catch (error) {
-      console.error("Failed to fetch client details:", error);
-    } finally {
-      setLoadingDetails(false);
-    }
-  };
+  const clients = clientsData?.clients || [];
+  const total = clientsData?.total || 0;
+  const hasMore = Boolean(clientsData?.hasMore);
 
   const handleClientClick = async (client) => {
     setSelectedClient(client);
     setShowModal(true);
     setEditingNotes(false);
-    await fetchClientDetails(client.id);
   };
 
   const closeModal = () => {
     setShowModal(false);
     setSelectedClient(null);
-    setClientDetails(null);
     setEditingNotes(false);
     setNotesValue("");
   };
@@ -137,26 +144,19 @@ export default function ClientsPage() {
   const handleSaveNotes = async () => {
     try {
       setSavingNotes(true);
-      console.log(
-        "Saving notes for client:",
-        selectedClient.id,
-        "Notes:",
-        notesValue,
-      ); // Debug
-      const response = await api.patch(`/admin/clients/${selectedClient.id}`, {
+      await api.patch(`/admin/clients/${selectedClient.id}`, {
         internalNotes: notesValue,
       });
-      console.log("Save notes response:", response.data); // Debug
 
       // Refresh client details
-      await fetchClientDetails(selectedClient.id);
+      await refetchClientDetails();
       setEditingNotes(false);
 
       // Also refresh the client list to ensure data is in sync
-      await fetchClients();
+      await refetchClients();
+      queryClient.invalidateQueries({ queryKey: ["admin", "clients"] });
     } catch (error) {
       console.error("Failed to save notes:", error);
-      console.error("Error details:", error.response?.data); // More detailed error logging
       toast.error("Failed to save notes. Please try again.");
     } finally {
       setSavingNotes(false);
@@ -216,16 +216,6 @@ export default function ClientsPage() {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
     setPage(0); // Reset to first page on search
-  };
-
-  const handleStatusChange = (e) => {
-    setStatusFilter(e.target.value);
-    setPage(0);
-  };
-
-  const handleSortChange = (e) => {
-    setSortBy(e.target.value);
-    setPage(0);
   };
 
   return (

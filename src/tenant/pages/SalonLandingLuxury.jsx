@@ -1,12 +1,13 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../../shared/lib/apiClient";
 import { useTenant } from "../../shared/contexts/TenantContext";
 import { useCurrency } from "../../shared/contexts/CurrencyContext";
 import { useClientAuth } from "../../shared/contexts/ClientAuthContext";
-import { addService, setServices, setSpecialist } from "../state/bookingSlice";
+import { addService, setSpecialist } from "../state/bookingSlice";
 import { useBookingAutoCleanup } from "../hooks/useBookingGuard";
 import {
   getFavorites,
@@ -139,6 +140,7 @@ function EmptyState({ type }) {
 export default function SalonLandingLuxury() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const { tenant } = useTenant();
   const { formatPrice } = useCurrency();
   const { client, isAuthenticated } = useClientAuth();
@@ -150,29 +152,20 @@ export default function SalonLandingLuxury() {
   const bookingServices = useSelector((state) => state.booking.services || []);
 
   // State
-  const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState("services"); // 'services' or 'specialists'
-  const [settings, setSettings] = useState(null);
-  const [heroSection, setHeroSection] = useState(null);
-  const [specialists, setSpecialists] = useState([]);
-  const [services, setServices] = useState([]);
-  const [locations, setLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [favorites, setFavorites] = useState([]);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [showGiftCardModal, setShowGiftCardModal] = useState(false);
   const [showLoginDrawer, setShowLoginDrawer] = useState(false);
-  const [featuredSeminars, setFeaturedSeminars] = useState([]);
-  const [seminarsLoading, setSeminarsLoading] = useState(true);
 
   // Check if multi-location feature is enabled from tenant features
   const isMultiLocationEnabled = tenant?.features?.multiLocation || false;
   const isSeminarsEnabled = tenant?.features?.seminars !== false;
 
-  // Load data
-  useEffect(() => {
-    const loadData = async () => {
+  const { data: landingData, isLoading: loading } = useQuery({
+    queryKey: ["tenant", "landing", tenant?._id || tenant?.slug || "platform", isSeminarsEnabled],
+    queryFn: async ({ signal }) => {
       try {
         const [
           settingsRes,
@@ -180,80 +173,95 @@ export default function SalonLandingLuxury() {
           servicesRes,
           heroSectionsRes,
           locationsRes,
+          seminarsRes,
         ] = await Promise.all([
-          api.get("/settings").catch(() => ({ data: null })),
-          api.get("/specialists"), // API endpoint unchanged (backend compatibility)
-          api.get("/services"),
-          api.get("/hero-sections").catch(() => ({ data: [] })),
-          api.get("/locations").catch((err) => {
+          api.get("/settings", { signal }).catch(() => ({ data: null })),
+          api.get("/specialists", { signal }),
+          api.get("/services", { signal }),
+          api.get("/hero-sections", { signal }).catch(() => ({ data: [] })),
+          api.get("/locations", { signal }).catch((err) => {
             console.error("[LANDING] Error fetching locations:", err);
             return { data: [] };
           }),
+          isSeminarsEnabled
+            ? api.get("/seminars/public?limit=3", { signal }).catch((err) => {
+                console.error("[LANDING] Error fetching seminars:", err);
+                return { data: [] };
+              })
+            : Promise.resolve({ data: [] }),
         ]);
 
-        setSettings(settingsRes.data);
+        const heroSections = Array.isArray(heroSectionsRes.data)
+          ? heroSectionsRes.data
+          : [];
+        const activeHero = heroSections.find((h) => h.active) || heroSections[0] || null;
+        const activeSpecialists = Array.isArray(specialistsRes.data)
+          ? specialistsRes.data.filter((b) => b.active)
+          : [];
+        const activeServices = Array.isArray(servicesRes.data)
+          ? servicesRes.data.filter((s) => s.active)
+          : [];
+        const activeLocations = Array.isArray(locationsRes.data)
+          ? locationsRes.data.filter((l) => l.isActive)
+          : [];
+        const seminarList = Array.isArray(seminarsRes.data)
+          ? seminarsRes.data
+          : seminarsRes.data?.seminars || [];
 
-        if (heroSectionsRes.data && heroSectionsRes.data.length > 0) {
-          const activeHero = heroSectionsRes.data.find((h) => h.active);
-          setHeroSection(activeHero || heroSectionsRes.data[0]);
-        }
-
-        const activeSpecialists = specialistsRes.data.filter((b) => b.active);
-        setSpecialists(activeSpecialists);
-
-        const activeServices = servicesRes.data.filter((s) => s.active);
-        setServices(activeServices);
-
-        // Filter active locations
-        const activeLocations = locationsRes.data.filter((l) => l.isActive);
-        setLocations(activeLocations);
-
-        // Load featured seminars if seminars feature is enabled
-        if (tenant?.features?.seminars !== false) {
-          try {
-            const seminarsRes = await api.get("/seminars/public?limit=3");
-            const seminarList = Array.isArray(seminarsRes.data)
-              ? seminarsRes.data
-              : seminarsRes.data?.seminars || [];
-            setFeaturedSeminars(seminarList.slice(0, 3));
-          } catch (err) {
-            console.error("[LANDING] Error fetching seminars:", err);
-          }
-        }
-        setSeminarsLoading(false);
+        return {
+          settings: settingsRes.data,
+          heroSection: activeHero,
+          specialists: activeSpecialists,
+          services: activeServices,
+          locations: activeLocations,
+          featuredSeminars: seminarList.slice(0, 3),
+        };
       } catch (error) {
         console.error("Failed to load data:", error);
-      } finally {
-        setLoading(false);
+        return {
+          settings: null,
+          heroSection: null,
+          specialists: [],
+          services: [],
+          locations: [],
+          featuredSeminars: [],
+        };
       }
-    };
+    },
+    staleTime: 2 * 60 * 1000,
+  });
 
-    loadData();
-  }, []);
+  const { data: favoritesData = [] } = useQuery({
+    queryKey: ["tenant", "favorites", client?._id || "guest"],
+    queryFn: async () => {
+      try {
+        const data = await getFavorites();
+        return data.favorites || [];
+      } catch (error) {
+        console.error("Failed to load favorites:", error);
+        return [];
+      }
+    },
+    enabled: Boolean(isAuthenticated),
+    staleTime: 60 * 1000,
+  });
 
-  // Load favorites when user is authenticated
   useEffect(() => {
-    const loadFavorites = async () => {
-      if (isAuthenticated) {
-        try {
-          const data = await getFavorites();
-          setFavorites(data.favorites || []);
+    if (!isAuthenticated || !tenant?._id) {
+      setIsFavorite(false);
+      return;
+    }
 
-          // Check if current tenant is in favorites
-          if (tenant?._id && data.favorites) {
-            const isInFavorites = data.favorites.some(
-              (fav) => (fav._id || fav) === tenant._id,
-            );
-            setIsFavorite(isInFavorites);
-          }
-        } catch (error) {
-          console.error("Failed to load favorites:", error);
-        }
-      }
-    };
+    const isInFavorites = favoritesData.some((fav) => (fav._id || fav) === tenant._id);
+    setIsFavorite(isInFavorites);
+  }, [isAuthenticated, tenant?._id, favoritesData]);
 
-    loadFavorites();
-  }, [isAuthenticated, tenant]);
+  const settings = landingData?.settings || null;
+  const heroSection = landingData?.heroSection || null;
+  const specialists = landingData?.specialists || [];
+  const services = landingData?.services || [];
+  const locations = landingData?.locations || [];
+  const featuredSeminars = landingData?.featuredSeminars || [];
 
   // Handler for toggling favorites
   const handleToggleFavorite = async () => {
@@ -275,6 +283,7 @@ export default function SalonLandingLuxury() {
         setIsFavorite(true);
         toast.success("Added to favourites");
       }
+      queryClient.invalidateQueries({ queryKey: ["tenant", "favorites"] });
     } catch (error) {
       toast.error(error.message || "Failed to update favourites");
     } finally {

@@ -16,7 +16,8 @@
  * 12. Hover Effects - Enhanced hover states with quick actions
  */
 
-import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, useMemo, lazy, Suspense } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useEmblaCarousel from "embla-carousel-react";
@@ -37,18 +38,11 @@ const ProductDetailModal = lazy(() =>
 export default function ProductsPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, token, isAuthenticated } = useAuth();
-  const [products, setProducts] = useState([]);
+  const { token, isAuthenticated } = useAuth();
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [heroImage, setHeroImage] = useState(null);
-  const [heroPosition, setHeroPosition] = useState("center");
-  const [heroZoom, setHeroZoom] = useState(100);
 
   // Filters and sorting
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -95,13 +89,89 @@ export default function ProductsPage() {
     [Autoplay(autoplayOptions)]
   );
 
-  useEffect(() => {
-    loadProducts();
-    loadHeroImage();
-    if (isAuthenticated && token) {
-      loadWishlist();
+  const { data: products = [], isLoading: productsLoading } = useQuery({
+    queryKey: ["products", "catalog"],
+    queryFn: async ({ signal }) => {
+      try {
+        const response = await api.get("/products", { signal });
+        return Array.isArray(response.data) ? response.data : [];
+      } catch (error) {
+        console.error("Failed to load products:", error);
+        toast.error("Failed to load products");
+        return [];
+      }
+    },
+    staleTime: 2 * 60 * 1000,
+  });
+
+  const { data: settingsData } = useQuery({
+    queryKey: ["products", "settings"],
+    queryFn: async ({ signal }) => {
+      try {
+        const response = await api.get("/settings", { signal });
+        return response.data || {};
+      } catch (error) {
+        console.error("Failed to load hero image:", error);
+        return {};
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: wishlistIds } = useQuery({
+    queryKey: ["products", "wishlist", isAuthenticated, token],
+    queryFn: async ({ signal }) => {
+      try {
+        const response = await api.get("/wishlist", {
+          signal,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return Array.isArray(response.data?.wishlist)
+          ? response.data.wishlist.map((item) => item._id)
+          : [];
+      } catch (error) {
+        console.error("Failed to load wishlist:", error);
+        return [];
+      }
+    },
+    enabled: Boolean(isAuthenticated && token),
+    staleTime: 60 * 1000,
+  });
+
+  const heroImage = settingsData?.productsHeroImage?.url || null;
+
+  const categories = useMemo(
+    () => [...new Set(products.map((p) => p.category).filter(Boolean))],
+    [products],
+  );
+
+  const brands = useMemo(
+    () =>
+      [...new Set(products.map((p) => p.brand).filter((b) => b && b.trim()))].sort(),
+    [products],
+  );
+
+  const defaultPriceRange = useMemo(() => {
+    if (!products.length) {
+      return { min: 0, max: 1000 };
     }
 
+    const prices = products.flatMap((p) => {
+      if (p.variants && p.variants.length > 0) {
+        return p.variants.map((v) => v.price);
+      }
+      return [p.price];
+    });
+
+    return {
+      min: Math.floor(Math.min(...prices)),
+      max: Math.ceil(Math.max(...prices)),
+    };
+  }, [products]);
+
+  useEffect(() => {
     // Check for brand query parameter
     const brandParam = searchParams.get("brand");
     if (brandParam) {
@@ -115,7 +185,22 @@ export default function ProductsPage() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isAuthenticated, token, searchParams]);
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !token) {
+      setWishlist([]);
+      return;
+    }
+
+    setWishlist(wishlistIds || []);
+  }, [isAuthenticated, token, wishlistIds]);
+
+  useEffect(() => {
+    setPriceRange(defaultPriceRange);
+    setTempPriceRange(defaultPriceRange);
+    setMaxPrice(defaultPriceRange.max);
+  }, [defaultPriceRange]);
 
   useEffect(() => {
     applyFiltersAndSort();
@@ -132,82 +217,6 @@ export default function ProductsPage() {
     // Paginate displayed products
     setDisplayedProducts(filteredProducts.slice(0, itemsToShow));
   }, [filteredProducts, itemsToShow]);
-
-  const loadProducts = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get("/products");
-      const productsData = response.data || [];
-      setProducts(productsData);
-
-      // Extract unique categories
-      const uniqueCategories = [
-        ...new Set(productsData.map((p) => p.category).filter(Boolean)),
-      ];
-      setCategories(uniqueCategories);
-
-      // Extract unique brands
-      const uniqueBrands = [
-        ...new Set(
-          productsData
-            .map((p) => p.brand)
-            .filter((brand) => brand && brand.trim() !== "")
-        ),
-      ].sort();
-      setBrands(uniqueBrands);
-
-      // Calculate price range
-      if (productsData.length > 0) {
-        const prices = productsData.flatMap((p) => {
-          if (p.variants && p.variants.length > 0) {
-            return p.variants.map((v) => v.price);
-          }
-          return [p.price];
-        });
-        const min = Math.floor(Math.min(...prices));
-        const max = Math.ceil(Math.max(...prices));
-        setPriceRange({ min, max });
-        setTempPriceRange({ min, max });
-        setMaxPrice(max);
-      }
-    } catch (error) {
-      console.error("Failed to load products:", error);
-      toast.error("Failed to load products");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadHeroImage = async () => {
-    try {
-      const response = await api.get("/settings");
-      setHeroImage(response.data?.productsHeroImage?.url || null);
-      setHeroPosition(response.data?.productsHeroImage?.position || "center");
-      setHeroZoom(response.data?.productsHeroImage?.zoom || 100);
-    } catch (error) {
-      console.error("Failed to load hero image:", error);
-    }
-  };
-
-  const loadWishlist = async () => {
-    if (!isAuthenticated || !token) {
-      setWishlist([]);
-      return;
-    }
-
-    try {
-      const response = await api.get("/wishlist", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const wishlistIds = response.data.wishlist.map((item) => item._id);
-      setWishlist(wishlistIds);
-    } catch (error) {
-      console.error("Failed to load wishlist:", error);
-      setWishlist([]);
-    }
-  };
 
   const toggleWishlist = async (productId) => {
     // Check if user is authenticated
@@ -1013,7 +1022,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Products Grid/List */}
-        {loading ? (
+        {productsLoading ? (
           <div
             className={
               viewMode === "grid"

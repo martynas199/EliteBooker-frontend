@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
 import { api } from "../../shared/lib/apiClient";
 import Button from "../../shared/components/ui/Button";
 import Modal from "../../shared/components/ui/Modal";
@@ -7,6 +8,7 @@ import FormField from "../../shared/components/forms/FormField";
 import toast from "react-hot-toast";
 import { selectAdmin } from "../../shared/state/authSlice";
 import AdminPageShell, { AdminSectionCard } from "../components/AdminPageShell";
+import { queryKeys } from "../../shared/lib/queryClient";
 
 const DAY_NAMES = [
   "Sunday",
@@ -20,6 +22,7 @@ const DAY_NAMES = [
 
 export default function Settings() {
   const admin = useSelector(selectAdmin);
+  const tenantId = admin?.tenantId || "global";
   const [formData, setFormData] = useState({
     salonName: "",
     salonDescription: "",
@@ -40,7 +43,6 @@ export default function Settings() {
       x: "",
     },
   });
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [shareSettings, setShareSettings] = useState({
@@ -59,10 +61,35 @@ export default function Settings() {
   const inputClass =
     "w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
 
-  useEffect(() => {
-    loadSettings();
-    loadWorkingHours();
-  }, []);
+  const {
+    data: settingsPayload,
+    isLoading: loading,
+    isError: settingsLoadError,
+    refetch: refetchSettings,
+  } = useQuery({
+    queryKey: queryKeys.admin.settings(tenantId),
+    queryFn: async ({ signal }) => {
+      const [settingsResponse, heroSectionsRes, tenantResponse] =
+        await Promise.all([
+          api.get("/settings", { signal }),
+          api.get("/hero-sections", { signal }).catch(() => ({ data: [] })),
+          admin?.tenantId
+            ? api.get(`/tenants/${admin.tenantId}`, { signal }).catch(() => ({
+                data: {},
+              }))
+            : Promise.resolve({ data: {} }),
+        ]);
+
+      return {
+        settings: settingsResponse?.data || {},
+        heroSections: Array.isArray(heroSectionsRes?.data)
+          ? heroSectionsRes.data
+          : [],
+        tenant: tenantResponse?.data || {},
+      };
+    },
+    staleTime: 2 * 60 * 1000,
+  });
 
   const normalizeSocialLink = (value) => {
     const trimmedValue = String(value || "").trim();
@@ -71,112 +98,90 @@ export default function Settings() {
     return `https://${trimmedValue}`;
   };
 
-  const loadSettings = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get("/settings");
-      const settings = response.data;
-      const heroSectionsRes = await api.get("/hero-sections").catch(() => ({
-        data: [],
-      }));
-      const heroSections = Array.isArray(heroSectionsRes?.data)
-        ? heroSectionsRes.data
-        : [];
-      const activeHeroSection =
-        heroSections.find((section) => section?.active) ||
-        heroSections[0] ||
-        null;
-      const businessName = settings.salonName || "";
-      const defaultShareTitle = businessName ? `Book with ${businessName}` : "";
-      const defaultShareDescription =
-        settings.salonDescription ||
-        (businessName ? `Book with ${businessName} today.` : "");
-      const defaultShareImageUrl =
-        settings.heroImage?.url ||
-        settings.heroImage ||
-        activeHeroSection?.centerImage?.url ||
-        activeHeroSection?.rightImage?.url ||
-        "";
+  useEffect(() => {
+    if (!settingsLoadError) return;
+    setMessage({
+      type: "error",
+      text: "Failed to load salon settings",
+    });
+  }, [settingsLoadError]);
 
-      setFormData({
-        salonName: settings.salonName || "",
-        salonDescription: settings.salonDescription || "",
-        salonAddress: settings.salonAddress || {
-          street: "",
-          city: "",
-          postalCode: "",
-          country: "",
-        },
-        salonPhone: settings.salonPhone || "",
-        salonEmail: settings.salonEmail || "",
-        socialLinks: {
-          instagram: settings.socialLinks?.instagram || "",
-          facebook: settings.socialLinks?.facebook || "",
-          tiktok: settings.socialLinks?.tiktok || "",
-          youtube: settings.socialLinks?.youtube || "",
-          linkedin: settings.socialLinks?.linkedin || "",
-          x: settings.socialLinks?.x || "",
-        },
+  useEffect(() => {
+    if (!settingsPayload) return;
+
+    const settings = settingsPayload.settings || {};
+    const heroSections = settingsPayload.heroSections || [];
+    const tenant = settingsPayload.tenant || {};
+
+    const activeHeroSection =
+      heroSections.find((section) => section?.active) || heroSections[0] || null;
+    const businessName = settings.salonName || "";
+    const defaultShareTitle = businessName ? `Book with ${businessName}` : "";
+    const defaultShareDescription =
+      settings.salonDescription ||
+      (businessName ? `Book with ${businessName} today.` : "");
+    const defaultShareImageUrl =
+      settings.heroImage?.url ||
+      settings.heroImage ||
+      activeHeroSection?.centerImage?.url ||
+      activeHeroSection?.rightImage?.url ||
+      "";
+
+    setFormData({
+      salonName: settings.salonName || "",
+      salonDescription: settings.salonDescription || "",
+      salonAddress: settings.salonAddress || {
+        street: "",
+        city: "",
+        postalCode: "",
+        country: "",
+      },
+      salonPhone: settings.salonPhone || "",
+      salonEmail: settings.salonEmail || "",
+      socialLinks: {
+        instagram: settings.socialLinks?.instagram || "",
+        facebook: settings.socialLinks?.facebook || "",
+        tiktok: settings.socialLinks?.tiktok || "",
+        youtube: settings.socialLinks?.youtube || "",
+        linkedin: settings.socialLinks?.linkedin || "",
+        x: settings.socialLinks?.x || "",
+      },
+    });
+
+    const hours = settings.workingHours;
+    if (hours) {
+      const hoursArray = [];
+      const dayMap = {
+        sun: 0,
+        mon: 1,
+        tue: 2,
+        wed: 3,
+        thu: 4,
+        fri: 5,
+        sat: 6,
+      };
+
+      Object.entries(dayMap).forEach(([key, dayOfWeek]) => {
+        if (hours[key] && hours[key].start && hours[key].end) {
+          hoursArray.push({
+            dayOfWeek,
+            start: hours[key].start,
+            end: hours[key].end,
+          });
+        }
       });
 
-      // Load working hours from settings
-      if (settings.workingHours) {
-        const hours = settings.workingHours;
-        const hoursArray = [];
-
-        const dayMap = {
-          sun: 0,
-          mon: 1,
-          tue: 2,
-          wed: 3,
-          thu: 4,
-          fri: 5,
-          sat: 6,
-        };
-
-        Object.entries(dayMap).forEach(([key, dayOfWeek]) => {
-          if (hours[key] && hours[key].start && hours[key].end) {
-            hoursArray.push({
-              dayOfWeek,
-              start: hours[key].start,
-              end: hours[key].end,
-            });
-          }
-        });
-
-        setWorkingHours(hoursArray);
-      }
-
-      if (admin?.tenantId) {
-        const tenantResponse = await api.get(`/tenants/${admin.tenantId}`);
-        const tenant = tenantResponse.data || {};
-        setShareSettings({
-          shareTitle: tenant.shareTitle || defaultShareTitle,
-          shareDescription: tenant.shareDescription || defaultShareDescription,
-          shareImageUrl: tenant.shareImageUrl || defaultShareImageUrl,
-        });
-      } else {
-        setShareSettings({
-          shareTitle: defaultShareTitle,
-          shareDescription: defaultShareDescription,
-          shareImageUrl: defaultShareImageUrl,
-        });
-      }
-    } catch (error) {
-      console.error("Failed to load settings:", error);
-      setMessage({
-        type: "error",
-        text: "Failed to load salon settings",
-      });
-    } finally {
-      setLoading(false);
+      setWorkingHours(hoursArray);
+    } else {
+      setWorkingHours([]);
     }
-  };
 
-  const loadWorkingHours = async () => {
-    // Working hours are loaded from settings now, so this is not needed
-    // but keeping it to avoid errors if called
-  };
+    setShareSettings({
+      shareTitle: tenant.shareTitle || defaultShareTitle,
+      shareDescription: tenant.shareDescription || defaultShareDescription,
+      shareImageUrl: tenant.shareImageUrl || defaultShareImageUrl,
+    });
+  }, [settingsPayload]);
 
   // Open weekly schedule edit modal
   const openWeeklyEditModal = (dayOfWeek) => {
@@ -415,7 +420,7 @@ export default function Settings() {
       });
 
       // Reload settings to get the updated data
-      await loadSettings();
+      await refetchSettings();
 
       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
     } catch (error) {
@@ -892,7 +897,7 @@ export default function Settings() {
           <div className="sticky bottom-0 z-20 -mx-1 border-t border-gray-200 bg-white/95 px-1 pb-[max(env(safe-area-inset-bottom),0.6rem)] pt-3 shadow-[0_-6px_16px_rgba(15,23,42,0.08)] backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-0 sm:shadow-none">
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
               <Button
-                onClick={loadSettings}
+                onClick={() => refetchSettings()}
                 variant="outline"
                 disabled={saving}
                 className="w-full sm:w-auto"
