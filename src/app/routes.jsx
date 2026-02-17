@@ -231,6 +231,9 @@ const SendGiftCardPage = lazy(() => import("../client/pages/SendGiftCardPage"));
 const DownloadAppPage = lazy(() => import("../client/pages/DownloadAppPage"));
 const LanguagePage = lazy(() => import("../client/pages/LanguagePage"));
 
+const ENABLE_TOKEN_DEBUG_ROUTE =
+  import.meta.env.DEV || import.meta.env.VITE_ENABLE_TOKEN_DEBUG === "true";
+
 function CustomerLayout() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -296,7 +299,9 @@ function CustomerLayout() {
             <Route path="my-seminars" element={<MySeminarsPage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
-            <Route path="token-debug" element={<TokenDebugPage />} />
+            {ENABLE_TOKEN_DEBUG_ROUTE && (
+              <Route path="token-debug" element={<TokenDebugPage />} />
+            )}
             <Route path="profile" element={<ProfilePage />} />
             <Route path="profile/edit" element={<ProfileEditPage />} />
           </Routes>
