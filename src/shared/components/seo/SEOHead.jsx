@@ -108,6 +108,8 @@ export default function SEOHead({
 
       {/* Canonical URL */}
       <link rel="canonical" href={canonicalUrl} />
+      <link rel="alternate" hrefLang="en-GB" href={canonicalUrl} />
+      <link rel="alternate" hrefLang="x-default" href={canonicalUrl} />
 
       {/* Robots Meta */}
       <meta name="robots" content={robotsContent} />
