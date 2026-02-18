@@ -234,7 +234,7 @@ const injectBodyFallback = (htmlTemplate, route) => {
 
   return htmlTemplate.replace(
     /<div id="root"><\/div>/i,
-    `<div id="root"></div>\n  ${fallbackContent}`,
+    `<div id="root"></div>\n  <noscript>${fallbackContent}</noscript>`,
   );
 };
 
