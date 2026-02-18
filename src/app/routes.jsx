@@ -322,679 +322,684 @@ export default function AppRoutes() {
   return (
     <>
       <ScrollToTop />
-      <Routes>
-        {/* Tenant Signup (public) */}
-        <Route path="/signup" element={<TenantSignup />} />
-        <Route path="/signup/success" element={<SignupSuccessPage />} />
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          {/* Tenant Signup (public) */}
+          <Route path="/signup" element={<TenantSignup />} />
+          <Route path="/signup/success" element={<SignupSuccessPage />} />
 
-        {/* Referral Program Signup (public) */}
-        <Route path="/referral-signup" element={<ReferralSignupPage />} />
-        <Route path="/join-referral-program" element={<ReferralSignupPage />} />
-        <Route path="/referral-login" element={<ReferralLoginPage />} />
-        <Route path="/referral-dashboard" element={<ReferralDashboard />} />
+          {/* Referral Program Signup (public) */}
+          <Route path="/referral-signup" element={<ReferralSignupPage />} />
+          <Route
+            path="/join-referral-program"
+            element={<ReferralSignupPage />}
+          />
+          <Route path="/referral-login" element={<ReferralLoginPage />} />
+          <Route path="/referral-dashboard" element={<ReferralDashboard />} />
 
-        {/* OAuth Success Page (must be before CustomerLayout catch-all) */}
-        <Route path="/auth/success" element={<AuthSuccessPage />} />
+          {/* OAuth Success Page (must be before CustomerLayout catch-all) */}
+          <Route path="/auth/success" element={<AuthSuccessPage />} />
 
-        {/* Global Client Auth (cross-business) */}
-        <Route path="/client/login" element={<ClientLoginPage />} />
-        <Route path="/client/register" element={<ClientRegisterPage />} />
-        <Route path="/client/profile" element={<ClientProfilePage />} />
-        <Route
-          path="/client/appointments"
-          element={<ClientAppointmentsPage />}
-        />
-        <Route
-          path="/client/forms"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <ClientFormsPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/client/wallet"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <WalletPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/client/favourites"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <FavouritesPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/client/orders"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <OrdersPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/client/settings"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <SettingsPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/gift-cards"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <SendGiftCardPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/download"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <DownloadAppPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/language"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <LanguagePage />
-            </Suspense>
-          }
-        />
+          {/* Global Client Auth (cross-business) */}
+          <Route path="/client/login" element={<ClientLoginPage />} />
+          <Route path="/client/register" element={<ClientRegisterPage />} />
+          <Route path="/client/profile" element={<ClientProfilePage />} />
+          <Route
+            path="/client/appointments"
+            element={<ClientAppointmentsPage />}
+          />
+          <Route
+            path="/client/forms"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <ClientFormsPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/client/wallet"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <WalletPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/client/favourites"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <FavouritesPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/client/orders"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <OrdersPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/client/settings"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <SettingsPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/gift-cards"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <SendGiftCardPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/download"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <DownloadAppPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/language"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <LanguagePage />
+              </Suspense>
+            }
+          />
 
-        {/* Mobile Menu */}
-        <Route path="/menu" element={<MenuPage />} />
+          {/* Mobile Menu */}
+          <Route path="/menu" element={<MenuPage />} />
 
-        {/* Search Page - Use simple version for mobile compatibility */}
-        <Route path="/search" element={<SearchPage />} />
+          {/* Search Page - Use simple version for mobile compatibility */}
+          <Route path="/search" element={<SearchPage />} />
 
-        {/* Browse Businesses */}
-        <Route path="/business" element={<LandingPage />} />
+          {/* Browse Businesses */}
+          <Route path="/business" element={<LandingPage />} />
 
-        {/* Platform marketing/landing page - Main route until search is fully developed */}
-        <Route path="/" element={<LandingPage />} />
+          {/* Platform marketing/landing page - Main route until search is fully developed */}
+          <Route path="/" element={<LandingPage />} />
 
-        {/* Help & Support */}
-        <Route path="/help" element={<HelpPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="/security" element={<SecurityPage />} />
+          {/* Help & Support */}
+          <Route path="/help" element={<HelpPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/security" element={<SecurityPage />} />
 
-        {/* Not Found */}
-        <Route path="/404" element={<NotFoundPage />} />
+          {/* Not Found */}
+          <Route path="/404" element={<NotFoundPage />} />
 
-        {/* Pricing Page */}
-        <Route
-          path="/pricing"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <PricingPage />
-            </Suspense>
-          }
-        />
+          {/* Pricing Page */}
+          <Route
+            path="/pricing"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <PricingPage />
+              </Suspense>
+            }
+          />
 
-        {/* UK Money Pages */}
-        <Route
-          path="/salon-booking-software-uk"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <UkMoneyPage slug="salon-booking-software-uk" />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/barbershop-booking-software-uk"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <UkMoneyPage slug="barbershop-booking-software-uk" />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/nail-salon-booking-software-uk"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <UkMoneyPage slug="nail-salon-booking-software-uk" />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/beauty-salon-booking-system-uk"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <UkMoneyPage slug="beauty-salon-booking-system-uk" />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/hairdresser-booking-software-uk"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <UkMoneyPage slug="hairdresser-booking-software-uk" />
-            </Suspense>
-          }
-        />
+          {/* UK Money Pages */}
+          <Route
+            path="/salon-booking-software-uk"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <UkMoneyPage slug="salon-booking-software-uk" />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/barbershop-booking-software-uk"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <UkMoneyPage slug="barbershop-booking-software-uk" />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/nail-salon-booking-software-uk"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <UkMoneyPage slug="nail-salon-booking-software-uk" />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/beauty-salon-booking-system-uk"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <UkMoneyPage slug="beauty-salon-booking-system-uk" />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/hairdresser-booking-software-uk"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <UkMoneyPage slug="hairdresser-booking-software-uk" />
+              </Suspense>
+            }
+          />
 
-        {/* Industry Landing Pages */}
-        <Route
-          path="/industries/lash-technicians"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <LashTechnicians />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/industries/hair-salons"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <HairSalons />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/industries/barbers"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <Barbers />
-            </Suspense>
-          }
-        />
+          {/* Industry Landing Pages */}
+          <Route
+            path="/industries/lash-technicians"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <LashTechnicians />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/industries/hair-salons"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <HairSalons />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/industries/barbers"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <Barbers />
+              </Suspense>
+            }
+          />
 
-        {/* Comparison Pages */}
-        <Route
-          path="/compare"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <ComparePage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/compare/vs-fresha"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <VsFresha />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/compare/vs-treatwell"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <VsTreatwell />
-            </Suspense>
-          }
-        />
+          {/* Comparison Pages */}
+          <Route
+            path="/compare"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <ComparePage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/compare/vs-fresha"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <VsFresha />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/compare/vs-treatwell"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <VsTreatwell />
+              </Suspense>
+            }
+          />
 
-        {/* Blog Pages */}
-        <Route
-          path="/blog/reduce-salon-no-shows"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <ReduceSalonNoShows />
-            </Suspense>
-          }
-        />
+          {/* Blog Pages */}
+          <Route
+            path="/blog/reduce-salon-no-shows"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <ReduceSalonNoShows />
+              </Suspense>
+            }
+          />
 
-        {/* Feature Pages */}
-        <Route
-          path="/features"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <FeaturesPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/features/sms-reminders"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <SmsReminders />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/features/no-show-protection"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <NoShowProtection />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/features/calendar-sync"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <CalendarSync />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/features/online-booking"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <OnlineBooking />
-            </Suspense>
-          }
-        />
+          {/* Feature Pages */}
+          <Route
+            path="/features"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <FeaturesPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/features/sms-reminders"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <SmsReminders />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/features/no-show-protection"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <NoShowProtection />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/features/calendar-sync"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <CalendarSync />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/features/online-booking"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <OnlineBooking />
+              </Suspense>
+            }
+          />
 
-        {/* Solutions Hub + Programmatic Local Solutions */}
-        <Route
-          path="/solutions"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <SolutionsPage />
-            </Suspense>
-          }
-        />
+          {/* Solutions Hub + Programmatic Local Solutions */}
+          <Route
+            path="/solutions"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <SolutionsPage />
+              </Suspense>
+            }
+          />
 
-        {/* Programmatic Local Solutions - 400+ pages: /solutions/{niche}-{city} */}
-        <Route
-          path="/solutions/:slugCombination"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <LocalSolutionPage />
-            </Suspense>
-          }
-        />
+          {/* Programmatic Local Solutions - 400+ pages: /solutions/{niche}-{city} */}
+          <Route
+            path="/solutions/:slugCombination"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <LocalSolutionPage />
+              </Suspense>
+            }
+          />
 
-        {/* SEO Tools - Product-Led SEO */}
-        <Route
-          path="/tools/roi-calculator"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <RoiCalculator />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/tools/deposit-policy-generator"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <DepositPolicyGenerator />
-            </Suspense>
-          }
-        />
+          {/* SEO Tools - Product-Led SEO */}
+          <Route
+            path="/tools/roi-calculator"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <RoiCalculator />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/tools/deposit-policy-generator"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <DepositPolicyGenerator />
+              </Suspense>
+            }
+          />
 
-        {/* Public Consent Signing */}
-        <Route
-          path="/consent/:token"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <ConsentSigningPage />
-            </Suspense>
-          }
-        />
+          {/* Public Consent Signing */}
+          <Route
+            path="/consent/:token"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <ConsentSigningPage />
+              </Suspense>
+            }
+          />
 
-        {/* Consent Initiation (authenticated) */}
-        <Route
-          path="/appointments/consent"
-          element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <ConsentInitiatePage />
-            </Suspense>
-          }
-        />
+          {/* Consent Initiation (authenticated) */}
+          <Route
+            path="/appointments/consent"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <ConsentInitiatePage />
+              </Suspense>
+            }
+          />
 
-        {/* Tenant-specific routes with slug parameter */}
-        <Route
-          path="/salon/:slug/*"
-          element={
-            <TenantApp>
-              <CustomerLayout />
-            </TenantApp>
-          }
-        />
+          {/* Tenant-specific routes with slug parameter */}
+          <Route
+            path="/salon/:slug/*"
+            element={
+              <TenantApp>
+                <CustomerLayout />
+              </TenantApp>
+            }
+          />
 
-        {/* Admin Login (public) */}
-        <Route path="/admin/login" element={<AdminLogin />} />
+          {/* Admin Login (public) */}
+          <Route path="/admin/login" element={<AdminLogin />} />
 
-        {/* Admin Password Reset (public) */}
-        <Route path="/admin/forgot-password" element={<ForgotPassword />} />
-        <Route path="/admin/reset-password" element={<ResetPassword />} />
+          {/* Admin Password Reset (public) */}
+          <Route path="/admin/forgot-password" element={<ForgotPassword />} />
+          <Route path="/admin/reset-password" element={<ResetPassword />} />
 
-        {/* Protected Admin Routes */}
-        <Route
-          path="/admin/*"
-          element={
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
-          }
-        >
+          {/* Protected Admin Routes */}
           <Route
-            index
+            path="/admin/*"
             element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <Dashboard />
-              </Suspense>
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
             }
-          />
-          <Route
-            path="appointments"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <AdminAppointments />
-              </Suspense>
-            }
-          />
-          <Route
-            path="orders"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <AdminOrders />
-              </Suspense>
-            }
-          />
-          <Route
-            path="revenue"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <Revenue />
-              </Suspense>
-            }
-          />
-          <Route
-            path="profit-analytics"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <ProfitAnalytics />
-              </Suspense>
-            }
-          />
-          <Route
-            path="services"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <AdminServices />
-              </Suspense>
-            }
-          />
-          <Route
-            path="waitlist"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <AdminWaitlist />
-              </Suspense>
-            }
-          />
-          <Route
-            path="locations"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <AdminLocations />
-              </Suspense>
-            }
-          />
-          <Route
-            path="staff"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <AdminStaff />
-              </Suspense>
-            }
-          />
-          <Route
-            path="schedule"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <WorkingHoursCalendar />
-              </Suspense>
-            }
-          />
-          <Route
-            path="timeoff"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <TimeOff />
-              </Suspense>
-            }
-          />
-          <Route
-            path="hero-sections"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <HeroSections />
-              </Suspense>
-            }
-          />
-          <Route
-            path="about-us"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <AboutUsManagement />
-              </Suspense>
-            }
-          />
-          <Route
-            path="products"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <Products />
-              </Suspense>
-            }
-          />
-          <Route
-            path="products-hero"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <ProductsHero />
-              </Suspense>
-            }
-          />
-          <Route
-            path="admin-links"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <AdminBeauticianLink />
-              </Suspense>
-            }
-          />
-          <Route
-            path="stripe-connect"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <StripeConnect />
-              </Suspense>
-            }
-          />
-          <Route
-            path="subscription"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <Subscription />
-              </Suspense>
-            }
-          />
-          <Route
-            path="settings"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <Settings />
-              </Suspense>
-            }
-          />
-          <Route
-            path="clients"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <Clients />
-              </Suspense>
-            }
-          />
-          <Route
-            path="clients/:clientId"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <ClientDetails />
-              </Suspense>
-            }
-          />
-          <Route
-            path="settings/onboarding-complete"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <OnboardingComplete />
-              </Suspense>
-            }
-          />
-          <Route
-            path="settings/reauth"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <ReauthOnboarding />
-              </Suspense>
-            }
-          />
-          <Route
-            path="shipping-rates"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <ShippingRates />
-              </Suspense>
-            }
-          />
-          <Route
-            path="blog-posts"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <BlogPosts />
-              </Suspense>
-            }
-          />
-          <Route
-            path="branding"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <BrandingSettings />
-              </Suspense>
-            }
-          />
-          <Route
-            path="tenants"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <Tenants />
-              </Suspense>
-            }
-          />
-          <Route
-            path="tenants/:id"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <TenantDetails />
-              </Suspense>
-            }
-          />
-          <Route
-            path="platform-features"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <PlatformFeatures />
-              </Suspense>
-            }
-          />
-          <Route
-            path="cancellation"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <BookingPoliciesPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="profile"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <Profile />
-              </Suspense>
-            }
-          />
-          <Route
-            path="take-payment"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <TakePaymentPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="seminars"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <Seminars />
-              </Suspense>
-            }
-          />
-          <Route
-            path="seminars/create"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <SeminarForm />
-              </Suspense>
-            }
-          />
-          <Route
-            path="seminars/:id/edit"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <SeminarForm />
-              </Suspense>
-            }
-          />
-          <Route
-            path="seminars/:id/attendees"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <SeminarAttendees />
-              </Suspense>
-            }
-          />
-          <Route
-            path="consent-templates"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <ConsentTemplates />
-              </Suspense>
-            }
-          />
-          <Route
-            path="consent-templates/:id"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <ConsentTemplateView />
-              </Suspense>
-            }
-          />
-          <Route
-            path="consent-templates/new"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <ConsentTemplateBuilder />
-              </Suspense>
-            }
-          />
-          <Route
-            path="consent-templates/:id/edit"
-            element={
-              <Suspense fallback={<LoadingSpinner center size="lg" />}>
-                <ConsentTemplateBuilder />
-              </Suspense>
-            }
-          />
-        </Route>
+          >
+            <Route
+              index
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <Dashboard />
+                </Suspense>
+              }
+            />
+            <Route
+              path="appointments"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <AdminAppointments />
+                </Suspense>
+              }
+            />
+            <Route
+              path="orders"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <AdminOrders />
+                </Suspense>
+              }
+            />
+            <Route
+              path="revenue"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <Revenue />
+                </Suspense>
+              }
+            />
+            <Route
+              path="profit-analytics"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <ProfitAnalytics />
+                </Suspense>
+              }
+            />
+            <Route
+              path="services"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <AdminServices />
+                </Suspense>
+              }
+            />
+            <Route
+              path="waitlist"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <AdminWaitlist />
+                </Suspense>
+              }
+            />
+            <Route
+              path="locations"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <AdminLocations />
+                </Suspense>
+              }
+            />
+            <Route
+              path="staff"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <AdminStaff />
+                </Suspense>
+              }
+            />
+            <Route
+              path="schedule"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <WorkingHoursCalendar />
+                </Suspense>
+              }
+            />
+            <Route
+              path="timeoff"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <TimeOff />
+                </Suspense>
+              }
+            />
+            <Route
+              path="hero-sections"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <HeroSections />
+                </Suspense>
+              }
+            />
+            <Route
+              path="about-us"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <AboutUsManagement />
+                </Suspense>
+              }
+            />
+            <Route
+              path="products"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <Products />
+                </Suspense>
+              }
+            />
+            <Route
+              path="products-hero"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <ProductsHero />
+                </Suspense>
+              }
+            />
+            <Route
+              path="admin-links"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <AdminBeauticianLink />
+                </Suspense>
+              }
+            />
+            <Route
+              path="stripe-connect"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <StripeConnect />
+                </Suspense>
+              }
+            />
+            <Route
+              path="subscription"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <Subscription />
+                </Suspense>
+              }
+            />
+            <Route
+              path="settings"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <Settings />
+                </Suspense>
+              }
+            />
+            <Route
+              path="clients"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <Clients />
+                </Suspense>
+              }
+            />
+            <Route
+              path="clients/:clientId"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <ClientDetails />
+                </Suspense>
+              }
+            />
+            <Route
+              path="settings/onboarding-complete"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <OnboardingComplete />
+                </Suspense>
+              }
+            />
+            <Route
+              path="settings/reauth"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <ReauthOnboarding />
+                </Suspense>
+              }
+            />
+            <Route
+              path="shipping-rates"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <ShippingRates />
+                </Suspense>
+              }
+            />
+            <Route
+              path="blog-posts"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <BlogPosts />
+                </Suspense>
+              }
+            />
+            <Route
+              path="branding"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <BrandingSettings />
+                </Suspense>
+              }
+            />
+            <Route
+              path="tenants"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <Tenants />
+                </Suspense>
+              }
+            />
+            <Route
+              path="tenants/:id"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <TenantDetails />
+                </Suspense>
+              }
+            />
+            <Route
+              path="platform-features"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <PlatformFeatures />
+                </Suspense>
+              }
+            />
+            <Route
+              path="cancellation"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <BookingPoliciesPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="profile"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <Profile />
+                </Suspense>
+              }
+            />
+            <Route
+              path="take-payment"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <TakePaymentPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="seminars"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <Seminars />
+                </Suspense>
+              }
+            />
+            <Route
+              path="seminars/create"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <SeminarForm />
+                </Suspense>
+              }
+            />
+            <Route
+              path="seminars/:id/edit"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <SeminarForm />
+                </Suspense>
+              }
+            />
+            <Route
+              path="seminars/:id/attendees"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <SeminarAttendees />
+                </Suspense>
+              }
+            />
+            <Route
+              path="consent-templates"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <ConsentTemplates />
+                </Suspense>
+              }
+            />
+            <Route
+              path="consent-templates/:id"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <ConsentTemplateView />
+                </Suspense>
+              }
+            />
+            <Route
+              path="consent-templates/new"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <ConsentTemplateBuilder />
+                </Suspense>
+              }
+            />
+            <Route
+              path="consent-templates/:id/edit"
+              element={
+                <Suspense fallback={<LoadingSpinner center size="lg" />}>
+                  <ConsentTemplateBuilder />
+                </Suspense>
+              }
+            />
+          </Route>
 
-        {/* Catch-all */}
-        <Route path="*" element={<Navigate to="/404" replace />} />
-      </Routes>
+          {/* Catch-all */}
+          <Route path="*" element={<Navigate to="/404" replace />} />
+        </Routes>
+      </Suspense>
     </>
   );
 }
