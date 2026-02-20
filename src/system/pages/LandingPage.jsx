@@ -86,12 +86,7 @@ export default function LandingPage() {
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-24 sm:pt-20">
             <div className="flex flex-col lg:flex-row items-center gap-12">
               {/* Left Content */}
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                className="flex-1 text-center lg:text-left"
-              >
+              <div className="flex-1 text-center lg:text-left">
                 {/* Badge */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -266,14 +261,14 @@ export default function LandingPage() {
                     Nail salon booking software UK
                   </a>
                 </div>
-              </motion.div>
+              </div>
 
               {/* Right Content - Comparison Card */}
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
-                className="flex-1 max-w-lg"
+                className="hidden flex-1 max-w-lg sm:block"
               >
                 <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
                   <div className="flex items-center justify-between mb-6">
