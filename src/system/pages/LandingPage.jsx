@@ -63,7 +63,7 @@ export default function LandingPage() {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-amber-300/25 to-slate-300/20 rounded-full blur-3xl"
+              className="absolute top-1/4 right-1/4 hidden h-96 w-96 rounded-full bg-gradient-to-br from-amber-300/25 to-slate-300/20 blur-3xl sm:block"
             />
             <motion.div
               animate={{
@@ -76,7 +76,7 @@ export default function LandingPage() {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-amber-200/20 to-slate-300/20 rounded-full blur-3xl"
+              className="absolute bottom-1/4 left-1/4 hidden h-96 w-96 rounded-full bg-gradient-to-tr from-amber-200/20 to-slate-300/20 blur-3xl sm:block"
             />
 
             {/* Grid Pattern Overlay */}
