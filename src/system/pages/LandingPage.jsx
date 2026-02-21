@@ -103,7 +103,7 @@ export default function LandingPage() {
         )}
 
         {/* Hero Section - Ultra Modern */}
-        <section className="relative flex min-h-screen items-center justify-center overflow-visible bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc] sm:overflow-hidden">
+        <section className="relative flex min-h-screen items-center justify-center overflow-visible bg-[#f6f2ea] sm:overflow-hidden sm:bg-gradient-to-br sm:from-[#f8f5ef] sm:via-[#f6f2ea] sm:to-[#efe8dc]">
           {/* Gradient Mesh Background */}
           <div className="absolute inset-0 hidden bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc] sm:block">
             {/* Animated Gradient Orbs */}
