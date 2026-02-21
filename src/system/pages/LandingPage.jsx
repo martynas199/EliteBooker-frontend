@@ -143,12 +143,7 @@ export default function LandingPage() {
               {/* Left Content */}
               <div className="flex-1 text-center lg:text-left">
                 {/* Badge */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-slate-100 to-slate-50 border border-slate-200 mb-6"
-                >
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-slate-100 to-slate-50 border border-slate-200 mb-6">
                   <svg
                     className="w-4 h-4 text-slate-700"
                     fill="currentColor"
@@ -163,7 +158,7 @@ export default function LandingPage() {
                   <span className="text-sm font-semibold text-slate-800">
                     Built for UK salons and service businesses
                   </span>
-                </motion.div>
+                </div>
 
                 {/* Main Headline - Problem/Solution */}
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
@@ -224,9 +219,7 @@ export default function LandingPage() {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-6">
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
+                  <button
                     onClick={() => navigate("/signup")}
                     className="group relative px-8 py-4 bg-gradient-to-r from-slate-900 to-slate-700 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all overflow-hidden"
                   >
@@ -247,11 +240,9 @@ export default function LandingPage() {
                         />
                       </svg>
                     </div>
-                  </motion.button>
+                  </button>
 
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
+                  <button
                     onClick={() => {
                       const element =
                         document.getElementById("pricing-section");
@@ -260,7 +251,7 @@ export default function LandingPage() {
                     className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-xl hover:border-slate-500 hover:text-slate-700 transition-all shadow-md hover:shadow-lg"
                   >
                     Compare Pricing →
-                  </motion.button>
+                  </button>
                 </div>
 
                 {/* Trust Badges */}

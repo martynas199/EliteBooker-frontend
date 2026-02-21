@@ -82,7 +82,7 @@ export default function Header() {
 
   return (
     <header
-      className="sticky z-50 border-b border-amber-100/80 bg-[#f6f2ea] md:bg-[#f6f2ea]/92 md:backdrop-blur-xl md:supports-[backdrop-filter]:bg-[#f6f2ea]/80"
+      className="relative z-50 border-b border-amber-100/80 bg-[#f6f2ea] md:sticky md:bg-[#f6f2ea]/92 md:backdrop-blur-xl md:supports-[backdrop-filter]:bg-[#f6f2ea]/80"
       style={{
         top: "env(safe-area-inset-top, 0px)",
         paddingTop: "env(safe-area-inset-top, 0px)",
