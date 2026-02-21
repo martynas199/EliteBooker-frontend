@@ -44,11 +44,11 @@ export default function LandingPage() {
       {/* Organization Schema */}
       <OrganizationSchema />
 
-      <div className="bg-white">
+      <div className="bg-white ios-safari-landing">
         <Header />
 
         {/* Hero Section - Ultra Modern */}
-        <section className="relative flex min-h-screen items-center justify-center overflow-visible bg-[#f6f2ea] sm:overflow-hidden sm:bg-gradient-to-br sm:from-[#f8f5ef] sm:via-[#f6f2ea] sm:to-[#efe8dc]">
+        <section className="landing-hero relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f6f2ea] sm:bg-gradient-to-br sm:from-[#f8f5ef] sm:via-[#f6f2ea] sm:to-[#efe8dc]">
           {/* Gradient Mesh Background */}
           <div className="hidden">
             {/* Animated Gradient Orbs */}
