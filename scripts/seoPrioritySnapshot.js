@@ -45,10 +45,12 @@ const decodeHtmlEntities = (value = "") =>
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'");
 
-  const toPosixPath = (value = "") => value.split(path.sep).join("/");
+const toPosixPath = (value = "") => value.split(path.sep).join("/");
 
 const csvEscape = (value = "") => {
-  const normalized = String(value).replace(/\r?\n|\r/g, " ").trim();
+  const normalized = String(value)
+    .replace(/\r?\n|\r/g, " ")
+    .trim();
   if (/[",]/.test(normalized)) {
     return `"${normalized.replace(/"/g, '""')}"`;
   }
@@ -75,14 +77,21 @@ const getSeoRow = (urlPath) => {
       canonical: "",
       robots: "",
       hasPrerenderFallback: "no",
-      htmlFile: toPosixPath(path.relative(path.resolve(__dirname, ".."), filePath)),
+      htmlFile: toPosixPath(
+        path.relative(path.resolve(__dirname, ".."), filePath),
+      ),
     };
   }
 
   const html = fs.readFileSync(filePath, "utf-8");
-  const title = decodeHtmlEntities(extractTagValue(html, /<title>([\s\S]*?)<\/title>/i));
+  const title = decodeHtmlEntities(
+    extractTagValue(html, /<title>([\s\S]*?)<\/title>/i),
+  );
   const description = decodeHtmlEntities(
-    extractTagValue(html, /<meta\s+name=["']description["'][^>]*content=["']([\s\S]*?)["'][^>]*>/i),
+    extractTagValue(
+      html,
+      /<meta\s+name=["']description["'][^>]*content=["']([\s\S]*?)["'][^>]*>/i,
+    ),
   );
   const canonical = extractTagValue(
     html,
@@ -104,7 +113,9 @@ const getSeoRow = (urlPath) => {
     canonical,
     robots,
     hasPrerenderFallback,
-    htmlFile: toPosixPath(path.relative(path.resolve(__dirname, ".."), filePath)),
+    htmlFile: toPosixPath(
+      path.relative(path.resolve(__dirname, ".."), filePath),
+    ),
   };
 };
 
@@ -134,7 +145,10 @@ const run = () => {
 
   const rows = PRIORITY_URLS.map(getSeoRow);
   const dateStamp = new Date().toISOString().slice(0, 10);
-  const datedPath = path.join(OUTPUT_DIR, `seo-priority-snapshot-${dateStamp}.csv`);
+  const datedPath = path.join(
+    OUTPUT_DIR,
+    `seo-priority-snapshot-${dateStamp}.csv`,
+  );
   const latestPath = path.join(OUTPUT_DIR, "seo-priority-snapshot-latest.csv");
   const csv = toCsv(rows);
 
@@ -142,8 +156,18 @@ const run = () => {
   fs.writeFileSync(latestPath, csv, "utf-8");
 
   const missingCount = rows.filter((row) => row.status === "missing").length;
-  console.log(`SEO priority snapshot exported: ${path.relative(path.resolve(__dirname, ".."), datedPath)}`);
-  console.log(`Latest snapshot updated: ${path.relative(path.resolve(__dirname, ".."), latestPath)}`);
+  console.log(
+    `SEO priority snapshot exported: ${path.relative(
+      path.resolve(__dirname, ".."),
+      datedPath,
+    )}`,
+  );
+  console.log(
+    `Latest snapshot updated: ${path.relative(
+      path.resolve(__dirname, ".."),
+      latestPath,
+    )}`,
+  );
   if (missingCount > 0) {
     console.warn(`Missing pages in dist: ${missingCount}`);
   }

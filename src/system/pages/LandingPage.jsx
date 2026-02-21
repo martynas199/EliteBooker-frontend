@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import DemoRequestModal from "../../shared/components/modals/DemoRequestModal";
 import { motion } from "framer-motion";
@@ -27,8 +27,47 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const isBusinessAlias = location.pathname === "/business";
+  const debugPaint = new URLSearchParams(location.search).get("debugPaint") === "1";
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [showDemoModal, setShowDemoModal] = useState(false);
+  const [paintProbe, setPaintProbe] = useState(null);
+
+  useEffect(() => {
+    if (!debugPaint) {
+      setPaintProbe(null);
+      return;
+    }
+
+    const sampleLayers = () => {
+      const x = Math.round(window.innerWidth * 0.2);
+      const y = Math.round(Math.max(120, window.innerHeight * 0.22));
+      const elements = document.elementsFromPoint(x, y).slice(0, 6);
+
+      const layers = elements.map((element) => {
+        const style = window.getComputedStyle(element);
+        return {
+          tag: element.tagName.toLowerCase(),
+          id: element.id || "-",
+          className: element.className || "-",
+          background: style.backgroundColor,
+          opacity: style.opacity,
+          position: style.position,
+          zIndex: style.zIndex,
+        };
+      });
+
+      setPaintProbe({ x, y, layers });
+    };
+
+    sampleLayers();
+    const intervalId = window.setInterval(sampleLayers, 1200);
+    window.addEventListener("resize", sampleLayers);
+
+    return () => {
+      window.clearInterval(intervalId);
+      window.removeEventListener("resize", sampleLayers);
+    };
+  }, [debugPaint]);
 
   return (
     <>
@@ -47,10 +86,26 @@ export default function LandingPage() {
       <div className="bg-white">
         <Header />
 
+        {debugPaint && paintProbe && (
+          <div className="fixed right-2 top-2 z-[99999] max-w-[92vw] rounded-lg bg-black/85 p-2 text-[10px] text-white shadow-2xl">
+            <div className="mb-1 font-semibold">
+              Probe ({paintProbe.x}, {paintProbe.y})
+            </div>
+            {paintProbe.layers.map((layer, index) => (
+              <div key={`${layer.tag}-${index}`} className="mb-1 border-b border-white/20 pb-1 last:mb-0 last:border-b-0 last:pb-0">
+                <div>#{index + 1} {layer.tag}</div>
+                <div>pos:{layer.position} z:{layer.zIndex} op:{layer.opacity}</div>
+                <div>bg:{layer.background}</div>
+                <div className="truncate">cls:{layer.className}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Hero Section - Ultra Modern */}
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <section className="relative flex min-h-screen items-center justify-center overflow-visible bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc] sm:overflow-hidden">
           {/* Gradient Mesh Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+          <div className="absolute inset-0 hidden bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc] sm:block">
             {/* Animated Gradient Orbs */}
             <motion.div
               animate={{
