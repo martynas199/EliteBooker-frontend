@@ -68,6 +68,9 @@
       will-change: auto !important;
       -webkit-backface-visibility: visible;
       backface-visibility: visible;
+      min-height: 100svh;
+      contain: paint;
+      isolation: isolate;
     }
 
     .ios-safari-landing .landing-hero::before {
@@ -82,6 +85,44 @@
     .ios-safari-landing .landing-hero > * {
       position: relative;
       z-index: 1;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .ios-safari-landing header {
+        position: relative !important;
+        top: 0 !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        -webkit-transform: none !important;
+        transform: none !important;
+      }
+
+      .ios-safari-landing .landing-hero [style*="transform"],
+      .ios-safari-landing .landing-hero [style*="translate"],
+      .ios-safari-landing .landing-hero [style*="scale"] {
+        -webkit-transform: none !important;
+        transform: none !important;
+      }
+
+      .ios-safari-landing .landing-hero [style*="filter"],
+      .ios-safari-landing .landing-hero [class*="blur"] {
+        -webkit-filter: none !important;
+        filter: none !important;
+      }
+
+      .ios-safari-landing .landing-hero .hero-gradient-text {
+        background-image: none !important;
+        color: #111827 !important;
+        -webkit-text-fill-color: #111827 !important;
+      }
+
+      .ios-safari-landing .landing-hero .hero-primary-cta {
+        background: #111827 !important;
+      }
+
+      .ios-safari-landing .landing-hero .hero-primary-cta-overlay {
+        display: none !important;
+      }
     }
   }
 

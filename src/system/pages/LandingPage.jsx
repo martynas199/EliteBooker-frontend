@@ -49,40 +49,6 @@ export default function LandingPage() {
 
         {/* Hero Section - Ultra Modern */}
         <section className="landing-hero relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f6f2ea] sm:bg-gradient-to-br sm:from-[#f8f5ef] sm:via-[#f6f2ea] sm:to-[#efe8dc]">
-          {/* Gradient Mesh Background */}
-          <div className="hidden">
-            {/* Animated Gradient Orbs */}
-            <motion.div
-              animate={{
-                x: [0, 100, 0],
-                y: [0, -100, 0],
-                scale: [1, 1.2, 1],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="absolute top-1/4 right-1/4 hidden h-96 w-96 rounded-full bg-gradient-to-br from-amber-300/25 to-slate-300/20 blur-3xl sm:block"
-            />
-            <motion.div
-              animate={{
-                x: [0, -100, 0],
-                y: [0, 100, 0],
-                scale: [1.2, 1, 1.2],
-              }}
-              transition={{
-                duration: 15,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="absolute bottom-1/4 left-1/4 hidden h-96 w-96 rounded-full bg-gradient-to-tr from-amber-200/20 to-slate-300/20 blur-3xl sm:block"
-            />
-
-            {/* Grid Pattern Overlay */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
-          </div>
-
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-24 sm:pt-20">
             <div className="flex flex-col lg:flex-row items-center gap-12">
               {/* Left Content */}
@@ -108,7 +74,7 @@ export default function LandingPage() {
                 {/* Main Headline - Problem/Solution */}
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
                   <span className="block text-gray-900">Keep More of</span>
-                  <span className="block bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                  <span className="hero-gradient-text block bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                     Every Booking
                   </span>
                   <span className="block text-gray-900">in Your Business</span>
@@ -166,9 +132,9 @@ export default function LandingPage() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-6">
                   <button
                     onClick={() => navigate("/signup")}
-                    className="group relative px-8 py-4 bg-gradient-to-r from-slate-900 to-slate-700 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all overflow-hidden"
+                    className="hero-primary-cta group relative px-8 py-4 bg-gradient-to-r from-slate-900 to-slate-700 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all overflow-hidden"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-800 to-slate-700 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="hero-primary-cta-overlay absolute inset-0 bg-gradient-to-r from-slate-800 to-slate-700 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="relative flex items-center justify-center gap-2">
                       <span className="text-lg">Start Free in Minutes</span>
                       <svg
