@@ -55,7 +55,7 @@
   @supports (-webkit-touch-callout: none) {
     .ios-safari-landing {
       isolation: isolate;
-      overflow-x: clip;
+      overflow-x: hidden;
       background: #f6f2ea;
     }
 
@@ -69,8 +69,6 @@
       -webkit-backface-visibility: visible;
       backface-visibility: visible;
       min-height: 100svh;
-      contain: paint;
-      isolation: isolate;
     }
 
     .ios-safari-landing .landing-hero::before {
@@ -85,6 +83,49 @@
     .ios-safari-landing .landing-hero > * {
       position: relative;
       z-index: 1;
+    }
+
+    .ios-safari-landing.ios-webkit-safe-mode header {
+      position: relative !important;
+      top: 0 !important;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+
+    .ios-safari-landing.ios-webkit-safe-mode .landing-hero,
+    .ios-safari-landing.ios-webkit-safe-mode .landing-hero * {
+      -webkit-transform: none !important;
+      transform: none !important;
+      animation: none !important;
+      transition: none !important;
+      will-change: auto !important;
+      -webkit-filter: none !important;
+      filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+      box-shadow: none !important;
+    }
+
+    .ios-safari-landing.ios-webkit-safe-mode .landing-hero [class*="bg-gradient"],
+    .ios-safari-landing.ios-webkit-safe-mode .landing-hero [style*="gradient"] {
+      background-image: none !important;
+    }
+
+    .ios-safari-landing.ios-webkit-safe-mode .landing-hero .hero-gradient-text {
+      color: #111827 !important;
+      -webkit-text-fill-color: #111827 !important;
+      background-image: none !important;
+    }
+
+    .ios-safari-landing.ios-webkit-safe-mode .landing-hero .hero-primary-cta {
+      background: #111827 !important;
+      color: #ffffff !important;
+    }
+
+    .ios-safari-landing.ios-webkit-safe-mode
+      .landing-hero
+      .hero-primary-cta-overlay {
+      display: none !important;
     }
 
     @media (hover: none) and (pointer: coarse) {

@@ -1,7 +1,7 @@
 import { useState, lazy, Suspense } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import DemoRequestModal from "../../shared/components/modals/DemoRequestModal";
-import { motion } from "framer-motion";
+import { motion, MotionConfig } from "framer-motion";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import OrganizationSchema from "../../shared/components/Schema/OrganizationSchema";
 import { stats } from "./landing/landingData";
@@ -23,10 +23,31 @@ const SectionFallback = () => (
   </div>
 );
 
+function getIOSWebKitInfo() {
+  if (typeof navigator === "undefined") {
+    return { isIOSWebKit: false, iosMajor: null };
+  }
+
+  const ua = navigator.userAgent || "";
+  const isIOSDevice =
+    /iP(hone|ad|od)/i.test(ua) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isWebKit = /AppleWebKit/i.test(ua);
+  const versionMatch = ua.match(/OS (\d+)_/i);
+  const iosMajor = versionMatch ? Number(versionMatch[1]) : null;
+
+  return { isIOSWebKit: Boolean(isIOSDevice && isWebKit), iosMajor };
+}
+
 export default function LandingPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const isBusinessAlias = location.pathname === "/business";
+  const { isIOSWebKit, iosMajor } = getIOSWebKitInfo();
+  const forceSafeMode =
+    new URLSearchParams(location.search).get("iosSafeMode") === "1";
+  const useIOSSafeMode =
+    isIOSWebKit && (forceSafeMode || (iosMajor !== null && iosMajor >= 26));
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [showDemoModal, setShowDemoModal] = useState(false);
 
@@ -44,7 +65,12 @@ export default function LandingPage() {
       {/* Organization Schema */}
       <OrganizationSchema />
 
-      <div className="bg-white ios-safari-landing">
+      <MotionConfig reducedMotion={useIOSSafeMode ? "always" : "never"}>
+        <div
+          className={`bg-white ios-safari-landing ${
+            useIOSSafeMode ? "ios-webkit-safe-mode" : ""
+          }`}
+        >
         <Header />
 
         {/* Hero Section - Ultra Modern */}
@@ -563,7 +589,8 @@ export default function LandingPage() {
             />
           </Suspense>
         )}
-      </div>
+        </div>
+      </MotionConfig>
     </>
   );
 }
