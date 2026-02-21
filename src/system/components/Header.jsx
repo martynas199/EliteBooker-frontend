@@ -91,12 +91,15 @@ export default function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-[4.25rem] items-center justify-between sm:h-16">
           <Link to="/" className="flex items-center gap-4">
+            <span className="text-xl font-semibold tracking-tight text-slate-900 sm:hidden">
+              EliteBooker
+            </span>
             <img
               src={eliteLogo}
               alt="Elite Booker Logo"
               width="140"
               height="80"
-              className="h-16 w-auto sm:h-20"
+              className="hidden h-16 w-auto sm:block sm:h-20"
               loading="eager"
             />
           </Link>
