@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import OrganizationSchema from "../../shared/components/Schema/OrganizationSchema";
@@ -33,6 +34,23 @@ const heroServiceChips = [
     label: "Nail salon booking software UK",
   },
 ];
+
+const heroTrustPoints = ["No credit card required", "Cancel anytime"];
+
+const heroOperationalStats = [
+  { value: "GBP 0", label: "Base plan available" },
+  { value: "24/7", label: "Online booking" },
+  { value: "SMS", label: "Reminder workflows" },
+  { value: "UK", label: "Market focus" },
+];
+
+const demoChecklist = [
+  "Launch in under 10 minutes",
+  "Automated reminders and no-show protection",
+  "Payments and client profiles in one dashboard",
+];
+
+const demoVideoUrl = "https://www.youtube.com/embed/uJC681X-d2Q";
 
 const coreBenefits = [
   {
@@ -111,8 +129,7 @@ const pricingSnapshotPlans = [
   {
     name: "Starter",
     description: "Solo professionals getting online for the first time",
-    price: "GBP 0",
-    cadence: "/month",
+    price: { monthly: 0, annual: 0 },
     features: [
       "Online booking page",
       "Core appointment management",
@@ -126,8 +143,7 @@ const pricingSnapshotPlans = [
   {
     name: "Professional",
     description: "Growing teams that need deeper automation and reporting",
-    price: "From GBP 9.99",
-    cadence: "/month",
+    price: { monthly: 9.99, annual: 8.33 },
     features: [
       "Everything in Starter",
       "Reminder workflows",
@@ -141,8 +157,7 @@ const pricingSnapshotPlans = [
   {
     name: "Multi-location",
     description: "Established businesses coordinating multiple locations",
-    price: "From GBP 49.99",
-    cadence: "/month",
+    price: { monthly: 49.99, annual: 41.66 },
     features: [
       "Everything in Professional",
       "Location-level controls",
@@ -161,9 +176,70 @@ const finalCtaBadges = [
   "Built for UK service businesses",
 ];
 
+const coreBenefitIcons = [
+  <svg
+    key="calendar"
+    className="h-10 w-10 text-slate-700"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+    />
+  </svg>,
+  <svg
+    key="pound"
+    className="h-10 w-10 text-slate-700"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M12 3c-2.2 0-4 1.8-4 4v2H6m2 0h7m-7 0v3c0 1.7-1 3.2-2.4 3.9h9.9"
+    />
+  </svg>,
+  <svg
+    key="bell"
+    className="h-10 w-10 text-slate-700"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M15 17h5l-1.4-1.4c-.4-.4-.6-.9-.6-1.4V11a6 6 0 10-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+    />
+  </svg>,
+  <svg
+    key="brush"
+    className="h-10 w-10 text-slate-700"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.3M11 7.3l1.7-1.6a2 2 0 012.8 0l2.8 2.8a2 2 0 010 2.8l-8.5 8.5M7 17h.01"
+    />
+  </svg>,
+];
+
 export default function LandingPageRebuild() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [pricingCycle, setPricingCycle] = useState("monthly");
+  const [demoVideoLoaded, setDemoVideoLoaded] = useState(false);
   const isPrimaryCanonicalPath = location.pathname === "/";
 
   return (
@@ -178,7 +254,7 @@ export default function LandingPageRebuild() {
       <OrganizationSchema />
 
       <div className="min-h-screen bg-[#f6f2ea] text-slate-900">
-        <Header iosSafeMode minimalMode />
+        <Header iosSafeMode />
 
         <main>
           {/* Section 1: Hero */}
@@ -191,7 +267,11 @@ export default function LandingPageRebuild() {
                   </p>
 
                   <h1 className="max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
-                    Keep More of Every Booking in Your Business
+                    <span className="block text-slate-900">Keep More of</span>
+                    <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                      Every Booking
+                    </span>
+                    <span className="block text-slate-900">in Your Business</span>
                   </h1>
 
                   <p className="mt-6 max-w-2xl text-lg text-slate-700">
@@ -199,10 +279,21 @@ export default function LandingPageRebuild() {
                     reminders, and client management in one platform.
                   </p>
 
+                  <p className="mt-4 max-w-2xl text-base text-slate-600">
+                    <span className="font-semibold text-slate-900">
+                      Reduce manual booking admin
+                    </span>{" "}
+                    with structured workflows. Start with our{" "}
+                    <span className="font-semibold text-slate-900">
+                      free forever plan
+                    </span>
+                    , then upgrade only when your team needs more.
+                  </p>
+
                   <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                     <button
                       onClick={() => navigate("/signup")}
-                      className="rounded-xl bg-slate-900 px-8 py-4 text-base font-bold text-white"
+                      className="rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 text-base font-bold text-white shadow-xl"
                     >
                       Start Free in Minutes
                     </button>
@@ -211,7 +302,7 @@ export default function LandingPageRebuild() {
                         const target = document.getElementById("section-5");
                         target?.scrollIntoView({ behavior: "smooth" });
                       }}
-                      className="rounded-xl border-2 border-slate-300 bg-white px-8 py-4 text-base font-semibold text-slate-900"
+                      className="rounded-xl border-2 border-slate-300 bg-white px-8 py-4 text-base font-semibold text-slate-900 shadow-md"
                     >
                       Compare Plans
                     </button>
@@ -259,9 +350,20 @@ export default function LandingPageRebuild() {
                       </a>
                     ))}
                   </div>
+
+                  <div className="mt-5 flex flex-wrap items-center gap-2 text-sm text-slate-600">
+                    {heroTrustPoints.map((point, index) => (
+                      <div key={point} className="flex items-center gap-2">
+                        <span className="font-medium text-slate-700">{point}</span>
+                        {index < heroTrustPoints.length - 1 && (
+                          <span className="text-slate-300">&middot;</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-                <aside className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+                <aside className="rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl sm:p-8">
                   <div className="flex items-center justify-between">
                     <h3 className="text-2xl font-bold text-slate-900">
                       Save Thousands
@@ -347,10 +449,27 @@ export default function LandingPageRebuild() {
             </div>
           </section>
 
+          {/* Section 1B: Operational Snapshot */}
+          <section className="border-b border-slate-200 bg-white">
+            <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                {heroOperationalStats.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center"
+                  >
+                    <p className="text-3xl font-extrabold text-slate-900">{stat.value}</p>
+                    <p className="mt-1 text-sm text-slate-600">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* Section 2: Trust Strip */}
           <section id="section-2" className="border-b border-slate-200 bg-white">
             <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
+              <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6 sm:p-8">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <p className="inline-flex rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
@@ -421,8 +540,11 @@ export default function LandingPageRebuild() {
                 {coreBenefits.map((benefit, index) => (
                   <article
                     key={benefit.title}
-                    className="rounded-2xl border border-slate-200 bg-white p-6"
+                    className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
                   >
+                    <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
+                      {coreBenefitIcons[index]}
+                    </div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
                       Benefit {index + 1}
                     </p>
@@ -467,6 +589,107 @@ export default function LandingPageRebuild() {
             </div>
           </section>
 
+          {/* Section 3B: Demo */}
+          <section className="border-b border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 text-white">
+            <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+              <div className="grid items-center gap-10 md:grid-cols-2">
+                <div>
+                  <p className="inline-flex rounded-full border border-amber-300/40 bg-amber-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-amber-300">
+                    Product demo
+                  </p>
+                  <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                    See the booking workflow in action
+                  </h2>
+                  <p className="mt-4 text-slate-300">
+                    Watch how quickly you can accept appointments, run reminders,
+                    and manage your daily schedule from one dashboard.
+                  </p>
+
+                  <ul className="mt-6 space-y-3">
+                    {demoChecklist.map((item) => (
+                      <li key={item} className="flex items-center gap-3">
+                        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-500 bg-slate-700/40">
+                          <svg
+                            className="h-3.5 w-3.5 text-slate-100"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2.5}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </span>
+                        <span className="text-sm text-slate-200 sm:text-base">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <button
+                      onClick={() => navigate("/signup")}
+                      className="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-900"
+                    >
+                      Start free in minutes
+                    </button>
+                    {!demoVideoLoaded && (
+                      <button
+                        onClick={() => setDemoVideoLoaded(true)}
+                        className="rounded-xl border border-slate-500 px-6 py-3 text-sm font-semibold text-white"
+                      >
+                        Watch instant preview
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <div className="aspect-video overflow-hidden rounded-2xl border border-slate-700 bg-slate-950 shadow-2xl">
+                    {!demoVideoLoaded ? (
+                      <button
+                        onClick={() => setDemoVideoLoaded(true)}
+                        className="flex h-full w-full items-center justify-center bg-slate-900 text-white"
+                        aria-label="Load demo video"
+                      >
+                        <div className="text-center">
+                          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-slate-700">
+                            <svg
+                              className="ml-1 h-8 w-8"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+                            </svg>
+                          </div>
+                          <p className="text-sm font-semibold sm:text-base">
+                            Watch demo video
+                          </p>
+                          <p className="mt-1 text-xs text-slate-300 sm:text-sm">
+                            Click to load preview
+                          </p>
+                        </div>
+                      </button>
+                    ) : (
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        src={`${demoVideoUrl}?autoplay=1&mute=1&loop=1&playlist=uJC681X-d2Q&controls=1&rel=0`}
+                        title="Platform demo"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="h-full w-full"
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Section 4: Social Proof */}
           <section id="section-4" className="border-b border-slate-200 bg-white">
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -487,7 +710,7 @@ export default function LandingPageRebuild() {
                 {socialProofStats.map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center"
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center shadow-sm"
                   >
                     <p className="text-3xl font-extrabold text-slate-900">
                       {item.value}
@@ -533,6 +756,20 @@ export default function LandingPageRebuild() {
             </div>
           </section>
 
+          {/* Section 4B: Performance Banner */}
+          <section className="border-b border-slate-800 bg-slate-900">
+            <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+              <div className="grid gap-8 text-center text-white md:grid-cols-3">
+                {socialProofStats.map((item) => (
+                  <div key={item.label}>
+                    <p className="text-4xl font-extrabold">{item.value}</p>
+                    <p className="mt-1 text-sm text-slate-300">{item.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* Section 5: Pricing Snapshot */}
           <section id="section-5" className="border-b border-slate-200 bg-[#f8f6f1]">
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -557,13 +794,39 @@ export default function LandingPageRebuild() {
                 </button>
               </div>
 
+              <div className="mt-8 grid w-full max-w-md grid-cols-2 gap-2 rounded-2xl border border-slate-300 bg-white p-2 shadow-sm">
+                <button
+                  onClick={() => setPricingCycle("monthly")}
+                  className={`rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
+                    pricingCycle === "monthly"
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  Monthly
+                </button>
+                <button
+                  onClick={() => setPricingCycle("annual")}
+                  className={`rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
+                    pricingCycle === "annual"
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  Annual
+                  <span className="ml-2 inline-flex rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-900">
+                    Save 17%
+                  </span>
+                </button>
+              </div>
+
               <div className="mt-10 grid gap-4 lg:grid-cols-3">
                 {pricingSnapshotPlans.map((plan) => (
                   <article
                     key={plan.name}
-                    className={`rounded-2xl border bg-white p-6 ${
+                    className={`rounded-2xl border bg-white p-6 shadow-sm ${
                       plan.highlighted
-                        ? "border-slate-900"
+                        ? "border-slate-900 shadow-lg"
                         : "border-slate-200"
                     }`}
                   >
@@ -577,11 +840,20 @@ export default function LandingPageRebuild() {
                     </h3>
                     <p className="mt-2 text-sm text-slate-600">{plan.description}</p>
                     <p className="mt-5 text-3xl font-extrabold text-slate-900">
-                      {plan.price}
-                      <span className="ml-1 text-base font-medium text-slate-600">
-                        {plan.cadence}
-                      </span>
+                      {plan.price[pricingCycle] === 0
+                        ? "GBP 0"
+                        : `GBP ${plan.price[pricingCycle].toFixed(2)}`}
+                      {plan.price[pricingCycle] > 0 && (
+                        <span className="ml-1 text-base font-medium text-slate-600">
+                          /month
+                        </span>
+                      )}
                     </p>
+                    {pricingCycle === "annual" && plan.price.annual > 0 && (
+                      <p className="mt-1 text-xs text-slate-600">
+                        Billed GBP {(plan.price.annual * 12).toFixed(2)} yearly
+                      </p>
+                    )}
 
                     <ul className="mt-5 space-y-2 text-sm text-slate-700">
                       {plan.features.map((feature) => (
@@ -617,7 +889,10 @@ export default function LandingPageRebuild() {
           </section>
 
           {/* Section 6: Final CTA */}
-          <section id="section-6" className="bg-slate-900 text-white">
+          <section
+            id="section-6"
+            className="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 text-white"
+          >
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
               <div className="rounded-3xl border border-slate-700 bg-slate-900 p-8 text-center sm:p-10">
                 <p className="inline-flex rounded-full border border-slate-500 bg-slate-800 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-200">
