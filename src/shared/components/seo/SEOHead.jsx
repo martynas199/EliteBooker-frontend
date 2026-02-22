@@ -22,8 +22,10 @@ export default function SEOHead({
   ogType = "website",
   noindex = false,
   schema,
+  schemas,
 }) {
   const siteName = "Elite Booker";
+  const locale = "en_GB";
   const fallbackDescription =
     "Commission-free booking software for UK beauty and wellness businesses.";
   const normalizedDescription = `${description || fallbackDescription}`.trim();
@@ -95,9 +97,27 @@ export default function SEOHead({
     "booking management system",
   ];
 
-  const allKeywords = keywords
+  const keywordSource = keywords
     ? [...defaultKeywords, ...keywords.split(",").map((k) => k.trim())]
     : defaultKeywords;
+  const seenKeywordKeys = new Set();
+  const allKeywords = keywordSource.filter((keyword) => {
+    const normalizedKeyword = `${keyword}`.trim();
+    if (!normalizedKeyword) return false;
+    const dedupeKey = normalizedKeyword.toLowerCase();
+    if (seenKeywordKeys.has(dedupeKey)) return false;
+    seenKeywordKeys.add(dedupeKey);
+    return true;
+  });
+
+  const normalizeSchemaInput = (input) => {
+    if (!input) return [];
+    return Array.isArray(input) ? input.filter(Boolean) : [input];
+  };
+  const schemaEntries = [
+    ...normalizeSchemaInput(schema),
+    ...normalizeSchemaInput(schemas),
+  ];
 
   return (
     <Helmet>
@@ -113,6 +133,7 @@ export default function SEOHead({
 
       {/* Robots Meta */}
       <meta name="robots" content={robotsContent} />
+      <meta name="googlebot" content={robotsContent} />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={ogType} />
@@ -120,10 +141,18 @@ export default function SEOHead({
       <meta property="og:description" content={normalizedDescription} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:site_name" content={siteName} />
+      <meta property="og:locale" content={locale} />
+      <meta property="og:locale:alternate" content="en_US" />
       {ogImage && (
         <>
           <meta
             property="og:image"
+            content={
+              ogImage.startsWith("http") ? ogImage : `${baseUrl}${ogImage}`
+            }
+          />
+          <meta
+            property="og:image:secure_url"
             content={
               ogImage.startsWith("http") ? ogImage : `${baseUrl}${ogImage}`
             }
@@ -142,13 +171,20 @@ export default function SEOHead({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={normalizedDescription} />
+      <meta name="twitter:url" content={canonicalUrl} />
       {ogImage && (
-        <meta
-          name="twitter:image"
-          content={
-            ogImage.startsWith("http") ? ogImage : `${baseUrl}${ogImage}`
-          }
-        />
+        <>
+          <meta
+            name="twitter:image"
+            content={
+              ogImage.startsWith("http") ? ogImage : `${baseUrl}${ogImage}`
+            }
+          />
+          <meta
+            name="twitter:image:alt"
+            content="Elite Booker - Appointment Booking Software"
+          />
+        </>
       )}
 
       {/* Additional Meta Tags */}
@@ -162,15 +198,11 @@ export default function SEOHead({
       <meta name="coverage" content="Worldwide" />
 
       {/* JSON-LD Structured Data */}
-      {Array.isArray(schema)
-        ? schema.map((schemaEntry, index) => (
-            <script key={index} type="application/ld+json">
-              {JSON.stringify(schemaEntry)}
-            </script>
-          ))
-        : schema && (
-            <script type="application/ld+json">{JSON.stringify(schema)}</script>
-          )}
+      {schemaEntries.map((schemaEntry, index) => (
+        <script key={index} type="application/ld+json">
+          {JSON.stringify(schemaEntry)}
+        </script>
+      ))}
     </Helmet>
   );
 }
@@ -184,4 +216,5 @@ SEOHead.propTypes = {
   ogType: PropTypes.string,
   noindex: PropTypes.bool,
   schema: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  schemas: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };

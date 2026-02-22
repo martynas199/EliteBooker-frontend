@@ -6,6 +6,9 @@
 import { Helmet } from "react-helmet-async";
 
 export default function OrganizationSchema() {
+  const currentYear = new Date().getUTCFullYear();
+  const priceValidUntil = `${currentYear + 1}-12-31`;
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -17,7 +20,7 @@ export default function OrganizationSchema() {
       "@type": "Offer",
       price: "0.00",
       priceCurrency: "GBP",
-      priceValidUntil: "2026-12-31",
+      priceValidUntil,
       availability: "https://schema.org/InStock",
       url: "https://www.elitebooker.co.uk/pricing",
     },
@@ -32,7 +35,7 @@ export default function OrganizationSchema() {
       "@type": "Organization",
       name: "Elite Booker Ltd",
       url: "https://www.elitebooker.co.uk",
-      logo: "https://www.elitebooker.co.uk/logo.png",
+      logo: "https://www.elitebooker.co.uk/android-chrome-512x512.png",
       sameAs: [
         "https://www.facebook.com/elitebookeruk",
         "https://www.instagram.com/elitebookeruk",

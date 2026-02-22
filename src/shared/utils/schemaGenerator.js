@@ -16,7 +16,7 @@ export function generateLocalBusinessSchema() {
     name: businessName,
     description:
       "Elite Booker - Professional beauty salon booking system. Connect with premium aesthetic clinics and beauty salons offering expert cosmetic treatments and professional beauty services including lip fillers, anti-wrinkle injections, dermal fillers, permanent makeup, facial treatments, hair services, and beauty treatments.",
-    image: `${baseUrl}/src/assets/logo.svg`,
+    image: `${baseUrl}/android-chrome-512x512.png`,
     "@id": baseUrl,
     url: baseUrl,
     telephone: "+447928775746",
@@ -273,7 +273,7 @@ export function generateOrganizationSchema() {
     "@type": "Organization",
     name: businessName,
     url: baseUrl,
-    logo: `${baseUrl}/src/assets/logo.svg`,
+    logo: `${baseUrl}/android-chrome-512x512.png`,
     description:
       "Leading aesthetic clinic and beauty salon in Wisbech offering professional beauty treatments, cosmetic injectables, permanent makeup, and premium beauty products.",
     address: {
@@ -358,7 +358,7 @@ export function generateBlogPostSchema({
       name: businessName,
       logo: {
         "@type": "ImageObject",
-        url: `${baseUrl}/src/assets/logo.svg`,
+        url: `${baseUrl}/android-chrome-512x512.png`,
       },
     },
     datePublished: publishedDate,

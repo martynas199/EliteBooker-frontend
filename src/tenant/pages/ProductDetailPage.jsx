@@ -191,7 +191,7 @@ export default function ProductDetailPage() {
         }
         canonical={`https://www.elitebooker.co.uk/products/${product._id}`}
         ogImage={product.image?.url || product.images?.[0]?.url}
-        schemas={[
+        schema={[
           generateProductSchema(product),
           generateBreadcrumbSchema(breadcrumbItems),
         ]}

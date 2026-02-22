@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import OrganizationSchema from "../../shared/components/Schema/OrganizationSchema";
 import FAQSchema from "../../shared/components/Schema/FAQSchema";
+import { generateWebSiteSchema } from "../../shared/utils/schemaGenerator";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -312,6 +313,7 @@ export default function LandingPageRebuild() {
   const [pricingCycle, setPricingCycle] = useState("monthly");
   const [demoVideoLoaded, setDemoVideoLoaded] = useState(false);
   const isPrimaryCanonicalPath = location.pathname === "/";
+  const webSiteSchema = generateWebSiteSchema();
 
   const handleHeroPrimaryClick = () => {
     trackLandingEvent("landing_hero_start_free_click", { section: "hero" });
@@ -361,6 +363,7 @@ export default function LandingPageRebuild() {
         description="Commission-free booking software for UK beauty and wellness businesses. Online scheduling, reminder workflows, and client management from GBP 0."
         keywords="online booking system UK, salon booking software UK, appointment scheduling UK, barbershop booking software UK"
         canonical="https://www.elitebooker.co.uk/"
+        schema={webSiteSchema}
         noindex={!isPrimaryCanonicalPath}
       />
       <OrganizationSchema />
