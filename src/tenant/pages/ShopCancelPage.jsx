@@ -1,5 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../shared/components/ui/Button";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 export default function ShopCancelPage() {
   const navigate = useNavigate();
@@ -7,7 +8,13 @@ export default function ShopCancelPage() {
   const orderId = searchParams.get("orderId");
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4">
+    <>
+      <SEOHead
+        title="Product Checkout Canceled"
+        description="Secure product checkout cancellation flow."
+        noindex
+      />
+      <div className="min-h-screen flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full">
         {/* Icon */}
         <div className="mb-6 text-center">
@@ -160,6 +167,7 @@ export default function ShopCancelPage() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

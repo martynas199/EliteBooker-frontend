@@ -1,10 +1,17 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Button from "../../shared/components/ui/Button";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 export default function ConfirmationPage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+    <>
+      <SEOHead
+        title="Booking Confirmed"
+        description="Secure booking confirmation flow."
+        noindex
+      />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -89,6 +96,7 @@ export default function ConfirmationPage() {
           </motion.div>
         </div>
       </motion.div>
-    </div>
+      </div>
+    </>
   );
 }

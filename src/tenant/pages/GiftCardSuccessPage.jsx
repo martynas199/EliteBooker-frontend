@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import Button from "../../shared/components/ui/Button";
 import { confirmGiftCardCheckout } from "../../shared/api/giftCards.api";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 function useQuery() {
   const { search } = useLocation();
@@ -60,7 +61,13 @@ export default function GiftCardSuccessPage() {
   }, [sessionId, confirmAttempt]);
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-6 sm:py-10">
+    <>
+      <SEOHead
+        title="Gift Card Payment Success"
+        description="Secure gift card checkout confirmation flow."
+        noindex
+      />
+      <div className="min-h-screen bg-white flex items-center justify-center px-4 py-6 sm:py-10">
       <motion.div
         initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
         animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
@@ -227,6 +234,7 @@ export default function GiftCardSuccessPage() {
           </div>
         )}
       </motion.div>
-    </div>
+      </div>
+    </>
   );
 }

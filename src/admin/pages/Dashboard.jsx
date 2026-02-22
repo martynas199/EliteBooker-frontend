@@ -3791,12 +3791,8 @@ export default function Dashboard() {
               </Button>
               <Button
                 variant="brand"
-                onClick={() => {
-                  toast.success(
-                    "Appointment creation feature coming soon! Please use the calendar to create appointments for now.",
-                  );
-                  setShowCreateAppointmentModal(false);
-                }}
+                onClick={handleCreateAppointment}
+                disabled={creatingAppointment}
                 className="w-full sm:flex-1 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 shadow-lg hover:shadow-xl"
               >
                 <svg
@@ -3812,7 +3808,7 @@ export default function Dashboard() {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                Create Appointment
+                {creatingAppointment ? "Creating..." : "Create Appointment"}
               </Button>
             </div>
           </div>

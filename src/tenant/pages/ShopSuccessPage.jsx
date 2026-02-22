@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../../shared/lib/apiClient";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 export default function ShopSuccessPage() {
   const [searchParams] = useSearchParams();
@@ -8,6 +9,17 @@ export default function ShopSuccessPage() {
   const [status, setStatus] = useState("processing"); // processing, success, error
   const [error, setError] = useState(null);
   const [order, setOrder] = useState(null);
+
+  const renderWithSeo = (content) => (
+    <>
+      <SEOHead
+        title="Product Checkout Confirmation"
+        description="Secure product checkout confirmation flow."
+        noindex
+      />
+      {content}
+    </>
+  );
 
   useEffect(() => {
     const sessionId = searchParams.get("session_id");
@@ -51,7 +63,7 @@ export default function ShopSuccessPage() {
   };
 
   if (status === "processing") {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center px-4">
           <div className="mb-6">
@@ -84,12 +96,12 @@ export default function ShopSuccessPage() {
             Do not close this window or press the back button
           </p>
         </div>
-      </div>
+      </div>,
     );
   }
 
   if (status === "success") {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center px-4">
           <div className="mb-6">
@@ -130,12 +142,12 @@ export default function ShopSuccessPage() {
             ></div>
           </div>
         </div>
-      </div>
+      </div>,
     );
   }
 
   if (status === "error") {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="max-w-md mx-auto px-4 py-12 text-center">
           <div className="mb-6">
@@ -177,9 +189,9 @@ export default function ShopSuccessPage() {
             </button>
           </div>
         </div>
-      </div>
+      </div>,
     );
   }
 
-  return null;
+  return renderWithSeo(null);
 }

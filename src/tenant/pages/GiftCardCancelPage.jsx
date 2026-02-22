@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import Button from "../../shared/components/ui/Button";
 import { cancelGiftCardCheckout } from "../../shared/api/giftCards.api";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 function useQuery() {
   const { search } = useLocation();
@@ -67,7 +68,13 @@ export default function GiftCardCancelPage() {
   }, [giftCardId, sessionId]);
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-10">
+    <>
+      <SEOHead
+        title="Gift Card Payment Canceled"
+        description="Secure gift card checkout cancellation flow."
+        noindex
+      />
+      <div className="min-h-screen bg-white flex items-center justify-center px-4 py-10">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -127,6 +134,7 @@ export default function GiftCardCancelPage() {
           </Link>
         </div>
       </motion.div>
-    </div>
+      </div>
+    </>
   );
 }

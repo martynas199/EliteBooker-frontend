@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Button from "../../shared/components/ui/Button";
 import StatusBadge from "../../shared/components/ui/StatusBadge";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 export default function CancelPage() {
   const q = new URLSearchParams(useLocation().search);
@@ -52,7 +53,13 @@ export default function CancelPage() {
   }, [appointmentId]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+    <>
+      <SEOHead
+        title="Booking Payment Canceled"
+        description="Secure booking payment cancellation flow."
+        noindex
+      />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-xl bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
         <div className="flex justify-center mb-4">
           <StatusBadge status="cancelled" />
@@ -89,6 +96,7 @@ export default function CancelPage() {
           <Button variant="outline">Return to booking</Button>
         </Link>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

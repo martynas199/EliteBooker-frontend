@@ -4,6 +4,7 @@ import { OrdersAPI } from "./orders.api";
 import Button from "../../shared/components/ui/Button";
 import { formatCurrency } from "../../shared/utils/currency";
 import { useAuth } from "../../shared/contexts/AuthContext";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 export default function OrderSuccessPage() {
   const { orderNumber } = useParams();
@@ -45,18 +46,18 @@ export default function OrderSuccessPage() {
   };
 
   if (loading) {
-    return (
+    return renderWithSeo(
       <div className="max-w-3xl mx-auto px-4 py-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-brand-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading order details...</p>
         </div>
-      </div>
+      </div>,
     );
   }
 
   if (error || !order) {
-    return (
+    return renderWithSeo(
       <div className="max-w-3xl mx-auto px-4 py-12">
         <div className="text-center">
           <svg
@@ -80,7 +81,7 @@ export default function OrderSuccessPage() {
           </p>
           <Button onClick={() => navigate("/")}>Continue Shopping</Button>
         </div>
-      </div>
+      </div>,
     );
   }
 
@@ -102,7 +103,7 @@ export default function OrderSuccessPage() {
     }
   };
 
-  return (
+  return renderWithSeo(
     <div className="max-w-3xl mx-auto px-4 py-12">
       {/* Back Button */}
       <button
@@ -600,6 +601,16 @@ export default function OrderSuccessPage() {
           </a>
         </p>
       </div>
-    </div>
+    </div>,
   );
 }
+  const renderWithSeo = (content) => (
+    <>
+      <SEOHead
+        title="Order Confirmation"
+        description="Secure order confirmation flow."
+        noindex
+      />
+      {content}
+    </>
+  );

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { BookingAPI } from "./booking.api";
 import Button from "../../shared/components/ui/Button";
 import StatusBadge from "../../shared/components/ui/StatusBadge";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 function useQuery() {
   const { search } = useLocation();
@@ -74,7 +75,13 @@ export default function SuccessPage() {
   }, [appointmentId, sessionId]);
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
+    <>
+      <SEOHead
+        title="Booking Confirmation"
+        description="Secure booking confirmation flow."
+        noindex
+      />
+      <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Animated background gradient orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -468,6 +475,7 @@ export default function SuccessPage() {
           )}
         </motion.div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

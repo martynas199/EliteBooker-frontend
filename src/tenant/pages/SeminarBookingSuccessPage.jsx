@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { SeminarsAPI } from "./seminars.api";
+import SEOHead from "../../shared/components/seo/SEOHead";
 
 export default function SeminarBookingSuccessPage() {
   const [searchParams] = useSearchParams();
@@ -22,14 +23,14 @@ export default function SeminarBookingSuccessPage() {
   }, [sessionId]);
 
   if (loading) {
-    return (
+    return renderWithSeo(
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-      </div>
+      </div>,
     );
   }
 
-  return (
+  return renderWithSeo(
     <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Icon */}
@@ -180,6 +181,16 @@ export default function SeminarBookingSuccessPage() {
           </ul>
         </div>
       </div>
-    </div>
+    </div>,
   );
 }
+  const renderWithSeo = (content) => (
+    <>
+      <SEOHead
+        title="Seminar Booking Confirmation"
+        description="Secure seminar booking confirmation flow."
+        noindex
+      />
+      {content}
+    </>
+  );
