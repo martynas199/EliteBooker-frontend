@@ -484,11 +484,6 @@ export default function TakePaymentPage() {
 
   // ==================== RESULT ACTIONS ====================
 
-  const handleSendReceipt = async (method) => {
-    // TODO: Implement receipt sending
-    console.log(`Sending receipt via ${method}`);
-  };
-
   const handleTakeAnotherPayment = () => {
     // Reset state
     setSelectedAppointment(null);
@@ -1061,27 +1056,19 @@ export default function TakePaymentPage() {
 
           {/* Actions */}
           <div className="w-full space-y-3">
-            {paymentResult.client?.email && (
-              <button
-                onClick={() => handleSendReceipt("email")}
-                className="w-full py-3 border-2 border-black text-black font-medium rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Send Receipt via Email
-              </button>
-            )}
-            {paymentResult.client?.phone && (
-              <button
-                onClick={() => handleSendReceipt("sms")}
-                className="w-full py-3 border-2 border-black text-black font-medium rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Send Receipt via SMS
-              </button>
+            {(paymentResult.client?.email || paymentResult.client?.phone) && (
+              <div className="w-full rounded-lg border border-green-200 bg-green-50 p-3 text-left">
+                <p className="text-sm font-semibold text-green-800">
+                  Receipt delivery
+                </p>
+                <p className="text-sm text-green-700 mt-1">
+                  Receipts are sent automatically after successful payment.
+                </p>
+              </div>
             )}
             {selectedAppointment && (
               <button
-                onClick={() =>
-                  navigate(`/appointments/${selectedAppointment._id}`)
-                }
+                onClick={() => navigate("/admin/appointments")}
                 className="w-full py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
               >
                 View Appointment
