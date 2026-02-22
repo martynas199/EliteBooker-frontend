@@ -6,6 +6,9 @@ import logo from "../assets/logo.svg";
 
 // Lazy load system pages (landing, search, etc.)
 const LandingPage = lazy(() => import("../system/pages/LandingPage"));
+const LandingPageRebuild = lazy(
+  () => import("../system/pages/LandingPageRebuild"),
+);
 const BusinessesLandingPage = lazy(() =>
   import("../system/pages/BusinessesLandingPage"),
 );
@@ -421,9 +424,11 @@ export default function AppRoutes() {
 
           {/* Browse Businesses */}
           <Route path="/business" element={<LandingPage />} />
+          <Route path="/business-rebuild" element={<LandingPageRebuild />} />
 
           {/* Platform marketing/landing page - Main route until search is fully developed */}
           <Route path="/" element={<LandingPage />} />
+          <Route path="/landing-rebuild" element={<LandingPageRebuild />} />
 
           {/* Help & Support */}
           <Route path="/help" element={<HelpPage />} />
