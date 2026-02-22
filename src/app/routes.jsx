@@ -423,12 +423,14 @@ export default function AppRoutes() {
           <Route path="/search" element={<SearchPage />} />
 
           {/* Browse Businesses */}
-          <Route path="/business" element={<LandingPage />} />
+          <Route path="/business" element={<LandingPageRebuild />} />
           <Route path="/business-rebuild" element={<LandingPageRebuild />} />
+          <Route path="/business-legacy" element={<LandingPage />} />
 
-          {/* Platform marketing/landing page - Main route until search is fully developed */}
-          <Route path="/" element={<LandingPage />} />
+          {/* Platform marketing/landing page */}
+          <Route path="/" element={<LandingPageRebuild />} />
           <Route path="/landing-rebuild" element={<LandingPageRebuild />} />
+          <Route path="/landing-legacy" element={<LandingPage />} />
 
           {/* Help & Support */}
           <Route path="/help" element={<HelpPage />} />

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import OrganizationSchema from "../../shared/components/Schema/OrganizationSchema";
 import Header from "../components/Header";
@@ -146,6 +146,8 @@ const finalCtaBadges = [
 
 export default function LandingPageRebuild() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isPrimaryCanonicalPath = location.pathname === "/";
 
   return (
     <>
@@ -153,8 +155,8 @@ export default function LandingPageRebuild() {
         title="Booking Software for UK Salons, Spas & Barbers"
         description="Commission-free booking software for UK beauty and wellness businesses."
         keywords="online booking system UK, salon booking software UK"
-        canonical="https://www.elitebooker.co.uk/landing-rebuild"
-        noindex
+        canonical="https://www.elitebooker.co.uk/"
+        noindex={!isPrimaryCanonicalPath}
       />
       <OrganizationSchema />
 
