@@ -16,13 +16,16 @@ const desktopDropdownItemClass =
 const mobileMenuItemClass =
   "w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900";
 
-export default function Header() {
+export default function Header({ iosSafeMode = false }) {
   const navigate = useNavigate();
   const { client, isAuthenticated, logout } = useClientAuth();
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const [showIndustriesDropdown, setShowIndustriesDropdown] = useState(false);
   const [showCompareDropdown, setShowCompareDropdown] = useState(false);
   const [showFeaturesDropdown, setShowFeaturesDropdown] = useState(false);
+  const headerClassName = iosSafeMode
+    ? "relative z-50 border-b border-amber-100/80 bg-[#f6f2ea]"
+    : "relative z-50 border-b border-amber-100/80 bg-[#f6f2ea] md:sticky md:bg-[#f6f2ea]/92 md:backdrop-blur-xl md:supports-[backdrop-filter]:bg-[#f6f2ea]/80";
 
   const handleLogin = () => {
     navigate(isAuthenticated ? "/client/profile" : "/client/login");
@@ -82,7 +85,7 @@ export default function Header() {
 
   return (
     <header
-      className="relative z-50 border-b border-amber-100/80 bg-[#f6f2ea] md:sticky md:bg-[#f6f2ea]/92 md:backdrop-blur-xl md:supports-[backdrop-filter]:bg-[#f6f2ea]/80"
+      className={headerClassName}
       style={{
         top: "env(safe-area-inset-top, 0px)",
         paddingTop: "env(safe-area-inset-top, 0px)",

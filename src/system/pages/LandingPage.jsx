@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import DemoRequestModal from "../../shared/components/modals/DemoRequestModal";
 import { motion, MotionConfig } from "framer-motion";
@@ -24,16 +24,25 @@ const SectionFallback = () => (
 );
 
 function getIOSWebKitInfo() {
-  if (typeof navigator === "undefined") {
+  if (typeof window === "undefined" || typeof navigator === "undefined") {
     return { isIOSWebKit: false };
   }
 
   const ua = navigator.userAgent || "";
+  const platform = navigator.platform || "";
+  const touchPoints = navigator.maxTouchPoints || 0;
   const isIOSDevice =
-    /iP(hone|ad|od)/i.test(ua) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    /iP(hone|ad|od)/i.test(ua) || (platform === "MacIntel" && touchPoints > 1);
   const isWebKit = /AppleWebKit/i.test(ua);
-  return { isIOSWebKit: Boolean(isIOSDevice && isWebKit) };
+  const hasTouchCalloutSupport =
+    typeof CSS !== "undefined" &&
+    typeof CSS.supports === "function" &&
+    CSS.supports("-webkit-touch-callout", "none");
+  const coarsePointer =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+  const mobileWebKitLike = hasTouchCalloutSupport && coarsePointer && isWebKit;
+  return { isIOSWebKit: Boolean((isIOSDevice || mobileWebKitLike) && isWebKit) };
 }
 
 export default function LandingPage() {
@@ -49,6 +58,43 @@ export default function LandingPage() {
     isIOSWebKit && (safeModeOverride === null || safeModeOverride !== "0");
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [showDemoModal, setShowDemoModal] = useState(false);
+  const landingPageClassName = `ios-safari-landing ${
+    useIOSSafeMode ? "ios-webkit-safe-mode bg-[#f6f2ea]" : "bg-white"
+  }`;
+  const heroSectionClassName = useIOSSafeMode
+    ? "landing-hero relative flex items-center justify-center bg-[#f6f2ea]"
+    : "landing-hero relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f6f2ea] sm:bg-gradient-to-br sm:from-[#f8f5ef] sm:via-[#f6f2ea] sm:to-[#efe8dc]";
+
+  useEffect(() => {
+    if (!useIOSSafeMode || typeof document === "undefined") {
+      return undefined;
+    }
+
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlBg = html.style.backgroundColor;
+    const prevBodyBg = body.style.backgroundColor;
+
+    html.style.backgroundColor = "#f6f2ea";
+    body.style.backgroundColor = "#f6f2ea";
+
+    return () => {
+      html.style.backgroundColor = prevHtmlBg;
+      body.style.backgroundColor = prevBodyBg;
+    };
+  }, [useIOSSafeMode]);
+
+  const AnimatedDiv = ({ children, className = "", ...animationProps }) => {
+    if (useIOSSafeMode) {
+      return <div className={className}>{children}</div>;
+    }
+
+    return (
+      <motion.div className={className} {...animationProps}>
+        {children}
+      </motion.div>
+    );
+  };
 
   return (
     <>
@@ -66,14 +112,13 @@ export default function LandingPage() {
 
       <MotionConfig reducedMotion={useIOSSafeMode ? "always" : "never"}>
         <div
-          className={`bg-white ios-safari-landing ${
-            useIOSSafeMode ? "ios-webkit-safe-mode" : ""
-          }`}
+          className={landingPageClassName}
+          data-ios-safe-mode={useIOSSafeMode ? "1" : "0"}
         >
-        <Header />
+          <Header iosSafeMode={useIOSSafeMode} />
 
         {/* Hero Section - Ultra Modern */}
-        <section className="landing-hero relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f6f2ea] sm:bg-gradient-to-br sm:from-[#f8f5ef] sm:via-[#f6f2ea] sm:to-[#efe8dc]">
+        <section className={heroSectionClassName}>
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-24 sm:pt-20">
             <div className="flex flex-col lg:flex-row items-center gap-12">
               {/* Left Content */}
@@ -246,7 +291,7 @@ export default function LandingPage() {
               </div>
 
               {/* Right Content - Comparison Card */}
-              <motion.div
+              <AnimatedDiv
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
@@ -353,7 +398,7 @@ export default function LandingPage() {
                     </button>
                   </p>
                 </div>
-              </motion.div>
+              </AnimatedDiv>
             </div>
           </div>
         </section>
@@ -380,7 +425,7 @@ export default function LandingPage() {
                   label: "Market Focus",
                 },
               ].map((stat, i) => (
-                <motion.div
+                <AnimatedDiv
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -394,7 +439,7 @@ export default function LandingPage() {
                   <div className="text-sm md:text-base text-gray-600">
                     {stat.label}
                   </div>
-                </motion.div>
+                </AnimatedDiv>
               ))}
             </div>
           </div>
@@ -496,7 +541,7 @@ export default function LandingPage() {
                     "Professional booking page with your branding. No competitor ads. Ever.",
                 },
               ].map((item, i) => (
-                <motion.div
+                <AnimatedDiv
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -509,7 +554,7 @@ export default function LandingPage() {
                     {item.title}
                   </h3>
                   <p className="text-gray-600">{item.description}</p>
-                </motion.div>
+                </AnimatedDiv>
               ))}
             </div>
 
@@ -529,7 +574,7 @@ export default function LandingPage() {
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-3 gap-8 text-center text-white">
               {stats.map((stat, index) => (
-                <motion.div
+                <AnimatedDiv
                   key={index}
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
@@ -538,7 +583,7 @@ export default function LandingPage() {
                 >
                   <div className="text-5xl font-bold mb-2">{stat.value}</div>
                   <div className="text-lg text-gray-300">{stat.label}</div>
-                </motion.div>
+                </AnimatedDiv>
               ))}
             </div>
           </div>

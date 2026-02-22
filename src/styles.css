@@ -54,14 +54,13 @@
   /* iOS WebKit: avoid black compositing tiles in landing hero */
   @supports (-webkit-touch-callout: none) {
     .ios-safari-landing {
-      isolation: isolate;
       overflow-x: hidden;
       background: #f6f2ea;
     }
 
     .ios-safari-landing .landing-hero {
       position: relative;
-      overflow: hidden;
+      overflow: visible;
       background: #f6f2ea;
       -webkit-transform: none !important;
       transform: none !important;
@@ -69,20 +68,6 @@
       -webkit-backface-visibility: visible;
       backface-visibility: visible;
       min-height: 100svh;
-    }
-
-    .ios-safari-landing .landing-hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background: inherit;
-    }
-
-    .ios-safari-landing .landing-hero > * {
-      position: relative;
-      z-index: 1;
     }
 
     .ios-safari-landing.ios-webkit-safe-mode header {
@@ -112,7 +97,8 @@
     }
 
     .ios-safari-landing.ios-webkit-safe-mode .landing-hero {
-      min-height: 100dvh !important;
+      min-height: auto !important;
+      overflow: visible !important;
     }
 
     .ios-safari-landing.ios-webkit-safe-mode .landing-hero [class*="bg-gradient"],
