@@ -17,6 +17,23 @@ const trustBadges = [
   "Professional branded booking page",
 ];
 
+const heroAudienceInitials = ["SJ", "MC", "LA"];
+
+const heroServiceChips = [
+  {
+    href: "/salon-booking-software-uk",
+    label: "Salon booking software UK",
+  },
+  {
+    href: "/barbershop-booking-software-uk",
+    label: "Barbershop booking software UK",
+  },
+  {
+    href: "/nail-salon-booking-software-uk",
+    label: "Nail salon booking software UK",
+  },
+];
+
 const coreBenefits = [
   {
     title: "24/7 booking without message back-and-forth",
@@ -167,35 +184,165 @@ export default function LandingPageRebuild() {
           {/* Section 1: Hero */}
           <section id="section-1" className="border-b border-amber-100 bg-[#f6f2ea]">
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-              <p className="mb-4 inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold">
-                Built for UK salons and service businesses
-              </p>
+              <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
+                <div>
+                  <p className="mb-4 inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold">
+                    Built for UK salons and service businesses
+                  </p>
 
-              <h1 className="max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
-                Keep More of Every Booking in Your Business
-              </h1>
+                  <h1 className="max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
+                    Keep More of Every Booking in Your Business
+                  </h1>
 
-              <p className="mt-6 max-w-2xl text-lg text-slate-700">
-                Commission-free booking software with online scheduling,
-                reminders, and client management in one platform.
-              </p>
+                  <p className="mt-6 max-w-2xl text-lg text-slate-700">
+                    Commission-free booking software with online scheduling,
+                    reminders, and client management in one platform.
+                  </p>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <button
-                  onClick={() => navigate("/signup")}
-                  className="rounded-xl bg-slate-900 px-8 py-4 text-base font-bold text-white"
-                >
-                  Start Free in Minutes
-                </button>
-                <button
-                  onClick={() => {
-                    const target = document.getElementById("section-5");
-                    target?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="rounded-xl border-2 border-slate-300 bg-white px-8 py-4 text-base font-semibold text-slate-900"
-                >
-                  Compare Plans
-                </button>
+                  <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <button
+                      onClick={() => navigate("/signup")}
+                      className="rounded-xl bg-slate-900 px-8 py-4 text-base font-bold text-white"
+                    >
+                      Start Free in Minutes
+                    </button>
+                    <button
+                      onClick={() => {
+                        const target = document.getElementById("section-5");
+                        target?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="rounded-xl border-2 border-slate-300 bg-white px-8 py-4 text-base font-semibold text-slate-900"
+                    >
+                      Compare Plans
+                    </button>
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap items-center gap-4">
+                    <div className="flex -space-x-2">
+                      {heroAudienceInitials.map((initials) => (
+                        <div
+                          key={initials}
+                          className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-slate-200 text-xs font-bold text-slate-800"
+                        >
+                          {initials}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {[...Array(5)].map((_, index) => (
+                        <svg
+                          key={index}
+                          className="h-4 w-4 text-amber-400"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      ))}
+                      <span className="ml-2 text-sm font-semibold text-slate-900">
+                        User-rated
+                      </span>
+                      <span className="text-sm text-slate-600">
+                        (see public reviews)
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs">
+                    {heroServiceChips.map((chip) => (
+                      <a
+                        key={chip.label}
+                        href={chip.href}
+                        className="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-800"
+                      >
+                        {chip.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                <aside className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-bold text-slate-900">
+                      Save Thousands
+                    </h3>
+                    <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-bold text-rose-700">
+                      vs commission models
+                    </span>
+                  </div>
+
+                  <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 p-4">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="font-bold text-slate-900">
+                        Typical marketplace
+                      </span>
+                      <span className="font-bold text-rose-700">You lose</span>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Subscription</span>
+                        <span className="font-semibold text-slate-900">
+                          GBP 179/year
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Commission</span>
+                        <span className="font-semibold text-rose-700">
+                          GBP 2,400/year
+                        </span>
+                      </div>
+                      <div className="flex justify-between border-t border-rose-300 pt-2">
+                        <span className="font-bold text-slate-900">Total</span>
+                        <span className="font-bold text-rose-700">
+                          GBP 2,879/year
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 rounded-2xl border border-emerald-300 bg-emerald-50 p-4">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="font-bold text-slate-900">Elite Booker</span>
+                      <span className="font-bold text-emerald-700">You keep</span>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Free plan</span>
+                        <span className="font-semibold text-emerald-700">
+                          GBP 0/year
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Commission</span>
+                        <span className="font-semibold text-emerald-700">
+                          GBP 0 forever
+                        </span>
+                      </div>
+                      <div className="flex justify-between border-t border-emerald-300 pt-2">
+                        <span className="font-bold text-slate-900">Total</span>
+                        <span className="font-bold text-emerald-700">
+                          GBP 0-120/year
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 rounded-xl bg-slate-900 p-4 text-center text-white">
+                    <p className="text-sm font-semibold">Illustrative savings</p>
+                    <p className="mt-1 text-3xl font-extrabold">GBP 2,759+</p>
+                    <p className="text-xs text-slate-200">per year vs typical model</p>
+                  </div>
+
+                  <p className="mt-4 text-xs text-slate-500">
+                    Based on a sample annual revenue scenario.{" "}
+                    <button
+                      onClick={() => navigate("/compare/vs-fresha")}
+                      className="font-semibold text-slate-700 underline"
+                    >
+                      See full comparison
+                    </button>
+                  </p>
+                </aside>
               </div>
             </div>
           </section>
@@ -354,11 +501,23 @@ export default function LandingPageRebuild() {
                 {socialProofTestimonials.map((testimonial) => (
                   <article
                     key={testimonial.author}
-                    className="rounded-2xl border border-slate-200 bg-white p-6"
+                    className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
                   >
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
                       Rating {testimonial.rating}
                     </p>
+                    <div className="mt-2 flex items-center gap-1">
+                      {[...Array(5)].map((_, index) => (
+                        <svg
+                          key={index}
+                          className="h-4 w-4 text-amber-400"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      ))}
+                    </div>
                     <p className="mt-3 text-sm leading-relaxed text-slate-700">
                       "{testimonial.quote}"
                     </p>
