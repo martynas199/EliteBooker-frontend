@@ -92,6 +92,11 @@
       backdrop-filter: none !important;
     }
 
+    .ios-safari-landing.ios-webkit-safe-mode {
+      background: #f6f2ea !important;
+      min-height: 100dvh;
+    }
+
     .ios-safari-landing.ios-webkit-safe-mode .landing-hero,
     .ios-safari-landing.ios-webkit-safe-mode .landing-hero * {
       -webkit-transform: none !important;
@@ -104,6 +109,10 @@
       -webkit-backdrop-filter: none !important;
       backdrop-filter: none !important;
       box-shadow: none !important;
+    }
+
+    .ios-safari-landing.ios-webkit-safe-mode .landing-hero {
+      min-height: 100dvh !important;
     }
 
     .ios-safari-landing.ios-webkit-safe-mode .landing-hero [class*="bg-gradient"],

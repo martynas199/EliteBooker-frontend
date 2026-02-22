@@ -25,7 +25,7 @@ const SectionFallback = () => (
 
 function getIOSWebKitInfo() {
   if (typeof navigator === "undefined") {
-    return { isIOSWebKit: false, iosMajor: null };
+    return { isIOSWebKit: false };
   }
 
   const ua = navigator.userAgent || "";
@@ -33,21 +33,20 @@ function getIOSWebKitInfo() {
     /iP(hone|ad|od)/i.test(ua) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const isWebKit = /AppleWebKit/i.test(ua);
-  const versionMatch = ua.match(/OS (\d+)_/i);
-  const iosMajor = versionMatch ? Number(versionMatch[1]) : null;
-
-  return { isIOSWebKit: Boolean(isIOSDevice && isWebKit), iosMajor };
+  return { isIOSWebKit: Boolean(isIOSDevice && isWebKit) };
 }
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const isBusinessAlias = location.pathname === "/business";
-  const { isIOSWebKit, iosMajor } = getIOSWebKitInfo();
-  const forceSafeMode =
-    new URLSearchParams(location.search).get("iosSafeMode") === "1";
+  const { isIOSWebKit } = getIOSWebKitInfo();
+  const safeModeOverride = new URLSearchParams(location.search).get(
+    "iosSafeMode",
+  );
+  // Default to safe mode on all iOS WebKit builds. Use ?iosSafeMode=0 to opt out.
   const useIOSSafeMode =
-    isIOSWebKit && (forceSafeMode || (iosMajor !== null && iosMajor >= 26));
+    isIOSWebKit && (safeModeOverride === null || safeModeOverride !== "0");
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [showDemoModal, setShowDemoModal] = useState(false);
 
