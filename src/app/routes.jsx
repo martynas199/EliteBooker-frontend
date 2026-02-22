@@ -5,10 +5,7 @@ import { api } from "../shared/lib/apiClient";
 import logo from "../assets/logo.svg";
 
 // Lazy load system pages (landing, search, etc.)
-const LandingPage = lazy(() => import("../system/pages/LandingPage"));
-const LandingPageRebuild = lazy(
-  () => import("../system/pages/LandingPageRebuild"),
-);
+const LandingPage = lazy(() => import("../system/pages/LandingPageRebuild"));
 const BusinessesLandingPage = lazy(() =>
   import("../system/pages/BusinessesLandingPage"),
 );
@@ -423,14 +420,17 @@ export default function AppRoutes() {
           <Route path="/search" element={<SearchPage />} />
 
           {/* Browse Businesses */}
-          <Route path="/business" element={<LandingPageRebuild />} />
-          <Route path="/business-rebuild" element={<LandingPageRebuild />} />
-          <Route path="/business-legacy" element={<LandingPage />} />
+          <Route path="/business" element={<LandingPage />} />
+          <Route path="/business-rebuild" element={<LandingPage />} />
+          <Route
+            path="/business-legacy"
+            element={<Navigate to="/business" replace />}
+          />
 
           {/* Platform marketing/landing page */}
-          <Route path="/" element={<LandingPageRebuild />} />
-          <Route path="/landing-rebuild" element={<LandingPageRebuild />} />
-          <Route path="/landing-legacy" element={<LandingPage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/landing-rebuild" element={<LandingPage />} />
+          <Route path="/landing-legacy" element={<Navigate to="/" replace />} />
 
           {/* Help & Support */}
           <Route path="/help" element={<HelpPage />} />
