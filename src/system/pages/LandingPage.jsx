@@ -64,8 +64,26 @@ export default function LandingPage() {
     useIOSSafeMode ? "ios-webkit-safe-mode bg-[#f6f2ea]" : "bg-white"
   }`;
   const heroSectionClassName = useIOSSafeMode
-    ? "landing-hero relative flex items-center justify-center bg-[#f6f2ea]"
+    ? "landing-hero relative flex w-full items-center justify-center overflow-visible bg-[#f6f2ea]"
     : "landing-hero relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f6f2ea] sm:bg-gradient-to-br sm:from-[#f8f5ef] sm:via-[#f6f2ea] sm:to-[#efe8dc]";
+  const heroContainerClassName = useIOSSafeMode
+    ? "relative mx-auto w-full max-w-7xl px-4 py-12 pt-10 sm:px-6 lg:px-8"
+    : "relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-24 sm:pt-20";
+  const badgeClassName = useIOSSafeMode
+    ? "mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-4 py-2"
+    : "inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-slate-100 to-slate-50 border border-slate-200 mb-6";
+  const heroGradientTextClassName = useIOSSafeMode
+    ? "block text-gray-900"
+    : "hero-gradient-text block bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent";
+  const primaryCtaClassName = useIOSSafeMode
+    ? "hero-primary-cta group relative overflow-hidden rounded-xl bg-slate-900 px-8 py-4 font-bold text-white"
+    : "hero-primary-cta group relative px-8 py-4 bg-gradient-to-r from-slate-900 to-slate-700 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all overflow-hidden";
+  const secondaryCtaClassName = useIOSSafeMode
+    ? "rounded-xl border-2 border-gray-300 bg-white px-8 py-4 font-semibold text-gray-900"
+    : "px-8 py-4 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-xl hover:border-slate-500 hover:text-slate-700 transition-all shadow-md hover:shadow-lg";
+  const chipClassName = useIOSSafeMode
+    ? "rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-800"
+    : "rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-800 hover:bg-slate-50";
 
   useEffect(() => {
     if (!useIOSSafeMode || typeof document === "undefined") {
@@ -74,15 +92,54 @@ export default function LandingPage() {
 
     const html = document.documentElement;
     const body = document.body;
+    const root = document.getElementById("root");
     const prevHtmlBg = html.style.backgroundColor;
     const prevBodyBg = body.style.backgroundColor;
+    const prevHtmlMaxWidth = html.style.maxWidth;
+    const prevBodyMaxWidth = body.style.maxWidth;
+    const prevHtmlOverflowX = html.style.overflowX;
+    const prevBodyOverflowX = body.style.overflowX;
+    const prevBodyPaddingTop = body.style.paddingTop;
+    const prevHtmlWidth = html.style.width;
+    const prevBodyWidth = body.style.width;
+    const prevRootMaxWidth = root?.style.maxWidth;
+    const prevRootWidth = root?.style.width;
+    const prevRootBg = root?.style.backgroundColor;
 
     html.style.backgroundColor = "#f6f2ea";
     body.style.backgroundColor = "#f6f2ea";
+    html.style.maxWidth = "none";
+    body.style.maxWidth = "none";
+    html.style.width = "100%";
+    body.style.width = "100%";
+    html.style.overflowX = "clip";
+    body.style.overflowX = "clip";
+    body.style.paddingTop = "0px";
+    html.classList.add("ios-landing-safe-root");
+
+    if (root) {
+      root.style.maxWidth = "none";
+      root.style.width = "100%";
+      root.style.backgroundColor = "#f6f2ea";
+    }
 
     return () => {
       html.style.backgroundColor = prevHtmlBg;
       body.style.backgroundColor = prevBodyBg;
+      html.style.maxWidth = prevHtmlMaxWidth;
+      body.style.maxWidth = prevBodyMaxWidth;
+      html.style.width = prevHtmlWidth;
+      body.style.width = prevBodyWidth;
+      html.style.overflowX = prevHtmlOverflowX;
+      body.style.overflowX = prevBodyOverflowX;
+      body.style.paddingTop = prevBodyPaddingTop;
+      html.classList.remove("ios-landing-safe-root");
+
+      if (root) {
+        root.style.maxWidth = prevRootMaxWidth || "";
+        root.style.width = prevRootWidth || "";
+        root.style.backgroundColor = prevRootBg || "";
+      }
     };
   }, [useIOSSafeMode]);
 
@@ -117,16 +174,16 @@ export default function LandingPage() {
           className={landingPageClassName}
           data-ios-safe-mode={useIOSSafeMode ? "1" : "0"}
         >
-          <Header iosSafeMode={useIOSSafeMode} />
+          <Header iosSafeMode={useIOSSafeMode} minimalMode={useIOSSafeMode} />
 
         {/* Hero Section - Ultra Modern */}
         <section className={heroSectionClassName}>
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-24 sm:pt-20">
+          <div className={heroContainerClassName}>
             <div className="flex flex-col lg:flex-row items-center gap-12">
               {/* Left Content */}
               <div className="flex-1 text-center lg:text-left">
                 {/* Badge */}
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-slate-100 to-slate-50 border border-slate-200 mb-6">
+                <div className={badgeClassName}>
                   <svg
                     className="w-4 h-4 text-slate-700"
                     fill="currentColor"
@@ -146,7 +203,7 @@ export default function LandingPage() {
                 {/* Main Headline - Problem/Solution */}
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
                   <span className="block text-gray-900">Keep More of</span>
-                  <span className="hero-gradient-text block bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                  <span className={heroGradientTextClassName}>
                     Every Booking
                   </span>
                   <span className="block text-gray-900">in Your Business</span>
@@ -204,9 +261,11 @@ export default function LandingPage() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-6">
                   <button
                     onClick={() => navigate("/signup")}
-                    className="hero-primary-cta group relative px-8 py-4 bg-gradient-to-r from-slate-900 to-slate-700 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all overflow-hidden"
+                    className={primaryCtaClassName}
                   >
-                    <div className="hero-primary-cta-overlay absolute inset-0 bg-gradient-to-r from-slate-800 to-slate-700 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {!useIOSSafeMode && (
+                      <div className="hero-primary-cta-overlay absolute inset-0 bg-gradient-to-r from-slate-800 to-slate-700 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    )}
                     <div className="relative flex items-center justify-center gap-2">
                       <span className="text-lg">Start Free in Minutes</span>
                       <svg
@@ -231,7 +290,7 @@ export default function LandingPage() {
                         document.getElementById("pricing-section");
                       element?.scrollIntoView({ behavior: "smooth" });
                     }}
-                    className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-xl hover:border-slate-500 hover:text-slate-700 transition-all shadow-md hover:shadow-lg"
+                    className={secondaryCtaClassName}
                   >
                     Compare Pricing →
                   </button>
@@ -273,19 +332,19 @@ export default function LandingPage() {
                 <div className="mt-5 flex flex-wrap gap-2 justify-center lg:justify-start text-xs">
                   <a
                     href="/salon-booking-software-uk"
-                    className="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-800 hover:bg-slate-50"
+                    className={chipClassName}
                   >
                     Salon booking software UK
                   </a>
                   <a
                     href="/barbershop-booking-software-uk"
-                    className="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-800 hover:bg-slate-50"
+                    className={chipClassName}
                   >
                     Barbershop booking software UK
                   </a>
                   <a
                     href="/nail-salon-booking-software-uk"
-                    className="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-800 hover:bg-slate-50"
+                    className={chipClassName}
                   >
                     Nail salon booking software UK
                   </a>
@@ -293,13 +352,14 @@ export default function LandingPage() {
               </div>
 
               {/* Right Content - Comparison Card */}
-              <AnimatedDiv
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="hidden flex-1 max-w-lg sm:block"
-              >
-                <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
+              {!useIOSSafeMode && (
+                <AnimatedDiv
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                  className="hidden flex-1 max-w-lg sm:block"
+                >
+                  <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-2xl font-bold text-gray-900">
                       Save Thousands
@@ -399,8 +459,9 @@ export default function LandingPage() {
                       See full comparison →
                     </button>
                   </p>
-                </div>
-              </AnimatedDiv>
+                  </div>
+                </AnimatedDiv>
+              )}
             </div>
           </div>
         </section>

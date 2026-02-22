@@ -53,6 +53,23 @@
 
   /* iOS WebKit: avoid black compositing tiles in landing hero */
   @supports (-webkit-touch-callout: none) {
+    html.ios-landing-safe-root,
+    html.ios-landing-safe-root body,
+    html.ios-landing-safe-root #root {
+      background: #f6f2ea !important;
+      width: 100% !important;
+      max-width: none !important;
+    }
+
+    html.ios-landing-safe-root,
+    html.ios-landing-safe-root body {
+      overflow-x: clip !important;
+    }
+
+    html.ios-landing-safe-root body {
+      padding-top: 0 !important;
+    }
+
     .ios-safari-landing {
       overflow-x: hidden;
       background: #f6f2ea;
@@ -80,6 +97,7 @@
     .ios-safari-landing.ios-webkit-safe-mode {
       background: #f6f2ea !important;
       min-height: 100dvh;
+      isolation: isolate;
     }
 
     .ios-safari-landing.ios-webkit-safe-mode .landing-hero,

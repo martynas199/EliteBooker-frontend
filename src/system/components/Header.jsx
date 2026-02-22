@@ -16,7 +16,7 @@ const desktopDropdownItemClass =
 const mobileMenuItemClass =
   "w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900";
 
-export default function Header({ iosSafeMode = false }) {
+export default function Header({ iosSafeMode = false, minimalMode = false }) {
   const navigate = useNavigate();
   const { client, isAuthenticated, logout } = useClientAuth();
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
@@ -82,6 +82,53 @@ export default function Header({ iosSafeMode = false }) {
     { label: "Online Booking", href: "/features/online-booking" },
     { label: "See all features", href: "/features" },
   ];
+
+  if (minimalMode) {
+    return (
+      <header
+        className="relative z-50 border-b border-amber-100/80 bg-[#f6f2ea]"
+        style={{
+          top: "0px",
+          paddingTop: "env(safe-area-inset-top, 0px)",
+        }}
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-[4.25rem] items-center justify-between sm:h-16">
+            <Link to="/" className="flex items-center gap-4">
+              <img
+                src={eliteLogo}
+                alt="Elite Booker Logo"
+                width="140"
+                height="80"
+                className="h-16 w-auto sm:h-20"
+                loading="eager"
+              />
+            </Link>
+
+            <div className="flex items-center gap-2">
+              {!isAuthenticated && (
+                <Link
+                  to="/signup"
+                  className="hidden rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-900 sm:inline-flex"
+                >
+                  List your business
+                </Link>
+              )}
+
+              <button
+                onClick={() =>
+                  navigate(isAuthenticated ? "/client/profile" : "/menu")
+                }
+                className="inline-flex h-10 items-center justify-center rounded-full border border-slate-300 bg-white px-4 text-sm font-medium text-slate-800"
+              >
+                {isAuthenticated ? "Account" : "Menu"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header
