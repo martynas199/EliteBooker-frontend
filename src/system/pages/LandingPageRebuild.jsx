@@ -164,11 +164,11 @@ export default function LandingPageRebuild() {
         <Header iosSafeMode minimalMode />
 
         <main>
-          {/* Section 1: Hero (active build section) */}
+          {/* Section 1: Hero */}
           <section id="section-1" className="border-b border-amber-100 bg-[#f6f2ea]">
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
               <p className="mb-4 inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold">
-                New Landing Rebuild - Section 1
+                Built for UK salons and service businesses
               </p>
 
               <h1 className="max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
@@ -176,8 +176,8 @@ export default function LandingPageRebuild() {
               </h1>
 
               <p className="mt-6 max-w-2xl text-lg text-slate-700">
-                A simplified, iOS-safe rebuild of the landing page using stable
-                section blocks and lightweight layout patterns.
+                Commission-free booking software with online scheduling,
+                reminders, and client management in one platform.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -194,7 +194,7 @@ export default function LandingPageRebuild() {
                   }}
                   className="rounded-xl border-2 border-slate-300 bg-white px-8 py-4 text-base font-semibold text-slate-900"
                 >
-                  Jump to Pricing Section
+                  Compare Plans
                 </button>
               </div>
             </div>
@@ -207,14 +207,14 @@ export default function LandingPageRebuild() {
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <p className="inline-flex rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
-                      Section 2
+                      Trust and clarity
                     </p>
                     <h2 className="mt-3 text-2xl font-bold text-slate-900 sm:text-3xl">
-                      Trusted by teams that want control and predictability
+                      Built for teams that want control and predictable pricing
                     </h2>
                     <p className="mt-3 max-w-2xl text-slate-600">
-                      This strip focuses on clarity: what businesses get, what
-                      they keep, and why pricing stays straightforward.
+                      Keep your client relationships, avoid marketplace
+                      commission, and run bookings on your own branded page.
                     </p>
                   </div>
 
@@ -259,14 +259,14 @@ export default function LandingPageRebuild() {
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
               <div className="max-w-3xl">
                 <p className="inline-flex rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
-                  Section 3
+                  Core benefits
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                   Core benefits that reduce admin and protect your margin
                 </h2>
                 <p className="mt-4 text-slate-600">
-                  This section keeps the structure simple and stable on iOS WebKit:
-                  clear cards, no heavy visual effects, and focused value points.
+                  Everything you need to run daily bookings with less admin and
+                  fewer missed appointments.
                 </p>
               </div>
 
@@ -325,7 +325,7 @@ export default function LandingPageRebuild() {
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
               <div className="mx-auto max-w-3xl text-center">
                 <p className="inline-flex rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
-                  Section 4
+                  Customer results
                 </p>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                   Social proof from teams using Elite Booker
@@ -380,7 +380,7 @@ export default function LandingPageRebuild() {
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div className="max-w-3xl">
                   <p className="inline-flex rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
-                    Section 5
+                    Pricing
                   </p>
                   <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                     Pricing snapshot for different growth stages
@@ -462,7 +462,7 @@ export default function LandingPageRebuild() {
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
               <div className="rounded-3xl border border-slate-700 bg-slate-900 p-8 text-center sm:p-10">
                 <p className="inline-flex rounded-full border border-slate-500 bg-slate-800 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-200">
-                  Section 6
+                  Get started
                 </p>
                 <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
                   Move your bookings to a simpler, more predictable workflow
