@@ -100,6 +100,15 @@ export default function VsFresha() {
     { name: "vs Fresha", url: "/compare/vs-fresha" },
   ];
 
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Elite Booker vs Fresha",
+    description:
+      "Source-linked UK comparison of Elite Booker vs Fresha pricing structure, fees, and operational feature areas.",
+    url: "https://www.elitebooker.co.uk/compare/vs-fresha",
+  };
+
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -119,7 +128,7 @@ export default function VsFresha() {
         title="Elite Booker vs Fresha | UK Booking Software Comparison"
         description="Source-linked UK comparison of Elite Booker vs Fresha pricing structure, fees, and operational feature areas."
         canonical="https://www.elitebooker.co.uk/compare/vs-fresha"
-        schema={faqSchema}
+        schema={[webPageSchema, faqSchema]}
       />
       <BreadcrumbSchema items={breadcrumbs} />
       <Header />

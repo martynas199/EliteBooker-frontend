@@ -19,6 +19,10 @@ export default function SEOHead({
   keywords,
   canonical,
   ogImage = "/android-chrome-512x512.png",
+  ogImageAlt = "Elite Booker - Appointment Booking Software",
+  ogImageType,
+  ogImageWidth,
+  ogImageHeight,
   ogType = "website",
   noindex = false,
   schema,
@@ -118,6 +122,23 @@ export default function SEOHead({
     ...normalizeSchemaInput(schema),
     ...normalizeSchemaInput(schemas),
   ];
+  const resolvedOgImage = ogImage
+    ? ogImage.startsWith("http")
+      ? ogImage
+      : `${baseUrl}${ogImage}`
+    : null;
+  const resolvedOgImageType =
+    ogImageType ||
+    (() => {
+      if (!resolvedOgImage) return null;
+      const cleanUrl = resolvedOgImage.split("?")[0].toLowerCase();
+      if (cleanUrl.endsWith(".png")) return "image/png";
+      if (cleanUrl.endsWith(".jpg") || cleanUrl.endsWith(".jpeg")) {
+        return "image/jpeg";
+      }
+      if (cleanUrl.endsWith(".webp")) return "image/webp";
+      return null;
+    })();
 
   return (
     <Helmet>
@@ -143,27 +164,18 @@ export default function SEOHead({
       <meta property="og:site_name" content={siteName} />
       <meta property="og:locale" content={locale} />
       <meta property="og:locale:alternate" content="en_US" />
-      {ogImage && (
+      {resolvedOgImage && (
         <>
-          <meta
-            property="og:image"
-            content={
-              ogImage.startsWith("http") ? ogImage : `${baseUrl}${ogImage}`
-            }
-          />
-          <meta
-            property="og:image:secure_url"
-            content={
-              ogImage.startsWith("http") ? ogImage : `${baseUrl}${ogImage}`
-            }
-          />
-          <meta property="og:image:type" content="image/png" />
-          <meta property="og:image:width" content="512" />
-          <meta property="og:image:height" content="512" />
-          <meta
-            property="og:image:alt"
-            content="Elite Booker - Appointment Booking Software"
-          />
+          <meta property="og:image" content={resolvedOgImage} />
+          <meta property="og:image:secure_url" content={resolvedOgImage} />
+          {resolvedOgImageType && (
+            <meta property="og:image:type" content={resolvedOgImageType} />
+          )}
+          {ogImageWidth && <meta property="og:image:width" content={`${ogImageWidth}`} />}
+          {ogImageHeight && (
+            <meta property="og:image:height" content={`${ogImageHeight}`} />
+          )}
+          <meta property="og:image:alt" content={ogImageAlt} />
         </>
       )}
 
@@ -172,18 +184,10 @@ export default function SEOHead({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={normalizedDescription} />
       <meta name="twitter:url" content={canonicalUrl} />
-      {ogImage && (
+      {resolvedOgImage && (
         <>
-          <meta
-            name="twitter:image"
-            content={
-              ogImage.startsWith("http") ? ogImage : `${baseUrl}${ogImage}`
-            }
-          />
-          <meta
-            name="twitter:image:alt"
-            content="Elite Booker - Appointment Booking Software"
-          />
+          <meta name="twitter:image" content={resolvedOgImage} />
+          <meta name="twitter:image:alt" content={ogImageAlt} />
         </>
       )}
 
@@ -213,6 +217,10 @@ SEOHead.propTypes = {
   keywords: PropTypes.string,
   canonical: PropTypes.string,
   ogImage: PropTypes.string,
+  ogImageAlt: PropTypes.string,
+  ogImageType: PropTypes.string,
+  ogImageWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  ogImageHeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   ogType: PropTypes.string,
   noindex: PropTypes.bool,
   schema: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),

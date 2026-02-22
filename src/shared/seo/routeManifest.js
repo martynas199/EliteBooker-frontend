@@ -57,7 +57,7 @@ export const MARKETING_ROUTE_MANIFEST = [
   },
   {
     path: "/nail-salon-booking-software-uk",
-    title: "Nail Salon Booking Software UK | Appointments, Reminders, Deposits",
+    title: "Nail Salon Booking Software UK | Appointments & Deposits",
     description:
       "UK nail salon booking software to manage appointments, add-ons, reminders, and deposit rules.",
     indexable: true,
@@ -67,8 +67,7 @@ export const MARKETING_ROUTE_MANIFEST = [
   },
   {
     path: "/beauty-salon-booking-system-uk",
-    title:
-      "Beauty Salon Booking System UK | Scheduling, Reminders, Team Control",
+    title: "Beauty Salon Booking System UK | Scheduling & Team Control",
     description:
       "Beauty salon booking system for UK businesses with online scheduling, reminders, and policy controls.",
     indexable: true,

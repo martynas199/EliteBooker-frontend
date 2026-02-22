@@ -113,6 +113,15 @@ export default function VsTreatwell() {
     { name: "vs Treatwell", url: "/compare/vs-treatwell" },
   ];
 
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Elite Booker vs Treatwell",
+    description:
+      "Source-linked UK comparison of Elite Booker vs Treatwell pricing structure, fees, and operational feature areas.",
+    url: "https://www.elitebooker.co.uk/compare/vs-treatwell",
+  };
+
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -132,7 +141,7 @@ export default function VsTreatwell() {
         title="Elite Booker vs Treatwell | UK Booking Software Comparison"
         description="Source-linked UK comparison of Elite Booker vs Treatwell pricing structure, fees, and operational feature areas."
         canonical="https://www.elitebooker.co.uk/compare/vs-treatwell"
-        schema={faqSchema}
+        schema={[webPageSchema, faqSchema]}
       />
       <BreadcrumbSchema items={breadcrumbs} />
       <Header />

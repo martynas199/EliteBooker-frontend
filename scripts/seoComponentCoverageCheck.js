@@ -9,8 +9,9 @@ const ROOT = path.resolve(__dirname, "..");
 const COVERAGE_TARGETS = [
   {
     route: "/",
-    file: "src/system/pages/LandingPage.jsx",
+    file: "src/system/pages/LandingPageRebuild.jsx",
     canonical: "https://www.elitebooker.co.uk/",
+    requiresAliasNoindexGuard: true,
   },
   {
     route: "/pricing",
@@ -167,6 +168,15 @@ const validateTarget = (target) => {
     const hasSchemaProp = /\bschema=\{/.test(source);
     if (!hasSchemaProp) {
       issues.push("Missing structured data declaration (schema prop)");
+    }
+  }
+
+  if (target.requiresAliasNoindexGuard) {
+    const hasAliasNoindexGuard = /\bnoindex=\{!isPrimaryCanonicalPath\}/.test(
+      source,
+    );
+    if (!hasAliasNoindexGuard) {
+      issues.push("Missing alias noindex guard for duplicate landing routes");
     }
   }
 

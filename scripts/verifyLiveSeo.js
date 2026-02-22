@@ -15,6 +15,7 @@
  */
 
 import {
+  canonicalForPath,
   getProgrammaticSeoRoutes,
   getStaticSeoRoutes,
 } from "../src/shared/seo/routeManifest.js";
@@ -27,12 +28,19 @@ const getRouteChecks = () => {
     .slice(0, 16)
     .map((route) => ({
       path: route.path,
+      canonical: route.canonical,
       indexable: route.indexable !== false,
     }));
 
-  const sampleProgrammatic = getProgrammaticSeoRoutes()[0];
-  if (sampleProgrammatic) {
-    staticChecks.push({ path: sampleProgrammatic.path, indexable: true });
+  const sampleIndexableProgrammatic = getProgrammaticSeoRoutes().find(
+    (route) => route.indexable !== false,
+  );
+  if (sampleIndexableProgrammatic) {
+    staticChecks.push({
+      path: sampleIndexableProgrammatic.path,
+      canonical: sampleIndexableProgrammatic.canonical,
+      indexable: true,
+    });
   }
 
   return staticChecks;
@@ -48,14 +56,22 @@ const normalizeBaseUrl = (baseUrl) => {
   return normalized.endsWith("/") ? normalized.slice(0, -1) : normalized;
 };
 
-const normalizePath = (routePath = "/") => {
-  if (!routePath || routePath === "/") return "/";
-  return routePath.endsWith("/") ? routePath.slice(0, -1) : routePath;
-};
-
-const buildCanonical = (baseUrl, routePath) => {
-  const normalized = normalizePath(routePath);
-  return normalized === "/" ? `${baseUrl}/` : `${baseUrl}${normalized}`;
+const normalizeCanonical = (url = "") => {
+  const clean = `${url}`.split("#")[0].split("?")[0].trim();
+  if (!clean) return "";
+  let parsed;
+  try {
+    parsed = new URL(clean);
+  } catch {
+    return clean;
+  }
+  if (parsed.pathname === "/") {
+    return `${parsed.origin}/`;
+  }
+  const normalizedPath = parsed.pathname.endsWith("/")
+    ? parsed.pathname.slice(0, -1)
+    : parsed.pathname;
+  return `${parsed.origin}${normalizedPath}`;
 };
 
 const extractTitle = (html) => {
@@ -83,12 +99,12 @@ const extractCanonical = (html) => {
   return match ? match[1].trim() : "";
 };
 
-const getRouteResult = (route, html, status, baseUrl) => {
+const getRouteResult = (route, html, status) => {
   const title = extractTitle(html);
   const description = extractMetaContent(html, "name", "description");
   const robots = extractMetaContent(html, "name", "robots");
   const canonical = extractCanonical(html);
-  const expectedCanonical = buildCanonical(baseUrl, route.path);
+  const expectedCanonical = canonicalForPath(route.path, route.canonical);
   const issues = [];
 
   if (status < 200 || status >= 400) {
@@ -102,8 +118,10 @@ const getRouteResult = (route, html, status, baseUrl) => {
   }
   if (!canonical) {
     issues.push("Missing canonical");
-  } else if (canonical !== expectedCanonical) {
-    issues.push(`Canonical mismatch (expected: ${expectedCanonical})`);
+  } else if (normalizeCanonical(canonical) !== normalizeCanonical(expectedCanonical)) {
+    issues.push(
+      `Canonical mismatch (expected: ${normalizeCanonical(expectedCanonical)})`,
+    );
   }
 
   if (!robots) {
@@ -137,7 +155,7 @@ const checkRoute = async (baseUrl, route) => {
   });
 
   const html = await response.text();
-  return getRouteResult(route, html, response.status, baseUrl);
+  return getRouteResult(route, html, response.status);
 };
 
 const checkSitemap = async (baseUrl) => {
