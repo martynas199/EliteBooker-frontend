@@ -53,9 +53,11 @@ export default function LandingPage() {
   const safeModeOverride = new URLSearchParams(location.search).get(
     "iosSafeMode",
   );
-  // Default to safe mode on all iOS WebKit builds. Use ?iosSafeMode=0 to opt out.
+  const forceIOSSafeMode = safeModeOverride === "1";
+  const disableIOSSafeMode = safeModeOverride === "0";
+  // Default to safe mode on all iOS WebKit builds. Use ?iosSafeMode=1 to force or ?iosSafeMode=0 to disable.
   const useIOSSafeMode =
-    isIOSWebKit && (safeModeOverride === null || safeModeOverride !== "0");
+    forceIOSSafeMode || (isIOSWebKit && !disableIOSSafeMode);
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [showDemoModal, setShowDemoModal] = useState(false);
   const landingPageClassName = `ios-safari-landing ${
