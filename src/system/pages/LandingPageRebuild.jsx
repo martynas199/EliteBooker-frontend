@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SEOHead from "../../shared/components/seo/SEOHead";
 import OrganizationSchema from "../../shared/components/Schema/OrganizationSchema";
+import FAQSchema from "../../shared/components/Schema/FAQSchema";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -32,6 +33,18 @@ const heroServiceChips = [
   {
     href: "/nail-salon-booking-software-uk",
     label: "Nail salon booking software UK",
+  },
+];
+
+const trustBrandLinks = [
+  { label: "Fresha", href: "/compare/vs-fresha" },
+  { label: "Treatwell", href: "/compare/vs-treatwell" },
+];
+
+const caseStudyLinks = [
+  {
+    label: "No-show reduction case study",
+    href: "/blog/reduce-salon-no-shows",
   },
 ];
 
@@ -176,6 +189,34 @@ const finalCtaBadges = [
   "Built for UK service businesses",
 ];
 
+const landingFaqs = [
+  {
+    question: "Is Elite Booker really commission-free?",
+    answer:
+      "Yes. Elite Booker does not charge marketplace commission on your bookings, so you keep more of each appointment.",
+  },
+  {
+    question: "Can I start without a credit card?",
+    answer:
+      "Yes. You can create an account and start with the base plan without entering a credit card.",
+  },
+  {
+    question: "Does Elite Booker support UK salons and barbershops?",
+    answer:
+      "Yes. The platform is built for UK service businesses, including salons, barbershops, nail studios, and other appointment-led teams.",
+  },
+  {
+    question: "Can clients book appointments 24/7?",
+    answer:
+      "Yes. Your online booking page is available around the clock, so clients can schedule outside business hours.",
+  },
+  {
+    question: "Will reminders help reduce no-shows?",
+    answer:
+      "Reminder workflows are designed to improve attendance consistency and reduce missed appointments over time.",
+  },
+];
+
 const coreBenefitIcons = [
   <svg
     key="calendar"
@@ -235,6 +276,36 @@ const coreBenefitIcons = [
   </svg>,
 ];
 
+function trackLandingEvent(eventName, properties = {}) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    const payload = {
+      page_path: window.location.pathname,
+      ...properties,
+    };
+
+    if (typeof window.gtag === "function") {
+      window.gtag("event", eventName, payload);
+    }
+
+    if (Array.isArray(window.dataLayer)) {
+      window.dataLayer.push({
+        event: eventName,
+        ...payload,
+      });
+    }
+
+    if (window.va && typeof window.va.track === "function") {
+      window.va.track(eventName, payload);
+    }
+  } catch (error) {
+    // Ignore analytics transport errors and keep primary user flow unaffected.
+  }
+}
+
 export default function LandingPageRebuild() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -242,16 +313,58 @@ export default function LandingPageRebuild() {
   const [demoVideoLoaded, setDemoVideoLoaded] = useState(false);
   const isPrimaryCanonicalPath = location.pathname === "/";
 
+  const handleHeroPrimaryClick = () => {
+    trackLandingEvent("landing_hero_start_free_click", { section: "hero" });
+    navigate("/signup");
+  };
+
+  const handleHeroComparePlansClick = () => {
+    trackLandingEvent("landing_hero_compare_plans_click", { section: "hero" });
+    const target = document.getElementById("section-5");
+    target?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handlePricingCycleChange = (cycle) => {
+    setPricingCycle((previousCycle) => {
+      if (previousCycle !== cycle) {
+        trackLandingEvent("landing_pricing_cycle_toggle", {
+          section: "pricing_snapshot",
+          pricing_cycle: cycle,
+        });
+      }
+      return cycle;
+    });
+  };
+
+  const handlePricingPlanClick = (plan) => {
+    trackLandingEvent("landing_pricing_plan_click", {
+      section: "pricing_snapshot",
+      plan_name: plan.name,
+      pricing_cycle: pricingCycle,
+      route: plan.ctaRoute,
+    });
+    navigate(plan.ctaRoute);
+  };
+
+  const handleTrustLinkClick = (destination, label, section) => {
+    trackLandingEvent("landing_trust_link_click", {
+      section,
+      destination,
+      label,
+    });
+  };
+
   return (
     <>
       <SEOHead
         title="Booking Software for UK Salons, Spas & Barbers"
-        description="Commission-free booking software for UK beauty and wellness businesses."
-        keywords="online booking system UK, salon booking software UK"
+        description="Commission-free booking software for UK beauty and wellness businesses. Online scheduling, reminder workflows, and client management from GBP 0."
+        keywords="online booking system UK, salon booking software UK, appointment scheduling UK, barbershop booking software UK"
         canonical="https://www.elitebooker.co.uk/"
         noindex={!isPrimaryCanonicalPath}
       />
       <OrganizationSchema />
+      <FAQSchema faqs={landingFaqs} />
 
       <div className="min-h-screen bg-[#f6f2ea] text-slate-900">
         <Header iosSafeMode />
@@ -275,11 +388,12 @@ export default function LandingPageRebuild() {
                   </h1>
 
                   <p className="mt-6 max-w-2xl text-lg text-slate-700">
-                    Commission-free booking software with online scheduling,
-                    reminders, and client management in one platform.
+                    Commission-free booking software for UK service businesses.
+                    Online scheduling, reminders, and client management from one
+                    platform.
                   </p>
 
-                  <p className="mt-4 max-w-2xl text-base text-slate-600">
+                  <p className="mt-4 hidden max-w-2xl text-base text-slate-600 sm:block">
                     <span className="font-semibold text-slate-900">
                       Reduce manual booking admin
                     </span>{" "}
@@ -291,17 +405,14 @@ export default function LandingPageRebuild() {
                   </p>
 
                   <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                    <button
-                      onClick={() => navigate("/signup")}
+                    <button type="button"
+                      onClick={handleHeroPrimaryClick}
                       className="rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 text-base font-bold text-white shadow-xl"
                     >
                       Start Free in Minutes
                     </button>
-                    <button
-                      onClick={() => {
-                        const target = document.getElementById("section-5");
-                        target?.scrollIntoView({ behavior: "smooth" });
-                      }}
+                    <button type="button"
+                      onClick={handleHeroComparePlansClick}
                       className="rounded-xl border-2 border-slate-300 bg-white px-8 py-4 text-base font-semibold text-slate-900 shadow-md"
                     >
                       Compare Plans
@@ -360,6 +471,48 @@ export default function LandingPageRebuild() {
                         )}
                       </div>
                     ))}
+                  </div>
+
+                  <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                      Trusted comparison routes
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {trustBrandLinks.map((link) => (
+                        <a
+                          key={link.label}
+                          href={link.href}
+                          onClick={() =>
+                            handleTrustLinkClick(
+                              link.href,
+                              link.label,
+                              "hero_trust_brands",
+                            )
+                          }
+                          className="inline-flex items-center rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-800"
+                        >
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {caseStudyLinks.map((link) => (
+                        <a
+                          key={link.label}
+                          href={link.href}
+                          onClick={() =>
+                            handleTrustLinkClick(
+                              link.href,
+                              link.label,
+                              "hero_case_studies",
+                            )
+                          }
+                          className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-900"
+                        >
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
@@ -437,7 +590,7 @@ export default function LandingPageRebuild() {
 
                   <p className="mt-4 text-xs text-slate-500">
                     Based on a sample annual revenue scenario.{" "}
-                    <button
+                    <button type="button"
                       onClick={() => navigate("/compare/vs-fresha")}
                       className="font-semibold text-slate-700 underline"
                     >
@@ -484,7 +637,7 @@ export default function LandingPageRebuild() {
                     </p>
                   </div>
 
-                  <button
+                  <button type="button"
                     onClick={() => navigate("/pricing")}
                     className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white"
                   >
@@ -579,7 +732,7 @@ export default function LandingPageRebuild() {
                     team needs advanced tooling.
                   </p>
                 </div>
-                <button
+                <button type="button"
                   onClick={() => navigate("/signup")}
                   className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white"
                 >
@@ -629,14 +782,14 @@ export default function LandingPageRebuild() {
                   </ul>
 
                   <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                    <button
+                    <button type="button"
                       onClick={() => navigate("/signup")}
                       className="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-900"
                     >
                       Start free in minutes
                     </button>
                     {!demoVideoLoaded && (
-                      <button
+                      <button type="button"
                         onClick={() => setDemoVideoLoaded(true)}
                         className="rounded-xl border border-slate-500 px-6 py-3 text-sm font-semibold text-white"
                       >
@@ -649,7 +802,7 @@ export default function LandingPageRebuild() {
                 <div className="relative">
                   <div className="aspect-video overflow-hidden rounded-2xl border border-slate-700 bg-slate-950 shadow-2xl">
                     {!demoVideoLoaded ? (
-                      <button
+                      <button type="button"
                         onClick={() => setDemoVideoLoaded(true)}
                         className="flex h-full w-full items-center justify-center bg-slate-900 text-white"
                         aria-label="Load demo video"
@@ -681,6 +834,8 @@ export default function LandingPageRebuild() {
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="strict-origin-when-cross-origin"
                         className="h-full w-full"
                       />
                     )}
@@ -721,10 +876,12 @@ export default function LandingPageRebuild() {
               </div>
 
               <div className="mt-8 grid gap-4 lg:grid-cols-3">
-                {socialProofTestimonials.map((testimonial) => (
+                {socialProofTestimonials.map((testimonial, index) => (
                   <article
                     key={testimonial.author}
-                    className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                    className={`rounded-2xl border border-slate-200 bg-white p-6 shadow-sm ${
+                      index === 2 ? "hidden lg:block" : ""
+                    }`}
                   >
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
                       Rating {testimonial.rating}
@@ -757,7 +914,7 @@ export default function LandingPageRebuild() {
           </section>
 
           {/* Section 4B: Performance Banner */}
-          <section className="border-b border-slate-800 bg-slate-900">
+          <section className="hidden border-b border-slate-800 bg-slate-900 md:block">
             <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
               <div className="grid gap-8 text-center text-white md:grid-cols-3">
                 {socialProofStats.map((item) => (
@@ -786,7 +943,7 @@ export default function LandingPageRebuild() {
                     reporting, or multi-location tooling.
                   </p>
                 </div>
-                <button
+                <button type="button"
                   onClick={() => navigate("/pricing")}
                   className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-900"
                 >
@@ -795,8 +952,8 @@ export default function LandingPageRebuild() {
               </div>
 
               <div className="mt-8 grid w-full max-w-md grid-cols-2 gap-2 rounded-2xl border border-slate-300 bg-white p-2 shadow-sm">
-                <button
-                  onClick={() => setPricingCycle("monthly")}
+                <button type="button"
+                  onClick={() => handlePricingCycleChange("monthly")}
                   className={`rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
                     pricingCycle === "monthly"
                       ? "bg-slate-900 text-white"
@@ -805,8 +962,8 @@ export default function LandingPageRebuild() {
                 >
                   Monthly
                 </button>
-                <button
-                  onClick={() => setPricingCycle("annual")}
+                <button type="button"
+                  onClick={() => handlePricingCycleChange("annual")}
                   className={`rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
                     pricingCycle === "annual"
                       ? "bg-slate-900 text-white"
@@ -818,6 +975,46 @@ export default function LandingPageRebuild() {
                     Save 17%
                   </span>
                 </button>
+              </div>
+
+              <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  Compare and validate
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {trustBrandLinks.map((link) => (
+                    <a
+                      key={`pricing-${link.label}`}
+                      href={link.href}
+                      onClick={() =>
+                        handleTrustLinkClick(
+                          link.href,
+                          link.label,
+                          "pricing_trust_brands",
+                        )
+                      }
+                      className="inline-flex items-center rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-800"
+                    >
+                      Compare vs {link.label}
+                    </a>
+                  ))}
+                  {caseStudyLinks.map((link) => (
+                    <a
+                      key={`pricing-${link.label}`}
+                      href={link.href}
+                      onClick={() =>
+                        handleTrustLinkClick(
+                          link.href,
+                          link.label,
+                          "pricing_case_studies",
+                        )
+                      }
+                      className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-900"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
               </div>
 
               <div className="mt-10 grid gap-4 lg:grid-cols-3">
@@ -867,8 +1064,8 @@ export default function LandingPageRebuild() {
                       ))}
                     </ul>
 
-                    <button
-                      onClick={() => navigate(plan.ctaRoute)}
+                    <button type="button"
+                      onClick={() => handlePricingPlanClick(plan)}
                       className={`mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold ${
                         plan.highlighted
                           ? "bg-slate-900 text-white"
@@ -888,7 +1085,48 @@ export default function LandingPageRebuild() {
             </div>
           </section>
 
-          {/* Section 6: Final CTA */}
+          {/* Section 6: FAQ */}
+          <section
+            id="section-faq"
+            className="border-b border-slate-200 bg-white"
+            aria-labelledby="landing-faq-heading"
+          >
+            <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
+              <div className="text-center">
+                <p className="inline-flex rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
+                  FAQs
+                </p>
+                <h2
+                  id="landing-faq-heading"
+                  className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"
+                >
+                  Common questions before you start
+                </h2>
+                <p className="mx-auto mt-4 max-w-2xl text-slate-600">
+                  Straight answers on pricing, setup, and how the platform works
+                  for UK service businesses.
+                </p>
+              </div>
+
+              <div className="mt-10 space-y-3">
+                {landingFaqs.map((faq) => (
+                  <details
+                    key={faq.question}
+                    className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4"
+                  >
+                    <summary className="cursor-pointer list-none text-left text-base font-semibold text-slate-900">
+                      {faq.question}
+                    </summary>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-700">
+                      {faq.answer}
+                    </p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Section 7: Final CTA */}
           <section
             id="section-6"
             className="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 text-white"
@@ -907,13 +1145,13 @@ export default function LandingPageRebuild() {
                 </p>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                  <button
+                  <button type="button"
                     onClick={() => navigate("/signup")}
                     className="inline-flex items-center justify-center rounded-xl bg-white px-8 py-3 text-sm font-semibold text-slate-900"
                   >
                     Start free in minutes
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => navigate("/pricing")}
                     className="inline-flex items-center justify-center rounded-xl border border-slate-500 bg-slate-900 px-8 py-3 text-sm font-semibold text-white"
                   >
