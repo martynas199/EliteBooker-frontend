@@ -790,7 +790,7 @@ export default function Orders() {
               {/* Royal Mail Postage Label Link */}
               <div>
                 <a
-                  href="https://send.royalmail.com/send/youritem"
+                  href="https://send.royalmail.com/send/youritem?country=LTU&format=&weight=&weightUnit=G&CountryName=Lithuania&serviceFilter=parcelforce"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
