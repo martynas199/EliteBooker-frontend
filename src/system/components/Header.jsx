@@ -6,15 +6,15 @@ import ProfileMenu from "../../shared/components/ui/ProfileMenu";
 import eliteLogo from "../../assets/elite.png";
 
 const navButtonClass =
-  "flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900";
+  "flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-sky-100/70 hover:text-slate-900";
 const desktopDropdownClass =
-  "absolute left-0 top-full z-50 w-56 rounded-xl border border-slate-200 bg-white py-2 shadow-xl";
+  "absolute left-0 top-full z-50 w-56 rounded-xl border border-sky-100 bg-white/95 py-2 shadow-xl shadow-slate-900/10 backdrop-blur";
 const featuresDropdownClass =
-  "absolute left-0 top-full z-50 w-56 rounded-xl border border-slate-200 bg-white py-2 shadow-xl";
+  "absolute left-0 top-full z-50 w-56 rounded-xl border border-sky-100 bg-white/95 py-2 shadow-xl shadow-slate-900/10 backdrop-blur";
 const desktopDropdownItemClass =
-  "block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100";
+  "block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-sky-50";
 const mobileMenuItemClass =
-  "w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900";
+  "w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition-colors hover:bg-sky-50 hover:text-slate-900";
 
 export default function Header({ iosSafeMode = false, minimalMode = false }) {
   const navigate = useNavigate();
@@ -24,8 +24,8 @@ export default function Header({ iosSafeMode = false, minimalMode = false }) {
   const [showCompareDropdown, setShowCompareDropdown] = useState(false);
   const [showFeaturesDropdown, setShowFeaturesDropdown] = useState(false);
   const headerClassName = iosSafeMode
-    ? "relative z-50 border-b border-amber-100/80 bg-[#f6f2ea]"
-    : "relative z-50 border-b border-amber-100/80 bg-[#f6f2ea] md:sticky md:bg-[#f6f2ea]/92 md:backdrop-blur-xl md:supports-[backdrop-filter]:bg-[#f6f2ea]/80";
+    ? "relative z-50 border-b border-slate-200/90 bg-[#edf4ff] shadow-[0_10px_28px_-24px_rgba(15,23,42,0.45)]"
+    : "relative z-50 border-b border-slate-200/90 bg-[#edf4ff] shadow-[0_10px_28px_-24px_rgba(15,23,42,0.45)] md:sticky md:bg-[#edf4ff]/92 md:backdrop-blur-xl md:supports-[backdrop-filter]:bg-[#edf4ff]/82";
 
   const handleLogin = () => {
     navigate(isAuthenticated ? "/client/profile" : "/client/login");
@@ -86,7 +86,7 @@ export default function Header({ iosSafeMode = false, minimalMode = false }) {
   if (minimalMode) {
     return (
       <header
-        className="relative z-50 border-b border-amber-100/80 bg-[#f6f2ea]"
+        className="relative z-50 border-b border-slate-200/90 bg-[#edf4ff] shadow-[0_10px_28px_-24px_rgba(15,23,42,0.45)]"
         style={{
           top: "0px",
           paddingTop: "env(safe-area-inset-top, 0px)",
@@ -109,7 +109,7 @@ export default function Header({ iosSafeMode = false, minimalMode = false }) {
               {!isAuthenticated && (
                 <Link
                   to="/signup"
-                  className="hidden rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-900 sm:inline-flex"
+                  className="hidden rounded-full border border-sky-200 bg-white/80 px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:border-sky-300 hover:bg-white sm:inline-flex"
                 >
                   List your business
                 </Link>
@@ -119,7 +119,7 @@ export default function Header({ iosSafeMode = false, minimalMode = false }) {
                 onClick={() =>
                   navigate(isAuthenticated ? "/client/profile" : "/menu")
                 }
-                className="inline-flex h-10 items-center justify-center rounded-full border border-slate-300 bg-white px-4 text-sm font-medium text-slate-800"
+                className="inline-flex h-10 items-center justify-center rounded-full border border-sky-200 bg-white/90 px-4 text-sm font-medium text-slate-800"
               >
                 {isAuthenticated ? "Account" : "Menu"}
               </button>
@@ -291,13 +291,13 @@ export default function Header({ iosSafeMode = false, minimalMode = false }) {
 
             <Link
               to="/solutions"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-sky-100/70 hover:text-slate-900"
             >
               Solutions
             </Link>
             <Link
               to="/pricing"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-sky-100/70 hover:text-slate-900"
             >
               Pricing
             </Link>
@@ -307,7 +307,7 @@ export default function Header({ iosSafeMode = false, minimalMode = false }) {
             {!isAuthenticated && (
               <Link
                 to="/signup"
-                className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:border-slate-400 hover:bg-white"
+                className="rounded-full border border-sky-200 bg-white/80 px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:border-sky-300 hover:bg-white"
               >
                 List your business
               </Link>
@@ -336,7 +336,7 @@ export default function Header({ iosSafeMode = false, minimalMode = false }) {
               ) : (
                 <button
                   onClick={() => setShowMenuDropdown(!showMenuDropdown)}
-                  className="flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:border-slate-400 hover:bg-white"
+                  className="flex items-center gap-2 rounded-full border border-sky-200 bg-white/80 px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:border-sky-300 hover:bg-white"
                 >
                   Menu
                   <svg
@@ -410,7 +410,7 @@ export default function Header({ iosSafeMode = false, minimalMode = false }) {
             ) : (
               <button
                 onClick={() => setShowMenuDropdown(!showMenuDropdown)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-sky-200 bg-white/90 text-slate-700"
                 aria-label="Open menu"
               >
                 <svg
@@ -435,9 +435,9 @@ export default function Header({ iosSafeMode = false, minimalMode = false }) {
                   className="fixed inset-0 z-[998] bg-black/20"
                   onClick={() => setShowMenuDropdown(false)}
                 />
-                <div className="fixed inset-x-4 top-[max(env(safe-area-inset-top),4.5rem)] z-[999] max-h-[80vh] overflow-y-auto rounded-3xl border border-slate-200 bg-white p-4 shadow-2xl">
+                <div className="fixed inset-x-4 top-[max(env(safe-area-inset-top),4.5rem)] z-[999] max-h-[80vh] overflow-y-auto rounded-3xl border border-sky-100 bg-white/95 p-4 shadow-2xl shadow-slate-900/15 backdrop-blur">
                   <div className="space-y-3">
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-3">
+                    <div className="rounded-2xl border border-sky-100 bg-sky-50/70 p-3">
                       <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
                         For Customers
                       </p>
@@ -465,7 +465,7 @@ export default function Header({ iosSafeMode = false, minimalMode = false }) {
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-3">
+                    <div className="rounded-2xl border border-sky-100 bg-sky-50/70 p-3">
                       <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
                         For Businesses
                       </p>
@@ -491,3 +491,4 @@ export default function Header({ iosSafeMode = false, minimalMode = false }) {
     </header>
   );
 }
+

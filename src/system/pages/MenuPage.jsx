@@ -67,7 +67,7 @@ export default function MenuPage() {
           canonical="https://www.elitebooker.co.uk/menu"
           noindex
         />
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#f6f2ea] p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#edf4ff] p-4">
           <div className="w-full max-w-md rounded-3xl border border-red-200 bg-white p-6 text-center shadow-xl sm:p-8">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">
               !
@@ -96,7 +96,7 @@ export default function MenuPage() {
         canonical="https://www.elitebooker.co.uk/menu"
         noindex
       />
-      <div className="fixed inset-0 z-[9999] bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <div className="fixed inset-0 z-[9999] bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-slate-900/10 to-transparent" />
         <div className="relative flex h-full flex-col">
           <div
@@ -256,3 +256,4 @@ export default function MenuPage() {
     </>
   );
 }
+

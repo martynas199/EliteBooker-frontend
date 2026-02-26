@@ -154,7 +154,7 @@ export default function SearchPageSimple() {
         width: "100vw",
         height: "100vh",
         background:
-          "linear-gradient(180deg, #f8f5ef 0%, #f6f2ea 52%, #efe8dc 100%)",
+          "linear-gradient(180deg, #eef4ff 0%, #edf4ff 52%, #dfeeff 100%)",
         display: "flex",
         flexDirection: "column",
         zIndex: 9999,
@@ -342,3 +342,4 @@ export default function SearchPageSimple() {
     </div>
   );
 }
+

@@ -216,7 +216,7 @@ export default function BusinessesLandingPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-3 right-3 bg-white px-3 py-1 rounded-full flex items-center space-x-1 shadow-lg">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <Star className="w-4 h-4 fill-sky-400 text-sky-400" />
                     <span className="font-semibold text-sm">
                       {business.rating}
                     </span>
@@ -274,3 +274,4 @@ export default function BusinessesLandingPage() {
     </div>
   );
 }
+

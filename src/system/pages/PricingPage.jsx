@@ -205,11 +205,11 @@ export default function PricingPage() {
       <BreadcrumbSchema items={breadcrumbs} />
       <FAQSchema faqs={faqs} />
 
-      <div className="min-h-screen bg-gradient-to-b from-[#f7f3ec] via-[#f6f2ea] to-[#f2ece2]">
+      <div className="min-h-screen bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
         <section className="relative overflow-hidden px-4 pb-10 pt-12 sm:px-6 sm:pb-14 sm:pt-16 lg:px-8">
           <div className="pointer-events-none absolute inset-0">
-            <div className="absolute -top-20 -left-20 h-72 w-72 rounded-full bg-amber-300/30 blur-3xl" />
-            <div className="absolute right-0 top-24 h-72 w-72 rounded-full bg-amber-200/25 blur-3xl" />
+            <div className="absolute -top-20 -left-20 h-72 w-72 rounded-full bg-sky-300/30 blur-3xl" />
+            <div className="absolute right-0 top-24 h-72 w-72 rounded-full bg-sky-200/25 blur-3xl" />
           </div>
 
           <div className="relative mx-auto max-w-5xl text-center">
@@ -248,20 +248,20 @@ export default function PricingPage() {
                   }`}
                 >
                   Annual
-                  <span className="mt-1 inline-flex rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-900 sm:ml-2 sm:mt-0 sm:text-xs">
+                  <span className="mt-1 inline-flex rounded-full bg-sky-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-900 sm:ml-2 sm:mt-0 sm:text-xs">
                     Save 17%
                   </span>
                 </button>
               </div>
 
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-[11px] font-medium uppercase tracking-wide text-slate-700 sm:text-xs">
-                <span className="rounded-full border border-amber-100 bg-white/75 px-3 py-1">
+                <span className="rounded-full border border-sky-100 bg-white/75 px-3 py-1">
                   No contracts
                 </span>
-                <span className="rounded-full border border-amber-100 bg-white/75 px-3 py-1">
+                <span className="rounded-full border border-sky-100 bg-white/75 px-3 py-1">
                   Cancel anytime
                 </span>
-                <span className="rounded-full border border-amber-100 bg-white/75 px-3 py-1">
+                <span className="rounded-full border border-sky-100 bg-white/75 px-3 py-1">
                   500+ UK businesses
                 </span>
               </div>
@@ -282,7 +282,7 @@ export default function PricingPage() {
                   className="relative"
                 >
                   {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-amber-400 px-5 py-1.5 text-xs font-bold uppercase tracking-wide text-slate-900 shadow-lg sm:-top-4 sm:text-sm">
+                    <div className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-sky-400 px-5 py-1.5 text-xs font-bold uppercase tracking-wide text-slate-900 shadow-lg sm:-top-4 sm:text-sm">
                       Most Popular
                     </div>
                   )}
@@ -372,8 +372,8 @@ export default function PricingPage() {
                         {renderCell(row.basic, false, true)}
                       </div>
                     </div>
-                    <div className="rounded-xl border border-amber-100 bg-amber-50 p-2 text-center">
-                      <p className="text-[10px] font-semibold uppercase tracking-wide text-amber-700">
+                    <div className="rounded-xl border border-sky-100 bg-sky-50 p-2 text-center">
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-sky-700">
                         Pro
                       </p>
                       <div className="mt-1">
@@ -410,7 +410,7 @@ export default function PricingPage() {
                     <th className="px-6 py-4 text-center text-sm font-bold text-slate-900">
                       Basic
                     </th>
-                    <th className="bg-amber-50 px-6 py-4 text-center text-sm font-bold text-slate-900">
+                    <th className="bg-sky-50 px-6 py-4 text-center text-sm font-bold text-slate-900">
                       Professional
                     </th>
                     <th className="px-6 py-4 text-center text-sm font-bold text-slate-900">
@@ -427,7 +427,7 @@ export default function PricingPage() {
                       <td className="px-6 py-4 text-center">
                         {renderCell(row.basic)}
                       </td>
-                      <td className="bg-amber-50 px-6 py-4 text-center">
+                      <td className="bg-sky-50 px-6 py-4 text-center">
                         {renderCell(
                           row.professional,
                           typeof row.professional === "string",
@@ -452,7 +452,7 @@ export default function PricingPage() {
             <h2 className="mb-10 text-center text-3xl font-bold text-slate-950 sm:text-4xl">
               Optional add-ons
             </h2>
-            <div className="rounded-2xl border border-amber-200 bg-white p-6 shadow-xl sm:p-8">
+            <div className="rounded-2xl border border-sky-200 bg-white p-6 shadow-xl sm:p-8">
               <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
                 <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-slate-900 text-xl text-white">
                   SMS
@@ -593,3 +593,4 @@ export default function PricingPage() {
     </>
   );
 }
+

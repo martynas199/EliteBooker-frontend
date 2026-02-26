@@ -28,7 +28,7 @@ export default function SignupSuccessPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+    <div className="min-h-screen bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
       <SEOHead
         title="Signup Complete"
         description="Your Elite Booker account has been created successfully."
@@ -42,12 +42,12 @@ export default function SignupSuccessPage() {
         <motion.div
           animate={{ x: [0, 70, 0], y: [0, -80, 0], scale: [1, 1.15, 1] }}
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="pointer-events-none absolute left-[-8rem] top-8 h-72 w-72 rounded-full bg-amber-300/30 blur-3xl"
+          className="pointer-events-none absolute left-[-8rem] top-8 h-72 w-72 rounded-full bg-sky-300/30 blur-3xl"
         />
         <motion.div
           animate={{ x: [0, -80, 0], y: [0, 70, 0], scale: [1.1, 1, 1.1] }}
           transition={{ duration: 17, repeat: Infinity, ease: "easeInOut" }}
-          className="pointer-events-none absolute bottom-[-2rem] right-[-7rem] h-96 w-96 rounded-full bg-amber-300/15 blur-3xl"
+          className="pointer-events-none absolute bottom-[-2rem] right-[-7rem] h-96 w-96 rounded-full bg-sky-300/15 blur-3xl"
         />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#00000006_1px,transparent_1px),linear-gradient(to_bottom,#00000006_1px,transparent_1px)] bg-[size:3rem_3rem]" />
 
@@ -155,3 +155,4 @@ export default function SignupSuccessPage() {
     </div>
   );
 }
+

@@ -145,7 +145,7 @@ export default function VsTreatwell() {
       />
       <BreadcrumbSchema items={breadcrumbs} />
       <Header />
-      <main className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-white px-4 py-12 sm:px-6 lg:px-8">
+      <main className="min-h-screen bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-white px-4 py-12 sm:px-6 lg:px-8">
         <section className="mx-auto max-w-5xl rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-xl">
           <h1 className="text-4xl font-bold text-slate-900 sm:text-5xl">
             Elite Booker vs Treatwell
@@ -156,8 +156,8 @@ export default function VsTreatwell() {
             businesses.
           </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-rose-700">
+            <div className="rounded-2xl border border-slate-300 bg-slate-100 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">
                 Treatwell snapshot
               </p>
               <p className="mt-2 text-sm text-slate-700">
@@ -178,7 +178,7 @@ export default function VsTreatwell() {
           <p className="mt-4 text-sm text-slate-600">
             Last updated: {LAST_UPDATED}
           </p>
-          <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          <p className="mt-2 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-900">
             Vendor terms can change. Confirm final numbers on each provider's
             pricing page before switching.
           </p>
@@ -303,3 +303,4 @@ export default function VsTreatwell() {
     </>
   );
 }
+

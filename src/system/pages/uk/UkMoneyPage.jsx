@@ -78,7 +78,7 @@ export default function UkMoneyPage({ slug }) {
             ))}
           </div>
 
-          <section className="mt-12 rounded-2xl border border-amber-200 bg-amber-50 p-6">
+          <section className="mt-12 rounded-2xl border border-sky-200 bg-sky-50 p-6">
             <h2 className="text-2xl font-bold text-slate-900">FAQs</h2>
             <ul className="mt-4 space-y-3 text-slate-700">
               {page.faqs.map((faq) => (
@@ -118,3 +118,4 @@ export default function UkMoneyPage({ slug }) {
     </>
   );
 }
+

@@ -57,7 +57,7 @@ export default function TermsPage() {
       />
 
       <PageTransition>
-        <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+        <div className="min-h-screen bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
           <Header />
 
           <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
@@ -114,3 +114,4 @@ export default function TermsPage() {
     </>
   );
 }
+

@@ -55,7 +55,7 @@ export default function PricingSection({ onShowFeeModal }) {
               }`}
             >
               Annual{" "}
-              <span className="mt-1 inline-flex rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-900 sm:ml-2 sm:mt-0 sm:text-xs">
+              <span className="mt-1 inline-flex rounded-full bg-sky-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-900 sm:ml-2 sm:mt-0 sm:text-xs">
                 Save 17%
               </span>
             </button>
@@ -74,7 +74,7 @@ export default function PricingSection({ onShowFeeModal }) {
               className="relative"
             >
               {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-amber-400 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-slate-900 sm:-top-4 sm:text-sm">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-sky-400 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-slate-900 sm:-top-4 sm:text-sm">
                   Most Popular
                 </div>
               )}
@@ -159,4 +159,5 @@ export default function PricingSection({ onShowFeeModal }) {
     </section>
   );
 }
+
 

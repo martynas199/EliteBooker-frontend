@@ -97,10 +97,10 @@ export default function ReferralSignupPage() {
   };
 
   const inputClass =
-    "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200";
+    "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+    <div className="min-h-screen bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
       <SEOHead
         title="Join the Referral Program"
         description="Join the Elite Booker referral program and earn rewards by introducing beauty and wellness businesses."
@@ -114,18 +114,18 @@ export default function ReferralSignupPage() {
         <motion.div
           animate={{ x: [0, 80, 0], y: [0, -80, 0], scale: [1, 1.15, 1] }}
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="pointer-events-none absolute left-[-9rem] top-16 h-80 w-80 rounded-full bg-amber-300/30 blur-3xl"
+          className="pointer-events-none absolute left-[-9rem] top-16 h-80 w-80 rounded-full bg-sky-300/30 blur-3xl"
         />
         <motion.div
           animate={{ x: [0, -90, 0], y: [0, 70, 0], scale: [1.1, 1, 1.1] }}
           transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          className="pointer-events-none absolute bottom-[-2rem] right-[-7rem] h-96 w-96 rounded-full bg-amber-300/15 blur-3xl"
+          className="pointer-events-none absolute bottom-[-2rem] right-[-7rem] h-96 w-96 rounded-full bg-sky-300/15 blur-3xl"
         />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#00000006_1px,transparent_1px),linear-gradient(to_bottom,#00000006_1px,transparent_1px)] bg-[size:3rem_3rem]" />
 
         <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
           <div className="mb-8 max-w-3xl sm:mb-10">
-            <span className="inline-flex min-h-10 items-center rounded-full border border-amber-200 bg-amber-100/70 px-4 text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">
+            <span className="inline-flex min-h-10 items-center rounded-full border border-sky-200 bg-sky-100/70 px-4 text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
               Referral Program
             </span>
             <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
@@ -348,3 +348,4 @@ export default function ReferralSignupPage() {
     </div>
   );
 }
+

@@ -102,7 +102,7 @@ export default function NoShowProtection() {
         className="min-h-screen"
         style={{
           background:
-            "linear-gradient(to bottom, #f8f5ef, #f6f2ea 55%, #efe8dc)",
+            "linear-gradient(to bottom, #eef4ff, #edf4ff 55%, #dfeeff)",
         }}
       >
         {/* Hero */}
@@ -349,9 +349,9 @@ export default function NoShowProtection() {
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="bg-white p-8 rounded-xl border-2 border-yellow-200"
+                className="bg-white p-8 rounded-xl border-2 border-sky-200"
               >
-                <Award className="w-12 h-12 text-yellow-600 mb-4" />
+                <Award className="w-12 h-12 text-sky-600 mb-4" />
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">
                   Professional Image
                 </h3>
@@ -438,3 +438,5 @@ export default function NoShowProtection() {
     </>
   );
 }
+
+

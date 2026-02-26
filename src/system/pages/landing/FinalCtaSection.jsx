@@ -7,8 +7,8 @@ export default function FinalCtaSection({ onShowDemoModal }) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[#0d1018] via-[#191f2e] to-[#2a3044] py-16 text-white sm:py-20 lg:py-24">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/4 top-6 h-64 w-64 rounded-full bg-amber-400/15 blur-3xl" />
-        <div className="absolute right-1/4 bottom-0 h-64 w-64 rounded-full bg-amber-300/15 blur-3xl" />
+        <div className="absolute left-1/4 top-6 h-64 w-64 rounded-full bg-sky-400/15 blur-3xl" />
+        <div className="absolute right-1/4 bottom-0 h-64 w-64 rounded-full bg-sky-300/15 blur-3xl" />
       </div>
       <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
         <motion.div
@@ -65,4 +65,5 @@ export default function FinalCtaSection({ onShowDemoModal }) {
     </section>
   );
 }
+
 

@@ -11,7 +11,7 @@ export default function DemoSection({ onDemoClick }) {
       className="relative overflow-hidden bg-gradient-to-br from-[#0b0d12] via-[#121722] to-[#1e2535] py-16 text-white sm:py-20 lg:py-24"
     >
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-amber-300/15 blur-3xl" />
+        <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-sky-300/15 blur-3xl" />
         <div className="absolute -right-20 bottom-10 h-72 w-72 rounded-full bg-slate-400/20 blur-3xl" />
       </div>
 
@@ -22,11 +22,11 @@ export default function DemoSection({ onDemoClick }) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <span className="mb-5 inline-flex items-center rounded-full border border-amber-300/40 bg-amber-300/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-amber-300 sm:px-4 sm:py-2 sm:text-xs">
+            <span className="mb-5 inline-flex items-center rounded-full border border-sky-300/40 bg-sky-300/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-sky-300 sm:px-4 sm:py-2 sm:text-xs">
               Product Demo
             </span>
             <h2 className="mb-5 text-3xl font-bold text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.55)] sm:text-4xl md:text-5xl">
-              See the <span className="text-amber-300">booking engine</span> in
+              See the <span className="text-sky-300">booking engine</span> in
               action
             </h2>
             <p className="mb-7 text-base leading-relaxed text-slate-300 sm:text-lg md:text-xl">
@@ -142,5 +142,6 @@ export default function DemoSection({ onDemoClick }) {
     </section>
   );
 }
+
 
 

@@ -51,10 +51,10 @@ export default function ReferralLoginPage() {
   };
 
   const inputClass =
-    "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200";
+    "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+    <div className="min-h-screen bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
       <SEOHead
         title="Referral Partner Login"
         description="Sign in to access your Elite Booker referral dashboard."
@@ -68,17 +68,17 @@ export default function ReferralLoginPage() {
         <motion.div
           animate={{ x: [0, 80, 0], y: [0, -70, 0], scale: [1, 1.12, 1] }}
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="pointer-events-none absolute left-[-8rem] top-10 h-72 w-72 rounded-full bg-amber-300/25 blur-3xl"
+          className="pointer-events-none absolute left-[-8rem] top-10 h-72 w-72 rounded-full bg-sky-300/25 blur-3xl"
         />
         <motion.div
           animate={{ x: [0, -70, 0], y: [0, 80, 0], scale: [1.1, 1, 1.1] }}
           transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          className="pointer-events-none absolute bottom-[-3rem] right-[-6rem] h-96 w-96 rounded-full bg-amber-300/15 blur-3xl"
+          className="pointer-events-none absolute bottom-[-3rem] right-[-6rem] h-96 w-96 rounded-full bg-sky-300/15 blur-3xl"
         />
 
         <div className="relative mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto mb-8 max-w-2xl text-center sm:mb-10">
-            <span className="inline-flex min-h-10 items-center rounded-full border border-amber-200 bg-amber-100/70 px-4 text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">
+            <span className="inline-flex min-h-10 items-center rounded-full border border-sky-200 bg-sky-100/70 px-4 text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
               Referral Partner Access
             </span>
             <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
@@ -199,4 +199,5 @@ export default function ReferralLoginPage() {
     </div>
   );
 }
+
 

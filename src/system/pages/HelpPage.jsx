@@ -42,7 +42,7 @@ export default function HelpPage() {
       />
 
       <PageTransition>
-        <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+        <div className="min-h-screen bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
           <Header />
 
           {/* Hero */}
@@ -196,5 +196,6 @@ export default function HelpPage() {
     </>
   );
 }
+
 
 

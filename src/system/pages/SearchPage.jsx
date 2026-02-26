@@ -964,7 +964,7 @@ export default function SearchPage() {
 
   if (error) {
     return (
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#f6f2ea] p-4">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#edf4ff] p-4">
         <div className="w-full max-w-md rounded-3xl border border-red-200 bg-white p-6 text-center shadow-xl sm:p-8">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">
             !
@@ -986,7 +986,7 @@ export default function SearchPage() {
 
   if (loading && venues.length === 0) {
     return (
-      <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#f6f2ea] px-6 text-center">
+      <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#edf4ff] px-6 text-center">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-slate-900" />
         <p className="mt-4 text-sm font-medium text-slate-600">
           Loading venues near you...
@@ -1003,7 +1003,7 @@ export default function SearchPage() {
         canonical="https://www.elitebooker.co.uk/search"
       />
       <div
-        className="fixed inset-0 flex flex-col bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]"
+        className="fixed inset-0 flex flex-col bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]"
         style={{ minHeight: "100vh", height: "100dvh" }}
       >
         <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-slate-900/10 to-transparent" />
@@ -1215,7 +1215,7 @@ export default function SearchPage() {
               )}
             </div>
           </div>
-          <div className="absolute inset-0 h-full w-full bg-[#f6f2ea] lg:relative lg:inset-auto lg:flex-1 lg:p-4">
+          <div className="absolute inset-0 h-full w-full bg-[#edf4ff] lg:relative lg:inset-auto lg:flex-1 lg:p-4">
             <div
               ref={mapRef}
               className="h-full w-full lg:overflow-hidden lg:rounded-[28px] lg:border lg:border-slate-200/80 lg:shadow-[0_24px_48px_-30px_rgba(15,23,42,0.45)]"
@@ -1419,3 +1419,4 @@ const FilterChip = React.memo(function FilterChip({
     </motion.button>
   );
 });
+

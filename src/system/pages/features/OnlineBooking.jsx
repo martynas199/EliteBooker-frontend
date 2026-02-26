@@ -102,7 +102,7 @@ export default function OnlineBooking() {
         className="min-h-screen"
         style={{
           background:
-            "linear-gradient(to bottom, #f8f5ef, #f6f2ea 55%, #efe8dc)",
+            "linear-gradient(to bottom, #eef4ff, #edf4ff 55%, #dfeeff)",
         }}
       >
         {/* Hero */}
@@ -335,7 +335,7 @@ export default function OnlineBooking() {
                       The Beauty Lounge
                     </h3>
                     <div className="space-y-3">
-                      <div className="bg-gradient-to-r from-[#f8f5ef] to-[#efe8dc] p-4 rounded-lg border border-slate-200">
+                      <div className="bg-gradient-to-r from-[#eef4ff] to-[#dfeeff] p-4 rounded-lg border border-slate-200">
                         <div className="font-semibold text-gray-900">
                           Eyelash Extensions
                         </div>
@@ -470,3 +470,4 @@ export default function OnlineBooking() {
     </>
   );
 }
+

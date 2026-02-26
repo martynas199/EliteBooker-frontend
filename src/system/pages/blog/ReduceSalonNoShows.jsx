@@ -197,7 +197,7 @@ export default function ReduceSalonNoShows() {
         className="min-h-screen"
         style={{
           background:
-            "linear-gradient(to bottom, #f8f5ef, #f6f2ea 55%, #efe8dc)",
+            "linear-gradient(to bottom, #eef4ff, #edf4ff 55%, #dfeeff)",
         }}
       >
         {/* Hero */}
@@ -543,7 +543,7 @@ export default function ReduceSalonNoShows() {
               Objection Handling:
             </h3>
             <div className="space-y-4">
-              <div className="bg-white p-4 rounded-lg border-l-4 border-yellow-500">
+              <div className="bg-white p-4 rounded-lg border-l-4 border-sky-500">
                 <p className="font-semibold text-gray-900 mb-1">
                   "Won't deposits hurt my bookings?"
                 </p>
@@ -554,7 +554,7 @@ export default function ReduceSalonNoShows() {
                   ideal clients.
                 </p>
               </div>
-              <div className="bg-white p-4 rounded-lg border-l-4 border-yellow-500">
+              <div className="bg-white p-4 rounded-lg border-l-4 border-sky-500">
                 <p className="font-semibold text-gray-900 mb-1">
                   "What if clients complain?"
                 </p>
@@ -665,7 +665,7 @@ export default function ReduceSalonNoShows() {
               <li>✓ Booking system terms & conditions checkbox</li>
             </ul>
 
-            <div className="mt-6 bg-yellow-50 p-6 rounded-xl border-l-4 border-yellow-500">
+            <div className="mt-6 bg-sky-50 p-6 rounded-xl border-l-4 border-sky-500">
               <p className="text-gray-800">
                 <strong>Enforcement tip:</strong> Be firm but fair. Waive fees
                 for genuine emergencies (illness with note, family emergency).
@@ -1104,3 +1104,5 @@ export default function ReduceSalonNoShows() {
     </>
   );
 }
+
+

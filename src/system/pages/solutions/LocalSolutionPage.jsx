@@ -135,7 +135,7 @@ export default function LocalSolutionPage() {
       <Header />
 
       <main className="min-h-screen bg-white">
-        <section className="bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc] px-4 py-16">
+        <section className="bg-gradient-to-br from-[#eef4ff] via-[#edf4ff] to-[#dfeeff] px-4 py-16">
           <div className="mx-auto max-w-5xl">
             <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-gray-600">
               {breadcrumbs.map((crumb, index) => (
@@ -151,7 +151,7 @@ export default function LocalSolutionPage() {
             </nav>
 
             {!isIndexable && (
-              <div className="mb-6 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+              <div className="mb-6 rounded-xl border border-sky-300 bg-sky-50 px-4 py-3 text-sm text-sky-900">
                 This local page is published for users, but it is not part of
                 the curated index set for search indexing.
               </div>
@@ -264,3 +264,4 @@ export default function LocalSolutionPage() {
     </>
   );
 }
+

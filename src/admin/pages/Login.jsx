@@ -10,7 +10,7 @@ import { useAdminLogin } from "../../shared/hooks/useAuthQueries";
 import SentryErrorButton from "../../shared/components/dev/SentryErrorButton";
 
 const inputClassName =
-  "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200 disabled:cursor-not-allowed disabled:bg-slate-100";
+  "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200 disabled:cursor-not-allowed disabled:bg-slate-100";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -62,10 +62,11 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc] px-4 py-10 sm:py-14">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff] px-4 py-10 sm:py-14">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-28 right-8 h-56 w-56 rounded-full bg-amber-200/40 blur-3xl sm:right-20 sm:h-72 sm:w-72" />
-        <div className="absolute bottom-0 left-0 h-56 w-56 rounded-full bg-indigo-200/30 blur-3xl sm:h-72 sm:w-72" />
+        <div className="absolute -top-28 right-8 h-56 w-56 rounded-full bg-sky-300/40 blur-3xl sm:right-20 sm:h-72 sm:w-72" />
+        <div className="absolute bottom-0 left-0 h-56 w-56 rounded-full bg-blue-300/30 blur-3xl sm:h-72 sm:w-72" />
+        <div className="absolute top-20 left-12 h-44 w-44 rounded-full bg-slate-300/20 blur-3xl sm:h-56 sm:w-56" />
       </div>
 
       <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-md items-center">
@@ -81,7 +82,7 @@ export default function AdminLogin() {
               alt="Elite Booker"
               className="mx-auto h-16 w-auto sm:h-20"
             />
-            <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <p className="mt-3 inline-flex rounded-full border border-sky-200 bg-white/85 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-sky-800">
               Admin Portal
             </p>
             <h1 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
@@ -92,7 +93,7 @@ export default function AdminLogin() {
             </p>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-xl sm:p-8">
+          <div className="rounded-3xl border border-sky-100 bg-white/95 p-6 shadow-2xl shadow-slate-900/10 backdrop-blur sm:p-8">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label
@@ -128,7 +129,7 @@ export default function AdminLogin() {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
-                    placeholder="••••••••"
+                    placeholder="********"
                     className={`${inputClassName} pr-11`}
                     required
                     autoComplete="current-password"
@@ -156,7 +157,7 @@ export default function AdminLogin() {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(event) => setRememberMe(event.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500"
+                    className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-sky-500"
                   />
                   Remember me
                 </label>
@@ -171,7 +172,7 @@ export default function AdminLogin() {
               <button
                 type="submit"
                 disabled={loginMutation.isPending}
-                className="inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition-all hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-gradient-to-r from-slate-900 to-blue-700 px-4 text-sm font-semibold text-white transition-all hover:from-slate-800 hover:to-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loginMutation.isPending ? "Signing in..." : "Sign in to dashboard"}
               </button>
@@ -203,3 +204,4 @@ export default function AdminLogin() {
     </div>
   );
 }
+

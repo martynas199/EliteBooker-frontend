@@ -80,7 +80,7 @@ export default function ComparePage() {
       />
       <BreadcrumbSchema items={breadcrumbs} />
 
-      <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <div className="min-h-screen bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
         <Header />
 
         <main className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
@@ -194,3 +194,4 @@ export default function ComparePage() {
     </>
   );
 }
+

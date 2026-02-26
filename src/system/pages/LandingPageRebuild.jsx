@@ -369,12 +369,12 @@ export default function LandingPageRebuild() {
       <OrganizationSchema />
       <FAQSchema faqs={landingFaqs} />
 
-      <div className="min-h-screen bg-[#f6f2ea] text-slate-900">
+      <div className="system-landing min-h-screen bg-[#edf4ff] text-slate-900">
         <Header iosSafeMode />
 
         <main>
           {/* Section 1: Hero */}
-          <section id="section-1" className="border-b border-amber-100 bg-[#f6f2ea]">
+          <section id="section-1" className="system-hero border-b border-slate-200 bg-[#edf4ff]">
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
               <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
                 <div>
@@ -382,9 +382,9 @@ export default function LandingPageRebuild() {
                     Built for UK salons and service businesses
                   </p>
 
-                  <h1 className="max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
+                  <h1 className="system-hero-title max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
                     <span className="block text-slate-900">Keep More of</span>
-                    <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                    <span className="hero-highlight-word hero-gradient-text">
                       Every Booking
                     </span>
                     <span className="block text-slate-900">in Your Business</span>
@@ -410,13 +410,13 @@ export default function LandingPageRebuild() {
                   <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                     <button type="button"
                       onClick={handleHeroPrimaryClick}
-                      className="rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 text-base font-bold text-white shadow-xl"
+                      className="hero-primary-btn rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 px-8 py-4 text-base font-bold text-white shadow-xl"
                     >
                       Start Free in Minutes
                     </button>
                     <button type="button"
                       onClick={handleHeroComparePlansClick}
-                      className="rounded-xl border-2 border-slate-300 bg-white px-8 py-4 text-base font-semibold text-slate-900 shadow-md"
+                      className="hero-secondary-btn rounded-xl border-2 border-slate-300 bg-white px-8 py-4 text-base font-semibold text-slate-900 shadow-md"
                     >
                       Compare Plans
                     </button>
@@ -437,7 +437,7 @@ export default function LandingPageRebuild() {
                       {[...Array(5)].map((_, index) => (
                         <svg
                           key={index}
-                          className="h-4 w-4 text-amber-400"
+                          className="h-4 w-4 text-sky-400"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -458,7 +458,7 @@ export default function LandingPageRebuild() {
                       <a
                         key={chip.label}
                         href={chip.href}
-                        className="rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-800"
+                        className="system-chip rounded-full border border-slate-300 bg-white px-3 py-1.5 font-semibold text-slate-800"
                       >
                         {chip.label}
                       </a>
@@ -510,7 +510,7 @@ export default function LandingPageRebuild() {
                               "hero_case_studies",
                             )
                           }
-                          className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-900"
+                          className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-sm font-semibold text-sky-900"
                         >
                           {link.label}
                         </a>
@@ -519,22 +519,22 @@ export default function LandingPageRebuild() {
                   </div>
                 </div>
 
-                <aside className="rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl sm:p-8">
+                <aside className="hero-savings-card rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl sm:p-8">
                   <div className="flex items-center justify-between">
                     <h3 className="text-2xl font-bold text-slate-900">
                       Save Thousands
                     </h3>
-                    <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-bold text-rose-700">
+                    <span className="rounded-full bg-slate-900 px-3 py-1 text-xs font-bold text-white">
                       vs commission models
                     </span>
                   </div>
 
-                  <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 p-4">
+                  <div className="mt-5 rounded-2xl border border-slate-300 bg-slate-100 p-4">
                     <div className="mb-3 flex items-center justify-between">
                       <span className="font-bold text-slate-900">
                         Typical marketplace
                       </span>
-                      <span className="font-bold text-rose-700">You lose</span>
+                      <span className="font-bold text-slate-700">You lose</span>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
@@ -545,13 +545,13 @@ export default function LandingPageRebuild() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Commission</span>
-                        <span className="font-semibold text-rose-700">
+                        <span className="font-semibold text-slate-700">
                           GBP 2,400/year
                         </span>
                       </div>
-                      <div className="flex justify-between border-t border-rose-300 pt-2">
+                      <div className="flex justify-between border-t border-slate-300 pt-2">
                         <span className="font-bold text-slate-900">Total</span>
-                        <span className="font-bold text-rose-700">
+                        <span className="font-bold text-slate-900">
                           GBP 2,879/year
                         </span>
                       </div>
@@ -612,7 +612,7 @@ export default function LandingPageRebuild() {
                 {heroOperationalStats.map((stat) => (
                   <div
                     key={stat.label}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center"
+                    className="system-stat-card rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center"
                   >
                     <p className="text-3xl font-extrabold text-slate-900">{stat.value}</p>
                     <p className="mt-1 text-sm text-slate-600">{stat.label}</p>
@@ -623,15 +623,18 @@ export default function LandingPageRebuild() {
           </section>
 
           {/* Section 2: Trust Strip */}
-          <section id="section-2" className="border-b border-slate-200 bg-white">
+          <section
+            id="section-2"
+            className="system-section-light border-b border-slate-200 bg-white"
+          >
             <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-              <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6 sm:p-8">
+              <div className="system-trust-panel rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6 sm:p-8">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <p className="inline-flex rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
                       Trust and clarity
                     </p>
-                    <h2 className="mt-3 text-2xl font-bold text-slate-900 sm:text-3xl">
+                    <h2 className="system-title mt-3 text-2xl font-bold text-slate-900 sm:text-3xl">
                       Built for teams that want control and predictable pricing
                     </h2>
                     <p className="mt-3 max-w-2xl text-slate-600">
@@ -640,12 +643,12 @@ export default function LandingPageRebuild() {
                     </p>
                   </div>
 
-                  <button type="button"
-                    onClick={() => navigate("/pricing")}
-                    className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white"
-                  >
-                    View pricing
-                  </button>
+                    <button type="button"
+                      onClick={() => navigate("/pricing")}
+                      className="system-action-btn inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white"
+                    >
+                      View pricing
+                    </button>
                 </div>
 
                 <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -677,13 +680,16 @@ export default function LandingPageRebuild() {
           </section>
 
           {/* Section 3: Core Benefits */}
-          <section id="section-3" className="border-b border-slate-200 bg-[#f8f6f1]">
+          <section
+            id="section-3"
+            className="system-section-warm border-b border-slate-200 bg-[#f2f7ff]"
+          >
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
               <div className="max-w-3xl">
                 <p className="inline-flex rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
                   Core benefits
                 </p>
-                <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                <h2 className="system-title mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                   Core benefits that reduce admin and protect your margin
                 </h2>
                 <p className="mt-4 text-slate-600">
@@ -696,7 +702,7 @@ export default function LandingPageRebuild() {
                 {coreBenefits.map((benefit, index) => (
                   <article
                     key={benefit.title}
-                    className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                    className="system-benefit-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
                   >
                     <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
                       {coreBenefitIcons[index]}
@@ -737,7 +743,7 @@ export default function LandingPageRebuild() {
                 </div>
                 <button type="button"
                   onClick={() => navigate("/signup")}
-                  className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white"
+                  className="system-action-btn inline-flex items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white"
                 >
                   Create free account
                 </button>
@@ -750,10 +756,10 @@ export default function LandingPageRebuild() {
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
               <div className="grid items-center gap-10 md:grid-cols-2">
                 <div>
-                  <p className="inline-flex rounded-full border border-amber-300/40 bg-amber-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-amber-300">
+                  <p className="inline-flex rounded-full border border-sky-300/40 bg-sky-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-sky-200">
                     Product demo
                   </p>
-                  <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  <h2 className="system-title-light mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
                     See the booking workflow in action
                   </h2>
                   <p className="mt-4 text-slate-300">
@@ -849,13 +855,16 @@ export default function LandingPageRebuild() {
           </section>
 
           {/* Section 4: Social Proof */}
-          <section id="section-4" className="border-b border-slate-200 bg-white">
+          <section
+            id="section-4"
+            className="system-section-light border-b border-slate-200 bg-white"
+          >
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
               <div className="mx-auto max-w-3xl text-center">
                 <p className="inline-flex rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
                   Customer results
                 </p>
-                <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                <h2 className="system-title mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                   Social proof from teams using Elite Booker
                 </h2>
                 <p className="mt-4 text-slate-600">
@@ -868,7 +877,7 @@ export default function LandingPageRebuild() {
                 {socialProofStats.map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center shadow-sm"
+                    className="system-social-stat rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center shadow-sm"
                   >
                     <p className="text-3xl font-extrabold text-slate-900">
                       {item.value}
@@ -882,7 +891,7 @@ export default function LandingPageRebuild() {
                 {socialProofTestimonials.map((testimonial, index) => (
                   <article
                     key={testimonial.author}
-                    className={`rounded-2xl border border-slate-200 bg-white p-6 shadow-sm ${
+                    className={`system-testimonial-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm ${
                       index === 2 ? "hidden lg:block" : ""
                     }`}
                   >
@@ -893,7 +902,7 @@ export default function LandingPageRebuild() {
                       {[...Array(5)].map((_, index) => (
                         <svg
                           key={index}
-                          className="h-4 w-4 text-amber-400"
+                          className="h-4 w-4 text-sky-400"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -931,14 +940,17 @@ export default function LandingPageRebuild() {
           </section>
 
           {/* Section 5: Pricing Snapshot */}
-          <section id="section-5" className="border-b border-slate-200 bg-[#f8f6f1]">
+          <section
+            id="section-5"
+            className="system-section-warm border-b border-slate-200 bg-[#f2f7ff]"
+          >
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div className="max-w-3xl">
                   <p className="inline-flex rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
                     Pricing
                   </p>
-                  <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                  <h2 className="system-title mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                     Pricing snapshot for different growth stages
                   </h2>
                   <p className="mt-4 text-slate-600">
@@ -948,7 +960,7 @@ export default function LandingPageRebuild() {
                 </div>
                 <button type="button"
                   onClick={() => navigate("/pricing")}
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-900"
+                  className="system-action-btn inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-900"
                 >
                   See full pricing breakdown
                 </button>
@@ -974,7 +986,7 @@ export default function LandingPageRebuild() {
                   }`}
                 >
                   Annual
-                  <span className="ml-2 inline-flex rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-900">
+                  <span className="ml-2 inline-flex rounded-full bg-sky-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-900">
                     Save 17%
                   </span>
                 </button>
@@ -1012,7 +1024,7 @@ export default function LandingPageRebuild() {
                           "pricing_case_studies",
                         )
                       }
-                      className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-900"
+                      className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs font-semibold text-sky-900"
                     >
                       {link.label}
                     </a>
@@ -1024,7 +1036,7 @@ export default function LandingPageRebuild() {
                 {pricingSnapshotPlans.map((plan) => (
                   <article
                     key={plan.name}
-                    className={`rounded-2xl border bg-white p-6 shadow-sm ${
+                    className={`system-pricing-card rounded-2xl border bg-white p-6 shadow-sm ${
                       plan.highlighted
                         ? "border-slate-900 shadow-lg"
                         : "border-slate-200"
@@ -1069,7 +1081,7 @@ export default function LandingPageRebuild() {
 
                     <button type="button"
                       onClick={() => handlePricingPlanClick(plan)}
-                      className={`mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold ${
+                      className={`system-plan-btn mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold ${
                         plan.highlighted
                           ? "bg-slate-900 text-white"
                           : "border border-slate-300 bg-white text-slate-900"
@@ -1091,7 +1103,7 @@ export default function LandingPageRebuild() {
           {/* Section 6: FAQ */}
           <section
             id="section-faq"
-            className="border-b border-slate-200 bg-white"
+            className="system-section-light border-b border-slate-200 bg-white"
             aria-labelledby="landing-faq-heading"
           >
             <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
@@ -1101,7 +1113,7 @@ export default function LandingPageRebuild() {
                 </p>
                 <h2
                   id="landing-faq-heading"
-                  className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"
+                  className="system-title mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"
                 >
                   Common questions before you start
                 </h2>
@@ -1115,7 +1127,7 @@ export default function LandingPageRebuild() {
                 {landingFaqs.map((faq) => (
                   <details
                     key={faq.question}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4"
+                    className="system-faq-item rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4"
                   >
                     <summary className="cursor-pointer list-none text-left text-base font-semibold text-slate-900">
                       {faq.question}
@@ -1135,11 +1147,11 @@ export default function LandingPageRebuild() {
             className="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 text-white"
           >
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-              <div className="rounded-3xl border border-slate-700 bg-slate-900 p-8 text-center sm:p-10">
+              <div className="system-final-cta rounded-3xl border border-slate-700 bg-slate-900 p-8 text-center sm:p-10">
                 <p className="inline-flex rounded-full border border-slate-500 bg-slate-800 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-200">
                   Get started
                 </p>
-                <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                <h2 className="system-title-light mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
                   Move your bookings to a simpler, more predictable workflow
                 </h2>
                 <p className="mx-auto mt-4 max-w-2xl text-slate-200">
@@ -1150,13 +1162,13 @@ export default function LandingPageRebuild() {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                   <button type="button"
                     onClick={() => navigate("/signup")}
-                    className="inline-flex items-center justify-center rounded-xl bg-white px-8 py-3 text-sm font-semibold text-slate-900"
+                    className="system-cta-primary inline-flex items-center justify-center rounded-xl bg-white px-8 py-3 text-sm font-semibold text-slate-900"
                   >
                     Start free in minutes
                   </button>
                   <button type="button"
                     onClick={() => navigate("/pricing")}
-                    className="inline-flex items-center justify-center rounded-xl border border-slate-500 bg-slate-900 px-8 py-3 text-sm font-semibold text-white"
+                    className="system-cta-secondary inline-flex items-center justify-center rounded-xl border border-slate-500 bg-slate-900 px-8 py-3 text-sm font-semibold text-white"
                   >
                     Compare plans
                   </button>

@@ -97,7 +97,7 @@ export default function Barbers() {
         className="min-h-screen"
         style={{
           background:
-            "linear-gradient(to bottom, #f8f5ef, #f6f2ea 55%, #efe8dc)",
+            "linear-gradient(to bottom, #eef4ff, #edf4ff 55%, #dfeeff)",
         }}
       >
         {/* Hero Section */}
@@ -294,3 +294,4 @@ export default function Barbers() {
     </>
   );
 }
+

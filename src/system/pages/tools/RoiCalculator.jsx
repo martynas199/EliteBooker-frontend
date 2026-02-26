@@ -140,7 +140,7 @@ export default function RoiCalculator() {
 
       <Header />
 
-      <main className="min-h-screen bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <main className="min-h-screen bg-gradient-to-br from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
         {/* Hero Section */}
         <section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center">
@@ -483,8 +483,8 @@ export default function RoiCalculator() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <TrendingDown className="w-8 h-8 text-yellow-600" />
+                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <TrendingDown className="w-8 h-8 text-sky-600" />
                 </div>
                 <h3 className="font-bold text-lg mb-2">It Adds Up Fast</h3>
                 <p className="text-gray-600 text-sm">
@@ -540,3 +540,5 @@ export default function RoiCalculator() {
     </>
   );
 }
+
+

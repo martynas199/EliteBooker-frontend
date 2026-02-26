@@ -34,7 +34,7 @@ const getStatusMeta = (status) => {
   if (status === "pending") {
     return {
       label: "Pending",
-      badgeClass: "bg-amber-100 text-amber-700",
+      badgeClass: "bg-sky-100 text-sky-700",
       icon: Clock,
     };
   }
@@ -63,7 +63,7 @@ const statCards = [
     key: "pendingReferrals",
     title: "Pending Signups",
     icon: Clock,
-    iconClass: "text-amber-600",
+    iconClass: "text-sky-600",
   },
 ];
 
@@ -203,7 +203,7 @@ export default function ReferralDashboard() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <div className="min-h-screen bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
         <SEOHead
           title="Referral Dashboard"
           description="Track referral code activity and rewards in your Elite Booker dashboard."
@@ -224,7 +224,7 @@ export default function ReferralDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+    <div className="min-h-screen bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
       <SEOHead
         title="Referral Dashboard"
         description="Track referral code activity and rewards in your Elite Booker dashboard."
@@ -539,3 +539,5 @@ export default function ReferralDashboard() {
     </div>
   );
 }
+
+

@@ -136,11 +136,11 @@ const FeatureIcon = ({ type }) => {
 
 export default function FeaturesSection() {
   const accentColors = [
-    "text-amber-300",
+    "text-sky-300",
     "text-slate-300",
     "text-slate-300",
     "text-slate-300",
-    "text-amber-300",
+    "text-sky-300",
     "text-slate-300",
   ];
 
@@ -156,7 +156,7 @@ export default function FeaturesSection() {
           viewport={{ once: true }}
           className="mb-10 text-center sm:mb-14 lg:mb-16"
         >
-          <span className="mb-4 inline-flex items-center rounded-full border border-amber-300/40 bg-amber-300/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-amber-300 sm:px-4 sm:py-2 sm:text-xs">
+          <span className="mb-4 inline-flex items-center rounded-full border border-sky-300/40 bg-sky-300/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-sky-300 sm:px-4 sm:py-2 sm:text-xs">
             Feature System
           </span>
           <h2 className="mb-4 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
@@ -178,7 +178,7 @@ export default function FeaturesSection() {
               transition={{ delay: idx * 0.1 }}
             >
               <Card
-                className="group h-full !bg-[#111827] border border-slate-700/80 p-5 shadow-lg shadow-black/20 transition-all hover:-translate-y-1 hover:border-amber-300/50 hover:shadow-2xl sm:p-7"
+                className="group h-full !bg-[#111827] border border-slate-700/80 p-5 shadow-lg shadow-black/20 transition-all hover:-translate-y-1 hover:border-sky-300/50 hover:shadow-2xl sm:p-7"
                 style={{
                   backgroundColor: "#111827",
                   borderColor: "rgba(51, 65, 85, 0.9)",
@@ -203,4 +203,5 @@ export default function FeaturesSection() {
     </section>
   );
 }
+
 

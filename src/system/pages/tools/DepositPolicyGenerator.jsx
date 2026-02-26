@@ -208,7 +208,7 @@ https://www.elitebooker.co.uk`;
 
       <Header />
 
-      <main className="min-h-screen bg-gradient-to-br from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+      <main className="min-h-screen bg-gradient-to-br from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
         {/* Hero */}
         <section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center">
@@ -264,7 +264,7 @@ https://www.elitebooker.co.uk`;
                       value={businessName}
                       onChange={(e) => setBusinessName(e.target.value)}
                       placeholder="e.g., Bella Beauty Salon"
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-amber-500 focus:outline-none text-lg"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-sky-500 focus:outline-none text-lg"
                     />
                   </div>
 
@@ -276,7 +276,7 @@ https://www.elitebooker.co.uk`;
                     <select
                       value={depositType}
                       onChange={(e) => setDepositType(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-amber-500 focus:outline-none text-lg bg-white"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-sky-500 focus:outline-none text-lg bg-white"
                     >
                       <option value="fixed">Fixed amount (£)</option>
                       <option value="percentage">
@@ -294,7 +294,7 @@ https://www.elitebooker.co.uk`;
                       type="number"
                       value={depositAmount}
                       onChange={(e) => setDepositAmount(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-amber-500 focus:outline-none text-lg"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-sky-500 focus:outline-none text-lg"
                       min="1"
                       max={depositType === "percentage" ? "100" : "500"}
                     />
@@ -313,7 +313,7 @@ https://www.elitebooker.co.uk`;
                     <select
                       value={cancellationWindow}
                       onChange={(e) => setCancellationWindow(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-amber-500 focus:outline-none text-lg bg-white"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-sky-500 focus:outline-none text-lg bg-white"
                     >
                       <option value="24">24 hours</option>
                       <option value="48">48 hours (recommended)</option>
@@ -332,7 +332,7 @@ https://www.elitebooker.co.uk`;
                     <select
                       value={refundPolicy}
                       onChange={(e) => setRefundPolicy(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-amber-500 focus:outline-none text-lg bg-white"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-sky-500 focus:outline-none text-lg bg-white"
                     >
                       <option value="full">Full refund with notice</option>
                       <option value="partial">
@@ -446,8 +446,8 @@ https://www.elitebooker.co.uk`;
               </div>
 
               <div className="text-center p-6">
-                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-8 h-8 text-yellow-600" />
+                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Shield className="w-8 h-8 text-sky-600" />
                 </div>
                 <h3 className="font-bold text-lg mb-2">Legal Protection</h3>
                 <p className="text-gray-600 text-sm">
@@ -503,3 +503,5 @@ https://www.elitebooker.co.uk`;
     </>
   );
 }
+
+

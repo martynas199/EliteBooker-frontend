@@ -169,12 +169,12 @@ export default function TenantSignup() {
 
   const labelClass = "block text-sm font-semibold text-slate-700 mb-2";
   const inputClass =
-    "w-full rounded-xl border border-slate-300 px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition-all focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200";
+    "w-full rounded-xl border border-slate-300 px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition-all focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200";
   const sectionCardClass =
     "rounded-2xl border border-slate-200 bg-white/85 p-4 shadow-sm sm:p-5";
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#f7f3ec] via-[#f6f2ea] to-[#f2ece2]">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
       <SEOHead
         title="Create Your Business Account"
         description="Start your Elite Booker account for your salon, barbershop, or wellness business. Set up in minutes and begin accepting bookings."
@@ -184,12 +184,12 @@ export default function TenantSignup() {
       <motion.div
         animate={{ x: [0, 80, 0], y: [0, -80, 0], scale: [1, 1.15, 1] }}
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute left-[-8rem] top-16 h-80 w-80 rounded-full bg-amber-300/35 blur-3xl"
+        className="pointer-events-none absolute left-[-8rem] top-16 h-80 w-80 rounded-full bg-sky-300/35 blur-3xl"
       />
       <motion.div
         animate={{ x: [0, -100, 0], y: [0, 80, 0], scale: [1.1, 1, 1.1] }}
         transition={{ duration: 17, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute bottom-8 right-[-8rem] h-96 w-96 rounded-full bg-amber-300/15 blur-3xl"
+        className="pointer-events-none absolute bottom-8 right-[-8rem] h-96 w-96 rounded-full bg-sky-300/15 blur-3xl"
       />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#00000006_1px,transparent_1px),linear-gradient(to_bottom,#00000006_1px,transparent_1px)] bg-[size:3rem_3rem]" />
 
@@ -220,7 +220,7 @@ export default function TenantSignup() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              className="mb-3 bg-gradient-to-r from-slate-900 via-slate-800 to-amber-700 bg-clip-text text-2xl font-bold text-transparent sm:text-4xl"
+              className="mb-3 bg-gradient-to-r from-slate-900 via-slate-800 to-blue-700 bg-clip-text text-2xl font-bold text-transparent sm:text-4xl"
             >
               Create your account
             </motion.h1>
@@ -235,13 +235,13 @@ export default function TenantSignup() {
             </motion.p>
 
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-[11px] font-medium uppercase tracking-wide text-slate-700 sm:text-xs">
-              <span className="rounded-full border border-amber-100 bg-white px-3 py-1">
+              <span className="rounded-full border border-sky-100 bg-white px-3 py-1">
                 No credit card required
               </span>
-              <span className="rounded-full border border-amber-100 bg-white px-3 py-1">
+              <span className="rounded-full border border-sky-100 bg-white px-3 py-1">
                 Setup in minutes
               </span>
-              <span className="rounded-full border border-amber-100 bg-white px-3 py-1">
+              <span className="rounded-full border border-sky-100 bg-white px-3 py-1">
                 Cancel anytime
               </span>
             </div>
@@ -602,7 +602,7 @@ export default function TenantSignup() {
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-5 sm:p-6">
+                <div className="rounded-2xl border border-sky-200 bg-sky-50/70 p-5 sm:p-6">
                   <h3 className="mb-3 text-base font-bold text-slate-900">What happens next</h3>
                   <ul className="space-y-2.5 text-sm text-slate-700">
                     <li className="flex items-start gap-2">
@@ -705,4 +705,5 @@ export default function TenantSignup() {
     </div>
   );
 }
+
 

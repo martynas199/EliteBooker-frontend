@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 
 export default function NotFoundPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f8f5ef] via-[#f6f2ea] to-[#efe8dc]">
+    <div className="min-h-screen bg-gradient-to-b from-[#eef4ff] via-[#edf4ff] to-[#dfeeff]">
       <SEOHead
         title="Page not found"
         description="The page you requested could not be found."
@@ -58,3 +58,4 @@ export default function NotFoundPage() {
     </div>
   );
 }
+
